@@ -1,0 +1,22 @@
+application: grid-paint
+version: 0-01
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+libraries:
+- name: django
+  version: "1.5"
+
+handlers:
+- url: /bootstrap
+  static_dir: static/bootstrap
+  
+- url: /js
+  static_dir: static/js
+  
+- url: /images
+  static_dir: static/images
+
+- url: /.*
+  script: main.application
