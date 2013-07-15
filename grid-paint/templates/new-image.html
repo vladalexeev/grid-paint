@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+
+{% block content %}  
+<div id="gridSquare"></div>
+<div id="gridTriangle"></div>
+
+<script src="/js/grids.js"></script>
+
+<script>
+var paperGridSquare=new Raphael("gridSquare",200,100);
+var gridSquare=new GridSquare();
+gridSquare.paintGrid(paperGridSquare);
+
+var paperGridTriangle=new Raphael("gridTriangle",200,100);
+var gridTriangle=new GridTriangle();
+gridTriangle.paintGrid(paperGridTriangle);
+</script>
+
+{% endblock content %}
