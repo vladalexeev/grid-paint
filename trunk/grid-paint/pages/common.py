@@ -62,6 +62,12 @@ class BasicPageRequestHandler(BasicRequestHandler):
     def write_template(self, template_name, template_values):
         super(BasicPageRequestHandler, self).write_template(template_name,template_values)
 
+
+
 class PageIndex(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/index.html', {})
+        
+class PageNewImage(BasicPageRequestHandler):
+    def get(self):
+        self.write_template('templates/new-image.html', {})
