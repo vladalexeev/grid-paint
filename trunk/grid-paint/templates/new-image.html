@@ -2,19 +2,34 @@
 
 
 {% block content %}  
-<div id="gridSquare"></div>
-<div id="gridTriangle"></div>
+
+<div class="row text-center">
+<h2>Choose a grid for new image</h2>	
+</div>
+
+<div class="row text-center">
+	<div id="gridSquare" style="display:inline"></div>
+	<div id="gridTriangle" style="display:inline"></div>
+	<div id="gridHex" style="display:inline"></div>
+</div>
+
+
+
 
 <script src="/js/grids.js"></script>
 
 <script>
-var paperGridSquare=new Raphael("gridSquare",200,100);
+var paperGridSquare=new Raphael("gridSquare",192,120);
 var gridSquare=new GridSquare();
 gridSquare.paintGrid(paperGridSquare);
 
-var paperGridTriangle=new Raphael("gridTriangle",200,100);
+var paperGridTriangle=new Raphael("gridTriangle",192,120);
 var gridTriangle=new GridTriangle();
 gridTriangle.paintGrid(paperGridTriangle);
+
+var paperGridHex=new Raphael("gridHex",192,120);
+var gridHex=new GridHex();
+gridHex.paintGrid(paperGridHex);
 </script>
 
 {% endblock content %}

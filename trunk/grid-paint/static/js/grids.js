@@ -6,8 +6,8 @@ var gridAttrs={
 function GridSquare() {
 	this.cellSize=24;
 	this.paintGrid=function (paper) {
-		for (var y=0; y<(paper.height-this.cellSize); y+=this.cellSize) {
-			for (var x=0; x<(paper.width-this.cellSize); x+=this.cellSize) {
+		for (var y=0; y<=(paper.height-this.cellSize); y+=this.cellSize) {
+			for (var x=0; x<=(paper.width-this.cellSize); x+=this.cellSize) {
 				var r=paper.rect(x, y, this.cellSize, this.cellSize);
 				r.attr(gridAttrs);
 			}			
@@ -44,6 +44,36 @@ function GridTriangle () {
 					path2.attr(gridAttrs);
 				}
 			}
+		}
+	}
+}
+
+function GridHex() {
+	this.cellSize=24;
+	this.paintGrid=function(paper) {
+		var sideLength=this.cellSize/2;
+		var halfHeight=sideLength*Math.sin(60/180*Math.PI);
+		var dx=sideLength*Math.cos(60/180*Math.PI);
+		var rowIndex=0;
+		for (y=0; y<=(paper.height-2*halfHeight); y+=halfHeight) {
+			var x=0;
+			if (rowIndex % 2 >0) {
+				x=dx+sideLength;
+			}
+			while (x<=(paper.width-sideLength-2*dx)) {
+				var path=paper.path(
+					"M "+x+" "+(y+halfHeight)+
+					" L "+(x+dx)+" "+y+
+					" L "+(x+dx+sideLength)+" "+y+
+					" L "+(x+2*dx+sideLength)+" "+(y+halfHeight)+
+					" L "+(x+dx+sideLength)+" "+(y+2*halfHeight)+
+					" L "+(x+dx)+" "+(y+2*halfHeight)+
+					" Z")
+				path.attr(gridAttrs);
+				x+=2*sideLength+2*dx;
+			}
+			
+			rowIndex++
 		}
 	}
 }
