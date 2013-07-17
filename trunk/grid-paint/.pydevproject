@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?eclipse-pydev version="1.0"?>
-
-<pydev_project>
+<?eclipse-pydev version="1.0"?><pydev_project>
 <pydev_variables_property name="org.python.pydev.PROJECT_VARIABLE_SUBSTITUTION">
 <key>GOOGLE_APP_ENGINE</key>
 <value>C:\google_appengine</value>
@@ -20,7 +18,6 @@
 <path>${GOOGLE_APP_ENGINE}/lib/django-1.3</path>
 <path>${GOOGLE_APP_ENGINE}/lib/django-1.4</path>
 <path>${GOOGLE_APP_ENGINE}/lib/django-1.5</path>
-<path>${GOOGLE_APP_ENGINE}/lib/django_0_96</path>
 <path>${GOOGLE_APP_ENGINE}/lib/enum</path>
 <path>${GOOGLE_APP_ENGINE}/lib/fancy_urllib</path>
 <path>${GOOGLE_APP_ENGINE}/lib/google-api-python-client</path>
