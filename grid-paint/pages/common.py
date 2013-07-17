@@ -71,3 +71,7 @@ class PageIndex(BasicPageRequestHandler):
 class PageNewImage(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/new-image.html', {})
+        
+class PagePainter(BasicPageRequestHandler):
+    def get(self):
+        self.write_template('templates/painter.html', {})
