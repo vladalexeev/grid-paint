@@ -8,9 +8,9 @@
 </div>
 
 <div class="row text-center">
-	<div id="gridSquare" style="display:inline"></div>
-	<div id="gridTriangle" style="display:inline"></div>
-	<div id="gridHex" style="display:inline"></div>
+	<div class="gridSelect" id="GridSquare" style="display:inline"></div>
+	<div class="gridSelect" id="GridTriangle" style="display:inline"></div>
+	<div class="gridSelect" id="GridHex" style="display:inline"></div>
 </div>
 
 
@@ -19,17 +19,20 @@
 <script src="/js/grids.js"></script>
 
 <script>
-var paperGridSquare=new Raphael("gridSquare",192,120);
-var gridSquare=new GridSquare();
-gridSquare.paintGrid(paperGridSquare);
-
-var paperGridTriangle=new Raphael("gridTriangle",192,120);
-var gridTriangle=new GridTriangle();
-gridTriangle.paintGrid(paperGridTriangle);
-
-var paperGridHex=new Raphael("gridHex",192,120);
-var gridHex=new GridHex();
-gridHex.paintGrid(paperGridHex);
+$(function() {
+	$(".gridSelect").each(
+		function() {
+			var gridName=$(this).attr("id");
+			var paper=new Raphael(gridName, 192, 120);
+			var grid=eval("new "+gridName+"()");
+			grid.paintGrid(paper);
+		});
+	
+	$(".gridSelect").click(
+		function() {
+			alert($(this).attr("id"));
+		});
+});
 </script>
 
 {% endblock content %}
