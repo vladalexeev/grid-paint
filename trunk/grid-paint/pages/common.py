@@ -74,4 +74,7 @@ class PageNewImage(BasicPageRequestHandler):
         
 class PagePainter(BasicPageRequestHandler):
     def get(self):
-        self.write_template('templates/painter.html', {})
+        self.write_template('templates/painter.html', 
+                            {
+                             'grid':self.request.get('grid')
+                             })

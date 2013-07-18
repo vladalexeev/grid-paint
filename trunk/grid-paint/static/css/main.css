@@ -2,6 +2,11 @@ body {
 	padding-top:50px;
 }
 
+.grid-selector-element {
+	display:inline; 
+	/*border:1px solid black;*/
+}
+
 .painter-canvas-wrapper {
 	overflow : scroll; 
 	padding-left:2px;
@@ -12,8 +17,8 @@ body {
  */
 
 ::-webkit-scrollbar {
-      width: 16px;
-      height: 16px;
+      width: 12px;
+      height: 12px;
 } 
 ::-webkit-scrollbar-track {
       background-color: #e0e0e0;
@@ -22,9 +27,11 @@ body {
       background-color: rgba(0, 0, 0, 0.2);
       -webkit-border-radius: 8px;
 } 
+/*
 ::-webkit-scrollbar-button {
       background-color: #808080;
-} 
+      -webkit-border-radius: 8px;
+} */
 ::-webkit-scrollbar-corner {
       background-color: #606060;
 } 
