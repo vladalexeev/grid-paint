@@ -8,9 +8,9 @@
 </div>
 
 <div class="row text-center">
-	<div class="gridSelect" id="GridSquare" style="display:inline"></div>
-	<div class="gridSelect" id="GridTriangle" style="display:inline"></div>
-	<div class="gridSelect" id="GridHex" style="display:inline"></div>
+	<div class="grid-selector-element" id="GridSquare"></div>
+	<div class="grid-selector-element" id="GridTriangle"></div>
+	<div class="grid-selector-element" id="GridHex"></div>
 </div>
 
 
@@ -20,7 +20,7 @@
 
 <script>
 $(function() {
-	$(".gridSelect").each(
+	$(".grid-selector-element").each(
 		function() {
 			var gridName=$(this).attr("id");
 			var paper=new Raphael(gridName, 192, 120);
@@ -28,9 +28,9 @@ $(function() {
 			grid.paintGrid(paper);
 		});
 	
-	$(".gridSelect").click(
+	$(".grid-selector-element").click(
 		function() {
-			document.location="/painter";
+			document.location="/painter?grid="+$(this).attr("id");
 			//alert($(this).attr("id"));
 		});
 });
