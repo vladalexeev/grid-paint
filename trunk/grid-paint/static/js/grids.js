@@ -44,6 +44,7 @@ function GridSquare() {
 
 function GridTriangle () {
 	this.cellSize=24;
+	this._rowHeight=this.cellSize*sin60;
 	
 	this._createGridLine=function(paper, pathArray) {
 		var path=paper.path(pathArray);
@@ -53,10 +54,9 @@ function GridTriangle () {
 	}
 		
 	this.paintGrid=function (paper) {
-		var rowHeight=this.cellSize*Math.sin(60/180*Math.PI);
 		var trianglesBehind=Math.floor(paper.height/this.cellSize)
 				
-		for (var y=0; y<paper.height; y+=rowHeight) {
+		for (var y=0; y<paper.height; y+=this._rowHeight) {
 			this._createGridLine(paper,["M",0,y,"H",paper.width]);
 		}
 		
@@ -67,7 +67,31 @@ function GridTriangle () {
 		for (var x=this.cellSize/2; x<paper.width+trianglesBehind*this.cellSize; x+=this.cellSize) {
 			this._createGridLine(paper,["M",x,0,"L",x-paper.height*tan30,paper.height]);
 		}
-
+	}
+	
+	this.pointToCell=function(x,y) {
+	    var cellY=Math.floor(y/this._rowHeight);
+	    
+	    var relativeY;
+	    if (cellY % 2 == 0) {
+	        relativeY=y-cellY*this._rowHeight;
+	    } else {
+	        relativeY=y-(cellY-1)*this._rowHeight
+	    }
+	    	    
+	    var A1=-tan60;
+	    var B1=-1;
+	    var C1=this.cellSize*sin60;
+	    var dist1=Math.abs(A1*x+B1*relativeY+C1)/Math.sqrt(A1*A1+B1*B1);
+	    var d1=Math.floor(dist1/this._rowHeight);
+	    
+        var A2=-tan60;
+        var B2=1;
+        var C2=-this.cellSize*sin60;
+        var dist2=Math.abs(A2*x+B2*relativeY+C2)/Math.sqrt(A2*A2+B2*B2);
+        var d2=Math.floor(dist2/this._rowHeight);	    
+	    
+	    return {x:d1+d2, y:cellY}
 	}
 }
 
