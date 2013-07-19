@@ -12,10 +12,11 @@ var tan60=Math.tan(60/180*Math.PI);
  *   function pointToCell(x,y) - convert mouse coordinates to cell indices.
  *     example of returning object: {col:10, row:15} 
  * 
- *   Yet unimplemented 
+ *   Not yet implemented 
  * -------------------
  *   function cellCenterPoint(column, row) - convert cell coordinate
  *     to coordinate of a center point of cell
+ *     example {x:20, y:30}
  */
 
 
@@ -45,6 +46,30 @@ function GridSquare() {
         var cellY=Math.floor(y/this.cellSize);	    
         return {col: cellX, row: cellY};
 	}
+	
+	this.shapes=[
+		{
+			name: "Flat",
+			paint: function(paper, point, color) {
+				var element=paper.rect(point.x,point.y,24,24);
+				element.attr({"fill":color, "stroke-width":0})
+			}
+		},
+		{
+			name: "Diamond",
+			paint: function(paper, point, color) {
+				var element=paper.rect(point.x,point.y,24,24);
+				element.attr({"fill":color, "stroke-width":0})
+			}			
+		},
+		{
+			name: "Jewel",
+			paint: function(paper, point, color) {
+				var element=paper.rect(point.x,point.y,24,24);
+				element.attr({"fill":color, "stroke-width":0})
+			}
+		}
+	]
 }
 
 function pointToTriangleCoord(x,y,sideLength) {
@@ -107,6 +132,8 @@ function GridTriangle () {
 	this.pointToCell=function(x,y) {
 		return pointToTriangleCoord(x,y,this.cellSize);
 	}
+	
+	this.shapes=[];
 }
 
 function GridHex() {
@@ -128,28 +155,6 @@ function GridHex() {
 		var sideLength=this.cellSize/2;
 		var halfHeight=sideLength*sin60;
 		var dx=sideLength*cos60;
-				/*
-		var rowIndex=0;
-		for (y=0; y<=(paper.height-2*halfHeight); y+=halfHeight) {
-			var x=0;
-			if (rowIndex % 2 >0) {
-				x=dx+sideLength;
-			}
-			while (x<=(paper.width-sideLength-2*dx)) {
-				var path=paper.path(
-					"M "+x+" "+(y+halfHeight)+
-					" L "+(x+dx)+" "+y+
-					" L "+(x+dx+sideLength)+" "+y+
-					" L "+(x+2*dx+sideLength)+" "+(y+halfHeight)+
-					" L "+(x+dx+sideLength)+" "+(y+2*halfHeight)+
-					" L "+(x+dx)+" "+(y+2*halfHeight)+
-					" Z")
-				path.attr(gridAttrs);
-				x+=2*sideLength+2*dx;
-			}
-			
-			rowIndex++
-		}*/
 
 		for (y=0; y<paper.height; y+=halfHeight*2) {
 		    this._createGridLine(paper,["M ",dx,y,"H",paper.width]);
@@ -210,4 +215,6 @@ function GridHex() {
 			}
 		}
 	}
+	
+	this.shapes=[];
 }

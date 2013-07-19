@@ -26,6 +26,7 @@ $(function() {
 			var paper=new Raphael(gridName, 192, 120);
 			var grid=eval("new "+gridName+"()");
 			grid.paintGrid(paper);
+			paper.rect(0,0,192,120);
 		});
 	
 	$(".grid-selector-element").click(
