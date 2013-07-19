@@ -61,7 +61,11 @@ function GridTriangle () {
 	this.paintGrid=function (paper) {
 		var trianglesBehind=Math.floor(paper.height/this.cellSize)
 				
-		for (var y=0; y<paper.height; y+=this._rowHeight) {
+		for (var y=0; y<paper.height; y+=2*this._rowHeight) {
+			this._createGridLine(paper,["M",this.cellSize*sin30,y,"H",paper.width]);
+		}
+		
+		for (var y=this._rowHeight; y<paper.height; y+=2*this._rowHeight) {
 			this._createGridLine(paper,["M",0,y,"H",paper.width]);
 		}
 		
@@ -86,15 +90,19 @@ function GridTriangle () {
 	    	    
 	    var A1=-tan60;
 	    var B1=-1;
-	    var C1=this.cellSize*sin60;
+	    var C1=-this.cellSize*sin60;
 	    var dist1=Math.abs(A1*x+B1*relativeY+C1)/Math.sqrt(A1*A1+B1*B1);
-	    var d1=Math.floor(dist1/this._rowHeight);
+	    var d1=Math.floor(dist1/this._rowHeight)-1;
 	    
         var A2=-tan60;
         var B2=1;
-        var C2=-this.cellSize*sin60;
+        var C2=-3*this.cellSize*sin60;
         var dist2=Math.abs(A2*x+B2*relativeY+C2)/Math.sqrt(A2*A2+B2*B2);
-        var d2=Math.floor(dist2/this._rowHeight);	    
+        var d2=Math.floor(dist2/this._rowHeight)-1;
+        
+        $("#test").append("rowHeight="+this._rowHeight+"<br>");
+        $("#test").append("dist1="+dist1+" dist2="+dist2+"<br>");
+        $("#test").append("d1="+d1+" d2="+d2+"<br>");	    
 	    
 	    return {col:d1+d2, row:cellY}
 	}

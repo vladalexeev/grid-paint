@@ -48,7 +48,7 @@ $(function() {
 		function(event) {
 			$("#test").text("");
 			var cell=grid.pointToCell(event.offsetX,event.offsetY);
-			$("#test").text($("#test").text()+cell.col+" "+cell.row);
+			$("#test").append(cell.col+" "+cell.row);
 		}
 	)
 })
