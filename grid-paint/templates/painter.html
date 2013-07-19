@@ -42,6 +42,13 @@ $(function() {
 	paper=new Raphael("canvas",2000,2000);
 	var grid=new {{ grid }}();
 	grid.paintGrid(paper);
+	
+	$("#canvas").mousedown(
+		function(event) {
+			var cell=grid.pointToCell(event.offsetX,event.offsetY);
+			alert("mouse down at "+cell.x+" "+cell.y);
+		}
+	)
 })
 </script>
 

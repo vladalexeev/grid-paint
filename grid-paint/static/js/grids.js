@@ -8,7 +8,8 @@ var tan60=Math.tan(60/180*Math.PI);
 /*
  * Interface of Grid
  *   function paintGrid(paper) - paints grid on a paper 
- * 
+ *   function pointToCell(x,y) - convert mouse coordinates to cell indices.
+ *     example of returning object: {x:10, y:15} 
  * 
  */
 
@@ -32,6 +33,12 @@ function GridSquare() {
 			this._createGridLine(paper,["M",x,0,"L",x,paper.height]);
 		}			
 		
+	}
+	
+	this.pointToCell=function(x,y) {
+        var cellX=Math.floor(x/this.cellSize);
+        var cellY=Math.floor(y/this.cellSize);	    
+        return {x: cellX, y: cellY};
 	}
 }
 
