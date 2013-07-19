@@ -10,6 +10,7 @@
 				<li>Menu item 2</li>
 			</ul>
 		</div>
+		<div id="test"></div>
 	</div>
 	
 	<div class="span10">
@@ -43,10 +44,11 @@ $(function() {
 	var grid=new {{ grid }}();
 	grid.paintGrid(paper);
 	
-	$("#canvas").mousedown(
+	$("#canvas").mousemove(
 		function(event) {
+			$("#test").text("");
 			var cell=grid.pointToCell(event.offsetX,event.offsetY);
-			alert("mouse down at "+cell.x+" "+cell.y);
+			$("#test").text($("#test").text()+cell.x+" "+cell.y);
 		}
 	)
 })
