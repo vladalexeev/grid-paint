@@ -8,9 +8,14 @@ var tan60=Math.tan(60/180*Math.PI);
 /*
  * Interface of Grid
  *   function paintGrid(paper) - paints grid on a paper 
- *   function pointToCell(x,y) - convert mouse coordinates to cell indices.
- *     example of returning object: {x:10, y:15} 
  * 
+ *   function pointToCell(x,y) - convert mouse coordinates to cell indices.
+ *     example of returning object: {col:10, row:15} 
+ * 
+ *   Yet unimplemented 
+ * -------------------
+ *   function cellCenterPoint(column, row) - convert cell coordinate
+ *     to coordinate of a center point of cell
  */
 
 
@@ -38,7 +43,7 @@ function GridSquare() {
 	this.pointToCell=function(x,y) {
         var cellX=Math.floor(x/this.cellSize);
         var cellY=Math.floor(y/this.cellSize);	    
-        return {x: cellX, y: cellY};
+        return {col: cellX, row: cellY};
 	}
 }
 
@@ -91,7 +96,7 @@ function GridTriangle () {
         var dist2=Math.abs(A2*x+B2*relativeY+C2)/Math.sqrt(A2*A2+B2*B2);
         var d2=Math.floor(dist2/this._rowHeight);	    
 	    
-	    return {x:d1+d2, y:cellY}
+	    return {col:d1+d2, row:cellY}
 	}
 }
 
