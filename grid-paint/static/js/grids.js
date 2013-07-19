@@ -47,6 +47,32 @@ function GridSquare() {
 	}
 }
 
+function pointToTriangleCoord(x,y,sideLength) {
+	var rowHeight=sideLength*sin60;
+	var cellY=Math.floor(y/rowHeight);
+	    
+    var relativeY;
+    if (cellY % 2 == 0) {
+        relativeY=y-cellY*rowHeight;
+    } else {
+        relativeY=y-(cellY-1)*rowHeight
+    }
+	    	    
+    var A1=-tan60;
+    var B1=-1;
+    var C1=-sideLength*sin60;
+    var dist1=Math.abs(A1*x+B1*relativeY+C1)/Math.sqrt(A1*A1+B1*B1);
+    var d1=Math.floor(dist1/rowHeight)-1;
+	    
+    var A2=-tan60;
+    var B2=1;
+    var C2=-3*sideLength*sin60;
+    var dist2=Math.abs(A2*x+B2*relativeY+C2)/Math.sqrt(A2*A2+B2*B2);
+    var d2=Math.floor(dist2/rowHeight)-1;
+        
+    return {col:d1+d2, row:cellY}
+}
+
 function GridTriangle () {
 	this.cellSize=24;
 	this._rowHeight=this.cellSize*sin60;
@@ -79,32 +105,7 @@ function GridTriangle () {
 	}
 	
 	this.pointToCell=function(x,y) {
-	    var cellY=Math.floor(y/this._rowHeight);
-	    
-	    var relativeY;
-	    if (cellY % 2 == 0) {
-	        relativeY=y-cellY*this._rowHeight;
-	    } else {
-	        relativeY=y-(cellY-1)*this._rowHeight
-	    }
-	    	    
-	    var A1=-tan60;
-	    var B1=-1;
-	    var C1=-this.cellSize*sin60;
-	    var dist1=Math.abs(A1*x+B1*relativeY+C1)/Math.sqrt(A1*A1+B1*B1);
-	    var d1=Math.floor(dist1/this._rowHeight)-1;
-	    
-        var A2=-tan60;
-        var B2=1;
-        var C2=-3*this.cellSize*sin60;
-        var dist2=Math.abs(A2*x+B2*relativeY+C2)/Math.sqrt(A2*A2+B2*B2);
-        var d2=Math.floor(dist2/this._rowHeight)-1;
-        
-        $("#test").append("rowHeight="+this._rowHeight+"<br>");
-        $("#test").append("dist1="+dist1+" dist2="+dist2+"<br>");
-        $("#test").append("d1="+d1+" d2="+d2+"<br>");	    
-	    
-	    return {col:d1+d2, row:cellY}
+		return pointToTriangleCoord(x,y,this.cellSize);
 	}
 }
 
@@ -185,5 +186,28 @@ function GridHex() {
         for (x=dx; x<paper.width+hexBehind*slantedLinesStep; x+=slantedLinesStep) {
             this._createGridLine(paper,["M",x,2*halfHeight,"L",x-paperHeight*tan30,2*halfHeight+paperHeight]);
         }
+	}
+	
+	this.pointToCell=function(x,y) {
+		var triangleCell=pointToTriangleCoord(x,y,this._sideLength);
+		if (triangleCell.col<0) {
+			return {col:-1, row:-1};
+		}
+		
+		if (triangleCell.row % 2 == 0) {
+			var triada=Math.floor(triangleCell.col/3);
+			if (triada % 2 == 0) {
+				return {col:triada, row: Math.floor(triangleCell.row / 2)}
+			} else {
+				return {col: triada, row: Math.floor(triangleCell.row / 2) - 1}
+			}
+		} else {
+			var triada=Math.floor(triangleCell.col/3);
+			if (triada % 2 == 0) {
+				return {col: triada, row: Math.floor(triangleCell.row/2)}
+			} else {
+				return {col: triada, row: Math.floor(triangleCell.row/2)}
+			}
+		}
 	}
 }
