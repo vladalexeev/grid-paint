@@ -26,26 +26,51 @@
 <script src="/js/grids.js"></script>
 
 <script>
+var paper;
+var paperShapes;
+var gridShapes;
+var toolbarShapes=[];
+
+
 // 
 function adjustCanvasWrapper() {
 	$("#canvas-wrapper").height($(window).height()-50);
 }
 
-var paper;
-var paperShapes;
+
+function repaintShapesToolbar() {
+	paperShapes.clear();
+	toolbarShapes=[];
+	
+	var w=$("#shapes").width();
+	$("#shapes > svg").attr("width",w);
+	
+	var shapeStep=w/gridShapes.shapes.length;
+	var shapeCenterX=shapeStep/2;
+	var shapeCenterY=paperShapes.height/2;
+	
+	for (var i=0; i<gridShapes.shapes.length; i++) {
+		var p=gridShapes.centerPointToBasePoint(shapeCenterX,shapeCenterY);
+		gridShapes.shapes[i].paint(paperShapes,p,"#ff0000");
+		shapeCenterX+=shapeStep;
+		
+	}
+	
+	paperShapes.rect(0,0,w-1,paperShapes.height-1);
+}
+
 
 $(function() {
 	adjustCanvasWrapper();
 	$(window).resize(
 		function() {
 			adjustCanvasWrapper();
+			repaintShapesToolbar();
 		})
 		
 	paperShapes=new Raphael("shapes",200,50);
-	var gridShapes=new {{ grid }}();
-	for (var i=0; i<gridShapes.shapes.length; i++) {
-		gridShapes.shapes[i].paint(paperShapes,{x:i*40, y:5},"#ff0000");
-	}
+	gridShapes=new {{ grid }}();
+	repaintShapesToolbar();
 	
 	paper=new Raphael("canvas",2000,2000);
 	var grid=new {{ grid }}();

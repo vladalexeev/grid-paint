@@ -47,12 +47,20 @@ function GridSquare() {
         return {col: cellX, row: cellY};
 	}
 	
+	this.centerPointToBasePoint=function(x,y) {
+		return {
+			x: x-this.cellSize/2, 
+			y: y-this.cellSize/2
+			}
+	}
+	
 	this.shapes=[
 		{
 			name: "Flat",
 			paint: function(paper, point, color) {
 				var element=paper.rect(point.x,point.y,24,24);
 				element.attr({"fill":color, "stroke-width":0})
+				return element;
 			}
 		},
 		{
@@ -60,6 +68,7 @@ function GridSquare() {
 			paint: function(paper, point, color) {
 				var element=paper.rect(point.x,point.y,24,24);
 				element.attr({"fill":color, "stroke-width":0})
+				return element;
 			}			
 		},
 		{
@@ -67,6 +76,7 @@ function GridSquare() {
 			paint: function(paper, point, color) {
 				var element=paper.rect(point.x,point.y,24,24);
 				element.attr({"fill":color, "stroke-width":0})
+				return element;
 			}
 		}
 	]
