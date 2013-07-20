@@ -44,6 +44,9 @@ function repaintShapesToolbar() {
 	
 	var w=$("#shapes").width();
 	$("#shapes > svg").attr("width",w);
+
+	var r=paperShapes.rect(0,0,w-1,paperShapes.height-1);
+	r.attr({"fill":"#cceeff", "stroke-width":0});
 	
 	var shapeStep=w/gridShapes.shapes.length;
 	var shapeCenterX=shapeStep/2;
@@ -51,12 +54,11 @@ function repaintShapesToolbar() {
 	
 	for (var i=0; i<gridShapes.shapes.length; i++) {
 		var p=gridShapes.centerPointToBasePoint(shapeCenterX,shapeCenterY);
-		gridShapes.shapes[i].paint(paperShapes,p,"#ff0000");
+		gridShapes.shapes[i].paint(paperShapes,p,"#3377ee");
 		shapeCenterX+=shapeStep;
 		
 	}
 	
-	paperShapes.rect(0,0,w-1,paperShapes.height-1);
 }
 
 
