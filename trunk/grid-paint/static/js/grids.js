@@ -57,56 +57,100 @@ function GridSquare() {
 	this.shapes=[
 		{
 			name: "Flat",
+			parent: this,
 			paint: function(paper, point, color) {
-				var element=paper.rect(point.x,point.y,24,24);
+				var element=paper.rect(point.x,point.y,this.parent.cellSize,this.parent.cellSize);
 				element.attr({"fill":color, "stroke-width":0})
 				return element;
 			}
 		},
 		{
 			name: "Diamond",
+			parent: this,
 			paint: function(paper, point, color) {
-				var clr=Raphael.color(color);
-				cellSize=24;
+				var c=Raphael.color(color);
+				cellSize=this.parent.cellSize;
 				
-				var c1=Raphael.hsl(clr.h, clr.s, clr.l+0.2);
+				var c1=Raphael.hsl(c.h, c.s, c.l+0.2);
 				var e1=paper.path([
 					"M ",point.x, point.y,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
 					"L",point.x+cellSize, point.y,"Z"]);
 				e1.attr({"fill":c1, "stroke-width":0});
 				
+				var c2=Raphael.hsl(c.h, c.s, c.l+0.1);
 				var e2=paper.path([
 					"M",point.x, point.y,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
 					"L",point.x, point.y+cellSize,"Z"])
-				e2.attr({"fill":color, "stroke-width":0});
+				e2.attr({"fill":c2, "stroke-width":0});
 				
-				var c3=Raphael.hsl(clr.h, clr.s, clr.l-0.1);
+				var c3=Raphael.hsl(c.h, c.s, c.l-0.1);
 				var e3=paper.path([
 					"M",point.x, point.y+cellSize,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
 					"L",point.x+cellSize, point.y+cellSize,"Z"]);
 				e3.attr({"fill":c3, "stroke-width":0});
 				
-				var c4=Raphael.hsl(clr.h, clr.s, clr.l-0.2);
+				var c4=Raphael.hsl(c.h, c.s, c.l-0.2);
 				var e4=paper.path([
 					"M",point.x+cellSize, point.y,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
 					"L",point.x+cellSize, point.y+cellSize,"Z"]);
 				e4.attr({"fill":c4, "stroke-width":0});
-
-				/*var element=paper.rect(point.x,point.y,24,24);
-				element.attr({"fill":color, "stroke-width":0})
-				return element;*/
 			}			
 		},
 		{
 			name: "Jewel",
+			parent: this,
 			paint: function(paper, point, color) {
+				var c=Raphael.color(color);
+				var cellSize=this.parent.cellSize;
+				var facet=cellSize/6;
+				
+				var c1=Raphael.hsl(c.h, c.s, c.l+0.2);
+				var e1=paper.path([
+					"M ",point.x, point.y,
+					"L",point.x+facet, point.y+facet,
+					"L",point.x+cellSize-facet, point.y+facet,
+					"L",point.x+cellSize, point.y,"Z"]);
+				e1.attr({"fill":c1, "stroke-width":0});
+				
+				var c2=Raphael.hsl(c.h, c.s, c.l+0.1);
+				var e2=paper.path([
+					"M",point.x, point.y,
+					"L",point.x+facet, point.y+facet,
+					"L",point.x+facet, point.y+cellSize-facet,
+					"L",point.x, point.y+cellSize,"Z"])
+				e2.attr({"fill":c2, "stroke-width":0});
+				
+				var c3=Raphael.hsl(c.h, c.s, c.l-0.1);
+				var e3=paper.path([
+					"M",point.x, point.y+cellSize,
+					"L",point.x+facet, point.y+cellSize-facet,
+					"L",point.x+cellSize-facet, point.y+cellSize-facet,
+					"L",point.x+cellSize, point.y+cellSize,"Z"]);
+				e3.attr({"fill":c3, "stroke-width":0});
+				
+				var c4=Raphael.hsl(c.h, c.s, c.l-0.2);
+				var e4=paper.path([
+					"M",point.x+cellSize, point.y,
+					"L",point.x+cellSize-facet, point.y+facet,
+					"L",point.x+cellSize-facet, point.y+cellSize-facet,
+					"L",point.x+cellSize, point.y+cellSize,"Z"]);
+				e4.attr({"fill":c4, "stroke-width":0});
+				
+				var e5=paper.path([
+					"M",point.x+facet, point.y+facet,
+					"L",point.x+cellSize-facet, point.y+facet,
+					"L",point.x+cellSize-facet, point.y+cellSize-facet,
+					"L",point.x+facet, point.y+cellSize-facet,"Z"]);
+				e5.attr({"fill":color, "stroke-width":0});
+				
+/*				
 				var element=paper.rect(point.x,point.y,24,24);
 				element.attr({"fill":color, "stroke-width":0})
-				return element;
+				return element;*/
 			}
 		}
 	]
