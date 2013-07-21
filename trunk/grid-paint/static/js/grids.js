@@ -5,6 +5,33 @@ var cos60=Math.cos(60/180*Math.PI);
 var tan30=Math.tan(30/180*Math.PI);
 var tan60=Math.tan(60/180*Math.PI);
 
+function hexToHsl(hex) {
+	return Raphael.color(hex);
+}
+
+function hslToHex(h,s,l) {
+	if (h<0) {
+		h=0;
+	}
+	if (h>1) {
+		h=1;
+	}
+	if (s<0) {
+		s=0;
+	}
+	if (s>1) {
+		s=1;
+	}
+	if (l<0) {
+		l=0;
+	}
+	if (l>1) {
+		l=1;
+	}
+	
+	return Raphael.hsl(h,s,l);
+}
+
 /*
  * Interface of Grid
  *   function paintGrid(paper) - paints grid on a paper 
@@ -75,31 +102,31 @@ function GridSquare() {
 			name: "Diamond",
 			parent: this,
 			paint: function(paper, point, color) {
-				var c=Raphael.color(color);
+				var c=hexToHsl(color);
 				cellSize=this.parent.cellSize;
 				
-				var c1=Raphael.hsl(c.h, c.s, c.l+0.2);
+				var c1=hslToHex(c.h, c.s, c.l+0.2);
 				var e1=paper.path([
 					"M ",point.x, point.y,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
 					"L",point.x+cellSize, point.y,"Z"]);
 				e1.attr({"fill":c1, "stroke-width":0});
 				
-				var c2=Raphael.hsl(c.h, c.s, c.l+0.1);
+				var c2=hslToHex(c.h, c.s, c.l+0.1);
 				var e2=paper.path([
 					"M",point.x, point.y,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
 					"L",point.x, point.y+cellSize,"Z"])
 				e2.attr({"fill":c2, "stroke-width":0});
 				
-				var c3=Raphael.hsl(c.h, c.s, c.l-0.1);
+				var c3=hslToHex(c.h, c.s, c.l-0.1);
 				var e3=paper.path([
 					"M",point.x, point.y+cellSize,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
 					"L",point.x+cellSize, point.y+cellSize,"Z"]);
 				e3.attr({"fill":c3, "stroke-width":0});
 				
-				var c4=Raphael.hsl(c.h, c.s, c.l-0.2);
+				var c4=hslToHex(c.h, c.s, c.l-0.15);
 				var e4=paper.path([
 					"M",point.x+cellSize, point.y,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
@@ -111,11 +138,11 @@ function GridSquare() {
 			name: "Jewel",
 			parent: this,
 			paint: function(paper, point, color) {
-				var c=Raphael.color(color);
+				var c=hexToHsl(color);
 				var cellSize=this.parent.cellSize;
 				var facet=cellSize/6;
 				
-				var c1=Raphael.hsl(c.h, c.s, c.l+0.2);
+				var c1=hslToHex(c.h, c.s, c.l+0.2);
 				var e1=paper.path([
 					"M ",point.x, point.y,
 					"L",point.x+facet, point.y+facet,
@@ -123,7 +150,7 @@ function GridSquare() {
 					"L",point.x+cellSize, point.y,"Z"]);
 				e1.attr({"fill":c1, "stroke-width":0});
 				
-				var c2=Raphael.hsl(c.h, c.s, c.l+0.1);
+				var c2=hslToHex(c.h, c.s, c.l+0.1);
 				var e2=paper.path([
 					"M",point.x, point.y,
 					"L",point.x+facet, point.y+facet,
@@ -131,7 +158,7 @@ function GridSquare() {
 					"L",point.x, point.y+cellSize,"Z"])
 				e2.attr({"fill":c2, "stroke-width":0});
 				
-				var c3=Raphael.hsl(c.h, c.s, c.l-0.1);
+				var c3=hslToHex(c.h, c.s, c.l-0.1);
 				var e3=paper.path([
 					"M",point.x, point.y+cellSize,
 					"L",point.x+facet, point.y+cellSize-facet,
@@ -139,7 +166,7 @@ function GridSquare() {
 					"L",point.x+cellSize, point.y+cellSize,"Z"]);
 				e3.attr({"fill":c3, "stroke-width":0});
 				
-				var c4=Raphael.hsl(c.h, c.s, c.l-0.2);
+				var c4=hslToHex(c.h, c.s, c.l-0.2);
 				var e4=paper.path([
 					"M",point.x+cellSize, point.y,
 					"L",point.x+cellSize-facet, point.y+facet,
@@ -153,11 +180,6 @@ function GridSquare() {
 					"L",point.x+cellSize-facet, point.y+cellSize-facet,
 					"L",point.x+facet, point.y+cellSize-facet,"Z"]);
 				e5.attr({"fill":color, "stroke-width":0});
-				
-/*				
-				var element=paper.rect(point.x,point.y,24,24);
-				element.attr({"fill":color, "stroke-width":0})
-				return element;*/
 			}
 		}
 	]

@@ -23,6 +23,7 @@ body {
 	text-align:center;
 	border: solid 1px #CCC;
 	box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+	background-color: white;
 }
 
 .painter-toolbar #shapes-toolbar {

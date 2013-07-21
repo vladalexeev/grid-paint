@@ -32,9 +32,14 @@
 <script src="/js/grids.js"></script>
 
 <script>
+// JQuery Minicolors is used for color picker.
+// See documentation at
+// http://labs.abeautifulsite.net/jquery-miniColors/
+
 var paper;
 var grid;
 var selectedShapeName=null;
+var selectedColor="#3377ee";
 
 
 // 
@@ -62,7 +67,7 @@ function paintShapeToolButton(shapeName) {
 			shapeRect.w/2+10, shapeRect.h/2+10);
 		bgElement.attr({"fill":"r#ffffff:40-#bbccee", "stroke-width":0});
 	}
-	grid.shapes[i].paint(shapePaper, shapePoint, "#3377ee");
+	grid.shapes[i].paint(shapePaper, shapePoint, selectedColor);
 }
 
 function createShapesToolbar() {
@@ -118,8 +123,14 @@ $(function() {
 	
 	$("#color-picker").minicolors({
 		inline:true,
-		control: "wheel"
-	});
+		control: "brightness",
+		change: function(hex,opacity) {
+			selectedColor=hex;
+			for (var i=0; i<grid.shapes.length; i++) {
+				paintShapeToolButton(grid.shapes[i].name);
+			}
+		}
+	}).minicolors("value",selectedColor);
 })
 </script>
 
