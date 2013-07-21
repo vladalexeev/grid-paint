@@ -1,16 +1,22 @@
 {% extends "base.html" %}
 
+{% block include_css %}
+ {{ block.super }}
+ <link href="/css/jquery.minicolors.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}  
 
+<script src="/js/jquery.minicolors.js"></script>
+
 <div class="row-fluid">
-	<div class="span2">
-		<div style="background-color:red">
-			<ul>
-				<li>Menu item 1</li>
-				<li>Menu item 2</li>
-			</ul>
+	<div class="span2 text-center">
+		<div id="color-selection" >
+			<div id="color-picker"></div>
 		</div>
-		<div id="shapes" style="margin:5px;"></div>
+		<div class="painter-toolbar">
+			<div id="shapes-toolbar"></div>
+		</div>
 		<div id="coordinates"></div>
 		<div id="test"></div>
 	</div>
@@ -54,7 +60,7 @@ function paintShapeToolButton(shapeName) {
 	if (shapeName==selectedShapeName) {
 		var bgElement=shapePaper.ellipse(shapeRect.w/2+10, shapeRect.h/2+10,
 			shapeRect.w/2+10, shapeRect.h/2+10);
-		bgElement.attr({"fill":"r#ffffff-#bbccee", "stroke-width":0});
+		bgElement.attr({"fill":"r#ffffff:40-#bbccee", "stroke-width":0});
 	}
 	grid.shapes[i].paint(shapePaper, shapePoint, "#3377ee");
 }
@@ -67,7 +73,7 @@ function createShapesToolbar() {
 			grid.shapes[i].name+'"></span>';
 	}
 	
-	$("#shapes").html(shapeElements);
+	$("#shapes-toolbar").html(shapeElements);
 	
 	for (var i=0; i<grid.shapes.length; i++) {
 		if (i==0) {
@@ -109,6 +115,11 @@ $(function() {
 			$("#coordinates").text(cell.col+" "+cell.row);
 		}
 	)
+	
+	$("#color-picker").minicolors({
+		inline:true,
+		control: "wheel"
+	});
 })
 </script>
 
