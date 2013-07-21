@@ -27,9 +27,12 @@
 
 <script>
 var paper;
-var paperShapes;
-var gridShapes;
-var toolbarShapes=[];
+var grid;
+var selectedShapeName=null;
+//var paperShapes;
+
+//var gridShapes;
+//var toolbarShapes=[];
 
 
 // 
@@ -37,28 +40,57 @@ function adjustCanvasWrapper() {
 	$("#canvas-wrapper").height($(window).height()-50);
 }
 
-
-function repaintShapesToolbar() {
-	paperShapes.clear();
-	toolbarShapes=[];
-	
-	var w=$("#shapes").width();
-	$("#shapes > svg").attr("width",w);
-
-	var r=paperShapes.rect(0,0,w-1,paperShapes.height-1);
-	r.attr({"fill":"#cceeff", "stroke-width":0});
-	
-	var shapeStep=w/gridShapes.shapes.length;
-	var shapeCenterX=shapeStep/2;
-	var shapeCenterY=paperShapes.height/2;
-	
-	for (var i=0; i<gridShapes.shapes.length; i++) {
-		var p=gridShapes.centerPointToBasePoint(shapeCenterX,shapeCenterY);
-		gridShapes.shapes[i].paint(paperShapes,p,"#3377ee");
-		shapeCenterX+=shapeStep;
-		
+function paintShapeToolButton(shapeName) {
+	var shape;
+	for (var i=0; i<grid.shapes.length; i++) {
+		if (grid.shapes[i].name==shapeName) {
+			shape=grid.shapes[i];
+			break;
+		}
 	}
 	
+	$("#shape-"+shapeName).html("");
+
+	var shapeRect=grid.getShapeRect();
+	var shapePoint=grid.centerPointToBasePoint(shapeRect.w / 2+10, shapeRect.h / 2+10);	
+	var shapePaper=new Raphael("shape-"+shapeName, shapeRect.w+20, shapeRect.h+20);
+	
+	if (shapeName==selectedShapeName) {
+		var bgElement=shapePaper.rect(0,0,paper.width,paper.height);
+		bgElement.attr({"fill":"#cceeff", "stroke-width":0});
+	}
+	grid.shapes[i].paint(shapePaper, shapePoint, "#3377ee");
+}
+
+function createShapesToolbar() {
+	var shapeElements="";
+	for (var i=0; i<grid.shapes.length; i++) {
+		shapeElements+='<span id="shape-'+grid.shapes[i].name+
+			'" class="grid-shape-button" shape-name="'+
+			grid.shapes[i].name+'"></span>';
+	}
+	
+	$("#shapes").html(shapeElements);
+	
+	for (var i=0; i<grid.shapes.length; i++) {
+		if (i==0) {
+			selectedShapeName=grid.shapes[i].name;
+		}
+		paintShapeToolButton(grid.shapes[i].name);
+	}
+	
+	$(".grid-shape-button").click(
+		function() {
+			var oldSelectedShapeName=selectedShapeName;
+			selectedShapeName=$(this).attr("shape-name");
+			for (var i=0; i<grid.shapes.length; i++) {
+				if (grid.shapes[i].name==selectedShapeName ||
+					grid.shapes[i].name==oldSelectedShapeName) {
+					paintShapeToolButton(grid.shapes[i].name);		
+				}
+			}
+		}
+	)
 }
 
 
@@ -67,16 +99,12 @@ $(function() {
 	$(window).resize(
 		function() {
 			adjustCanvasWrapper();
-			repaintShapesToolbar();
 		})
-		
-	paperShapes=new Raphael("shapes",200,50);
-	gridShapes=new {{ grid }}();
-	repaintShapesToolbar();
-	
+			
 	paper=new Raphael("canvas",2000,2000);
-	var grid=new {{ grid }}();
+	grid=new {{ grid }}();
 	grid.paintGrid(paper);
+	createShapesToolbar();
 	
 	$("#canvas").mousemove(
 		function(event) {
