@@ -10,7 +10,7 @@
 				<li>Menu item 2</li>
 			</ul>
 		</div>
-		<div id="shapes"></div>
+		<div id="shapes" style="margin:5px;"></div>
 		<div id="coordinates"></div>
 		<div id="test"></div>
 	</div>
@@ -29,10 +29,6 @@
 var paper;
 var grid;
 var selectedShapeName=null;
-//var paperShapes;
-
-//var gridShapes;
-//var toolbarShapes=[];
 
 
 // 
@@ -56,8 +52,9 @@ function paintShapeToolButton(shapeName) {
 	var shapePaper=new Raphael("shape-"+shapeName, shapeRect.w+20, shapeRect.h+20);
 	
 	if (shapeName==selectedShapeName) {
-		var bgElement=shapePaper.rect(0,0,paper.width,paper.height);
-		bgElement.attr({"fill":"#cceeff", "stroke-width":0});
+		var bgElement=shapePaper.ellipse(shapeRect.w/2+10, shapeRect.h/2+10,
+			shapeRect.w/2+10, shapeRect.h/2+10);
+		bgElement.attr({"fill":"r#ffffff-#bbccee", "stroke-width":0});
 	}
 	grid.shapes[i].paint(shapePaper, shapePoint, "#3377ee");
 }
