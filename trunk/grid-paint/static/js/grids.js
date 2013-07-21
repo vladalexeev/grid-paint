@@ -10,13 +10,17 @@ var tan60=Math.tan(60/180*Math.PI);
  *   function paintGrid(paper) - paints grid on a paper 
  * 
  *   function pointToCell(x,y) - convert mouse coordinates to cell indices.
- *     example of returning object: {col:10, row:15} 
+ *     example of returning object: {col:10, row:15}
  * 
- *   Not yet implemented 
- * -------------------
- *   function cellCenterPoint(column, row) - convert cell coordinate
+ *   function getShapeRect() - bounding rectangle {w:24, h:24}
+ *  
+ *   function cellCenterPoint(x, y) - convert cell coordinate
  *     to coordinate of a center point of cell
  *     example {x:20, y:30}
+ * 
+ * 
+ *  Interface of Shape
+ *   function paint(paper, point{x,y}, color)
  */
 
 
@@ -38,7 +42,10 @@ function GridSquare() {
 		for (var x=0; x<paper.width; x+=this.cellSize) {
 			this._createGridLine(paper,["M",x,0,"L",x,paper.height]);
 		}			
-		
+	}
+	
+	this.getShapeRect=function() {
+		return {w:this.cellSize, h:this.cellSize};
 	}
 	
 	this.pointToCell=function(x,y) {
