@@ -60,7 +60,7 @@ function paintShapeToolButton(shapeName) {
 	$("#shape-"+shapeName).html("");
 
 	var shapeRect=grid.getShapeRect();
-	var shapePoint=grid.centerPointToBasePoint(shapeRect.w / 2+10, shapeRect.h / 2+10);	
+	var shapePoint=grid.shapeCenterToBasePoint(shapeRect.w / 2+10, shapeRect.h / 2+10);	
 	var shapePaper=new Raphael("shape-"+shapeName, shapeRect.w+20, shapeRect.h+20);
 	
 	if (shapeName==selectedShapeName) {
