@@ -122,8 +122,8 @@ $(function() {
 	.mousemove(
 		function(event) {
 			var cell=grid.pointToCell(
-				event.pageX - this.offsetLeft,
-				event.pageY - this.offsetTop);
+				event.pageX - this.offsetLeft+$("#canvas-wrapper").scrollLeft(),
+				event.pageY - this.offsetTop+$("#canvas-wrapper").scrollTop());
 			$("#coordinates").text(cell.col+" "+cell.row);
 			
 			if (paperMouseDown) {
