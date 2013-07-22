@@ -128,7 +128,7 @@ $(function() {
 			
 			if (paperMouseDown) {
 				var item=gridArtwork.setItem(cell.col, cell.row, selectedShapeName, selectedColor);
-				if (!item.element) {
+				if (!item.element && item.shapeName!="empty") {
 					var p=grid.getCellPoint(cell.col, cell.row);
 					var element=grid.shapes[selectedShapeName].paint(paper, p, selectedColor)
 					item.element=element;

@@ -53,6 +53,10 @@ function GridArtwork() {
         if (oldItem && oldItem.shapeName==shapeName && oldItem.color==color) {
             return oldItem;
         } else {
+        	if (oldItem && oldItem.element) {
+        		oldItem.element.remove();
+        	}
+        	
             this.items[row][col]= {
                 shapeName: shapeName,
                 color: color
@@ -154,6 +158,8 @@ function GridSquare() {
 				var c=hexToHsl(color);
 				cellSize=this.parent.cellSize;
 				
+				paper.setStart();
+				
 				var c1=hslToHex(c.h, c.s, c.l+0.2);
 				var e1=paper.path([
 					"M ",point.x, point.y,
@@ -181,6 +187,7 @@ function GridSquare() {
 					"L",point.x+cellSize/2, point.y+cellSize/2,
 					"L",point.x+cellSize, point.y+cellSize,"Z"]);
 				e4.attr({"fill":c4, "stroke-width":0});
+				return paper.setFinish();
 			}			
 		},
 		"jewel": {
@@ -191,6 +198,7 @@ function GridSquare() {
 				var cellSize=this.parent.cellSize;
 				var facet=cellSize/6;
 				
+				paper.setStart();
 				var c1=hslToHex(c.h, c.s, c.l+0.2);
 				var e1=paper.path([
 					"M ",point.x, point.y,
@@ -229,6 +237,7 @@ function GridSquare() {
 					"L",point.x+cellSize-facet, point.y+cellSize-facet,
 					"L",point.x+facet, point.y+cellSize-facet,"Z"]);
 				e5.attr({"fill":color, "stroke-width":0});
+				return paper.setFinish();
 			}
 		}
 	}
