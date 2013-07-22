@@ -8,10 +8,15 @@ body {
 	user-select: none;
 }
 
-.grid-selector-element {
-	display:inline; 
-	/*border:1px solid black;*/
+.grid-selector-wrapper {
+	display:inline-block;
+	border: solid 1px #CCC;
+	box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+	margin: 15px;
+	height:120px;
+	width:190px;
 }
+
 
 .painter-canvas-wrapper {
 	overflow : scroll; 
