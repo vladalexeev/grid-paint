@@ -89,8 +89,17 @@ function GridSquare() {
 	}
 	
 	this.shapes=[
+	    {
+	       name: "empty",
+	       parent: this,
+	       paint: function(paper, point, color) {
+	           var element=paper.rect(point.x,point.y,this.parent.cellSize,this.parent.cellSize);
+	           element.attr({"stroke-color":"#d0d0d0"});
+	           return element;
+	       }   
+	    },
 		{
-			name: "Flat",
+			name: "flat",
 			parent: this,
 			paint: function(paper, point, color) {
 				var element=paper.rect(point.x,point.y,this.parent.cellSize,this.parent.cellSize);
@@ -99,7 +108,7 @@ function GridSquare() {
 			}
 		},
 		{
-			name: "Diamond",
+			name: "diamond",
 			parent: this,
 			paint: function(paper, point, color) {
 				var c=hexToHsl(color);
@@ -135,7 +144,7 @@ function GridSquare() {
 			}			
 		},
 		{
-			name: "Jewel",
+			name: "jewel",
 			parent: this,
 			paint: function(paper, point, color) {
 				var c=hexToHsl(color);
