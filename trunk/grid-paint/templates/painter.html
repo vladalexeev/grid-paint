@@ -142,8 +142,8 @@ $(function() {
 		control: "brightness",
 		change: function(hex,opacity) {
 			selectedColor=hex;
-			for (var i=0; i<grid.shapes.length; i++) {
-				paintShapeToolButton(grid.shapes[i].name);
+			for (var shapeName in grid.shapes) {
+				paintShapeToolButton(shapeName);
 			}
 		}
 	}).minicolors("value",selectedColor);
