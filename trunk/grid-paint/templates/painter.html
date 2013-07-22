@@ -39,8 +39,9 @@ var paper;
 var grid;
 var selectedShapeName=null;
 var selectedColor="#3377ee";
+var paperMouseDown=false;
 
-var gridArtwork=[];
+var gridArtwork=new GridArtwork();
 
 
 // 
@@ -49,13 +50,7 @@ function adjustCanvasWrapper() {
 }
 
 function paintShapeToolButton(shapeName) {
-	var shape;
-	for (var i=0; i<grid.shapes.length; i++) {
-		if (grid.shapes[i].name==shapeName) {
-			shape=grid.shapes[i];
-			break;
-		}
-	}
+	var shape=grid.shapes[shapeName];
 	
 	$("#shape-"+shapeName).html("");
 
@@ -68,34 +63,32 @@ function paintShapeToolButton(shapeName) {
 			shapeRect.w/2+10, shapeRect.h/2+10);
 		bgElement.attr({"fill":"r#ffffff:40-#cccccc", "stroke-width":0});
 	}
-	grid.shapes[i].paint(shapePaper, shapePoint, selectedColor);
+	shape.paint(shapePaper, shapePoint, selectedColor);
 }
 
 function createShapesToolbar() {
 	var shapeElements="";
-	for (var i=0; i<grid.shapes.length; i++) {
-		shapeElements+='<span id="shape-'+grid.shapes[i].name+
+	for (var shapeName in grid.shapes) {
+		shapeElements+='<span id="shape-'+shapeName+
 			'" class="grid-shape-button" shape-name="'+
-			grid.shapes[i].name+'"></span>';
+			shapeName+'"></span>';
 	}
 	
 	$("#shapes-toolbar").html(shapeElements);
 	
-	for (var i=0; i<grid.shapes.length; i++) {
-		if (i==0) {
-			selectedShapeName=grid.shapes[i].name;
-		}
-		paintShapeToolButton(grid.shapes[i].name);
+	selectedShapeName="flat";
+	for (var shapeName in grid.shapes) {
+		paintShapeToolButton(shapeName);
 	}
 	
 	$(".grid-shape-button").click(
 		function() {
 			var oldSelectedShapeName=selectedShapeName;
 			selectedShapeName=$(this).attr("shape-name");
-			for (var i=0; i<grid.shapes.length; i++) {
-				if (grid.shapes[i].name==selectedShapeName ||
-					grid.shapes[i].name==oldSelectedShapeName) {
-					paintShapeToolButton(grid.shapes[i].name);		
+			for (var shapeName in grid.shapes) {
+				if (shapeName==selectedShapeName ||
+					shapeName==oldSelectedShapeName) {
+					paintShapeToolButton(shapeName);		
 				}
 			}
 		}
@@ -115,12 +108,32 @@ $(function() {
 	grid.paintGrid(paper);
 	createShapesToolbar();
 	
-	$("#canvas").mousemove(
+	$("#canvas")
+	.mousedown(
+		function(event) {
+			paperMouseDown=true;
+		}
+	)
+	.mouseup(
+		function(event) {
+			paperMouseDown=false;
+		}
+	)
+	.mousemove(
 		function(event) {
 			var cell=grid.pointToCell(
 				event.pageX - this.offsetLeft,
 				event.pageY - this.offsetTop);
 			$("#coordinates").text(cell.col+" "+cell.row);
+			
+			if (paperMouseDown) {
+				var item=gridArtwork.setItem(cell.col, cell.row, selectedShapeName, selectedColor);
+				if (!item.element) {
+					var p=grid.getCellPoint(cell.col, cell.row);
+					var element=grid.shapes[selectedShapeName].paint(paper, p, selectedColor)
+					item.element=element;
+				}
+			}
 		}
 	)
 	
