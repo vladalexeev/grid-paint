@@ -40,6 +40,8 @@ var grid;
 var selectedShapeName=null;
 var selectedColor="#3377ee";
 
+var gridArtwork=[];
+
 
 // 
 function adjustCanvasWrapper() {
@@ -115,7 +117,9 @@ $(function() {
 	
 	$("#canvas").mousemove(
 		function(event) {
-			var cell=grid.pointToCell(event.offsetX,event.offsetY);
+			var cell=grid.pointToCell(
+				event.pageX - this.offsetLeft,
+				event.pageY - this.offsetTop);
 			$("#coordinates").text(cell.col+" "+cell.row);
 		}
 	)
