@@ -39,11 +39,17 @@ function GridArtwork() {
     // The function returns artwork item
     // Example {shapeName:"flat", color:"#ff0000", element:[Object]}
     this.setItem=function (col, row, shapeName, color) {
-        while (this.items.length<row) {
+        while (this.items.length<=row) {
             this.items[this.items.length]=[];
         }
 
+        while (this.items[row].length<=col) {
+            this.items[row][this.items[row].length]=null;
+        }
+        
         var oldItem=this.items[row][col];
+        
+        
         if (oldItem && oldItem.shapeName==shapeName && oldItem.color==color) {
             return oldItem;
         } else {
