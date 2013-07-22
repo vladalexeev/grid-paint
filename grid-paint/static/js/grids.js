@@ -32,6 +32,30 @@ function hslToHex(h,s,l) {
 	return Raphael.hsl(h,s,l);
 }
 
+function GridArtwork() {
+    this.items=[];
+    
+    // Set item cell to the artwork
+    // The function returns artwork item
+    // Example {shapeName:"flat", color:"#ff0000", element:[Object]}
+    this.setItem=function (col, row, shapeName, color) {
+        while (this.items.length<row) {
+            this.items[this.items.length]=[];
+        }
+
+        var oldItem=this.items[row][col];
+        if (oldItem && oldItem.shapeName==shapeName && oldItem.color==color) {
+            return oldItem;
+        } else {
+            this.items[row][col]= {
+                shapeName: shapeName,
+                color: color
+            }
+            return this.items[row][col];
+        }        
+    }
+}
+
 /*
  * Interface of Grid
  *   function paintGrid(paper) - paints grid on a paper 
@@ -41,8 +65,11 @@ function hslToHex(h,s,l) {
  * 
  *   function getShapeRect() - bounding rectangle {w:24, h:24}
  *  
- *   function cellCenterPoint(x, y) - convert cell coordinate
- *     to coordinate of a center point of cell
+ *   function shapeCenterToBasePoint(x, y) - convert cell center coordinate
+ *     to coordinate of base point of cell
+ *     example {x:20, y:30}
+ * 
+ *   function getCellPoint(col, row) - get cell base point by it's column and row
  *     example {x:20, y:30}
  * 
  * 
@@ -88,8 +115,15 @@ function GridSquare() {
 			}
 	}
 	
-	this.shapes=[
-	    {
+	this.getCellPoint=function(row,col) {
+	    return {
+	        x: row*this.cellSize,
+	        y: col*this.cellSize
+	    }
+	}
+	
+	this.shapes={
+	    "empty": {
 	       name: "empty",
 	       parent: this,
 	       paint: function(paper, point, color) {
@@ -98,7 +132,7 @@ function GridSquare() {
 	           return element;
 	       }   
 	    },
-		{
+		"flat":{
 			name: "flat",
 			parent: this,
 			paint: function(paper, point, color) {
@@ -107,7 +141,7 @@ function GridSquare() {
 				return element;
 			}
 		},
-		{
+		"diamond":{
 			name: "diamond",
 			parent: this,
 			paint: function(paper, point, color) {
@@ -143,7 +177,7 @@ function GridSquare() {
 				e4.attr({"fill":c4, "stroke-width":0});
 			}			
 		},
-		{
+		"jewel": {
 			name: "jewel",
 			parent: this,
 			paint: function(paper, point, color) {
@@ -191,7 +225,7 @@ function GridSquare() {
 				e5.attr({"fill":color, "stroke-width":0});
 			}
 		}
-	]
+	}
 }
 
 function pointToTriangleCoord(x,y,sideLength) {
