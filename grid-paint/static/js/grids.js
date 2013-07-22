@@ -81,7 +81,7 @@ function GridSquare() {
         return {col: cellX, row: cellY};
 	}
 	
-	this.centerPointToBasePoint=function(x,y) {
+	this.shapeCenterToBasePoint=function(x,y) {
 		return {
 			x: x-this.cellSize/2, 
 			y: y-this.cellSize/2
@@ -94,7 +94,7 @@ function GridSquare() {
 	       parent: this,
 	       paint: function(paper, point, color) {
 	           var element=paper.rect(point.x,point.y,this.parent.cellSize,this.parent.cellSize);
-	           element.attr({"stroke-color":"#d0d0d0"});
+	           element.attr({"stroke-colorfill":"#d0d0d0"});
 	           return element;
 	       }   
 	    },
