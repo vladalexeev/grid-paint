@@ -14,6 +14,9 @@
 		<div id="color-selection" >
 			<div id="color-picker"></div>
 		</div>
+		<div>
+			<button id="btn-set-background-color" class="btn btn-small" type="button">Set background color</button>
+		</div>
 		<div class="painter-toolbar">
 			<div id="shapes-toolbar"></div>
 		</div>
@@ -41,6 +44,7 @@ var paper;
 var grid;
 var selectedShapeName=null;
 var selectedColor="#3377ee";
+var backgroundColor="#ffffff";
 var paperMouseDown=false;
 
 var gridArtwork=new GridArtwork();
@@ -121,6 +125,12 @@ $(function() {
 			adjustCanvasWrapper();
 		})
 			
+	backgroundColor=artwork.workspace.backgroundColor;
+	$("#canvas")
+		.css("background-color",backgroundColor)
+		.css("width",artwork.workspace.width)
+		.css("height",artwork.workspace.height);
+	
 	paper=new Raphael("canvas",artwork.workspace.width,artwork.workspace.height);
 	grid=eval("new "+artwork.grid+"()");
 	grid.cellSize=artwork.cellSize;
@@ -155,6 +165,14 @@ $(function() {
 			}
 		}
 	}).minicolors("value",selectedColor);
+	
+	$("#btn-set-background-color").click(
+		function() {
+			//alert("set background color"+selectedColor);
+			backgroundColor=selectedColor;
+			$("#canvas").css("background-color",backgroundColor);
+		}
+	)
 })
 </script>
 
