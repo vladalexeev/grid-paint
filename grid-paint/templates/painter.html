@@ -11,6 +11,9 @@
 
 <div class="row-fluid">
 	<div class="span2 text-center">
+		<div style="margin-bottom:10px;">
+			<button id="btn-save" class="btn btn-small btn-primary" type="button">Save</button>
+		</div>
 		<div id="color-selection" >
 			<div id="color-picker"></div>
 		</div>
@@ -117,6 +120,39 @@ function paintOnCanvasByMouseEvent(event) {
 	}
 }
 
+function saveArtwork() {
+	var a={
+		width: artwork.width,
+		height: artwork.height,
+		backgroundColor: backgroundColor,
+		layers:[{
+			grid:artwork.layers[0].grid,
+			cellSize:grid.cellSize,
+			items:[]	
+		}]
+	}
+	
+	if (artwork.id) {
+		a.id=artwork.id;
+	}
+	
+	for (var row=0; row<gridArtwork.items.length; row++) {
+		for (var col=0; col<gridArtwork.items[row].length; col++) {
+			if (gridArtwork.items[row][col] && gridArtwork.items[row][col].shape!="empty") {
+				a.layers[0].items.push({
+					col:col,
+					row:row,
+					shape:gridArtwork.items[row][col].shapeName,
+					color:gridArtwork.items[row][col].color	
+				})
+			}
+		}
+	}
+	
+	alert(JSON.stringify(a));
+	
+}
+
 
 $(function() {
 	adjustCanvasWrapper();
@@ -125,15 +161,15 @@ $(function() {
 			adjustCanvasWrapper();
 		})
 			
-	backgroundColor=artwork.workspace.backgroundColor;
+	backgroundColor=artwork.backgroundColor;
 	$("#canvas")
 		.css("background-color",backgroundColor)
-		.css("width",artwork.workspace.width)
-		.css("height",artwork.workspace.height);
+		.css("width",artwork.width)
+		.css("height",artwork.height);
 	
-	paper=new Raphael("canvas",artwork.workspace.width,artwork.workspace.height);
-	grid=eval("new "+artwork.grid+"()");
-	grid.cellSize=artwork.cellSize;
+	paper=new Raphael("canvas",artwork.width,artwork.height);
+	grid=eval("new "+artwork.layers[0].grid+"()");
+	grid.cellSize=artwork.layers[0].cellSize;
 	grid.paintGrid(paper);
 	createShapesToolbar();
 	
@@ -171,6 +207,12 @@ $(function() {
 			//alert("set background color"+selectedColor);
 			backgroundColor=selectedColor;
 			$("#canvas").css("background-color",backgroundColor);
+		}
+	)
+	
+	$("#btn-save").click(
+		function() {
+			saveArtwork();
 		}
 	)
 })
