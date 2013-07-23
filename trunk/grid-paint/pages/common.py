@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 '''
 Created on 14.07.2013
@@ -76,14 +75,14 @@ class PageNewImage(BasicPageRequestHandler):
 class PagePainter(BasicPageRequestHandler):
     def get(self):
         new_artwork={
-                     'grid':self.request.get('grid'),
-                     'cellSize':24,
-                     'workspace': {
-                                   'backgroundColor': '#ffffff',
-                                   'width': 2000,
-                                   'height': 2000
-                                   },
-                     'items':[]
+                     'backgroundColor': '#ffffff',
+                     'width': 2000,
+                     'height': 2000,
+                     'layers': [{
+                                'grid':self.request.get('grid'),
+                                'cellSize':24,                     
+                                'items':[]
+                                }]
                      }
         artwork_json=json.dumps(new_artwork)
         self.write_template('templates/painter.html', 
