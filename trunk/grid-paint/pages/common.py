@@ -4,7 +4,6 @@ Created on 14.07.2013
 @author: Vlad
 '''
 import os
-import json
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -44,13 +43,10 @@ class BasicRequestHandler(webapp.RequestHandler):
         
     def handle_exception(self, exception, debug_mode):
         if isinstance(exception, BasicRequestHandlerException):
-#            logger.error("Request handler exception code="+str(exception.code)+" - "+str(exception.message))
-#            logger.exception(exception)
             self.error(exception.code)
             self.response.out.write('<p>('+str(exception.code)+') '+exception.message+'</p>')
             self.response.out.write('<p>Return to <a href="\\">home page</a></p>')    
         else:
-#            logger.error("Exception "+str(exception))
             super(BasicRequestHandler,self).handle_exception(exception,debug_mode)
             
 class BasicRequestHandlerException(Exception):
@@ -64,28 +60,3 @@ class BasicPageRequestHandler(BasicRequestHandler):
 
 
 
-class PageIndex(BasicPageRequestHandler):
-    def get(self):
-        self.write_template('templates/index.html', {})
-        
-class PageNewImage(BasicPageRequestHandler):
-    def get(self):
-        self.write_template('templates/new-image.html', {})
-        
-class PagePainter(BasicPageRequestHandler):
-    def get(self):
-        new_artwork={
-                     'backgroundColor': '#ffffff',
-                     'width': 2000,
-                     'height': 2000,
-                     'layers': [{
-                                'grid':self.request.get('grid'),
-                                'cellSize':24,                     
-                                'items':[]
-                                }]
-                     }
-        artwork_json=json.dumps(new_artwork)
-        self.write_template('templates/painter.html', 
-                            {
-                             'artwork_json':artwork_json
-                             })

@@ -1,8 +1,8 @@
 from google.appengine.ext import webapp
 
-from pages.common import PageIndex
-from pages.common import PageNewImage
-from pages.common import PagePainter
+from pages.pages import PageIndex
+from pages.pages import PageNewImage
+from pages.pages import PagePainter
 
 
 
