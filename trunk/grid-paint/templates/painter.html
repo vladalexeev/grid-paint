@@ -35,6 +35,8 @@
 // RaphaelJS documentation - http://raphaeljs.com/reference.html
 // JQuery Minicolors color picker documentation - http://labs.abeautifulsite.net/jquery-miniColors/
 
+var artwork={{ artwork_json|safe }};
+
 var paper;
 var grid;
 var selectedShapeName=null;
@@ -119,8 +121,9 @@ $(function() {
 			adjustCanvasWrapper();
 		})
 			
-	paper=new Raphael("canvas",2000,2000);
-	grid=new {{ grid }}();
+	paper=new Raphael("canvas",artwork.workspace.width,artwork.workspace.height);
+	grid=eval("new "+artwork.grid+"()");
+	grid.cellSize=artwork.cellSize;
 	grid.paintGrid(paper);
 	createShapesToolbar();
 	
