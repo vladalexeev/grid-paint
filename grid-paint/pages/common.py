@@ -5,6 +5,7 @@ Created on 14.07.2013
 @author: Vlad
 '''
 import os
+import json
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -74,7 +75,18 @@ class PageNewImage(BasicPageRequestHandler):
         
 class PagePainter(BasicPageRequestHandler):
     def get(self):
+        new_artwork={
+                     'grid':self.request.get('grid'),
+                     'cellSize':24,
+                     'workspace': {
+                                   'width': 2000,
+                                   'height': 2000
+                                   },
+                     'items':[]
+                     }
+        artwork_json=json.dumps(new_artwork)
         self.write_template('templates/painter.html', 
                             {
-                             'grid':self.request.get('grid')
+                             'grid':self.request.get('grid'),
+                             'artwork_json':artwork_json
                              })
