@@ -79,6 +79,7 @@ class PagePainter(BasicPageRequestHandler):
                      'grid':self.request.get('grid'),
                      'cellSize':24,
                      'workspace': {
+                                   'backgroundColor': '#ffffff',
                                    'width': 2000,
                                    'height': 2000
                                    },
@@ -87,6 +88,5 @@ class PagePainter(BasicPageRequestHandler):
         artwork_json=json.dumps(new_artwork)
         self.write_template('templates/painter.html', 
                             {
-                             'grid':self.request.get('grid'),
                              'artwork_json':artwork_json
                              })
