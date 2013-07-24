@@ -38,7 +38,7 @@ class PagePainter(BasicPageRequestHandler):
                          'layers': [{
                                      'grid':self.request.get('grid'),
                                      'cellSize':24,                     
-                                     'items':[]
+                                     'cells':[]
                                      }]
                          }
             artwork_json=json.dumps(new_artwork)
@@ -54,3 +54,11 @@ class PageMyImages(BasicPageRequestHandler):
                             {
                              'artworks': my_artworks
                              })
+        
+class FullImageRequest(BasicPageRequestHandler):
+    def get(self, *ar):
+        artwork_id=ar[0]
+        artwork=db.Artwork.get(artwork_id)
+        
+        self.response.headers['Content-Type']='image/png'     
+        self.response.out.write(artwork.full_image)

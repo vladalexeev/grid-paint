@@ -36,7 +36,7 @@ class ActionSaveArtwork(BasicRequestHandler):
             artwork.name='Untitled'
             
         artwork.json=artwork_json
-        saved_id=artwork.put()
+        
         
         json_obj=json.loads(artwork_json)
         
@@ -52,5 +52,8 @@ class ActionSaveArtwork(BasicRequestHandler):
         memory_file=StringIO.StringIO()
         image.save(memory_file, 'png')
         
+        artwork.full_image=memory_file.getvalue()
+        saved_id=artwork.put()
         
-        self.redirect('/images/my')
+        
+        self.redirect('/my-images')

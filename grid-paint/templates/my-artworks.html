@@ -5,8 +5,10 @@
 
 <div class="row">
 {% for a in artworks %}
+  <h2 class="span12">{{ a.name }}</h2>
   <div class="span12">
-  	<a href="/painter?id={{ a.key }}">{{ a.name }}</a>
+  	<a href="/painter?id={{ a.key }}">Edit</a>
+  	<a href="/images/png/{{ a.key }}">Show Image</a>
   </div>
 {% endfor %}
 </div>

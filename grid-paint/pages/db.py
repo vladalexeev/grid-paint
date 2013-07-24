@@ -12,3 +12,4 @@ class Artwork(db.Model):
     author = db.UserProperty()
     date = db.DateTimeProperty(auto_now=True)
     json = db.TextProperty()
+    full_image = db.BlobProperty()
