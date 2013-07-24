@@ -6,8 +6,13 @@ Created on 23.07.2013
 '''
 
 import db
+import json
+import StringIO
+
+from PIL import Image, ImageDraw
 
 from common import BasicRequestHandler
+from grid.square import GridSquare
 
 class ActionSaveArtwork(BasicRequestHandler):
     def post(self):
@@ -32,5 +37,20 @@ class ActionSaveArtwork(BasicRequestHandler):
             
         artwork.json=artwork_json
         saved_id=artwork.put()
+        
+        json_obj=json.loads(artwork_json)
+        
+        ###
+        image=Image.new('RGB', (json_obj['width'],json_obj['height']),json_obj['backgroundColor'])
+        image_draw=ImageDraw.Draw(image)
+        
+        grid=GridSquare();
+        layer=json_obj['layers'][0]
+        for cell in layer['cells']:
+            grid.paintShape(image_draw, cell)
+        
+        memory_file=StringIO.StringIO()
+        image.save(memory_file, 'png')
+        
         
         self.redirect('/images/my')
