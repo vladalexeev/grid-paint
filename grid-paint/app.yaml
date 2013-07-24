@@ -18,8 +18,8 @@ handlers:
 - url: /css
   static_dir: static/css
   
-- url: /images
-  static_dir: static/images
+- url: /img
+  static_dir: static/img
 
 - url: /.*
   script: main.application

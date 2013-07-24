@@ -9,6 +9,8 @@ import json
 
 from common import BasicPageRequestHandler
 
+import db
+
 class PageIndex(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/index.html', {})
@@ -33,4 +35,12 @@ class PagePainter(BasicPageRequestHandler):
         self.write_template('templates/painter.html', 
                             {
                              'artwork_json':artwork_json
+                             })
+        
+class PageMyImages(BasicPageRequestHandler):
+    def get(self):
+        my_artworks=db.Artwork.all().filter('author', self.user_info.user).order('-date').fetch(20,0)
+        self.write_template('templates/my-artworks.html', 
+                            {
+                             'artworks': my_artworks
                              })

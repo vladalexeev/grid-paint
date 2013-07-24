@@ -1,15 +1,16 @@
 from google.appengine.ext import webapp
 
-from pages.pages import PageIndex
-from pages.pages import PageNewImage
-from pages.pages import PagePainter
 
+import pages.pages
+import pages.actions
 
 
 application = webapp.WSGIApplication([
-                                      ('/', PageIndex),
-                                      ('/new-image', PageNewImage),
-                                      ('/painter', PagePainter)
+                                      ('/', pages.pages.PageIndex),
+                                      ('/new-image', pages.pages.PageNewImage),
+                                      ('/painter', pages.pages.PagePainter),
+                                      ('/images/my', pages.pages.PageMyImages),
+                                      ('/save-image', pages.actions.ActionSaveArtwork)
                                       ], debug=True)
 
 
