@@ -35,6 +35,12 @@
 	</div>
 </div>
 
+<form name="f" style="display:none" action="/save-image" method="post">
+	<input type="hidden" name="artwork_id" value="{{ artwork_id }}" />
+	<input type="hidden" name="artwork_name" value="{{ artwork_name }}" />
+	<input type="hidden" name="artwork_json" value="" />
+</form>
+
 <script src="/js/grids.js"></script>
 
 <script>
@@ -148,9 +154,9 @@ function saveArtwork() {
 			}
 		}
 	}
-	
-	alert(JSON.stringify(a));
-	
+
+    $("input[name=artwork_json]").val(JSON.stringify(a));
+    $("form[name=f]")[0].submit();
 }
 
 

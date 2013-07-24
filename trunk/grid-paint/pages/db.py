@@ -10,4 +10,5 @@ from google.appengine.ext import db
 class Artwork(db.Model):
     name = db.StringProperty()
     author = db.UserProperty()
-    json = db.StringProperty()
+    date = db.DateTimeProperty(auto_now=True)
+    json = db.TextProperty()
