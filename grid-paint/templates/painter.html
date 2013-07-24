@@ -127,13 +127,6 @@ function paintOnCanvasByMouseEvent(event) {
 			
 	if (paperMouseDown) {
 		paintOnCanvas(cell.col, cell.row, selectedShapeName, selectedColor);
-		/*
-		var item=gridArtwork.setItem(cell.col, cell.row, selectedShapeName, selectedColor);
-		if (!item.element && item.shapeName!="empty") {
-			var p=grid.getCellPoint(cell.col, cell.row);
-			var element=grid.shapes[selectedShapeName].paint(paper, p, selectedColor)
-			item.element=element;
-		}*/
 	}
 }
 
@@ -145,7 +138,7 @@ function saveArtwork() {
 		layers:[{
 			grid:artwork.layers[0].grid,
 			cellSize:grid.cellSize,
-			items:[]	
+			cells:[]	
 		}]
 	}
 	
@@ -156,7 +149,7 @@ function saveArtwork() {
 	for (var row=0; row<gridArtwork.items.length; row++) {
 		for (var col=0; col<gridArtwork.items[row].length; col++) {
 			if (gridArtwork.items[row][col] && gridArtwork.items[row][col].shape!="empty") {
-				a.layers[0].items.push({
+				a.layers[0].cells.push({
 					col:col,
 					row:row,
 					shape:gridArtwork.items[row][col].shapeName,
@@ -191,8 +184,8 @@ $(function() {
 	createShapesToolbar();
 	
 	var layer=artwork.layers[0];
-	for (var i=0; i<layer.items.length; i++) {
-		paintOnCanvas(layer.items[i].col, layer.items[i].row, layer.items[i].shape, layer.items[i].color);
+	for (var i=0; i<layer.cells.length; i++) {
+		paintOnCanvas(layer.cells[i].col, layer.cells[i].row, layer.cells[i].shape, layer.cells[i].color);
 	}
 	
 	$("#canvas")
