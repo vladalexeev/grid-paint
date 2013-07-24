@@ -6,7 +6,7 @@
 <div class="row">
 {% for a in artworks %}
   <div class="span12">
-  	<a href="/artworks/my/{{ a.key }}">{{ a.name }}</a>
+  	<a href="/painter?id={{ a.key }}">{{ a.name }}</a>
   </div>
 {% endfor %}
 </div>

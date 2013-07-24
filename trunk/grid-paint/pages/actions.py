@@ -33,4 +33,4 @@ class ActionSaveArtwork(BasicRequestHandler):
         artwork.json=artwork_json
         saved_id=artwork.put()
         
-        self.redirect('/artworks/my')
+        self.redirect('/images/my')

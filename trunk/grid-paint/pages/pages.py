@@ -21,21 +21,31 @@ class PageNewImage(BasicPageRequestHandler):
         
 class PagePainter(BasicPageRequestHandler):
     def get(self):
-        new_artwork={
-                     'backgroundColor': '#ffffff',
-                     'width': 2000,
-                     'height': 2000,
-                     'layers': [{
-                                'grid':self.request.get('grid'),
-                                'cellSize':24,                     
-                                'items':[]
-                                }]
-                     }
-        artwork_json=json.dumps(new_artwork)
-        self.write_template('templates/painter.html', 
-                            {
-                             'artwork_json':artwork_json
-                             })
+        if self.request.get('id'):
+            artwork_id=self.request.get('id')
+            artwork=db.Artwork.get(artwork_id)
+            self.write_template('templates/painter.html', 
+                                {
+                                 'artwork_id': artwork_id,
+                                 'artwork_name': artwork.name,
+                                 'artwork_json': artwork.json
+                                 })
+        else:
+            new_artwork={
+                         'backgroundColor': '#ffffff',
+                         'width': 2000,
+                         'height': 2000,
+                         'layers': [{
+                                     'grid':self.request.get('grid'),
+                                     'cellSize':24,                     
+                                     'items':[]
+                                     }]
+                         }
+            artwork_json=json.dumps(new_artwork)
+            self.write_template('templates/painter.html', 
+                                {
+                                 'artwork_json': artwork_json
+                                 })
         
 class PageMyImages(BasicPageRequestHandler):
     def get(self):

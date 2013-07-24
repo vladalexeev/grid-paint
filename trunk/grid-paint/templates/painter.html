@@ -110,6 +110,15 @@ function createShapesToolbar() {
 	)
 }
 
+function paintOnCanvas(col, row, shapeName, color) {
+	var item=gridArtwork.setItem(col, row, shapeName, color);
+	if (!item.element && item.shapeName!="empty") {
+		var p=grid.getCellPoint(col, row);
+		var element=grid.shapes[shapeName].paint(paper, p, color)
+		item.element=element;
+	}
+}
+
 function paintOnCanvasByMouseEvent(event) {
 	var cell=grid.pointToCell(
 		event.pageX - $("#canvas").position().left+$("#canvas-wrapper").scrollLeft(),
@@ -117,12 +126,14 @@ function paintOnCanvasByMouseEvent(event) {
 	$("#coordinates").text(cell.col+" "+cell.row);
 			
 	if (paperMouseDown) {
+		paintOnCanvas(cell.col, cell.row, selectedShapeName, selectedColor);
+		/*
 		var item=gridArtwork.setItem(cell.col, cell.row, selectedShapeName, selectedColor);
 		if (!item.element && item.shapeName!="empty") {
 			var p=grid.getCellPoint(cell.col, cell.row);
 			var element=grid.shapes[selectedShapeName].paint(paper, p, selectedColor)
 			item.element=element;
-		}
+		}*/
 	}
 }
 
@@ -179,6 +190,11 @@ $(function() {
 	grid.paintGrid(paper);
 	createShapesToolbar();
 	
+	var layer=artwork.layers[0];
+	for (var i=0; i<layer.items.length; i++) {
+		paintOnCanvas(layer.items[i].col, layer.items[i].row, layer.items[i].shape, layer.items[i].color);
+	}
+	
 	$("#canvas")
 	.mousedown(
 		function(event) {
@@ -210,7 +226,6 @@ $(function() {
 	
 	$("#btn-set-background-color").click(
 		function() {
-			//alert("set background color"+selectedColor);
 			backgroundColor=selectedColor;
 			$("#canvas").css("background-color",backgroundColor);
 		}
