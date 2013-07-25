@@ -181,7 +181,7 @@ function GridSquare() {
 					"L",point.x+cellSize, point.y+cellSize,"Z"]);
 				e3.attr({"fill":c3, "stroke-width":0});
 				
-				var c4=hslToHex(c.h, c.s, c.l-0.15);
+				var c4=hslToHex(c.h, c.s, c.l-0.2);
 				var e4=paper.path([
 					"M",point.x+cellSize, point.y,
 					"L",point.x+cellSize/2, point.y+cellSize/2,
