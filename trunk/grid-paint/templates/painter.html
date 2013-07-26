@@ -43,6 +43,7 @@
 
 <script src="/js/grids.js"></script>
 <script src="/js/grid-square.js"></script>
+<script src="/js/grid-triangle.js"></script>
 
 <script>
 // RaphaelJS documentation - http://raphaeljs.com/reference.html
@@ -71,7 +72,7 @@ function paintShapeToolButton(shapeName) {
 	$("#shape-"+shapeName).html("");
 
 	var shapeRect=grid.getShapeRect();
-	var shapePoint=grid.shapeCenterToBasePoint(shapeRect.w / 2+10, shapeRect.h / 2+10);	
+	//var shapePoint=grid.shapeCenterToBasePoint(shapeRect.w / 2+10, shapeRect.h / 2+10);	
 	var shapePaper=new Raphael("shape-"+shapeName, shapeRect.w+20, shapeRect.h+20);
 	
 	if (shapeName==selectedShapeName) {
@@ -79,7 +80,7 @@ function paintShapeToolButton(shapeName) {
 			shapeRect.w/2+10, shapeRect.h/2+10);
 		bgElement.attr({"fill":"r#ffffff:40-#cccccc", "stroke-width":0});
 	}
-	shape.paint(shapePaper, shapePoint, selectedColor);
+	shape.paint(shapePaper, 0, 0, selectedColor, 10, 10);
 }
 
 function createShapesToolbar() {
@@ -114,8 +115,7 @@ function createShapesToolbar() {
 function paintOnCanvas(col, row, shapeName, color) {
 	var item=gridArtwork.setItem(col, row, shapeName, color);
 	if (!item.element && item.shapeName!="empty") {
-		var p=grid.getCellPoint(col, row);
-		var element=grid.shapes[shapeName].paint(paper, p, color)
+		var element=grid.shapes[shapeName].paint(paper, col, row, color, 0, 0)
 		item.element=element;
 	}
 }
@@ -149,7 +149,7 @@ function saveArtwork() {
 	
 	for (var row=0; row<gridArtwork.items.length; row++) {
 		for (var col=0; col<gridArtwork.items[row].length; col++) {
-			if (gridArtwork.items[row][col] && gridArtwork.items[row][col].shape!="empty") {
+			if (gridArtwork.items[row][col] && gridArtwork.items[row][col].shapeName!="empty") {
 				a.layers[0].cells.push({
 					col:col,
 					row:row,
@@ -159,7 +159,7 @@ function saveArtwork() {
 			}
 		}
 	}
-
+	
     $("input[name=artwork_json]").val(JSON.stringify(a));
     $("form[name=f]")[0].submit();
 }

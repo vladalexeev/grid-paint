@@ -117,43 +117,41 @@ function pointToTriangleCoord(x,y,sideLength) {
     return {col:d1+d2, row:cellY}
 }
 
-function GridTriangle () {
-	this.cellSize=24;
-	this._rowHeight=this.cellSize*sin60;
-	
-	this._createGridLine=function(paper, pathArray) {
-		var path=paper.path(pathArray);
-        path.attr({
-            "stroke":"#d0d0d0",
-        })
+function trianglePath(col, row, sideLength) {
+	rowHeight=sideLength*sin60
+	x=col*sideLength/2
+	y=row*rowHeight;
+	if (row % 2 == 0) {
+		if (col % 2 == 0) {
+			return [
+				{x:x, y:y+rowHeight},
+				{x:x+sideLength, y:y+rowHeight},
+				{x:x+sideLength/2, y:y}
+				]
+		} else {
+			return [
+				{x:x, y:y},
+				{x:x+sideLength, y:y},
+				{x:x+sideLength/2, y:y+rowHeight}
+				]
+		}
+	} else {
+		if (col % 2 == 0) {
+			return [
+				{x:x, y:y},
+				{x:x+sideLength, y:y},
+				{x:x+sideLength/2, y:y+rowHeight}
+				]
+		} else {
+			return [
+				{x:x, y:y+rowHeight},
+				{x:x+sideLength, y:y+rowHeight},
+				{x:x+sideLength/2, y:y}
+				]
+		}
 	}
-		
-	this.paintGrid=function (paper) {
-		var trianglesBehind=Math.floor(paper.height/this.cellSize)
-				
-		for (var y=0; y<paper.height; y+=2*this._rowHeight) {
-			this._createGridLine(paper,["M",this.cellSize*sin30,y,"H",paper.width]);
-		}
-		
-		for (var y=this._rowHeight; y<paper.height; y+=2*this._rowHeight) {
-			this._createGridLine(paper,["M",0,y,"H",paper.width]);
-		}
-		
-		for (var x=this.cellSize/2-trianglesBehind*this.cellSize; x<paper.width; x+=this.cellSize) {
-			this._createGridLine(paper,["M",x,0,"L",x+paper.height*tan30,paper.height]);
-		}
-		
-		for (var x=this.cellSize/2; x<paper.width+trianglesBehind*this.cellSize; x+=this.cellSize) {
-			this._createGridLine(paper,["M",x,0,"L",x-paper.height*tan30,paper.height]);
-		}
-	}
-	
-	this.pointToCell=function(x,y) {
-		return pointToTriangleCoord(x,y,this.cellSize);
-	}
-	
-	this.shapes=[];
 }
+
 
 function GridHex() {
 	this.cellSize=24;
