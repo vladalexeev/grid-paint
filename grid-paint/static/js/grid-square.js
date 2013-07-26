@@ -5,8 +5,10 @@
 function GridSquare_ShapeEmpty(parent) {
 	this.name="empty";
 	this.parent=parent;
-	this.paint=function(paper, point, color) {
-	    var element=paper.rect(point.x,point.y,this.parent.cellSize,this.parent.cellSize);
+	this.paint=function(paper, col, row, color, dx, dy) {
+		x=col*parent.cellSize+dx;
+		y=row*parent.cellSize+dy;
+	    var element=paper.rect(x,y,this.parent.cellSize,this.parent.cellSize);
 	    element.attr({"stroke":"#808080"});
 	    return element;
 	}   
@@ -15,8 +17,10 @@ function GridSquare_ShapeEmpty(parent) {
 function GridSquare_ShapeFlat(parent) {
 	this.name="flat";
 	this.parent=parent;
-	this.paint=function(paper, point, color) {
-		var element=paper.rect(point.x,point.y,this.parent.cellSize,this.parent.cellSize);
+	this.paint=function(paper, col, row, color, dx, dy) {
+		x=col*parent.cellSize+dx;
+		y=row*parent.cellSize+dy;		
+		var element=paper.rect(x,y,this.parent.cellSize,this.parent.cellSize);
 		element.attr({"fill":color, "stroke-width":0})
 		return element;
 	}
@@ -25,7 +29,9 @@ function GridSquare_ShapeFlat(parent) {
 function GridSquare_ShapeDiamond(parent) {
 	this.name="diamond";
 	this.parent=parent;
-	this.paint=function(paper, point, color) {
+	this.paint=function(paper, col, row, color, dx, dy) {
+		x=col*parent.cellSize+dx;
+		y=row*parent.cellSize+dy;
 		var c=hexToHsl(color);
 		cellSize=this.parent.cellSize;
 				
@@ -33,30 +39,30 @@ function GridSquare_ShapeDiamond(parent) {
 				
 		var c1=hslToHex(c.h, c.s, c.l+0.2);
 		var e1=paper.path([
-			"M ",point.x, point.y,
-			"L",point.x+cellSize/2, point.y+cellSize/2,
-			"L",point.x+cellSize, point.y,"Z"]);
+			"M ",x, y,
+			"L",x+cellSize/2, y+cellSize/2,
+			"L",x+cellSize, y,"Z"]);
 		e1.attr({"fill":c1, "stroke-width":0});
 				
 		var c2=hslToHex(c.h, c.s, c.l+0.1);
 		var e2=paper.path([
-			"M",point.x, point.y,
-			"L",point.x+cellSize/2, point.y+cellSize/2,
-			"L",point.x, point.y+cellSize,"Z"])
+			"M",x, y,
+			"L",x+cellSize/2, y+cellSize/2,
+			"L",x, y+cellSize,"Z"])
 		e2.attr({"fill":c2, "stroke-width":0});
 				
 		var c3=hslToHex(c.h, c.s, c.l-0.1);
 		var e3=paper.path([
-			"M",point.x, point.y+cellSize,
-			"L",point.x+cellSize/2, point.y+cellSize/2,
-			"L",point.x+cellSize, point.y+cellSize,"Z"]);
+			"M",x, y+cellSize,
+			"L",x+cellSize/2, y+cellSize/2,
+			"L",x+cellSize, y+cellSize,"Z"]);
 		e3.attr({"fill":c3, "stroke-width":0});
 				
 		var c4=hslToHex(c.h, c.s, c.l-0.2);
 		var e4=paper.path([
-			"M",point.x+cellSize, point.y,
-			"L",point.x+cellSize/2, point.y+cellSize/2,
-			"L",point.x+cellSize, point.y+cellSize,"Z"]);
+			"M",x+cellSize, y,
+			"L",x+cellSize/2, y+cellSize/2,
+			"L",x+cellSize, y+cellSize,"Z"]);
 		e4.attr({"fill":c4, "stroke-width":0});
 		return paper.setFinish();
 	}			
@@ -64,7 +70,9 @@ function GridSquare_ShapeDiamond(parent) {
 
 function GridSquare_BasicShapeJewel(parent) {
     this.parent=parent;
-    this.paint=function(paper, point, color) {
+    this.paint=function(paper, col, row, color, dx, dy) {
+		x=col*parent.cellSize+dx;
+		y=row*parent.cellSize+dy;    	
         var c=hexToHsl(color);
         var cellSize=this.parent.cellSize;
         var facet=this.getFacet();
@@ -72,42 +80,42 @@ function GridSquare_BasicShapeJewel(parent) {
         paper.setStart();
         var c1=hslToHex(c.h, c.s, c.l+0.2);
         var e1=paper.path([
-            "M ",point.x, point.y,
-            "L",point.x+facet, point.y+facet,
-            "L",point.x+cellSize-facet, point.y+facet,
-            "L",point.x+cellSize, point.y,"Z"]);
+            "M ",x, y,
+            "L",x+facet, y+facet,
+            "L",x+cellSize-facet, y+facet,
+            "L",x+cellSize, y,"Z"]);
         e1.attr({"fill":c1, "stroke-width":0});
                 
         var c2=hslToHex(c.h, c.s, c.l+0.1);
         var e2=paper.path([
-            "M",point.x, point.y,
-            "L",point.x+facet, point.y+facet,
-            "L",point.x+facet, point.y+cellSize-facet,
-            "L",point.x, point.y+cellSize,"Z"])
-                e2.attr({"fill":c2, "stroke-width":0});
+            "M",x, y,
+            "L",x+facet, y+facet,
+            "L",x+facet, y+cellSize-facet,
+            "L",x, y+cellSize,"Z"])
+        e2.attr({"fill":c2, "stroke-width":0});
                 
         var c3=hslToHex(c.h, c.s, c.l-0.1);
         var e3=paper.path([
-            "M",point.x, point.y+cellSize,
-            "L",point.x+facet, point.y+cellSize-facet,
-            "L",point.x+cellSize-facet, point.y+cellSize-facet,
-            "L",point.x+cellSize, point.y+cellSize,"Z"]);
+            "M",x, y+cellSize,
+            "L",x+facet, y+cellSize-facet,
+            "L",x+cellSize-facet, y+cellSize-facet,
+            "L",x+cellSize, y+cellSize,"Z"]);
         e3.attr({"fill":c3, "stroke-width":0});
                 
         var c4=hslToHex(c.h, c.s, c.l-0.2);
         var e4=paper.path([
-            "M",point.x+cellSize, point.y,
-            "L",point.x+cellSize-facet, point.y+facet,
-            "L",point.x+cellSize-facet, point.y+cellSize-facet,
-            "L",point.x+cellSize, point.y+cellSize,"Z"]);
+            "M",x+cellSize, y,
+            "L",x+cellSize-facet, y+facet,
+            "L",x+cellSize-facet, y+cellSize-facet,
+            "L",x+cellSize, y+cellSize,"Z"]);
         e4.attr({"fill":c4, "stroke-width":0});
                 
         var e5=paper.path([
-            "M",point.x+facet, point.y+facet,
-            "L",point.x+cellSize-facet, point.y+facet,
-            "L",point.x+cellSize-facet, point.y+cellSize-facet,
-            "L",point.x+facet, point.y+cellSize-facet,"Z"]);
-                e5.attr({"fill":color, "stroke-width":0});
+            "M",x+facet, y+facet,
+            "L",x+cellSize-facet, y+facet,
+            "L",x+cellSize-facet, y+cellSize-facet,
+            "L",x+facet, y+cellSize-facet,"Z"]);
+        e5.attr({"fill":color, "stroke-width":0});
         return paper.setFinish();
     }    
 }
