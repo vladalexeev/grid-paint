@@ -62,57 +62,89 @@ function GridSquare_ShapeDiamond(parent) {
 	}			
 }
 
-function GridSquare_ShapeJewel(parent) {
-	this.name="jewel";
-	this.parent=parent;
-	this.paint=function(paper, point, color) {
-		var c=hexToHsl(color);
-		var cellSize=this.parent.cellSize;
-		var facet=cellSize/6;
-				
-		paper.setStart();
-		var c1=hslToHex(c.h, c.s, c.l+0.2);
-		var e1=paper.path([
-			"M ",point.x, point.y,
-			"L",point.x+facet, point.y+facet,
-			"L",point.x+cellSize-facet, point.y+facet,
-			"L",point.x+cellSize, point.y,"Z"]);
-		e1.attr({"fill":c1, "stroke-width":0});
-				
-		var c2=hslToHex(c.h, c.s, c.l+0.1);
-		var e2=paper.path([
-			"M",point.x, point.y,
-			"L",point.x+facet, point.y+facet,
-			"L",point.x+facet, point.y+cellSize-facet,
-			"L",point.x, point.y+cellSize,"Z"])
-				e2.attr({"fill":c2, "stroke-width":0});
-				
-		var c3=hslToHex(c.h, c.s, c.l-0.1);
-		var e3=paper.path([
-			"M",point.x, point.y+cellSize,
-			"L",point.x+facet, point.y+cellSize-facet,
-			"L",point.x+cellSize-facet, point.y+cellSize-facet,
-			"L",point.x+cellSize, point.y+cellSize,"Z"]);
-		e3.attr({"fill":c3, "stroke-width":0});
-				
-		var c4=hslToHex(c.h, c.s, c.l-0.2);
-		var e4=paper.path([
-			"M",point.x+cellSize, point.y,
-			"L",point.x+cellSize-facet, point.y+facet,
-			"L",point.x+cellSize-facet, point.y+cellSize-facet,
-			"L",point.x+cellSize, point.y+cellSize,"Z"]);
-		e4.attr({"fill":c4, "stroke-width":0});
-				
-		var e5=paper.path([
-			"M",point.x+facet, point.y+facet,
-			"L",point.x+cellSize-facet, point.y+facet,
-			"L",point.x+cellSize-facet, point.y+cellSize-facet,
-			"L",point.x+facet, point.y+cellSize-facet,"Z"]);
-				e5.attr({"fill":color, "stroke-width":0});
-		return paper.setFinish();
-	}
-
+function GridSquare_BasicShapeJewel(parent) {
+    this.parent=parent;
+    this.paint=function(paper, point, color) {
+        var c=hexToHsl(color);
+        var cellSize=this.parent.cellSize;
+        var facet=this.getFacet();
+                
+        paper.setStart();
+        var c1=hslToHex(c.h, c.s, c.l+0.2);
+        var e1=paper.path([
+            "M ",point.x, point.y,
+            "L",point.x+facet, point.y+facet,
+            "L",point.x+cellSize-facet, point.y+facet,
+            "L",point.x+cellSize, point.y,"Z"]);
+        e1.attr({"fill":c1, "stroke-width":0});
+                
+        var c2=hslToHex(c.h, c.s, c.l+0.1);
+        var e2=paper.path([
+            "M",point.x, point.y,
+            "L",point.x+facet, point.y+facet,
+            "L",point.x+facet, point.y+cellSize-facet,
+            "L",point.x, point.y+cellSize,"Z"])
+                e2.attr({"fill":c2, "stroke-width":0});
+                
+        var c3=hslToHex(c.h, c.s, c.l-0.1);
+        var e3=paper.path([
+            "M",point.x, point.y+cellSize,
+            "L",point.x+facet, point.y+cellSize-facet,
+            "L",point.x+cellSize-facet, point.y+cellSize-facet,
+            "L",point.x+cellSize, point.y+cellSize,"Z"]);
+        e3.attr({"fill":c3, "stroke-width":0});
+                
+        var c4=hslToHex(c.h, c.s, c.l-0.2);
+        var e4=paper.path([
+            "M",point.x+cellSize, point.y,
+            "L",point.x+cellSize-facet, point.y+facet,
+            "L",point.x+cellSize-facet, point.y+cellSize-facet,
+            "L",point.x+cellSize, point.y+cellSize,"Z"]);
+        e4.attr({"fill":c4, "stroke-width":0});
+                
+        var e5=paper.path([
+            "M",point.x+facet, point.y+facet,
+            "L",point.x+cellSize-facet, point.y+facet,
+            "L",point.x+cellSize-facet, point.y+cellSize-facet,
+            "L",point.x+facet, point.y+cellSize-facet,"Z"]);
+                e5.attr({"fill":color, "stroke-width":0});
+        return paper.setFinish();
+    }    
 }
+
+function GridSquare_ShapeJewel(parent) {
+	this.super=GridSquare_BasicShapeJewel;
+	this.super(parent);
+	
+	this.name="jewel";
+	this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/6;	    
+	}
+}
+
+function GridSquare_ShapeJewel2(parent) {
+    this.super=GridSquare_BasicShapeJewel;
+    this.super(parent);
+    
+    this.name="jewel2";
+    this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/4;      
+    }
+}
+
+function GridSquare_ShapeJewel3(parent) {
+    this.super=GridSquare_BasicShapeJewel;
+    this.super(parent);
+    
+    this.name="jewel2";
+    this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/3;      
+    }
+}
+
 
 function GridSquare() {
 	this.cellSize=24;
@@ -161,7 +193,9 @@ function GridSquare() {
 	this.shapes={
 	    "empty": new GridSquare_ShapeEmpty(this),
 		"flat": new GridSquare_ShapeFlat(this),
-		"diamond": new GridSquare_ShapeDiamond(this),
-		"jewel": new GridSquare_ShapeJewel(this)
+		"jewel": new GridSquare_ShapeJewel(this),
+		"jewel2": new GridSquare_ShapeJewel2(this),
+		"jewel3": new GridSquare_ShapeJewel3(this),
+		"diamond": new GridSquare_ShapeDiamond(this)
 	}
 }
