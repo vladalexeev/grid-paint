@@ -117,6 +117,13 @@ function pointToTriangleCoord(x,y,sideLength) {
     return {col:d1+d2, row:cellY}
 }
 
+/**
+ * get path and center point of triangle by it's cell coordinates 
+ * @param {Object} col
+ * @param {Object} row
+ * @param {Object} sideLength
+ * @return array of four points: points [0,1,2] - corners, point[3] - center point
+ */
 function trianglePath(col, row, sideLength) {
 	rowHeight=sideLength*sin60
 	x=col*sideLength/2
@@ -126,13 +133,15 @@ function trianglePath(col, row, sideLength) {
 			return [
 				{x:x, y:y+rowHeight},
 				{x:x+sideLength, y:y+rowHeight},
-				{x:x+sideLength/2, y:y}
+				{x:x+sideLength/2, y:y},
+				{x:x+sideLength/2, y:y+rowHeight*2/3}
 				]
 		} else {
 			return [
 				{x:x, y:y},
 				{x:x+sideLength, y:y},
-				{x:x+sideLength/2, y:y+rowHeight}
+				{x:x+sideLength/2, y:y+rowHeight},
+				{x:x+sideLength/2, y:y+rowHeight/3}
 				]
 		}
 	} else {
@@ -140,16 +149,22 @@ function trianglePath(col, row, sideLength) {
 			return [
 				{x:x, y:y},
 				{x:x+sideLength, y:y},
-				{x:x+sideLength/2, y:y+rowHeight}
+				{x:x+sideLength/2, y:y+rowHeight},
+				{x:x+sideLength/2, y:y+rowHeight/3}
 				]
 		} else {
 			return [
 				{x:x, y:y+rowHeight},
 				{x:x+sideLength, y:y+rowHeight},
-				{x:x+sideLength/2, y:y}
+				{x:x+sideLength/2, y:y},
+				{x:x+sideLength/2, y:y+rowHeight*2/3}
 				]
 		}
 	}
+}
+
+function triangleCenterPoint(col, row, sideLength) {
+	
 }
 
 

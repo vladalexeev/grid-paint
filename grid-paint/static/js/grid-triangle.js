@@ -30,6 +30,42 @@ function GridTriangle_ShapeFlat(parent) {
 	}   
 }
 
+function GridTriangle_ShapeDiamond(parent) {
+	this.name="diamond"
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=trianglePath(col, row, parent.cellSize);
+		var c=hexToHsl(color);
+		paper.setStart();
+		
+        var c1=hslToHex(c.h, c.s, c.l+0.2);
+        var e1=paper.path([
+        	"M", pp[0].x+dx, pp[0].y+dy,
+        	"L", pp[1].x+dx, pp[1].y+dy,
+        	"L", pp[3].x+dx, pp[3].y+dy,"Z"
+        ])
+        e1.attr({"fill":c1, "stroke-width":0})
+        
+        var c2=hslToHex(c.h, c.s, c.l+0.1);
+        var e2=paper.path([
+        	"M", pp[0].x+dx, pp[0].y+dy,
+        	"L", pp[2].x+dx, pp[2].y+dy,
+        	"L", pp[3].x+dx, pp[3].y+dy,"Z"
+        ])
+        e2.attr({"fill":c2, "stroke-width":0})
+        
+        var c3=hslToHex(c.h, c.s, c.l-0.1);
+        var e3=paper.path([
+        	"M", pp[1].x+dx, pp[1].y+dy,
+        	"L", pp[2].x+dx, pp[2].y+dy,
+        	"L", pp[3].x+dx, pp[3].y+dy,"Z"
+        ])
+        e3.attr({"fill":c3, "stroke-width":0})
+        
+        return paper.setFinish();
+	}
+}
+
 
 
 function GridTriangle () {
@@ -73,7 +109,8 @@ function GridTriangle () {
 	
 	this.shapes={
 		"empty": new GridTriangle_ShapeEmpty(this),
-		"flat": new GridTriangle_ShapeFlat(this)
+		"flat": new GridTriangle_ShapeFlat(this),
+		"diamond": new GridTriangle_ShapeDiamond(this)
 	}
 	
 }
