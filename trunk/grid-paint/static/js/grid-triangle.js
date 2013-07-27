@@ -66,6 +66,56 @@ function GridTriangle_ShapeDiamond(parent) {
 	}
 }
 
+function GridTriangle_ShapeJewel(parent) {
+	this.name="diamond"
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=trianglePath(col, row, parent.cellSize);
+		var c=hexToHsl(color);
+		paper.setStart();
+		
+        var c1=hslToHex(c.h, c.s, c.l+0.2);
+        var e1=paper.path([
+        	"M", pp[0].x+dx, pp[0].y+dy,
+        	"L", pp[1].x+dx, pp[1].y+dy,
+        	"L", pp[1].x+(pp[3].x-pp[1].x)/2+dx, pp[1].y+(pp[3].y-pp[1].y)/2+dy,
+        	"L", pp[0].x+(pp[3].x-pp[0].x)/2+dx, pp[0].y+(pp[3].y-pp[0].y)/2+dy,
+        	"Z"
+        ])
+        e1.attr({"fill":c1, "stroke-width":0})
+        
+        var c2=hslToHex(c.h, c.s, c.l+0.1);
+        var e2=paper.path([
+        	"M", pp[0].x+dx, pp[0].y+dy,
+        	"L", pp[2].x+dx, pp[2].y+dy,
+        	"L", pp[2].x+(pp[3].x-pp[2].x)/2+dx, pp[2].y+(pp[3].y-pp[2].y)/2+dy,
+        	"L", pp[0].x+(pp[3].x-pp[0].x)/2+dx, pp[0].y+(pp[3].y-pp[0].y)/2+dy,
+        	"Z"
+        ])
+        e2.attr({"fill":c2, "stroke-width":0})
+        
+        var c3=hslToHex(c.h, c.s, c.l-0.1);
+        var e3=paper.path([
+        	"M", pp[1].x+dx, pp[1].y+dy,
+        	"L", pp[2].x+dx, pp[2].y+dy,
+        	"L", pp[2].x+(pp[3].x-pp[2].x)/2+dx, pp[2].y+(pp[3].y-pp[2].y)/2+dy,
+        	"L", pp[1].x+(pp[3].x-pp[1].x)/2+dx, pp[1].y+(pp[3].y-pp[1].y)/2+dy,
+        	"Z"
+        ])
+        e3.attr({"fill":c3, "stroke-width":0})
+        
+        var e4=paper.path([
+        	"M", pp[0].x+(pp[3].x-pp[0].x)/2+dx, pp[0].y+(pp[3].y-pp[0].y)/2+dy,
+        	"L", pp[1].x+(pp[3].x-pp[1].x)/2+dx, pp[1].y+(pp[3].y-pp[1].y)/2+dy,
+        	"L", pp[2].x+(pp[3].x-pp[2].x)/2+dx, pp[2].y+(pp[3].y-pp[2].y)/2+dy,
+        	"Z"
+        ])
+        e4.attr({"fill":color, "stroke-width":0})
+        
+        return paper.setFinish();
+	}	
+}
+
 
 
 function GridTriangle () {
@@ -110,7 +160,8 @@ function GridTriangle () {
 	this.shapes={
 		"empty": new GridTriangle_ShapeEmpty(this),
 		"flat": new GridTriangle_ShapeFlat(this),
-		"diamond": new GridTriangle_ShapeDiamond(this)
+		"diamond": new GridTriangle_ShapeDiamond(this),
+		"jewel": new GridTriangle_ShapeJewel(this)
 	}
 	
 }
