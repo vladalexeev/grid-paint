@@ -122,8 +122,8 @@ function paintOnCanvas(col, row, shapeName, color) {
 
 function paintOnCanvasByMouseEvent(event) {
 	var cell=grid.pointToCell(
-		event.pageX - $("#canvas").position().left+$("#canvas-wrapper").scrollLeft(),
-		event.pageY - $("#canvas").position().top+$("#canvas-wrapper").scrollTop());
+		event.pageX - $("#canvas").position().left/*+$("#canvas-wrapper").scrollLeft()*/,
+		event.pageY - $("#canvas").position().top/*+$("#canvas-wrapper").scrollTop()*/);
 	$("#coordinates").text(cell.col+" "+cell.row);
 			
 	if (paperMouseDown) {
