@@ -132,8 +132,8 @@ function trianglePath(col, row, sideLength) {
 		if (col % 2 == 0) {
 			return [
 				{x:x, y:y+rowHeight},
-				{x:x+sideLength, y:y+rowHeight},
 				{x:x+sideLength/2, y:y},
+				{x:x+sideLength, y:y+rowHeight},
 				{x:x+sideLength/2, y:y+rowHeight*2/3}
 				]
 		} else {
@@ -155,8 +155,8 @@ function trianglePath(col, row, sideLength) {
 		} else {
 			return [
 				{x:x, y:y+rowHeight},
-				{x:x+sideLength, y:y+rowHeight},
 				{x:x+sideLength/2, y:y},
+				{x:x+sideLength, y:y+rowHeight},
 				{x:x+sideLength/2, y:y+rowHeight*2/3}
 				]
 		}
