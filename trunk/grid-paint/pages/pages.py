@@ -33,8 +33,10 @@ class PagePainter(BasicPageRequestHandler):
         else:
             new_artwork={
                          'backgroundColor': '#ffffff',
-                         'width': 2000,
-                         'height': 2000,
+                         'canvasSize':{
+                                       'width': 2000,
+                                       'height': 2000,                                       
+                                       },
                          'layers': [{
                                      'grid':self.request.get('grid'),
                                      'cellSize':24,                     

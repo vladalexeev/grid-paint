@@ -7,6 +7,8 @@ var tan60=Math.tan(60/180*Math.PI);
 
 var gridLineColor="#d0d0d0";
 
+var gridFactory=[];
+
 function hexToHsl(hex) {
 	return Raphael.color(hex);
 }
@@ -163,13 +165,10 @@ function trianglePath(col, row, sideLength) {
 	}
 }
 
-function triangleCenterPoint(col, row, sideLength) {
-	
-}
-
 
 function GridHex() {
 	this.cellSize=24;
+	this.name="hex";
 	this._sideLength=this.cellSize/2;
 	this._stroke_dash_array=this._sideLength+","+this.cellSize;
 	
@@ -250,3 +249,9 @@ function GridHex() {
 	
 	this.shapes=[];
 }
+
+// Register grid
+gridFactory["hex"]=function() {
+	return new GridHex();
+}
+

@@ -157,10 +157,10 @@ function getArtworkEffectiveRect(grid, artwork) {
 	}
 	
 	return {
-		left: x1,
-		top: y1,
-		width: x2-x1+1,
-		height: y2-y1+1
+		left: Math.floor(x1),
+		top: Math.floor(y1),
+		width: Math.round(x2-x1+1),
+		height: Math.round(y2-y1+1)
 	}
 }
 
@@ -173,7 +173,7 @@ function saveArtwork() {
 		},
 		backgroundColor: backgroundColor,
 		layers:[{
-			grid:artwork.layers[0].grid,
+			grid:grid.name,
 			cellSize:grid.cellSize,
 			cells:[]	
 		}]
@@ -215,7 +215,7 @@ $(function() {
 		.css("height",artwork.canvasSize.height);
 		
 	paper=new Raphael("canvas",artwork.canvasSize.width,artwork.canvasSize.height);
-	grid=eval("new "+artwork.layers[0].grid+"()");
+	grid=gridFactory[artwork.layers[0].grid]();
 	grid.cellSize=artwork.layers[0].cellSize;
 	grid.paintGrid(paper);
 	createShapesToolbar();
