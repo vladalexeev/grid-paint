@@ -113,10 +113,10 @@ function createShapesToolbar() {
 }
 
 function paintOnCanvas(col, row, shapeName, color) {
-	var item=gridArtwork.setItem(col, row, shapeName, color);
-	if (!item.element && item.shapeName!="empty") {
+	var cell=gridArtwork.setCell(col, row, shapeName, color);
+	if (!cell.element && cell.shapeName!="empty") {
 		var element=grid.shapes[shapeName].paint(paper, col, row, color, 0, 0)
-		item.element=element;
+		cell.element=element;
 	}
 }
 
@@ -131,10 +131,46 @@ function paintOnCanvasByMouseEvent(event) {
 	}
 }
 
+function getArtworkEffectiveRect(grid, artwork) {
+	var x1=100000;
+	var y1=100000;
+	var x2=0;
+	var y2=0;
+	for (var row=0; row<artwork.cells.length; row++) {
+		for (var col=0; col<artwork.cells[row].length; col++) {
+			if (artwork.cells[row][col] && !artwork.cells[row][col].shapeName!='empty') {
+				var cellRect=grid.getCellRect(col, row);
+				if (cellRect.left<x1) {
+					x1=cellRect.left;
+				}
+				if (cellRect.top<y1) {
+					y1=cellRect.top;
+				}
+				if (cellRect.left+cellRect.width>x2) {
+					x2=cellRect.left+cellRect.width;
+				}
+				if (cellRect.top+cellRect.height>y2) {
+					y2=cellRect.top+cellRect.height;
+				}
+			}
+		}
+	}
+	
+	return {
+		left: x1,
+		top: y1,
+		width: x2-x1+1,
+		height: y2-y1+1
+	}
+}
+
 function saveArtwork() {
 	var a={
-		width: artwork.width,
-		height: artwork.height,
+		effectiveRect: getArtworkEffectiveRect(grid,gridArtwork),
+		canvasSize: {
+			width: artwork.width,
+			height: artwork.height
+		},
 		backgroundColor: backgroundColor,
 		layers:[{
 			grid:artwork.layers[0].grid,
@@ -147,14 +183,14 @@ function saveArtwork() {
 		a.id=artwork.id;
 	}
 	
-	for (var row=0; row<gridArtwork.items.length; row++) {
-		for (var col=0; col<gridArtwork.items[row].length; col++) {
-			if (gridArtwork.items[row][col] && gridArtwork.items[row][col].shapeName!="empty") {
+	for (var row=0; row<gridArtwork.cells.length; row++) {
+		for (var col=0; col<gridArtwork.cells[row].length; col++) {
+			if (gridArtwork.cells[row][col] && gridArtwork.cells[row][col].shapeName!="empty") {
 				a.layers[0].cells.push({
 					col:col,
 					row:row,
-					shape:gridArtwork.items[row][col].shapeName,
-					color:gridArtwork.items[row][col].color	
+					shape:gridArtwork.cells[row][col].shapeName,
+					color:gridArtwork.cells[row][col].color	
 				})
 			}
 		}
@@ -175,8 +211,8 @@ $(function() {
 	backgroundColor=artwork.backgroundColor;
 	$("#canvas")
 		.css("background-color",backgroundColor)
-		.css("width",artwork.width)
-		.css("height",artwork.height);
+		.css("width",artwork.canvasSize.width)
+		.css("height",artwork.canvasSize.height);
 	
 	paper=new Raphael("canvas",artwork.width,artwork.height);
 	grid=eval("new "+artwork.layers[0].grid+"()");

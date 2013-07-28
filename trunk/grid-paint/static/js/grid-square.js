@@ -191,10 +191,12 @@ function GridSquare() {
 			}
 	}
 	
-	this.getCellPoint=function(row,col) {
+	this.getCellRect=function(col, row) {
 	    return {
-	        x: row*this.cellSize,
-	        y: col*this.cellSize
+	        left: row*this.cellSize,
+	        top: col*this.cellSize,
+	        width: this.cellSize,
+	        height: this.cellSize
 	    }
 	}
 	
@@ -206,4 +208,5 @@ function GridSquare() {
 		"jewel3": new GridSquare_ShapeJewel3(this),
 		"diamond": new GridSquare_ShapeDiamond(this)
 	}
+	
 }
