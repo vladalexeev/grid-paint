@@ -15,13 +15,17 @@ class BasicShape:
         self.grid=grid
 
 class ShapeFlat(BasicShape):
-    def paint(self, image, x, y, color):
+    def paint(self, image, x, y, color, dx, dy):
+        x+=dx
+        y+=dy
         image.rectangle(
             [x, y, x+self.grid.cell_size, y+self.grid.cell_size],
             fill=color)
         
 class ShapeDiamond(BasicShape):
-    def paint(self, image, x, y, color):
+    def paint(self, image, x, y, color, dx, dy):
+        x+=dx
+        y+=dy
         cell_size=self.grid.cell_size
         rgb=clr.hex_to_rgb(color)
         hls=colorsys.rgb_to_hls(*rgb)
@@ -58,7 +62,9 @@ class BasicShapeJewel(BasicShape):
     def get_facet(self):
         raise NotImplementedError("Should implement this method")
 
-    def paint(self, image, x, y, color):
+    def paint(self, image, x, y, color, dx, dy):
+        x+=dx
+        y+=dy
         rgb=clr.hex_to_rgb(color)
         hls=colorsys.rgb_to_hls(*rgb)
         cell_size=self.grid.cell_size
@@ -124,11 +130,11 @@ class GridSquare:
                 "jewel3": ShapeJewel3(self)
                 }
         
-    def paintShape(self, image, jsonCell):
+    def paintShape(self, image, jsonCell, dx, dy):
         x=jsonCell['col']*self.cell_size
         y=jsonCell['row']*self.cell_size
         shape=self.shapes[jsonCell['shape']]
-        shape.paint(image, x, y, jsonCell['color'])
+        shape.paint(image, x, y, jsonCell['color'], dx, dy)
         
 
     

@@ -168,8 +168,8 @@ function saveArtwork() {
 	var a={
 		effectiveRect: getArtworkEffectiveRect(grid,gridArtwork),
 		canvasSize: {
-			width: artwork.width,
-			height: artwork.height
+			width: artwork.canvasSize.width,
+			height: artwork.canvasSize.height
 		},
 		backgroundColor: backgroundColor,
 		layers:[{
@@ -213,8 +213,8 @@ $(function() {
 		.css("background-color",backgroundColor)
 		.css("width",artwork.canvasSize.width)
 		.css("height",artwork.canvasSize.height);
-	
-	paper=new Raphael("canvas",artwork.width,artwork.height);
+		
+	paper=new Raphael("canvas",artwork.canvasSize.width,artwork.canvasSize.height);
 	grid=eval("new "+artwork.layers[0].grid+"()");
 	grid.cellSize=artwork.layers[0].cellSize;
 	grid.paintGrid(paper);

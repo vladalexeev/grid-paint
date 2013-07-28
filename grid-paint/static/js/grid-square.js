@@ -193,8 +193,8 @@ function GridSquare() {
 	
 	this.getCellRect=function(col, row) {
 	    return {
-	        left: row*this.cellSize,
-	        top: col*this.cellSize,
+	        left: col*this.cellSize,
+	        top: row*this.cellSize,
 	        width: this.cellSize,
 	        height: this.cellSize
 	    }
