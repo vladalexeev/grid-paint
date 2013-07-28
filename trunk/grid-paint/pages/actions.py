@@ -42,14 +42,17 @@ class ActionSaveArtwork(BasicRequestHandler):
         
         ###
         image=Image.new('RGB', 
-                        (json_obj['canvasSize']['width'],json_obj['canvasSize']['height']),
+                        (json_obj['effectiveRect']['width'],json_obj['effectiveRect']['height']),
                         json_obj['backgroundColor'])
         image_draw=ImageDraw.Draw(image)
+        
+        dx=-json_obj['effectiveRect']['left']
+        dy=-json_obj['effectiveRect']['top']
         
         grid=GridSquare();
         layer=json_obj['layers'][0]
         for cell in layer['cells']:
-            grid.paintShape(image_draw, cell)
+            grid.paintShape(image_draw, cell, dx, dy)
         
         memory_file=StringIO.StringIO()
         image.save(memory_file, 'png')
