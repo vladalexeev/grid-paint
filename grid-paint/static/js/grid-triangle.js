@@ -120,6 +120,7 @@ function GridTriangle_ShapeJewel(parent) {
 
 function GridTriangle () {
 	this.cellSize=24;
+	this.name="triangle";
 	
 	this._createGridLine=function(paper, pathArray) {
 		var path=paper.path(pathArray);
@@ -157,11 +158,26 @@ function GridTriangle () {
 		return {w:this.cellSize, h:this.cellSize*sin60}
 	}
 	
+	this.getCellRect=function(col, row) {
+		var rowHeight=this.cellSize*sin60;
+		return {
+			left: col*this.cellSize/2,
+			top: row*rowHeight,
+			width: this.cellSize,
+			height: rowHeight
+		}
+	}
+	
 	this.shapes={
 		"empty": new GridTriangle_ShapeEmpty(this),
 		"flat": new GridTriangle_ShapeFlat(this),
 		"diamond": new GridTriangle_ShapeDiamond(this),
 		"jewel": new GridTriangle_ShapeJewel(this)
 	}
-	
 }
+
+// Register grid
+gridFactory["triangle"]=function() {
+	return new GridTriangle();
+}
+

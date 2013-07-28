@@ -156,6 +156,7 @@ function GridSquare_ShapeJewel3(parent) {
 
 function GridSquare() {
 	this.cellSize=24;
+	this.name="square";
 	
 	this._createGridLine=function(paper, pathArray) {
 		var path=paper.path(pathArray);
@@ -210,3 +211,9 @@ function GridSquare() {
 	}
 	
 }
+
+// Register grid
+gridFactory["square"]=function() {
+	return new GridSquare();
+}
+

@@ -9,13 +9,13 @@
 
 <div class="row text-center">
 	<div class="grid-selector-wrapper">
-		<div class="grid-selector-element" id="GridSquare"></div>
+		<div class="grid-selector-element" id="square"></div>
 	</div>
 	<div class="grid-selector-wrapper">
-		<div class="grid-selector-element" id="GridTriangle"></div>
+		<div class="grid-selector-element" id="triangle"></div>
 	</div>
 	<div class="grid-selector-wrapper">
-		<div class="grid-selector-element" id="GridHex"></div>
+		<div class="grid-selector-element" id="hex"></div>
 	</div>
 </div>
 
@@ -32,7 +32,7 @@ $(function() {
 		function() {
 			var gridName=$(this).attr("id");
 			var paper=new Raphael(gridName, 192, 120);
-			var grid=eval("new "+gridName+"()");
+			var grid=gridFactory[gridName]();
 			grid.paintGrid(paper);
 			//paper.rect(0,0,192,120);
 		});

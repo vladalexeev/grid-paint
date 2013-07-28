@@ -15,17 +15,17 @@ class BasicShape:
         self.grid=grid
 
 class ShapeFlat(BasicShape):
-    def paint(self, image, x, y, color, dx, dy):
-        x+=dx
-        y+=dy
+    def paint(self, image, col, row, color, dx, dy):
+        x=col*self.grid.cell_size+dx
+        y=row*self.grid.cell_size+dy
         image.rectangle(
             [x, y, x+self.grid.cell_size, y+self.grid.cell_size],
             fill=color)
         
 class ShapeDiamond(BasicShape):
-    def paint(self, image, x, y, color, dx, dy):
-        x+=dx
-        y+=dy
+    def paint(self, image, col, row, color, dx, dy):
+        x=col*self.grid.cell_size+dx
+        y=row*self.grid.cell_size+dy
         cell_size=self.grid.cell_size
         rgb=clr.hex_to_rgb(color)
         hls=colorsys.rgb_to_hls(*rgb)
@@ -62,9 +62,9 @@ class BasicShapeJewel(BasicShape):
     def get_facet(self):
         raise NotImplementedError("Should implement this method")
 
-    def paint(self, image, x, y, color, dx, dy):
-        x+=dx
-        y+=dy
+    def paint(self, image, col, row, color, dx, dy):
+        x=col*self.grid.cell_size+dx
+        y=row*self.grid.cell_size+dy
         rgb=clr.hex_to_rgb(color)
         hls=colorsys.rgb_to_hls(*rgb)
         cell_size=self.grid.cell_size
@@ -131,10 +131,11 @@ class GridSquare:
                 }
         
     def paintShape(self, image, jsonCell, dx, dy):
-        x=jsonCell['col']*self.cell_size
-        y=jsonCell['row']*self.cell_size
+        col=jsonCell['col']
+        row=jsonCell['row']
+        color=jsonCell['color']
         shape=self.shapes[jsonCell['shape']]
-        shape.paint(image, x, y, jsonCell['color'], dx, dy)
+        shape.paint(image, col, row, color, dx, dy)
         
 
     

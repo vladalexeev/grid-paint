@@ -13,6 +13,12 @@ from PIL import Image, ImageDraw
 
 from common import BasicRequestHandler
 from grid.square import GridSquare
+from grid.triangle import GridTriangle
+
+grids={
+       'square': GridSquare,
+       'triangle': GridTriangle
+       }
 
 class ActionSaveArtwork(BasicRequestHandler):
     def post(self):
@@ -49,8 +55,8 @@ class ActionSaveArtwork(BasicRequestHandler):
         dx=-json_obj['effectiveRect']['left']
         dy=-json_obj['effectiveRect']['top']
         
-        grid=GridSquare();
         layer=json_obj['layers'][0]
+        grid=grids[layer['grid']]();
         for cell in layer['cells']:
             grid.paintShape(image_draw, cell, dx, dy)
         
