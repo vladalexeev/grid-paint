@@ -41,7 +41,9 @@ class ActionSaveArtwork(BasicRequestHandler):
         json_obj=json.loads(artwork_json)
         
         ###
-        image=Image.new('RGB', (json_obj['width'],json_obj['height']),json_obj['backgroundColor'])
+        image=Image.new('RGB', 
+                        (json_obj['canvasSize']['width'],json_obj['canvasSize']['height']),
+                        json_obj['backgroundColor'])
         image_draw=ImageDraw.Draw(image)
         
         grid=GridSquare();

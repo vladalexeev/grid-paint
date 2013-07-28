@@ -35,35 +35,35 @@ function hslToHex(h,s,l) {
 }
 
 function GridArtwork() {
-    this.items=[];
+    this.cells=[];
     
     // Set item cell to the artwork
     // The function returns artwork item
     // Example {shapeName:"flat", color:"#ff0000", element:[Object]}
-    this.setItem=function (col, row, shapeName, color) {
-        while (this.items.length<=row) {
-            this.items[this.items.length]=[];
+    this.setCell=function (col, row, shapeName, color) {
+        while (this.cells.length<=row) {
+            this.cells[this.cells.length]=[];
         }
 
-        while (this.items[row].length<=col) {
-            this.items[row][this.items[row].length]=null;
+        while (this.cells[row].length<=col) {
+            this.cells[row][this.cells[row].length]=null;
         }
         
-        var oldItem=this.items[row][col];
+        var oldCell=this.cells[row][col];
         
         
-        if (oldItem && oldItem.shapeName==shapeName && oldItem.color==color) {
-            return oldItem;
+        if (oldCell && oldCell.shapeName==shapeName && oldCell.color==color) {
+            return oldCell;
         } else {
-        	if (oldItem && oldItem.element) {
-        		oldItem.element.remove();
+        	if (oldCell && oldCell.element) {
+        		oldCell.element.remove();
         	}
         	
-            this.items[row][col]= {
+            this.cells[row][col]= {
                 shapeName: shapeName,
                 color: color
             }
-            return this.items[row][col];
+            return this.cells[row][col];
         }        
     }
 }
