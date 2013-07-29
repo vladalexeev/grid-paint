@@ -1,15 +1,133 @@
+
+
+/**
+ * Return array of 6 points of shape in array with
+ * indices from 0 to 5, and element with index=6 
+ * with coordinate of center of shape 
+ * @param {Object} col
+ * @param {Object} row
+ * @param {Object} sideLength
+ */
+function getHexCellPoints(col, row, sideLength) {
+	var x=(sideLength+sideLength*cos60)*col;
+	var y=2*sideLength*sin60*row;
+	var halfHeight=sideLength*sin60;
+	var dx=sideLength*cos60;
+	if (col % 2 == 1) {
+		y+=sideLength*sin60;
+	}
+	
+	return [
+		{x: x, y: y+halfHeight},
+		{x: x+dx, y: y},
+		{x: x+dx+sideLength, y: y},
+		{x: x+2*dx+sideLength, y: y+halfHeight},
+		{x: x+dx+sideLength, y: y+2*halfHeight},
+		{x: x+dx, y: y+2*halfHeight},
+		{x: x+dx+sideLength/2, y: y+halfHeight}
+	]
+}
+
+
+function GridHex_ShapeEmpty(parent) {
+	this.name="empty";
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=getHexCellPoints(col, row, parent.cellSize/2);
+	    var element=paper.path([
+	    		"M",pp[0].x+dx, pp[0].y+dy,
+	    		"L",pp[1].x+dx, pp[1].y+dy,
+	    		"L",pp[2].x+dx, pp[2].y+dy,
+	    		"L",pp[3].x+dx, pp[3].y+dy,
+	    		"L",pp[4].x+dx, pp[4].y+dy,
+	    		"L",pp[5].x+dx, pp[5].y+dy,"Z"]);
+	    element.attr({"stroke":"#808080"});
+	    return element;
+	}   
+}
+
+function GridHex_ShapeFlat(parent) {
+	this.name="flat";
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=getHexCellPoints(col, row, parent.cellSize/2);
+	    var element=paper.path([
+	    		"M",pp[0].x+dx, pp[0].y+dy,
+	    		"L",pp[1].x+dx, pp[1].y+dy,
+	    		"L",pp[2].x+dx, pp[2].y+dy,
+	    		"L",pp[3].x+dx, pp[3].y+dy,
+	    		"L",pp[4].x+dx, pp[4].y+dy,
+	    		"L",pp[5].x+dx, pp[5].y+dy,"Z"]);
+	    element.attr({"fill":color, "stroke-width":0});
+	    return element;
+	}   
+}
+
+function GridHex_ShapeDiamond(parent) {
+	this.name="diamond";
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=getHexCellPoints(col, row, parent.cellSize/2);
+		var c=hexToHsl(color);
+		paper.setStart();
+		
+		var c0=hslToHex(c.h, c.s, c.l+0.2);
+	    var e0=paper.path([
+	    		"M",pp[0].x+dx, pp[0].y+dy,
+	    		"L",pp[1].x+dx, pp[1].y+dy,
+	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    e0.attr({"fill":c0, "stroke-width":0});
+	    
+   		var c1=hslToHex(c.h, c.s, c.l+0.1);
+	    var e1=paper.path([
+	    		"M",pp[1].x+dx, pp[1].y+dy,
+	    		"L",pp[2].x+dx, pp[2].y+dy,
+	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    e1.attr({"fill":c1, "stroke-width":0});
+
+   		var c2=hslToHex(c.h, c.s, c.l-0.1);	    
+   	    var e2=paper.path([
+	    		"M",pp[2].x+dx, pp[2].y+dy,
+	    		"L",pp[3].x+dx, pp[3].y+dy,
+	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    e2.attr({"fill":c2, "stroke-width":0});
+
+   		var c3=hslToHex(c.h, c.s, c.l-0.2);	    
+   	    var e3=paper.path([
+	    		"M",pp[3].x+dx, pp[3].y+dy,
+	    		"L",pp[4].x+dx, pp[4].y+dy,
+	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    e3.attr({"fill":c3, "stroke-width":0});
+
+   		var c4=c2;	    
+   	    var e4=paper.path([
+	    		"M",pp[4].x+dx, pp[4].y+dy,
+	    		"L",pp[5].x+dx, pp[5].y+dy,
+	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    e4.attr({"fill":c4, "stroke-width":0});
+
+		var c5=c1
+	    var e5=paper.path([
+	    		"M",pp[5].x+dx, pp[5].y+dy,
+	    		"L",pp[0].x+dx, pp[0].y+dy,
+	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    e5.attr({"fill":c5, "stroke-width":0});
+	    
+	    return paper.setFinish();;
+	}   	
+}
+
+
 function GridHex() {
 	this.cellSize=24;
 	this.name="hex";
-	this._sideLength=this.cellSize/2;
-	this._stroke_dash_array=this._sideLength+","+this.cellSize;
 	
-	this._createGridLine=function(paper, pathArray) {
+	this._createGridLine=function(paper, pathArray, stroke_dash_array) {
 		var path=paper.path(pathArray);
         path.attr({
             "stroke":"#d0d0d0",
         })
-        path.node.setAttribute("stroke-dasharray",this._stroke_dash_array);
+        path.node.setAttribute("stroke-dasharray",stroke_dash_array);
 	}
 	
 	this.paintGrid=function(paper) {
@@ -18,46 +136,72 @@ function GridHex() {
 		var sideLength=this.cellSize/2;
 		var halfHeight=sideLength*sin60;
 		var dx=sideLength*cos60;
+		
+		stroke_dash_array=sideLength+","+this.cellSize;
 
 		for (y=0; y<paper.height; y+=halfHeight*2) {
-		    this._createGridLine(paper,["M ",dx,y,"H",paper.width]);
+		    this._createGridLine(
+		    	paper,
+		    	["M ",dx,y,"H",paper.width],
+		    	stroke_dash_array);
 		}
 		
 		for (y=halfHeight; y<paper.height; y+=halfHeight*2) {
-		    this._createGridLine(paper,["M",2*dx+sideLength,y,"H",paper.width]);
+		    this._createGridLine(
+		    	paper,
+		    	["M",2*dx+sideLength,y,"H",paper.width],
+		    	stroke_dash_array);
 		}
 		
 		var slantedLinesStep=2*dx+2*sideLength;
 		var hexBehind=Math.floor(paperHeight/slantedLinesStep);
 		
 		for (x=dx+sideLength-hexBehind*slantedLinesStep; x<paper.width; x+=slantedLinesStep) {
-		    this._createGridLine(paper,["M",x,0,"L",x+paperHeight*tan30,paperHeight]);
+		    this._createGridLine(
+		    	paper,
+		    	["M",x,0,"L",x+paperHeight*tan30,paperHeight],
+		    	stroke_dash_array);
 		}
 		
 		for (x=0-hexBehind*slantedLinesStep; x<paper.width; x+=slantedLinesStep) {
-            this._createGridLine(paper,["M",x,halfHeight,"L",x+paperHeight*tan30,halfHeight+paperHeight]);
+            this._createGridLine(
+            	paper,
+            	["M",x,halfHeight,"L",x+paperHeight*tan30,halfHeight+paperHeight],
+            	stroke_dash_array);
         }
         
         for (x=dx+sideLength-hexBehind*slantedLinesStep; x<paper.width; x+=slantedLinesStep) {
-            this._createGridLine(paper,["M",x,halfHeight*2,"L",x+paperHeight*tan30,halfHeight*2+paperHeight]);
+            this._createGridLine(
+            	paper,
+            	["M",x,halfHeight*2,"L",x+paperHeight*tan30,halfHeight*2+paperHeight],
+            	stroke_dash_array);
         }
         
 		
 		for (x=dx; x<paper.width+hexBehind*slantedLinesStep; x+=slantedLinesStep) {
-            this._createGridLine(paper,["M",x,0,"L",x-paperHeight*tan30,paperHeight]);
+            this._createGridLine(
+            	paper,
+            	["M",x,0,"L",x-paperHeight*tan30,paperHeight],
+            	stroke_dash_array);
         }
         
         for (x=2*dx+sideLength; x<paper.width+hexBehind*slantedLinesStep; x+=slantedLinesStep) {
-            this._createGridLine(paper,["M",x,halfHeight,"L",x-paperHeight*tan30,halfHeight+paperHeight]);
+            this._createGridLine(
+            	paper,
+            	["M",x,halfHeight,"L",x-paperHeight*tan30,halfHeight+paperHeight],
+            	stroke_dash_array);
         }
         
         for (x=dx; x<paper.width+hexBehind*slantedLinesStep; x+=slantedLinesStep) {
-            this._createGridLine(paper,["M",x,2*halfHeight,"L",x-paperHeight*tan30,2*halfHeight+paperHeight]);
+            this._createGridLine(
+            	paper,["M",x,2*halfHeight,"L",x-paperHeight*tan30,2*halfHeight+paperHeight],
+            	stroke_dash_array);
         }
 	}
 	
 	this.pointToCell=function(x,y) {
-		var triangleCell=pointToTriangleCoord(x,y,this._sideLength);
+		sideLength=this.cellSize/2;
+		var triangleCell=pointToTriangleCoord(x,y,sideLength);
 		if (triangleCell.col<0) {
 			return {col:-1, row:-1};
 		}
@@ -79,7 +223,21 @@ function GridHex() {
 		}
 	}
 	
-	this.shapes=[];
+	this.getCellRect=function(col, row) {
+		sideLength=this.cellSize/2;
+		return {
+			left: (sideLength+sideLength*cos60)*col,
+			top: row*2*sideLength*sin60+(col % 2 == 0 ? 0 : sideLength*sin60),
+			width: sideLength+2*sideLength*cos60,
+			height: 2*sideLength*sin60
+		}
+	}
+	
+	this.shapes={
+		"empty": new GridHex_ShapeEmpty(this),
+		"flat": new GridHex_ShapeFlat(this),
+		"diamond": new GridHex_ShapeDiamond(this)
+	};
 }
 
 // Register grid
