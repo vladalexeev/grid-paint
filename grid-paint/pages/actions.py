@@ -14,10 +14,12 @@ from PIL import Image, ImageDraw
 from common import BasicRequestHandler
 from grid.square import GridSquare
 from grid.triangle import GridTriangle
+from grid.hex import GridHex
 
 grids={
        'square': GridSquare,
-       'triangle': GridTriangle
+       'triangle': GridTriangle,
+       'hex': GridHex
        }
 
 class ActionSaveArtwork(BasicRequestHandler):
