@@ -94,8 +94,8 @@ function paintShapeToolButton(shapeName) {
 	var shapePaper=new Raphael("shape-"+shapeName, shapeRect.width+20, shapeRect.height+20);
 	
 	if (shapeName==selectedShapeName) {
-		var bgElement=shapePaper.ellipse(shapeRect.w/2+10, shapeRect.h/2+10,
-			shapeRect.w/2+10, shapeRect.h/2+10);
+		var bgElement=shapePaper.ellipse(shapeRect.width/2+10, shapeRect.height/2+10,
+			shapeRect.width/2+10, shapeRect.height/2+10);
 		bgElement.attr({"fill":"r#ffffff:40-#cccccc", "stroke-width":0});
 	}
 	shape.paint(shapePaper, 0, 0, selectedColor, 10, 10);
