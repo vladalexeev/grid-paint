@@ -4,17 +4,15 @@ Created on 28.07.2013
 @author: Vlad
 '''
 
-import math
 import colorsys
 
 import grid.color as clr
+import grid.base as base
 
 
-
-sin60=math.sin(math.pi*60/180)
 
 def triangle_points(col, row, side_length):
-    row_height=side_length*sin60
+    row_height=side_length*base.sin60
     x=col*side_length/2
     y=row*row_height
     
@@ -125,9 +123,7 @@ class ShapeJewel:
                       fill=color)
         
 
-class GridTriangle:
-    cell_size=24
-    
+class GridTriangle(base.GridBase):
     def __init__(self):
         self.shapes={
                      'flat': ShapeFlat(self),
@@ -135,11 +131,5 @@ class GridTriangle:
                      'jewel': ShapeJewel(self)
                     }
     
-    def paintShape(self, image, jsonCell, dx, dy):
-        col=jsonCell['col']
-        row=jsonCell['row']
-        color=jsonCell['color']
-        shape=self.shapes[jsonCell['shape']]
-        shape.paint(image, col, row, color, dx, dy)
 
     

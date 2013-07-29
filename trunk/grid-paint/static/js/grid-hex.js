@@ -70,47 +70,49 @@ function GridHex_ShapeDiamond(parent) {
 		var pp=getHexCellPoints(col, row, parent.cellSize/2);
 		var c=hexToHsl(color);
 		paper.setStart();
+		cx=pp[6].x
+		cy=pp[6].y
 		
 		var c0=hslToHex(c.h, c.s, c.l+0.2);
 	    var e0=paper.path([
 	    		"M",pp[0].x+dx, pp[0].y+dy,
 	    		"L",pp[1].x+dx, pp[1].y+dy,
-	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    		"L",cx+dx, cy+dy,"Z"]);
 	    e0.attr({"fill":c0, "stroke-width":0});
 	    
    		var c1=hslToHex(c.h, c.s, c.l+0.1);
 	    var e1=paper.path([
 	    		"M",pp[1].x+dx, pp[1].y+dy,
 	    		"L",pp[2].x+dx, pp[2].y+dy,
-	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    		"L",cx+dx, cy+dy,"Z"]);
 	    e1.attr({"fill":c1, "stroke-width":0});
 
    		var c2=hslToHex(c.h, c.s, c.l-0.1);	    
    	    var e2=paper.path([
 	    		"M",pp[2].x+dx, pp[2].y+dy,
 	    		"L",pp[3].x+dx, pp[3].y+dy,
-	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    		"L",cx+dx, cy+dy,"Z"]);
 	    e2.attr({"fill":c2, "stroke-width":0});
 
    		var c3=hslToHex(c.h, c.s, c.l-0.2);	    
    	    var e3=paper.path([
 	    		"M",pp[3].x+dx, pp[3].y+dy,
 	    		"L",pp[4].x+dx, pp[4].y+dy,
-	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    		"L",cx+dx, cy+dy,"Z"]);
 	    e3.attr({"fill":c3, "stroke-width":0});
 
    		var c4=c2;	    
    	    var e4=paper.path([
 	    		"M",pp[4].x+dx, pp[4].y+dy,
 	    		"L",pp[5].x+dx, pp[5].y+dy,
-	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    		"L",cx+dx, cy+dy,"Z"]);
 	    e4.attr({"fill":c4, "stroke-width":0});
 
 		var c5=c1
 	    var e5=paper.path([
 	    		"M",pp[5].x+dx, pp[5].y+dy,
 	    		"L",pp[0].x+dx, pp[0].y+dy,
-	    		"L",pp[6].x+dx, pp[6].y+dy,"Z"]);
+	    		"L",cx+dx, cy+dy,"Z"]);
 	    e5.attr({"fill":c5, "stroke-width":0});
 	    
 	    return paper.setFinish();;

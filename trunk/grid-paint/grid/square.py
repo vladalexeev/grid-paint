@@ -7,6 +7,7 @@ Created on 24.07.2013
 '''
 
 import grid.color as clr
+import grid.base as base
 
 import colorsys
 
@@ -118,9 +119,7 @@ class ShapeJewel3(BasicShapeJewel):
         return self.grid.cell_size/3;
 
 
-class GridSquare:
-    cell_size=24;
-    
+class GridSquare(base.GridBase):
     def __init__(self):
         self.shapes={
                 "flat": ShapeFlat(self),
@@ -130,12 +129,6 @@ class GridSquare:
                 "jewel3": ShapeJewel3(self)
                 }
         
-    def paintShape(self, image, jsonCell, dx, dy):
-        col=jsonCell['col']
-        row=jsonCell['row']
-        color=jsonCell['color']
-        shape=self.shapes[jsonCell['shape']]
-        shape.paint(image, col, row, color, dx, dy)
         
 
     
