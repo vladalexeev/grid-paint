@@ -175,21 +175,10 @@ function GridSquare() {
 		}			
 	}
 	
-	this.getShapeRect=function() {
-		return {w:this.cellSize, h:this.cellSize};
-	}
-	
 	this.pointToCell=function(x,y) {
         var cellX=Math.floor(x/this.cellSize);
         var cellY=Math.floor(y/this.cellSize);	    
         return {col: cellX, row: cellY};
-	}
-	
-	this.shapeCenterToBasePoint=function(x,y) {
-		return {
-			x: x-this.cellSize/2, 
-			y: y-this.cellSize/2
-			}
 	}
 	
 	this.getCellRect=function(col, row) {
