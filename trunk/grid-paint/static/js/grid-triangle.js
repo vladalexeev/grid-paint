@@ -154,10 +154,6 @@ function GridTriangle () {
 		return pointToTriangleCoord(x,y,this.cellSize);
 	}
 	
-	this.getShapeRect=function() {
-		return {w:this.cellSize, h:this.cellSize*sin60}
-	}
-	
 	this.getCellRect=function(col, row) {
 		var rowHeight=this.cellSize*sin60;
 		return {
