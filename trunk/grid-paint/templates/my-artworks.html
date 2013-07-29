@@ -3,14 +3,25 @@
 
 {% block content %}  
 
-<div class="row">
+<div class="row-fluid">
+
+<ul class="thumbnails span12">	
 {% for a in artworks %}
-  <h2 class="span12">{{ a.name }}</h2>
-  <div class="span12">
-  	<a href="/painter?id={{ a.key }}">Edit</a>
-  	<a href="/images/png/{{ a.key }}">Show Image</a>
-  </div>
+  <li class="thumbnail">
+  	<div style="width:300px; height:200px; text-align: center;">
+  	  <img src="/images/png/{{ a.key }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
+  	</div>
+  	<div class="caption"><h3>{{ a.name }}</h3>
+  	  <div>
+  	    <a href="/painter?id={{ a.key }}" class="btn btn-small">Edit</a>
+  	    <a href="/images/png/{{ a.key }}" class="btn btn-small">Show Image</a>  		
+  	  </div>
+  	</div>
+  	
+  </li>
 {% endfor %}
+</ul>
+
 </div>
 
 
