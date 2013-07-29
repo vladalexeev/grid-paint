@@ -49,8 +49,10 @@ class ActionSaveArtwork(BasicRequestHandler):
         json_obj=json.loads(artwork_json)
         
         ###
+        image_width=json_obj['effectiveRect']['width']
+        image_height=json_obj['effectiveRect']['height']
         image=Image.new('RGB', 
-                        (json_obj['effectiveRect']['width'],json_obj['effectiveRect']['height']),
+                        (image_width,image_height),
                         json_obj['backgroundColor'])
         image_draw=ImageDraw.Draw(image)
         
@@ -66,6 +68,8 @@ class ActionSaveArtwork(BasicRequestHandler):
         image.save(memory_file, 'png')
         
         artwork.full_image=memory_file.getvalue()
+        artwork.full_image_width=image_width
+        artwork.full_image_height=image_height
         saved_id=artwork.put()
         
         

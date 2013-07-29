@@ -11,6 +11,8 @@ from common import BasicPageRequestHandler
 
 import db
 
+import logging
+
 class PageIndex(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/index.html', {})
@@ -48,13 +50,60 @@ class PagePainter(BasicPageRequestHandler):
                                 {
                                  'artwork_json': artwork_json
                                  })
+
+thumbnail_width=300
+thumbnail_height=200
+
+def convert_artwork_for_page(artwork):
+    result={
+            'key': artwork.key(),
+            'name': artwork.name,
+            'author': artwork.author,
+            'full_image_width': artwork.full_image_height,
+            'full_image_height': artwork.full_image_height
+            }
+        
+    width_aspect=float(artwork.full_image_width)/thumbnail_width
+    height_aspect=float(artwork.full_image_height)/thumbnail_height
+        
+    if width_aspect>height_aspect:
+        divisor=width_aspect
+    else:
+        divisor=height_aspect
+        
+    if divisor<1:
+        divisor=1
+        
+    result['thumbnail_width']=int(artwork.full_image_width/divisor)
+    result['thumbnail_height']=int(artwork.full_image_height/divisor)
+    
+    return result
+    
+    
         
 class PageMyImages(BasicPageRequestHandler):
     def get(self):
-        my_artworks=db.Artwork.all().filter('author', self.user_info.user).order('-date').fetch(20,0)
+        if self.request.get('offset'):
+            offset=int(self.request.get('offset'))
+        else:
+            offset=0
+        
+        my_artworks=db.Artwork.all().filter('author', self.user_info.user).order('-date').fetch(21,offset)
+        
+        has_prev_page=(offset>0)
+        has_next_page=len(my_artworks)>20
+        
+        if len(my_artworks)>20:
+            my_artworks=my_artworks[:20]
+            
+        artworks=[convert_artwork_for_page(ma) for ma in my_artworks]
+
+        
         self.write_template('templates/my-artworks.html', 
                             {
-                             'artworks': my_artworks
+                             'has_next_page': has_next_page,
+                             'has_prev_page': has_prev_page,
+                             'artworks': artworks
                              })
         
 class FullImageRequest(BasicPageRequestHandler):

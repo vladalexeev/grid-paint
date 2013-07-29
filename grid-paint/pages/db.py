@@ -13,3 +13,5 @@ class Artwork(db.Model):
     date = db.DateTimeProperty(auto_now=True)
     json = db.TextProperty()
     full_image = db.BlobProperty()
+    full_image_width = db.IntegerProperty()
+    full_image_height = db.IntegerProperty();
