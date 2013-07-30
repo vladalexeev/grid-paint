@@ -156,7 +156,7 @@ function getArtworkEffectiveRect(grid, artwork) {
 	var y2=0;
 	for (var row=0; row<artwork.cells.length; row++) {
 		for (var col=0; col<artwork.cells[row].length; col++) {
-			if (artwork.cells[row][col] && !artwork.cells[row][col].shapeName!='empty') {
+			if (artwork.cells[row][col] && artwork.cells[row][col].shapeName!='empty') {
 				var cellRect=grid.getCellRect(col, row);
 				if (cellRect.left<x1) {
 					x1=cellRect.left;
