@@ -11,6 +11,7 @@ application = webapp.WSGIApplication([
                                       ('/painter', pages.pages.PagePainter),
                                       ('/my-images', pages.pages.PageMyImages),
                                       ('/save-image', pages.actions.ActionSaveArtwork),
+                                      ('/delete-image', pages.actions.ActionDeleteArtwork),
                                       ('/images/png/(.*)', pages.pages.FullImageRequest)
                                       ], debug=True)
 

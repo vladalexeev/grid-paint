@@ -7,21 +7,20 @@
 
 <ul class="thumbnails span12">	
 {% for a in artworks %}
-  <li class="thumbnail">
-  	<div style="width:300px; height:200px; text-align: center;">
-  	  <img src="/images/png/{{ a.key }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
-  	</div>
-  	<div class="caption" >
-  		<h3 style="width:300px; height:40px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ a.name }}</h3>
-  	  <div>
-  	    <a href="/painter?id={{ a.key }}" class="btn btn-small btn-success" title="Edit image"><i class="icon icon-pencil icon-white"></i></a>
-  	    <a href="/painter?id={{ a.key }}" class="btn btn-small btn-danger" title="Delete image"><i class="icon icon-remove icon-white"></i></a>
-  	    <a href="/images/png/{{ a.key }}" class="btn btn-small" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
-  	    <a href="/images/svg/{{ a.key }}" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
-  	  </div>
-  	</div>
-  	
-  </li>
+	<li class="thumbnail">
+  		<div class="thumb-image">
+			<img src="/images/png/{{ a.key }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
+		</div>
+		<div class="caption" >
+			<h3 class="thumb-title">{{ a.name }}</h3>
+			<div>
+				<a href="/painter?id={{ a.key }}" class="btn btn-small btn-success" title="Edit image"><i class="icon icon-pencil icon-white"></i></a>
+				<a href="#" image-key="{{ a.key }}" class="btn btn-small btn-danger btn-delete-image" title="Delete image"><i class="icon icon-remove icon-white"></i></a>
+				<a href="/images/png/{{ a.key }}" class="btn btn-small" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
+				<a href="/images/svg/{{ a.key }}" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
+			</div>
+		</div>
+	</li>
 {% endfor %}
 </ul>
 
@@ -29,6 +28,34 @@
 
 
 
+<div id="modal-confirm-delete" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h3>Confirmation</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="#" id="btn-confirm-delete" class="btn btn-danger">Delete</a>
+  </div>
+</div>
+
+
+<script>
+$(function() {
+	$(".btn-delete-image").click(
+		function() {
+			var imageName=$(this).parents(".thumbnail").find(".thumb-title").text();
+			$("#modal-confirm-delete .modal-body").html(
+				"<p>Are you sure to delete image <i>'"+imageName+"'</i></p>");
+			$("#btn-confirm-delete").attr("href","/delete-image?id="+$(this).attr("image-key"))
+			$("#modal-confirm-delete").modal('show');
+		}
+	)
+})
+</script>
 
 
 
