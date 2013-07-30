@@ -6,7 +6,7 @@ Created on 28.07.2013
 
 import colorsys
 
-import grid.color as clr
+import graphics.color as clr
 import grid.base as base
 
 
