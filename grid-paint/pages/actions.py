@@ -74,3 +74,13 @@ class ActionSaveArtwork(BasicRequestHandler):
         
         
         self.redirect('/my-images')
+        
+class ActionDeleteArtwork(BasicRequestHandler):
+    def get(self):
+        artwork_id=self.request.get('id')
+        artwork=db.Artwork.get(artwork_id)
+        if self.user_info.superadmin or artwork.author==self.user_info.user:
+            artwork.delete();
+            self.redirect("/my-images")
+        else:
+            self.response.set_status(403)

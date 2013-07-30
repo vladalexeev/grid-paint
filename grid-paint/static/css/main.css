@@ -44,6 +44,24 @@ body {
 .grid-shape-button {
 }
 
+/* 
+ * Thumbnails
+ */
+
+.thumb-image {
+	width:300px; 
+	height:200px; 
+	text-align: center;
+}
+
+.thumb-title {
+	width:300px; 
+	height:40px; 
+	white-space: nowrap; 
+	overflow: hidden; 
+	text-overflow: ellipsis;
+}
+
 /*
  * Flat scrollbars 	
  */
