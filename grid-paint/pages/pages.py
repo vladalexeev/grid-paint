@@ -11,8 +11,6 @@ from common import BasicPageRequestHandler
 
 import db
 
-import logging
-
 class PageIndex(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/index.html', {})
@@ -106,10 +104,3 @@ class PageMyImages(BasicPageRequestHandler):
                              'artworks': artworks
                              })
         
-class FullImageRequest(BasicPageRequestHandler):
-    def get(self, *ar):
-        artwork_id=ar[0]
-        artwork=db.Artwork.get(artwork_id)
-        
-        self.response.headers['Content-Type']='image/png'     
-        self.response.out.write(artwork.full_image)

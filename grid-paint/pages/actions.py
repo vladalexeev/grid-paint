@@ -16,6 +16,8 @@ from grid.square import GridSquare
 from grid.triangle import GridTriangle
 from grid.hex import GridHex
 
+from graphics.svg import SvgImageWriter
+
 grids={
        'square': GridSquare,
        'triangle': GridTriangle,
@@ -84,3 +86,40 @@ class ActionDeleteArtwork(BasicRequestHandler):
             self.redirect("/my-images")
         else:
             self.response.set_status(403)
+            
+
+class PNGImageRequest(BasicRequestHandler):
+    def get(self, *ar):
+        artwork_id=ar[0]
+        artwork=db.Artwork.get(artwork_id)
+        
+        self.response.headers['Content-Type']='image/png'     
+        self.response.out.write(artwork.full_image)
+        
+class SVGImageRequest(BasicRequestHandler):
+    def get(self, *ar):
+        artwork_id=ar[0]
+        artwork=db.Artwork.get(artwork_id)
+        
+        if not artwork:
+            self.response.set_status(404)
+            return
+        
+        self.response.headers['Content-Type']='image/svg'
+        
+        json_obj=json.loads(artwork.json)
+        
+        image_width=json_obj['effectiveRect']['width']
+        image_height=json_obj['effectiveRect']['height']
+        image=SvgImageWriter(self.response.out)
+        image.startImage(image_width, image_height)
+        
+        dx=-json_obj['effectiveRect']['left']
+        dy=-json_obj['effectiveRect']['top']
+        
+        layer=json_obj['layers'][0]
+        grid=grids[layer['grid']]();
+        for cell in layer['cells']:
+            grid.paintShape(image, cell, dx, dy)
+            
+        image.endImage()
