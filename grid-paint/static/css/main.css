@@ -98,10 +98,15 @@ body {
  * For place ads to the right
  */
 
-/*.sidebar-nav {
-    padding: 9px 0;
-}*/
+.sidebar-adv {
+    /*padding: 9px 0;*/
+    position:fixed;
+    right:0; 
+    /*margin-top:60px;*/
+    width: 180px;
+}
 
+/*
 .row-fluid > .sidebar-nav {
     position: relative;
     top: 0;
@@ -109,6 +114,7 @@ body {
     width: 180px;
 }
 
+/*
 .left {
     float:left;
 }
@@ -119,11 +125,13 @@ body {
 
 .fixed-fluid {
     margin-left: 180px;
-}
+}*/
 .fluid-fixed {
     margin-right: 180px;
     margin-left:auto !important;
 }
+
+/*
 .fixed-fixed {
     margin: 0 180px;
-}
+}*/
