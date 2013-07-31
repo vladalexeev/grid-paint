@@ -9,15 +9,15 @@
 {% for a in artworks %}
 	<li class="thumbnail">
   		<div class="thumb-image">
-			<img src="/images/png/{{ a.key }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
+			<img src="/images/png/{{ a.key }}.png" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
 		</div>
 		<div class="caption" >
 			<h3 class="thumb-title">{{ a.name }}</h3>
 			<div>
 				<a href="/painter?id={{ a.key }}" class="btn btn-small btn-success" title="Edit image"><i class="icon icon-pencil icon-white"></i></a>
 				<a href="#" image-key="{{ a.key }}" class="btn btn-small btn-danger btn-delete-image" title="Delete image"><i class="icon icon-remove icon-white"></i></a>
-				<a href="/images/png/{{ a.key }}" class="btn btn-small" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
-				<a href="/images/svg/{{ a.key }}" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
+				<a href="/images/png/{{ a.key }}.png" class="btn btn-small" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
+				<a href="/images/svg/{{ a.key }}.svg" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
 			</div>
 		</div>
 	</li>
