@@ -5,7 +5,12 @@
  <link href="/css/jquery.minicolors.css" rel="stylesheet">
 {% endblock %}
 
-{% block content %}  
+{% block include_js %}
+{{ block.super }}
+<script src="/js/raphael-min.js"></script>
+{% endblock %}
+
+{% block content_full %}  
 
 <script src="/js/jquery.minicolors.js"></script>
 

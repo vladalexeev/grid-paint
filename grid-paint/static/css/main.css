@@ -92,3 +92,38 @@ body {
 	-webkit-border-bottom-right-radius: 4px;
 	-webkit-border-bottom-left-radius: 4px;
 }*/
+
+
+/*
+ * For place ads to the right
+ */
+
+/*.sidebar-nav {
+    padding: 9px 0;
+}*/
+
+.row-fluid > .sidebar-nav {
+    position: relative;
+    top: 0;
+    left:auto;
+    width: 180px;
+}
+
+.left {
+    float:left;
+}
+
+.right {
+    float:right;
+}
+
+.fixed-fluid {
+    margin-left: 180px;
+}
+.fluid-fixed {
+    margin-right: 180px;
+    margin-left:auto !important;
+}
+.fixed-fixed {
+    margin: 0 180px;
+}

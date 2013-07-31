@@ -1,9 +1,15 @@
-{% extends "base.html" %}
+{% extends "base-adv.html" %}
+
+
+{% block include_js %}
+{{ block.super }}
+<script src="/js/raphael-min.js"></script>
+{% endblock %}
 
 
 {% block content %}  
 
-<div class="row text-center">
+<div class="text-center">
 <h2>Choose a grid for new image</h2>	
 </div>
 
