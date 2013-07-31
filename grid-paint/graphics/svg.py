@@ -36,7 +36,7 @@ class SvgImageWriter:
             
         self.writer.write(
             '<rect x="{0}" y="{1}" width="{2}" height="{3}" fill="{4}" stroke-width="0" />'.format(
-                          rect[0], rect[1], rect[2]-rect[0], rect[3]-rect[1], color))
+                          rect[0], rect[1], rect[2]-rect[0]+1, rect[3]-rect[1]+1, color))
         
     def polygon(self, points, fill):
         '''

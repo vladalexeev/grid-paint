@@ -112,7 +112,9 @@ class SVGImageRequest(BasicRequestHandler):
         image_width=json_obj['effectiveRect']['width']
         image_height=json_obj['effectiveRect']['height']
         image=SvgImageWriter(self.response.out)
+        
         image.startImage(image_width, image_height)
+        image.rectangle((0,0,image_width,image_height), fill=json_obj['backgroundColor'])
         
         dx=-json_obj['effectiveRect']['left']
         dy=-json_obj['effectiveRect']['top']

@@ -19,9 +19,15 @@ class ShapeFlat(BasicShape):
     def paint(self, image, col, row, color, dx, dy):
         x=col*self.grid.cell_size+dx
         y=row*self.grid.cell_size+dy
-        image.rectangle(
-            [x, y, x+self.grid.cell_size, y+self.grid.cell_size],
-            fill=color)
+        image.polygon([(x,y),
+                       (x, y+self.grid.cell_size),
+                       (x+self.grid.cell_size, y+self.grid.cell_size),
+                       (x+self.grid.cell_size, y)],
+                      fill=color)
+        
+#        image.rectangle(
+#            [x, y, x+self.grid.cell_size-1, y+self.grid.cell_size-1],
+#            fill=color)
         
 class ShapeDiamond(BasicShape):
     def paint(self, image, col, row, color, dx, dy):
@@ -70,6 +76,12 @@ class BasicShapeJewel(BasicShape):
         hls=colorsys.rgb_to_hls(*rgb)
         cell_size=self.grid.cell_size
         facet=self.facet
+
+        image.polygon([(x+facet, y+facet),
+                       (x+facet, y+cell_size-facet),
+                       (x+cell_size-facet, y+cell_size-facet),
+                       (x+cell_size-facet, y+facet)],
+                      fill=color)
         
         c1=clr.rgb256(*colorsys.hls_to_rgb(*clr.lighten_hls(hls, 0.2)))
         image.polygon([(x, y),
@@ -99,11 +111,11 @@ class BasicShapeJewel(BasicShape):
                        (x+cell_size, y+cell_size)],
                       fill=c4)
                 
-        image.rectangle([x+facet,
-                         y+facet,
-                         x+cell_size-facet-1,
-                         y+cell_size-facet-1],
-                        fill=color)
+#        image.rectangle([x+facet,
+#                         y+facet,
+#                         x+cell_size-facet-1,
+#                         y+cell_size-facet-1],
+#                        fill=color)
 
 
 class ShapeJewel(BasicShapeJewel):    
