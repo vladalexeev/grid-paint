@@ -49,13 +49,12 @@ class PagePainter(BasicPageRequestHandler):
                                  'artwork_json': artwork_json
                                  })
 
-thumbnail_width=300
-thumbnail_height=200
 
-def convert_artwork_for_page(artwork):
+def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
     result={
             'key': artwork.key(),
             'name': artwork.name,
+            'date': artwork.date,
             'author': artwork.author,
             'full_image_width': artwork.full_image_height,
             'full_image_height': artwork.full_image_height
@@ -94,7 +93,7 @@ class PageMyImages(BasicPageRequestHandler):
         if len(my_artworks)>20:
             my_artworks=my_artworks[:20]
             
-        artworks=[convert_artwork_for_page(ma) for ma in my_artworks]
+        artworks=[convert_artwork_for_page(ma,300,200) for ma in my_artworks]
 
         
         self.write_template('templates/my-artworks.html', 
@@ -103,4 +102,13 @@ class PageMyImages(BasicPageRequestHandler):
                              'has_prev_page': has_prev_page,
                              'artworks': artworks
                              })
+        
+class PageImage(BasicPageRequestHandler):
+    def get(self, *arg):
+        artwork_id=arg[0]
+        artwork=db.Artwork.get(artwork_id)
+        self.write_template('templates/artwork-details.html', 
+                            {
+                             'artwork': convert_artwork_for_page(artwork, 600, 400)
+                            })
         
