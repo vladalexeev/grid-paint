@@ -2,6 +2,25 @@
 
 
 {% block content %}  
-<h1>Test page</h1>
+<div class="row-fluid">
+
+<ul class="thumbnails span12">	
+{% for a in artworks %}
+	<li class="thumbnail">
+  		<div class="thumb-image">
+  			<a href="/images/details/{{ a.key }}">
+			  <img src="/images/png/{{ a.key }}.png" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
+			</a>
+		</div>
+		<div class="caption" >
+			<h3 class="thumb-title">{{ a.name }}</h3>
+			<div>{{ a.author }}</div>
+			<div>{{ a.date }}</div>
+		</div>
+	</li>
+{% endfor %}
+</ul>
+
+</div>
 
 {% endblock content %}

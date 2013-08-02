@@ -103,6 +103,32 @@ class PageMyImages(BasicPageRequestHandler):
                              'artworks': artworks
                              })
         
+class PageAllImages(BasicPageRequestHandler):
+    def get(self):
+        if self.request.get('offset'):
+            offset=int(self.request.get('offset'))
+        else:
+            offset=0
+        
+        all_artworks=db.Artwork.all().order('-date').fetch(21,offset)
+        
+        has_prev_page=(offset>0)
+        has_next_page=len(all_artworks)>20
+        
+        if len(all_artworks)>20:
+            all_artworks=all_artworks[:20]
+            
+        artworks=[convert_artwork_for_page(a,300,200) for a in all_artworks]
+
+        
+        self.write_template('templates/index.html', 
+                            {
+                             'has_next_page': has_next_page,
+                             'has_prev_page': has_prev_page,
+                             'artworks': artworks
+                             })
+        
+        
 class PageImage(BasicPageRequestHandler):
     def get(self, *arg):
         artwork_id=arg[0]
