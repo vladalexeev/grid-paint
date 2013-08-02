@@ -11,6 +11,8 @@ from common import BasicPageRequestHandler
 
 import db
 
+page_size=6
+
 class PageIndex(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/index.html', {})
@@ -84,14 +86,21 @@ class PageMyImages(BasicPageRequestHandler):
             offset=int(self.request.get('offset'))
         else:
             offset=0
+            
+        if offset<0:
+            offset=0
         
-        my_artworks=db.Artwork.all().filter('author', self.user_info.user).order('-date').fetch(21,offset)
+        my_artworks=db.Artwork.\
+                        all().\
+                        filter('author', self.user_info.user).\
+                        order('-date').\
+                        fetch(page_size+1,offset)
         
         has_prev_page=(offset>0)
-        has_next_page=len(my_artworks)>20
+        has_next_page=len(my_artworks)>page_size
         
-        if len(my_artworks)>20:
-            my_artworks=my_artworks[:20]
+        if len(my_artworks)>page_size:
+            my_artworks=my_artworks[:page_size]
             
         artworks=[convert_artwork_for_page(ma,300,200) for ma in my_artworks]
 
@@ -100,6 +109,8 @@ class PageMyImages(BasicPageRequestHandler):
                             {
                              'has_next_page': has_next_page,
                              'has_prev_page': has_prev_page,
+                             'next_offset': offset+page_size,
+                             'prev_offset': offset-page_size,                             
                              'artworks': artworks
                              })
         
@@ -109,14 +120,17 @@ class PageAllImages(BasicPageRequestHandler):
             offset=int(self.request.get('offset'))
         else:
             offset=0
+            
+        if offset<0:
+            offset=0
         
-        all_artworks=db.Artwork.all().order('-date').fetch(21,offset)
+        all_artworks=db.Artwork.all().order('-date').fetch(page_size+1,offset)
         
         has_prev_page=(offset>0)
-        has_next_page=len(all_artworks)>20
+        has_next_page=len(all_artworks)>page_size
         
-        if len(all_artworks)>20:
-            all_artworks=all_artworks[:20]
+        if len(all_artworks)>page_size:
+            all_artworks=all_artworks[:page_size]
             
         artworks=[convert_artwork_for_page(a,300,200) for a in all_artworks]
 
@@ -125,6 +139,8 @@ class PageAllImages(BasicPageRequestHandler):
                             {
                              'has_next_page': has_next_page,
                              'has_prev_page': has_prev_page,
+                             'next_offset': offset+page_size,
+                             'prev_offset': offset-page_size,
                              'artworks': artworks
                              })
         
