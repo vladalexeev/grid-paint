@@ -16,8 +16,14 @@
 	</div>
 	
 	<div>
+		{{ artwork.author.nickname }}
+	</div>
+	
+	<div>
+		{% if can_edit_artwork %}
 		<a href="/painter?id={{ artwork.key }}" class="btn btn-small btn-success" title="Edit image"><i class="icon icon-pencil icon-white"></i> Edit</a>
-		<a href="#" image-key="{{ artwork.key }}" class="btn btn-small btn-danger btn-delete-image" title="Delete image"><i class="icon icon-remove icon-white"></i> Delete</a>
+		<a href="#" image-key="{{ artwork.key }}" class="btn btn-small btn-danger btn-delete-image" title="Delete image"><i class="icon icon-remove icon-white"></i> Delete</a>		
+		{% endif %}
 		<a href="/images/png/{{ artwork.key }}.png" class="btn btn-small" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
 		<a href="/images/svg/{{ artwork.key }}.svg" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
 	</div>

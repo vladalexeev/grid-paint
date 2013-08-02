@@ -32,8 +32,8 @@ class ActionSaveArtwork(BasicRequestHandler):
         
         if artwork_id:
             artwork=db.Artwork.get(artwork_id)
-            if artwork.author <> self.user_info.user:
-                # should be the same user
+            if not self.user_info.superadmin and artwork.author <> self.user_info.user:
+                # should be the same user or superadmin
                 self.response.set_status(403)
                 return
         else:

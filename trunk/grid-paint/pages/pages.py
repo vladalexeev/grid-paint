@@ -109,6 +109,7 @@ class PageImage(BasicPageRequestHandler):
         artwork=db.Artwork.get(artwork_id)
         self.write_template('templates/artwork-details.html', 
                             {
-                             'artwork': convert_artwork_for_page(artwork, 600, 400)
+                             'artwork': convert_artwork_for_page(artwork, 600, 400),
+                             'can_edit_artwork': self.user_info.superadmin or artwork.author==self.user_info.user
                             })
         
