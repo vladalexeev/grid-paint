@@ -7,7 +7,7 @@
 	<div class="text-center">
 		<img src="/images/png/{{ artwork.key }}.png" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 	</div>
-	<h3>
+	<h3 id="artwork-name">
 		{{ artwork.name }}
 	</h3>
 	
@@ -50,7 +50,7 @@
 $(function() {
 	$(".btn-delete-image").click(
 		function() {
-			var imageName=$(this).parents(".thumbnail").find(".thumb-title").text();
+			var imageName=$("#artwork-name").text();
 			$("#modal-confirm-delete .modal-body").html(
 				"<p>Are you sure to delete image <i>'"+imageName+"'</i></p>");
 			$("#btn-confirm-delete").attr("href","/delete-image?id="+$(this).attr("image-key"))

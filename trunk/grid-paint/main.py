@@ -6,12 +6,12 @@ import pages.actions
 
 
 application = webapp.WSGIApplication([
-                                      ('/', pages.pages.PageIndex),
+                                      ('/', pages.pages.PageAllImages),
                                       ('/new-image', pages.pages.PageNewImage),
                                       ('/painter', pages.pages.PagePainter),
                                       ('/my-images', pages.pages.PageMyImages),
-                                      ('/save-image', pages.actions.ActionSaveArtwork),
-                                      ('/delete-image', pages.actions.ActionDeleteArtwork),
+                                      ('/save-image', pages.actions.ActionSaveImage),
+                                      ('/delete-image', pages.actions.ActionDeleteImage),
                                       ('/images/png/(.*).png', pages.actions.PNGImageRequest),
                                       ('/images/svg/(.*).svg', pages.actions.SVGImageRequest),
                                       ('/images/details/(.*)', pages.pages.PageImage)

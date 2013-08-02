@@ -24,7 +24,7 @@ grids={
        'hex': GridHex
        }
 
-class ActionSaveArtwork(BasicRequestHandler):
+class ActionSaveImage(BasicRequestHandler):
     def post(self):
         artwork_json=self.request.get('artwork_json')
         artwork_id=self.request.get('artwork_id')
@@ -77,7 +77,7 @@ class ActionSaveArtwork(BasicRequestHandler):
         
         self.redirect('/my-images')
         
-class ActionDeleteArtwork(BasicRequestHandler):
+class ActionDeleteImage(BasicRequestHandler):
     def get(self):
         artwork_id=self.request.get('id')
         artwork=db.Artwork.get(artwork_id)
