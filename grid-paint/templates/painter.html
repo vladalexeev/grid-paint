@@ -153,9 +153,8 @@ function paintOnCanvasByMouseEvent(event) {
 			
 	if (paperMouseDown) {
 		paintOnCanvas(cell.col, cell.row, selectedShapeName, selectedColor);
+		changed=true;
 	}
-	
-	changed=true;
 }
 
 function getArtworkEffectiveRect(grid, artwork) {
