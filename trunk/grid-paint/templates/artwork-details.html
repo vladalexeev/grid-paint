@@ -4,22 +4,16 @@
 {% block content %}  
 
 <div class="row-fluid">
-	<div class="text-center">
+	<div class="image-details-image">
 		<img src="/images/png/{{ artwork.key }}.png" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 	</div>
-	<h3 id="artwork-name">
-		{{ artwork.name }}
-	</h3>
-	
-	<div>
-		{{ artwork.date }}
+	<div class="image-details-header">
+		<h3 id="artwork-name">{{ artwork.name }}</h3>
+		<div>{{ artwork.date|date:"d M Y H:i" }}</div>
+		<div>by <span class="image-details-artist">{{ artwork.author.nickname }}</span></div>		
 	</div>
 	
-	<div>
-		{{ artwork.author.nickname }}
-	</div>
-	
-	<div>
+	<div class="image-details-actions">
 		{% if can_edit_artwork %}
 		<a href="/painter?id={{ artwork.key }}" class="btn btn-small btn-success" title="Edit image"><i class="icon icon-pencil icon-white"></i> Edit</a>
 		<a href="#" image-key="{{ artwork.key }}" class="btn btn-small btn-danger btn-delete-image" title="Delete image"><i class="icon icon-remove icon-white"></i> Delete</a>		

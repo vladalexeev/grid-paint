@@ -15,7 +15,7 @@
 		<div class="caption" >
 			<h3 class="thumb-title">{{ a.name }}</h3>
 			<div>{{ a.author }}</div>
-			<div>{{ a.date }}</div>
+			<div>{{ a.date|date:"d M Y H:i" }}</div>
 		</div>
 	</li>
 {% endfor %}
