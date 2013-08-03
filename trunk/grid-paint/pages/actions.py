@@ -75,7 +75,7 @@ class ActionSaveImage(BasicRequestHandler):
         saved_id=artwork.put()
         
         
-        self.redirect('/my-images')
+        self.redirect('/images/details/'+str(saved_id))
         
 class ActionDeleteImage(BasicRequestHandler):
     def get(self):

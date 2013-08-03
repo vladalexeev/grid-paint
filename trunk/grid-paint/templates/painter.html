@@ -50,6 +50,7 @@
     <form>
     	<label>Artwork title</label>
     	<input type="text" name="modal_artwork_name" id="modal_artwork_name" />
+    	<input type="hidden" name="modal_success_action" id="modal_success_action" />
     </form>
   </div>
   <div class="modal-footer">
@@ -80,6 +81,7 @@ var grid;
 var selectedShapeName=null;
 var selectedColor="#3377ee";
 var backgroundColor="#ffffff";
+var changed=false;
 var paperMouseDown=false;
 
 var gridArtwork=new GridArtwork();
@@ -152,6 +154,8 @@ function paintOnCanvasByMouseEvent(event) {
 	if (paperMouseDown) {
 		paintOnCanvas(cell.col, cell.row, selectedShapeName, selectedColor);
 	}
+	
+	changed=true;
 }
 
 function getArtworkEffectiveRect(grid, artwork) {
@@ -220,7 +224,14 @@ function saveArtwork() {
 	}
 	
     $("input[name=artwork_json]").val(JSON.stringify(a));
+    changed=false;
     $("form[name=f]")[0].submit();
+}
+
+function showPropertiesDialog(modalAction) {
+	$("#modal_artwork_name").val($("#artwork_name").val());
+	$("#modal_success_action").val(modalAction);
+	$("#properties-modal").modal('show');
 }
 
 
@@ -286,14 +297,17 @@ $(function() {
 	
 	$("#btn-save").click(
 		function() {
-			saveArtwork();
+			if ($("#artwork_name").val()) {
+				saveArtwork();	
+			} else {
+				showPropertiesDialog("save");
+			}
 		}
 	)
 	
 	$("#btn-properties").click(
 		function() {
-			$("#modal_artwork_name").val($("#artwork_name").val());
-			$("#properties-modal").modal('show');
+			showPropertiesDialog("");
 		}
 	)
 	
@@ -301,8 +315,20 @@ $(function() {
 		function() {
 			$("#artwork_name").val($("#modal_artwork_name").val());
 			$("#properties-modal").modal('hide');
+			
+			var modalAction=$("#modal_success_action").val();
+			if (modalAction=="save") {
+				saveArtwork();
+			}
 		}
 	)
+	
+	window.onbeforeunload=
+		function() {
+			if (changed) {
+				return "Your drawing was changed. Do you want to leave without saving?";
+			}
+		}
 })
 </script>
 
