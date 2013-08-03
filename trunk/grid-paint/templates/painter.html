@@ -192,6 +192,10 @@ function getArtworkEffectiveRect(grid, artwork) {
 
 function saveArtwork() {
 	var a={
+		version: {
+			major:1,
+			minor:0
+		},
 		effectiveRect: getArtworkEffectiveRect(grid,gridArtwork),
 		canvasSize: {
 			width: artwork.canvasSize.width,
