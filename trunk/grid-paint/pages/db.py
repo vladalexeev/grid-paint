@@ -9,9 +9,13 @@ from google.appengine.ext import db
 
 class Artwork(db.Model):
     name = db.StringProperty()
-    author = db.UserProperty()
+    author = db.UserProperty(auto_current_user_add=True)
+    tags = db.StringListProperty()
     date = db.DateTimeProperty(auto_now=True)
     json = db.TextProperty()
     full_image = db.BlobProperty()
     full_image_width = db.IntegerProperty()
     full_image_height = db.IntegerProperty();
+    
+class Tag(db.Model):
+    name = db.StringProperty()
