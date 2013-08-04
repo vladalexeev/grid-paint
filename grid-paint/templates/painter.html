@@ -3,6 +3,7 @@
 {% block include_css %}
  {{ block.super }}
  <link href="/css/jquery.minicolors.css" rel="stylesheet">
+ <link href="/tagmanager/bootstrap-tagmanager.css" rel="stylesheet">
 {% endblock %}
 
 {% block include_js %}
@@ -13,6 +14,7 @@
 {% block content_full %}  
 
 <script src="/js/jquery.minicolors.js"></script>
+<script src="/tagmanager/bootstrap-tagmanager.js"></script>
 
 <div class="row-fluid">
 	<div class="span2 text-center">
@@ -49,7 +51,10 @@
   <div class="modal-body">
     <form>
     	<label>Artwork title</label>
-    	<input type="text" name="modal_artwork_name" id="modal_artwork_name" />
+    	<input type="text" name="modal_artwork_name" id="modal_artwork_name" value="{{ artwork_name }}" style="width:500px;"/>
+    	<label>Tags</label>
+    	<input type="text" name="modal_artwork_tags" id="modal_artwork_tags" class="tm-input tm-input-info"/>
+    	<input type="hidden" name="modal_artwork_tags_hidden" id="modal_artwork_tags_hidden" value="{{ artwork_tags }}"/>
     	<input type="hidden" name="modal_success_action" id="modal_success_action" />
     </form>
   </div>
@@ -62,6 +67,7 @@
 <form name="f" style="display:none" action="/save-image" method="post">
 	<input type="hidden" name="artwork_id" value="{{ artwork_id }}" />
 	<input type="hidden" name="artwork_name" id="artwork_name" value="{{ artwork_name }}" />
+	<input type="hidden" name="artwork_tags" id="artwork_tags" value="{{ artwork_tags }}" />
 	<input type="hidden" name="artwork_json" value="" />
 </form>
 
@@ -73,6 +79,7 @@
 <script>
 // RaphaelJS documentation - http://raphaeljs.com/reference.html
 // JQuery Minicolors color picker documentation - http://labs.abeautifulsite.net/jquery-miniColors/
+// Tag manager - http://welldonethings.com/tags/manager
 
 var artwork={{ artwork_json|safe }};
 
@@ -232,7 +239,7 @@ function saveArtwork() {
 }
 
 function showPropertiesDialog(modalAction) {
-	$("#modal_artwork_name").val($("#artwork_name").val());
+	//$("#modal_artwork_name").val($("#artwork_name").val());
 	$("#modal_success_action").val(modalAction);
 	$("#properties-modal").modal('show');
 }
@@ -317,6 +324,7 @@ $(function() {
 	$("#btn-properties-save").click(
 		function() {
 			$("#artwork_name").val($("#modal_artwork_name").val());
+			$("#artwork_tags").val($("#modal_artwork_tags_hidden").val());
 			$("#properties-modal").modal('hide');
 			
 			var modalAction=$("#modal_success_action").val();
@@ -332,6 +340,10 @@ $(function() {
 				return "Your drawing was changed. Do you want to leave without saving?";
 			}
 		}
+		
+	$("#modal_artwork_tags").tagsManager({
+		hiddenTagListId: "modal_artwork_tags_hidden"
+	});
 })
 </script>
 

@@ -14,6 +14,9 @@ libraries:
 handlers:
 - url: /bootstrap
   static_dir: static/bootstrap
+
+- url: /tagmanager
+  static_dir: static/tagmanager
   
 - url: /js
   static_dir: static/js

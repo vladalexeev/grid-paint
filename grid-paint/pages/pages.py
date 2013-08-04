@@ -30,7 +30,8 @@ class PagePainter(BasicPageRequestHandler):
                                 {
                                  'artwork_id': artwork_id,
                                  'artwork_name': artwork.name,
-                                 'artwork_json': artwork.json
+                                 'artwork_json': artwork.json,
+                                 'artwork_tags': ','.join(artwork.tags)
                                  })
         else:
             new_artwork={
@@ -58,6 +59,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
             'name': artwork.name,
             'date': artwork.date,
             'author': artwork.author,
+            'tags': artwork.tags,
             'full_image_width': artwork.full_image_height,
             'full_image_height': artwork.full_image_height
             }

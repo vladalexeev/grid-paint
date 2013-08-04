@@ -29,6 +29,7 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_json=self.request.get('artwork_json')
         artwork_id=self.request.get('artwork_id')
         artwork_name=self.request.get('artwork_name')
+        artwork_tags=self.request.get('artwork_tags')
         
         if artwork_id:
             artwork=db.Artwork.get(artwork_id)
@@ -46,6 +47,7 @@ class ActionSaveImage(BasicRequestHandler):
             artwork.name='Untitled'
             
         artwork.json=artwork_json
+        artwork.tags=artwork_tags.split(',')
         
         
         json_obj=json.loads(artwork_json)

@@ -10,7 +10,15 @@
 	<div class="image-details-header">
 		<h3 id="artwork-name">{{ artwork.name }}</h3>
 		<div>{{ artwork.date|date:"d M Y H:i" }}</div>
-		<div>by <span class="image-details-artist">{{ artwork.author.nickname }}</span></div>		
+		<div>by <span class="image-details-artist">{{ artwork.author.nickname }}</span></div>
+		{% if artwork.tags %}
+		<div>
+			<i class="icon icon-tag"></i>
+			{% for tag in artwork.tags %}
+			  {{ tag }}
+			{% endfor %}
+		</div>
+		{% endif %}		
 	</div>
 	
 	<div class="image-details-actions">
