@@ -8,6 +8,7 @@ Created on 23.07.2013
 import db
 import json
 import StringIO
+import unidecode
 
 from PIL import Image, ImageDraw
 
@@ -47,7 +48,21 @@ class ActionSaveImage(BasicRequestHandler):
             artwork.name='Untitled'
             
         artwork.json=artwork_json
-        artwork.tags=artwork_tags.split(',')
+        
+        original_tags=artwork_tags.split(',')
+        url_tags=[]
+        for original_tag in original_tags:
+            url_tag=unidecode.unidecode(original_tag).replace(' ','-')
+            
+            url_tags.append(url_tag)
+            db_tag=db.Tag.all().filter('url_names =', url_tag).get()
+            if not db_tag:
+                new_db_tag=db.Tag()
+                new_db_tag.title=original_tag
+                new_db_tag.url_names=[url_tag]
+                new_db_tag.put()
+        
+        artwork.tags=url_tags
         
         
         json_obj=json.loads(artwork_json)
