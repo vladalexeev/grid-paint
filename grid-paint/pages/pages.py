@@ -10,6 +10,7 @@ import json
 from common import BasicPageRequestHandler
 
 import db
+import tags
 
 page_size=6
 
@@ -31,7 +32,7 @@ class PagePainter(BasicPageRequestHandler):
                                  'artwork_id': artwork_id,
                                  'artwork_name': artwork.name,
                                  'artwork_json': artwork.json,
-                                 'artwork_tags': ','.join(artwork.tags)
+                                 'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
                                  })
         else:
             new_artwork={
@@ -59,7 +60,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
             'name': artwork.name,
             'date': artwork.date,
             'author': artwork.author,
-            'tags': artwork.tags,
+            'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
             'full_image_width': artwork.full_image_height,
             'full_image_height': artwork.full_image_height
             }
