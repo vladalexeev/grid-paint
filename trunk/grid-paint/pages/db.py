@@ -18,5 +18,5 @@ class Artwork(db.Model):
     full_image_height = db.IntegerProperty();
     
 class Tag(db.Model):
-    url_names = db.StringListProperty()
+    url_name = db.StringProperty()
     title = db.StringProperty()
