@@ -11,7 +11,7 @@ class Artwork(db.Model):
     name = db.StringProperty()
     author = db.UserProperty(auto_current_user_add=True)
     tags = db.StringListProperty()
-    date = db.DateTimeProperty(auto_now=True)
+    date = db.DateTimeProperty(auto_now_add=True)
     json = db.TextProperty()
     full_image = db.BlobProperty()
     full_image_width = db.IntegerProperty()
@@ -20,3 +20,9 @@ class Artwork(db.Model):
 class Tag(db.Model):
     url_name = db.StringProperty()
     title = db.StringProperty()
+    
+class Comment(db.Model):
+    artwork_ref = db.ReferenceProperty(reference_class=Artwork)
+    author = db.UserProperty(auto_current_user_add=True)
+    message = db.TextProperty()
+    date = db.DateTimeProperty(auto_now_add=True)
