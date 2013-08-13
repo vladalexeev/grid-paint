@@ -29,6 +29,22 @@
 		<a href="/images/png/{{ artwork.key }}.png" class="btn btn-small" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
 		<a href="/images/svg/{{ artwork.key }}.svg" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
 	</div>
+	
+	<div class="image-details-comments">
+		
+	</div>
+	
+	<div class="delimiter"></div>
+	
+	<div class="image-details-comment-add">
+		<form name="f" method="POST" action="/save-comment" class="form-inline">
+			<input type="hidden" name="artwork_id" value="{{ artwork.key }}" />
+			<textarea name="comment_text" class="span12"></textarea>
+			<div style="text-align: right; margin-top:10px;">
+				<button type="submit" class="btn btn-primary">Add a comment</button>
+			</div>
+		</form>
+	</div>
 </div>
 
 
