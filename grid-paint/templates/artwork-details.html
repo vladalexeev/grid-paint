@@ -30,11 +30,16 @@
 		<a href="/images/svg/{{ artwork.key }}.svg" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
 	</div>
 	
-	<div class="image-details-comments">
-		
-	</div>
 	
 	<div class="delimiter"></div>
+	
+	<div class="image-details-comments">
+		{% for comment in comments %}
+		  <div class="comment-header">{{ comment.author.nickname }} - {{ comment.date|date:"d M Y H:i" }}</div>
+		  <div class="comment-text">{{ comment.text }}</div>
+		{% endfor %}
+	</div>
+	
 	
 	<div class="image-details-comment-add">
 		<form name="f" method="POST" action="/save-comment" class="form-inline">
