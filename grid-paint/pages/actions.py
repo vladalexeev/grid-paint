@@ -100,6 +100,10 @@ class ActionDeleteImage(BasicRequestHandler):
             
 class ActionSaveComment(BasicRequestHandler):
     def post(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
         artwork_id=self.request.get('artwork_id')
         comment_text=self.request.get('comment_text')
         
@@ -108,7 +112,7 @@ class ActionSaveComment(BasicRequestHandler):
             self.response.set_status(403)
             return
         
-        comment=db.Comment()
+        comment=db.Comment(parent=artwork)
         comment.artwork_ref=artwork
         comment.text=comment_text
         comment.put()

@@ -37,7 +37,7 @@
 		{% for comment in comments %}
 		  <div class="comment">
 		  	<div class="comment-header">{{ comment.author.nickname }} - {{ comment.date|date:"d M Y H:i" }}</div>
-		  	<div class="comment-text">{{ comment.text }}</div>
+		  	<pre class="comment-text">{{ comment.text }}</pre>
 		  </div>
 		{% endfor %}
 	</div>
@@ -48,7 +48,11 @@
 			<input type="hidden" name="artwork_id" value="{{ artwork.key }}" />
 			<textarea name="comment_text" class="span12"></textarea>
 			<div style="text-align: right; margin-top:10px;">
-				<button type="submit" class="btn btn-primary">Add a comment</button>
+				{% if user_info.user %}
+				  <button type="submit" class="btn btn-primary">Add a comment</button>
+				{% else %}
+				  <a href="{{ user_info.login_url }}">Login into Google account to leave a comment</a>
+				{% endif %}
 			</div>
 		</form>
 	</div>
