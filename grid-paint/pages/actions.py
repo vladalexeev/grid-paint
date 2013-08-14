@@ -118,7 +118,23 @@ class ActionSaveComment(BasicRequestHandler):
         comment.put()
         
         self.redirect('/images/details/'+artwork_id)
-            
+        
+class ActionDeleteComment(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        comment_id=self.request.get('id')
+        comment=db.Comment.get(comment_id)
+        
+        if comment:
+            artwork=comment.artwork_ref
+            comment.delete()
+            self.redirect('/images/details/'+str(artwork.key()))
+        else:
+            self.response.set_status(404)
+            return
 
 class PNGImageRequest(BasicRequestHandler):
     def get(self, *ar):

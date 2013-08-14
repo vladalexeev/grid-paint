@@ -36,7 +36,13 @@
 	<div class="image-details-comments">
 		{% for comment in comments %}
 		  <div class="comment">
-		  	<div class="comment-header">{{ comment.author.nickname }} - {{ comment.date|date:"d M Y H:i" }}</div>
+		  	<div class="comment-header"><b>{{ comment.author.nickname }}</b> - {{ comment.date|date:"d M Y H:i" }}
+		  		{% if user_info.superadmin %}
+		  			<div class="pull-right">
+		  				<a href="/delete-comment?id={{ comment.key }}" title="Delete comment"><i class="icon icon-remove"></i></a>
+		  			</div>
+		  		{% endif %}
+		  	</div>
 		  	<pre class="comment-text">{{ comment.text }}</pre>
 		  </div>
 		{% endfor %}
