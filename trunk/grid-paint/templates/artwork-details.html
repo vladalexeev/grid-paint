@@ -35,8 +35,10 @@
 	
 	<div class="image-details-comments">
 		{% for comment in comments %}
-		  <div class="comment-header">{{ comment.author.nickname }} - {{ comment.date|date:"d M Y H:i" }}</div>
-		  <div class="comment-text">{{ comment.text }}</div>
+		  <div class="comment">
+		  	<div class="comment-header">{{ comment.author.nickname }} - {{ comment.date|date:"d M Y H:i" }}</div>
+		  	<div class="comment-text">{{ comment.text }}</div>
+		  </div>
 		{% endfor %}
 	</div>
 	
