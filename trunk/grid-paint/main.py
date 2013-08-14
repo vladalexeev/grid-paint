@@ -12,6 +12,7 @@ application = webapp.WSGIApplication([
                                       ('/my-images', pages.pages.PageMyImages),
                                       ('/save-image', pages.actions.ActionSaveImage),
                                       ('/delete-image', pages.actions.ActionDeleteImage),
+                                      ('/save-comment', pages.actions.ActionSaveComment),
                                       ('/images/png/(.*).png', pages.actions.PNGImageRequest),
                                       ('/images/svg/(.*).svg', pages.actions.SVGImageRequest),
                                       ('/images/details/(.*)', pages.pages.PageImage)

@@ -24,5 +24,5 @@ class Tag(db.Model):
 class Comment(db.Model):
     artwork_ref = db.ReferenceProperty(reference_class=Artwork)
     author = db.UserProperty(auto_current_user_add=True)
-    message = db.TextProperty()
+    text = db.TextProperty()
     date = db.DateTimeProperty(auto_now_add=True)

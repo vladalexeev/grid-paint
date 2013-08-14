@@ -152,9 +152,11 @@ class PageImage(BasicPageRequestHandler):
     def get(self, *arg):
         artwork_id=arg[0]
         artwork=db.Artwork.get(artwork_id)
+        comments=db.Comment.all().filter('artwork_ref =', artwork).order('date')
         self.write_template('templates/artwork-details.html', 
                             {
                              'artwork': convert_artwork_for_page(artwork, 600, 400),
-                             'can_edit_artwork': self.user_info.superadmin or artwork.author==self.user_info.user
+                             'can_edit_artwork': self.user_info.superadmin or artwork.author==self.user_info.user,
+                             'comments': comments
                             })
         

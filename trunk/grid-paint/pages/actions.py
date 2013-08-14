@@ -98,6 +98,23 @@ class ActionDeleteImage(BasicRequestHandler):
         else:
             self.response.set_status(403)
             
+class ActionSaveComment(BasicRequestHandler):
+    def post(self):
+        artwork_id=self.request.get('artwork_id')
+        comment_text=self.request.get('comment_text')
+        
+        artwork=db.Artwork.get(artwork_id)
+        if not artwork:
+            self.response.set_status(403)
+            return
+        
+        comment=db.Comment()
+        comment.artwork_ref=artwork
+        comment.text=comment_text
+        comment.put()
+        
+        self.redirect('/images/details/'+artwork_id)
+            
 
 class PNGImageRequest(BasicRequestHandler):
     def get(self, *ar):
