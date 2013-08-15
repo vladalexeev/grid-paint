@@ -3,6 +3,7 @@
 {% block include_css %}
  {{ block.super }}
  <link href="/css/jquery.minicolors.css" rel="stylesheet">
+ <link href="/syronex-colorpicker/syronex-colorpicker.css" rel="stylesheet">
  <link href="/tagmanager/bootstrap-tagmanager.css" rel="stylesheet">
 {% endblock %}
 
@@ -14,6 +15,7 @@
 {% block content_full %}  
 
 <script src="/js/jquery.minicolors.js"></script>
+<script src="/syronex-colorpicker/syronex-colorpicker.js"></script>
 <script src="/tagmanager/bootstrap-tagmanager.js"></script>
 
 <div class="row-fluid">
@@ -25,6 +27,7 @@
 		<div id="color-selection" >
 			<div id="color-picker"></div>
 		</div>
+		<div id="color-palette" class="painter-toolbar"></div>
 		<div>
 			<a href="#" id="btn-set-background-color">Set background color</a>
 		</div>
@@ -80,6 +83,7 @@
 // RaphaelJS documentation - http://raphaeljs.com/reference.html
 // JQuery Minicolors color picker documentation - http://labs.abeautifulsite.net/jquery-miniColors/
 // Tag manager - http://welldonethings.com/tags/manager
+// Color picker - http://www.syronex.com/software/jquery-color-picker
 
 var artwork={{ artwork_json|safe }};
 
@@ -344,6 +348,8 @@ $(function() {
 	$("#modal_artwork_tags").tagsManager({
 		hiddenTagListId: "modal_artwork_tags_hidden"
 	});
+	
+	$("#color-palette").colorPicker();
 })
 </script>
 
