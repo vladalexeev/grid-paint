@@ -21,6 +21,13 @@ body {
 .painter-canvas-wrapper {
 	overflow : scroll; 
 	padding-left:2px;
+	margin-left: 200px !important;
+}
+
+.painter-toolbar-full {
+	position: fixed;
+	left:0;
+	width:200px;
 }
 
 .painter-toolbar {
