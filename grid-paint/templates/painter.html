@@ -23,6 +23,7 @@
 		<div style="margin-bottom:10px;">
 			<button id="btn-save" class="btn btn-small btn-primary" type="button"><i class="icon icon-hdd icon-white"></i> Save</button>
 			<button id="btn-properties" class="btn btn-small btn-success" type="button"><i class="icon icon-edit icon-white"></i></button>
+			<button id="btn-test" class="btn btn-small">Test</button>
 		</div>
 		<div id="color-selection" >
 			<div id="color-picker"></div>
@@ -349,7 +350,11 @@ $(function() {
 		hiddenTagListId: "modal_artwork_tags_hidden"
 	});
 	
-	$("#color-palette").colorPicker();
+	$("#color-palette").colorPalette();
+	
+	$("#btn-test").click(function() {
+		alert(JSON.stringify($("#color-palette").colorPalette('colors')))
+	})
 })
 </script>
 
