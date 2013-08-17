@@ -3,7 +3,6 @@
 {% block include_css %}
  {{ block.super }}
  <link href="/css/jquery.minicolors.css" rel="stylesheet">
- <link href="/syronex-colorpicker/syronex-colorpicker.css" rel="stylesheet">
  <link href="/tagmanager/bootstrap-tagmanager.css" rel="stylesheet">
 {% endblock %}
 
@@ -15,7 +14,6 @@
 {% block content_full %}  
 
 <script src="/js/jquery.minicolors.js"></script>
-<script src="/syronex-colorpicker/syronex-colorpicker.js"></script>
 <script src="/tagmanager/bootstrap-tagmanager.js"></script>
 
 <div class="row-fluid">
@@ -23,12 +21,14 @@
 		<div style="margin-bottom:10px;">
 			<button id="btn-save" class="btn btn-small btn-primary" type="button"><i class="icon icon-hdd icon-white"></i> Save</button>
 			<button id="btn-properties" class="btn btn-small btn-success" type="button"><i class="icon icon-edit icon-white"></i></button>
-			<button id="btn-test" class="btn btn-small">Test</button>
 		</div>
 		<div id="color-selection" >
 			<div id="color-picker"></div>
 		</div>
-		<div id="color-palette" class="painter-toolbar"></div>
+		<div class="painter-toolbar">
+			<div id="selected-color"></div>
+			<div id="color-palette"></div>
+		</div>
 		<div>
 			<a href="#" id="btn-set-background-color">Set background color</a>
 		</div>
@@ -84,7 +84,6 @@
 // RaphaelJS documentation - http://raphaeljs.com/reference.html
 // JQuery Minicolors color picker documentation - http://labs.abeautifulsite.net/jquery-miniColors/
 // Tag manager - http://welldonethings.com/tags/manager
-// Color picker - http://www.syronex.com/software/jquery-color-picker
 
 var artwork={{ artwork_json|safe }};
 
@@ -93,6 +92,7 @@ var grid;
 var selectedShapeName=null;
 var selectedColor="#3377ee";
 var backgroundColor="#ffffff";
+var recentColors=[];
 var changed=false;
 var paperMouseDown=false;
 
@@ -165,6 +165,9 @@ function paintOnCanvasByMouseEvent(event) {
 			
 	if (paperMouseDown) {
 		paintOnCanvas(cell.col, cell.row, selectedShapeName, selectedColor);
+		if (selectedShapeName!="empty") {
+			pushRecentColor(selectedColor);	
+		}
 		changed=true;
 	}
 }
@@ -218,7 +221,8 @@ function saveArtwork() {
 			grid:grid.name,
 			cellSize:grid.cellSize,
 			cells:[]	
-		}]
+		}],
+		recentColors: recentColors
 	}
 	
 	if (artwork.id) {
@@ -247,6 +251,34 @@ function showPropertiesDialog(modalAction) {
 	//$("#modal_artwork_name").val($("#artwork_name").val());
 	$("#modal_success_action").val(modalAction);
 	$("#properties-modal").modal('show');
+}
+
+/*
+ * Push color of the last painted shape to palette
+ */
+function pushRecentColor(hexColor) {
+	pushColor=hexColor;
+	for (var i=0; i<recentColors.length; i++) {
+		var oldColor=recentColors[i];
+		recentColors[i]=pushColor;
+		pushColor=oldColor;
+		if (oldColor==hexColor) {
+			break;
+		}
+	}
+	
+	$paletteDivs=$("#color-palette div");
+	for (var i=0; i<$paletteDivs.length && i<recentColors.length; i++) {
+		$($paletteDivs[i]).css("background-color",recentColors[i]);
+	}	
+}
+
+function selectColor(hexColor) {
+	selectedColor=hexColor;
+	for (var shapeName in grid.shapes) {
+		paintShapeToolButton(shapeName);
+		$("#selected-color").css("background-color",selectedColor);
+	}
 }
 
 
@@ -296,10 +328,7 @@ $(function() {
 		inline:true,
 		control: "brightness",
 		change: function(hex,opacity) {
-			selectedColor=hex;
-			for (var shapeName in grid.shapes) {
-				paintShapeToolButton(shapeName);
-			}
+			selectColor(hex);
 		}
 	}).minicolors("value",selectedColor);
 	
@@ -350,11 +379,30 @@ $(function() {
 		hiddenTagListId: "modal_artwork_tags_hidden"
 	});
 	
-	$("#color-palette").colorPalette();
+	//Create color palette
+	var paletteHtml="";
+	for (var i=0; i<16; i++) {
+		paletteHtml+="<div></div>";
+		recentColors.push("#FFFFFF");
+	}
+	$("#color-palette").html(paletteHtml);
+	$("#color-palette div").click(
+		function() {
+			hexColor=rgb2hex($(this).css("background-color"));
+			$("#color-picker").minicolors("value",hexColor);
+			//selectColor(hexColor);
+		}
+	)
 	
-	$("#btn-test").click(function() {
-		alert(JSON.stringify($("#color-palette").colorPalette('colors')))
-	})
+	//Fill color palette with recent colors
+	if (artwork.recentColors) {
+		$paletteDivs=$("#color-palette div");
+		for (var i=0; i<$paletteDivs.length && i<artwork.recentColors.length; i++) {
+			$($paletteDivs[i]).css("background-color",artwork.recentColors[i]);
+			recentColors[i]=artwork.recentColors[i];
+		}	
+	}
+	selectColor(recentColors[0]);
 })
 </script>
 

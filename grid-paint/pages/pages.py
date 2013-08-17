@@ -45,7 +45,12 @@ class PagePainter(BasicPageRequestHandler):
                                      'grid':self.request.get('grid'),
                                      'cellSize':24,                     
                                      'cells':[]
-                                     }]
+                                     }],
+                         'recentColors':['#FFFFFF', '#000000', '#EEEEEE', '#FFFF88',  
+                                         '#CDEB8B', '#6BBA70', '#006E2E', '#C3D9FF', 
+                                         '#4096EE', '#356AA0', '#FF0096', '#B02B2C',
+                                         '#FF7400', '#EF9090', '#0099FF', '#9933FF' 
+                                         ]
                          }
             artwork_json=json.dumps(new_artwork)
             self.write_template('templates/painter.html', 
