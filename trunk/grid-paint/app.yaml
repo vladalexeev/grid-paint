@@ -18,9 +18,6 @@ handlers:
 - url: /tagmanager
   static_dir: static/tagmanager
 
-- url: /syronex-colorpicker
-  static_dir: static/syronex-colorpicker
-  
 - url: /js
   static_dir: static/js
 
