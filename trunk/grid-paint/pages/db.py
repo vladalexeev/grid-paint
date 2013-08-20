@@ -20,6 +20,7 @@ class Artwork(db.Model):
 class Tag(db.Model):
     url_name = db.StringProperty()
     title = db.StringProperty()
+    title_lower = db.StringProperty()
     
 class Comment(db.Model):
     artwork_ref = db.ReferenceProperty(reference_class=Artwork)

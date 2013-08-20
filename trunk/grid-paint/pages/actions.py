@@ -53,8 +53,9 @@ class ActionSaveImage(BasicRequestHandler):
         original_tags=artwork_tags.split(',')
         url_tags=[]
         for tag_title in original_tags:
-            db_tag=tags.tag_by_title(tag_title);
-            url_tags.append(db_tag.url_name)
+            if len(tag_title)>0:
+                db_tag=tags.tag_by_title(tag_title);
+                url_tags.append(db_tag.url_name)
         
         artwork.tags=url_tags
         
@@ -173,3 +174,16 @@ class SVGImageRequest(BasicRequestHandler):
             grid.paintShape(image, cell, dx, dy)
             
         image.endImage()
+        
+class ActionTagTypeahead(BasicRequestHandler):
+    def get(self):
+        self._tag_typeahead()
+    
+    def post(self):
+        self._tag_typeahead()
+    
+    def _tag_typeahead(self):
+        query=self.request.get('query').lower()
+        tags=db.Tag.all().filter('title_lower >=', query).filter('title_lower <', query+u'\ufffd').order('title_lower')
+        tag_titles=[t.title for t in tags]
+        self.response.out.write(json.dumps(tag_titles))

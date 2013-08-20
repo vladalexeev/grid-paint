@@ -375,9 +375,19 @@ $(function() {
 			}
 		}
 		
-	$("#modal_artwork_tags").tagsManager({
-		hiddenTagListId: "modal_artwork_tags_hidden"
-	});
+	$("#modal_artwork_tags")
+		.typeahead({
+			source: function(query, process) {
+				$.post("/tag-typeahead", {query:query},
+					function(data) {
+						process(data);
+					}, "json");
+			}
+		})
+		.tagsManager({
+			hiddenTagListId: "modal_artwork_tags_hidden",
+			typeahead: true
+		});
 	
 	//Create color palette
 	var paletteHtml="";
