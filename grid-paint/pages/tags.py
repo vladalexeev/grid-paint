@@ -18,6 +18,7 @@ def tag_by_title(title):
     if not tag:
         tag=db.Tag()
         tag.title=title
+        tag.title_lower=title.lower()
         tag.url_name=url_name
         tag.put()
         
@@ -29,6 +30,7 @@ def tag_by_url_name(url_name):
         tag=db.Tag()
         tag.url_name=url_name
         tag.title=url_name
+        tag.title_lower=url_name
         
     return tag
     
