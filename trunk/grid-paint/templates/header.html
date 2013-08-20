@@ -23,5 +23,22 @@
         </li>
       {% endif %}
     </ul>
+    <form class="navbar-search pull-right">
+		<input type="text" class="search-query" name="search_query" placeholder="Search">
+	</form>
   </div>
 </div>
+
+<script>
+$(function() {
+	$("input[name=search_query]")
+		.typeahead({
+			source: function(query, process) {
+				$.post("/tag-typeahead", {query:query},
+					function(data) {
+						process(data);
+					}, "json");
+			}
+		})
+});
+</script>
