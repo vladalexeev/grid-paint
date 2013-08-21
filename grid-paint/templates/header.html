@@ -2,9 +2,9 @@
   <div class="navbar-inner">
     <a class="brand" href="/">Grid paint</a>
     <ul class="nav">
-      <li class="active"><a href="#">Gallery</a></li>
-      <li><a href="/my-images">My images</a></li>
-      <li><a href="/new-image">New image</a></li>
+      <li id="top-menu-gallery"><a href="/">Gallery</a></li>
+      <li id="top-menu-my-images"><a href="/my-images">My images</a></li>
+      <li id="top-menu-new-image"><a href="/new-image">New image</a></li>
     </ul>
     <ul class="nav pull-right">
       {% if user_info.user_name%}
@@ -23,9 +23,9 @@
         </li>
       {% endif %}
     </ul>
-    <form class="navbar-search form-search pull-right">
+    <form class="navbar-search form-search pull-right" method="GET" action="/">
     	<div class="input-append">
-    		<input type="text" class="search-query" name="search_query" autocomplete="off">
+    		<input type="text" value="{{ search_query }}" class="search-query" name="q" autocomplete="off">
     		<button type="submit" class="btn btn-success">Search</button>	
     	</div>
 	</form>
@@ -34,7 +34,7 @@
 
 <script>
 $(function() {
-	$("input[name=search_query]")
+	$("input[name=q]")
 		.typeahead({
 			source: function(query, process) {
 				$.post("/tag-typeahead", {query:query},

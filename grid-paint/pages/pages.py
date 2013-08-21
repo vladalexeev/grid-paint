@@ -131,8 +131,18 @@ class PageAllImages(BasicPageRequestHandler):
             
         if offset<0:
             offset=0
+            
+        query=self.request.get('q')
+        if query:
+            filter_tag=tags.tag_by_title(query)
+        else:
+            filter_tag=None
+            
+        all_artworks=db.Artwork.all()
+        if filter_tag:
+            all_artworks=all_artworks.filter('tags =',filter_tag.url_name)
         
-        all_artworks=db.Artwork.all().order('-date').fetch(page_size+1,offset)
+        all_artworks=all_artworks.order('-date').fetch(page_size+1,offset)
         
         has_prev_page=(offset>0)
         has_next_page=len(all_artworks)>page_size
@@ -141,15 +151,23 @@ class PageAllImages(BasicPageRequestHandler):
             all_artworks=all_artworks[:page_size]
             
         artworks=[convert_artwork_for_page(a,300,200) for a in all_artworks]
+        
+        next_page_href='/?offset='+str(offset+page_size)
+        prev_page_href='/?offset='+str(offset-page_size)
+        
+        if query:
+            next_page_href+='&q='+query
+            prev_page_href+='&q='+query
 
         
         self.write_template('templates/index.html', 
                             {
                              'has_next_page': has_next_page,
                              'has_prev_page': has_prev_page,
-                             'next_offset': offset+page_size,
-                             'prev_offset': offset-page_size,
-                             'artworks': artworks
+                             'next_page_href': next_page_href,
+                             'prev_page_href': prev_page_href,
+                             'artworks': artworks,
+                             'search_query': query
                              })
         
         
