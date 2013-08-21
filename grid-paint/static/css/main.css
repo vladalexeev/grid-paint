@@ -202,7 +202,7 @@ body {
 
 .sidebar-adv {
     /*padding: 9px 0;*/
-    position:fixed;
+    position:absolute;
     right:0; 
     /*margin-top:60px;*/
     width: 180px;
