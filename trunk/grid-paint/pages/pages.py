@@ -183,3 +183,14 @@ class PageImage(BasicPageRequestHandler):
                              'comments': comments
                             })
         
+        
+class PageAdmin(BasicPageRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        self.write_template('templates/admin.html', 
+                            {
+                            })
+        
