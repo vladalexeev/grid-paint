@@ -8,6 +8,8 @@ from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 
+import db
+
 class UserInfo:
     """ Информация о пользователе для страницы """
     user=None
@@ -29,15 +31,31 @@ class UserInfo:
         else:
             self.login_url=users.create_login_url(request_uri)
             self.login_url_text='Login into Google account'
+            
+def get_settings():
+    settings=db.Settings.all().get()
+    if settings:
+        return settings
+    else:
+        settings=db.Settings()
+        settings.show_ads=False
+        settings.show_analytics=False
+        return settings
+        
+def save_settings(settings):
+    settings.put()
+        
 
 class BasicRequestHandler(webapp.RequestHandler):
     def initialize(self, request, response):
         webapp.RequestHandler.initialize(self, request, response)
         self.user_info=UserInfo(self.request.uri)
+        self.settings=get_settings()
         
     def write_template(self,template_name,template_values):
         """Вывод шаблона в выходной поток"""
         template_values['user_info']=self.user_info
+        template_values['settings']=self.settings
         path = os.path.join(os.path.dirname(__file__), "../"+template_name)
         self.response.out.write(template.render(path, template_values))
         

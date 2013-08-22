@@ -19,6 +19,7 @@ from grid.hex import GridHex
 from graphics.svg import SvgImageWriter
 
 import tags
+import common
 
 grids={
        'square': GridSquare,
@@ -187,3 +188,25 @@ class ActionTagTypeahead(BasicRequestHandler):
         tags=db.Tag.all().filter('title_lower >=', query).filter('title_lower <', query+u'\ufffd').order('title_lower')
         tag_titles=[t.title for t in tags]
         self.response.out.write(json.dumps(tag_titles))
+        
+class ActionSaveSettings(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return            
+        
+        settings=common.get_settings()
+        
+        if self.request.get('show_ads'):
+            settings.show_ads=True
+        else:
+            settings.show_ads=False
+            
+        if self.request.get('show_analytics'):
+            settings.show_analytics=True
+        else:
+            settings.show_analytics=False
+            
+        common.save_settings(settings)
+        
+        self.redirect('/admin')

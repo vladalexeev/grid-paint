@@ -27,3 +27,7 @@ class Comment(db.Model):
     author = db.UserProperty(auto_current_user_add=True)
     text = db.TextProperty()
     date = db.DateTimeProperty(auto_now_add=True)
+    
+class Settings(db.Model):
+    show_ads = db.BooleanProperty()
+    show_analytics = db.BooleanProperty()

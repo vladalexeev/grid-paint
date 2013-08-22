@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+
+{% block content_full %}
+
+<div class="container">
+<div class="row">
+	<div class="offset2 span8">
+	<form name="f" method="post" class="form-horizontal" action="/save-settings">
+		<div class="control-group">
+    		<div class="controls">
+      			<label class="checkbox">
+        			<input type="checkbox" name="show_ads" {% if settings.show_ads %}checked{% endif %}> Show ads
+      			</label>
+      			<label class="checkbox">
+        			<input type="checkbox" name="show_analytics" {% if settings.show_analytics %}checked{% endif %}> Show analytics
+      			</label>
+      			<button type="submit" class="btn">Save settings</button>
+    		</div>
+  		</div>
+	</form>
+	</div>
+</div>
+</div>
+
+  
+{% endblock content_full %}
+
+
