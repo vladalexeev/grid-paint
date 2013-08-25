@@ -6,7 +6,8 @@ import pages.actions
 
 
 application = webapp.WSGIApplication([
-                                      ('/', pages.pages.PageAllImages),
+                                      ('/', pages.pages.PageIndex),
+                                      ('/gallery', pages.pages.PageGallery),
                                       ('/admin',pages.pages.PageAdmin),
                                       ('/save-settings', pages.actions.ActionSaveSettings),
                                       ('/new-image', pages.pages.PageNewImage),

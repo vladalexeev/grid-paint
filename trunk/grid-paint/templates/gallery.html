@@ -22,5 +22,27 @@
 </ul>
 </div>
 
+<script>
+$(function() {
+	$("#top-menu-gallery").addClass("active");
+})
+</script>
+
 
 {% endblock content %}
+
+{% block navigation %}
+<ul class="pager pull-left" style="margin:10px;">
+  {% if has_prev_page %}	
+      <li class=""><a href="{{ prev_page_href }}">&larr; Prev</a></li>
+  {% else %}
+      <li class="disabled"><a href="">&larr; Prev</a></li>
+  {% endif%}
+  
+  {% if has_next_page %}
+      <li class=""><a href="{{ next_page_href }}">Next &rarr;</a></li>
+  {% else %}
+      <li class="disabled"><a href="">Next &rarr;</a></li>
+  {% endif %}
+</ul>
+{%  endblock navigation%}

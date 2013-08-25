@@ -15,8 +15,16 @@ import tags
 page_size=6
 
 class PageIndex(BasicPageRequestHandler):
-    def get(self):
-        self.write_template('templates/index.html', {})
+    def get(self):            
+        all_artworks=db.Artwork.all()
+        all_artworks=all_artworks.order('-date').fetch(3,0)
+        
+        artworks=[convert_artwork_for_page(a,300,200) for a in all_artworks]
+        
+        self.write_template('templates/index.html', 
+                            {
+                             'artworks': artworks
+                             })
         
 class PageNewImage(BasicPageRequestHandler):
     def get(self):
@@ -46,9 +54,9 @@ class PagePainter(BasicPageRequestHandler):
                                      'cellSize':24,                     
                                      'cells':[]
                                      }],
-                         'recentColors':['#FFFFFF', '#000000', '#EEEEEE', '#FFFF88',  
-                                         '#CDEB8B', '#6BBA70', '#006E2E', '#C3D9FF', 
-                                         '#4096EE', '#356AA0', '#FF0096', '#B02B2C',
+                         'recentColors':['#4096EE', '#FFFFFF', '#000000', '#EEEEEE', 
+                                         '#FFFF88', '#CDEB8B', '#6BBA70', '#006E2E', 
+                                         '#C3D9FF', '#356AA0', '#FF0096', '#B02B2C',
                                          '#FF7400', '#EF9090', '#0099FF', '#9933FF' 
                                          ]
                          }
@@ -122,7 +130,7 @@ class PageMyImages(BasicPageRequestHandler):
                              'artworks': artworks
                              })
         
-class PageAllImages(BasicPageRequestHandler):
+class PageGallery(BasicPageRequestHandler):
     def get(self):
         if self.request.get('offset'):
             offset=int(self.request.get('offset'))
@@ -152,15 +160,15 @@ class PageAllImages(BasicPageRequestHandler):
             
         artworks=[convert_artwork_for_page(a,300,200) for a in all_artworks]
         
-        next_page_href='/?offset='+str(offset+page_size)
-        prev_page_href='/?offset='+str(offset-page_size)
+        next_page_href='/gallery?offset='+str(offset+page_size)
+        prev_page_href='/gallery?offset='+str(offset-page_size)
         
         if query:
             next_page_href+='&q='+query
             prev_page_href+='&q='+query
 
         
-        self.write_template('templates/index.html', 
+        self.write_template('templates/gallery.html', 
                             {
                              'has_next_page': has_next_page,
                              'has_prev_page': has_prev_page,
@@ -169,6 +177,7 @@ class PageAllImages(BasicPageRequestHandler):
                              'artworks': artworks,
                              'search_query': query
                              })
+        
         
         
 class PageImage(BasicPageRequestHandler):
