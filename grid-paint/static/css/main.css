@@ -8,6 +8,14 @@ body {
 	user-select: none;
 }
 
+.common-page-footer {
+	border-top: 1px solid rgb(200,200,200);
+	background-image: linear-gradient(bottom, rgb(250,250,250) 0%, rgb(230,230,230) 100%);
+	background-image: -webkit-linear-gradient(bottom, rgb(250,250,250) 0%, rgb(230,230,230) 100%);
+	background-image: -moz-linear-gradient(bottom, rgb(250,250,250) 0%, rgb(230,230,230) 100%);
+	text-align: center;
+}
+
 .grid-selector-wrapper {
 	display:inline-block;
 	border: solid 1px #CCC;
@@ -75,6 +83,10 @@ body {
  * Thumbnails
  */
 
+.thumb-container {
+	min-height:600px;
+}
+
 .thumb-button {
 	border:1px solid white;
 	box-shadow: none;
@@ -116,9 +128,13 @@ body {
  * 	Image details classes
  */
 
+.image-details-container {
+	min-height:600px;
+}
+
 .image-details-image {
-	margin:10px;
-	padding:10px;
+	/*margin:10px;*/
+	/*padding:10px;*/
 	text-align: center;
 }
 
