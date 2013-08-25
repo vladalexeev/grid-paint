@@ -19,7 +19,7 @@ class PageIndex(BasicPageRequestHandler):
         all_artworks=db.Artwork.all()
         all_artworks=all_artworks.order('-date').fetch(3,0)
         
-        artworks=[convert_artwork_for_page(a,300,200) for a in all_artworks]
+        artworks=[convert_artwork_for_page(a,200,150) for a in all_artworks]
         
         self.write_template('templates/index.html', 
                             {
@@ -118,7 +118,7 @@ class PageMyImages(BasicPageRequestHandler):
         if len(my_artworks)>page_size:
             my_artworks=my_artworks[:page_size]
             
-        artworks=[convert_artwork_for_page(ma,300,200) for ma in my_artworks]
+        artworks=[convert_artwork_for_page(ma,200,150) for ma in my_artworks]
 
         
         self.write_template('templates/my-artworks.html', 
@@ -158,7 +158,7 @@ class PageGallery(BasicPageRequestHandler):
         if len(all_artworks)>page_size:
             all_artworks=all_artworks[:page_size]
             
-        artworks=[convert_artwork_for_page(a,300,200) for a in all_artworks]
+        artworks=[convert_artwork_for_page(a,200,150) for a in all_artworks]
         
         next_page_href='/gallery?offset='+str(offset+page_size)
         prev_page_href='/gallery?offset='+str(offset-page_size)
