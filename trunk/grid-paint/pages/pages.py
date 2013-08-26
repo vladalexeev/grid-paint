@@ -28,6 +28,10 @@ class PageIndex(BasicPageRequestHandler):
         
 class PageNewImage(BasicPageRequestHandler):
     def get(self):
+        if not self.user_info.user:
+            self.redirect(self.user_info.login_url)
+            return;
+        
         self.write_template('templates/new-image.html', {})
         
 class PagePainter(BasicPageRequestHandler):
@@ -98,6 +102,10 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
         
 class PageMyImages(BasicPageRequestHandler):
     def get(self):
+        if not self.user_info.user:
+            self.redirect(self.user_info.login_url)
+            return;
+        
         if self.request.get('offset'):
             offset=int(self.request.get('offset'))
         else:
