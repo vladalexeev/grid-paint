@@ -4,7 +4,32 @@
 {% block content %}  
 <div style="min-height:610px;">
 
-<ul class="thumbnails span12">	
+<div class="container">
+<p>
+<b>Grid Paint</b> is an online drawing tool using various types of grids 
+(squared, triangular, hexagonal).
+Drawing by grids is something like pixel art, but in pixel art you have only square pixels.
+Here you have also triangular or hexagonal pixels. Moreover,
+every pixel may be flat or have concave or convex shape like diamond or jewel,
+which allow you to create peculiar images.
+</p>
+
+<p>
+You can share your images with friends on Facebook or Google+ or download them
+in PNG or SVG format.
+</p>
+
+<p>
+Login into your Google account and begin to paint by clicking &quot;New image&quot;
+link at the top.
+</p>
+</div>
+	
+
+<div class="text-center">
+<h3>Recent images</h3>
+	
+<ul class="thumbnails" style="display: inline-block">	
 {% for a in artworks %}
 	<li class="thumbnail">
   		<div class="thumb-image">
@@ -20,6 +45,13 @@
 	</li>
 {% endfor %}
 </ul>
+
+<div>
+	<a href="/gallery" class="btn btn-large btn-primary">Go to gallery of images</a>
+</div>
+</div>
+
+
 </div>
 
 
