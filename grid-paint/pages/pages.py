@@ -26,6 +26,10 @@ class PageIndex(BasicPageRequestHandler):
                              'artworks': artworks
                              })
         
+class PagePrivacyPolicy(BasicPageRequestHandler):
+    def get(self):
+        self.write_template('templates/privacy-policy.html',{})
+        
 class PageNewImage(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:

@@ -5,7 +5,19 @@
 <div class="container-fluid" style="padding-left:0; padding-right:0;">
 	<div class="row-fluid">
 		<div class="sidebar-adv text-center">
-			<img src="/img/banner-sample.png" width="160" height="600" border="0"/>
+			{% if settings.show_ads %}
+<script type="text/javascript">
+google_ad_client = "ca-pub-0036569436360210";
+google_ad_slot = "7723143793";
+google_ad_width = 160;
+google_ad_height = 600;
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+			{% else %}
+				<img src="/img/banner-sample.png" width="160" height="600" border="0"/>
+			{% endif %}
 		</div>
 		<div class="content fluid-fixed">
 {% block content %}
