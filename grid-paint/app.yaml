@@ -18,6 +18,9 @@ handlers:
 - url: /tagmanager
   static_dir: static/tagmanager
 
+- url: /social-likes
+  static_dir: static/social-likes
+
 - url: /js
   static_dir: static/js
 
