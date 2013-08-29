@@ -1,13 +1,28 @@
 {% extends "base-adv.html" %}
 
+{% block include_css %}
+{{ block.super }}
+ <link href="/social-likes/social-likes.css" rel="stylesheet">
+{% endblock %}
 
 {% block content %}  
+
+<script src="/social-likes/social-likes.min.js"></script>
 
 <div class="image-details-container">
 	<div class="image-details-image">
 		<img src="/images/png/{{ artwork.key }}.png" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 	</div>
 	<div class="image-details-header">
+		<div class="pull-right">
+			<ul class="social-likes social-likes_vertical">
+				<li class="facebook" title="Share link on Facebook">Facebook</li>
+				<li class="twitter" title="Share link on Twitter">Twitter</li>
+				<li class="plusone" title="Share link on Google+">Google+</li>
+				<li class="pinterest" title="Share image on Pinterest" data-media="">Pinterest</li>
+			</ul>
+		</div>
+				
 		<h3 id="artwork-name">{{ artwork.name }}</h3>
 		<div>{{ artwork.date|date:"d M Y H:i" }}</div>
 		<div>by <span class="image-details-artist">{{ artwork.author.nickname }}</span></div>
@@ -19,6 +34,8 @@
 			{% endfor %}
 		</div>
 		{% endif %}		
+		
+		<div style="clear: both"></div>		
 	</div>
 	
 	<div class="image-details-actions">
