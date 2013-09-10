@@ -29,6 +29,10 @@ handlers:
   
 - url: /img
   static_dir: static/img
+  
+- url: /robots.txt
+  static_files: static/robots.txt
+  upload: static/robots.txt
 
 - url: /.*
   script: main.application
