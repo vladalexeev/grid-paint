@@ -88,6 +88,18 @@ function GridArtwork() {
             return this.cells[row][col];
         }        
     }
+    
+    this.getCell=function(col, row) {
+        if (this.cells.length<=row) {
+            return null;
+        }
+        
+        if (this.cells[row].length<=col) {
+            return null;
+        }
+        
+        return this.cells[row][col];
+    }
 }
 
 /*

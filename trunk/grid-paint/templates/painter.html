@@ -88,6 +88,7 @@
 
 var artwork={{ artwork_json|safe }};
 
+var mode="paint"; //available values "paint", "pick-color"
 var paper;
 var grid;
 var selectedShapeName=null;
@@ -158,11 +159,22 @@ function paintOnCanvas(col, row, shapeName, color) {
 	}
 }
 
-function paintOnCanvasByMouseEvent(event) {
-	var cell=grid.pointToCell(
-		event.pageX - $("#canvas").position().left/*+$("#canvas-wrapper").scrollLeft()*/,
-		event.pageY - $("#canvas").position().top/*+$("#canvas-wrapper").scrollTop()*/);
+/**
+ * Return cell coordintes {row: XXX, col: XXX} by mouse event 
+ */
+function getCellCoordByMouseEvent(event) {
+  	return grid.pointToCell(
+			event.pageX - $("#canvas").position().left,
+			event.pageY - $("#canvas").position().top);
+}
+
+function updateCellCoordiantesPanel(event) {
+	var cell=getCellCoordByMouseEvent(event);
 	$("#coordinates").text(cell.col+" "+cell.row);
+}
+
+function paintOnCanvasByMouseEvent(event) {
+	var cell=getCellCoordByMouseEvent(event);
 			
 	if (paperMouseDown) {
 		paintOnCanvas(cell.col, cell.row, selectedShapeName, selectedColor);
@@ -170,6 +182,16 @@ function paintOnCanvasByMouseEvent(event) {
 			pushRecentColor(selectedColor);	
 		}
 		changed=true;
+	}
+}
+
+function pickColorByMouseEvent(event) {
+	var cell=getCellCoordByMouseEvent(event);
+	var cellItem=gridArtwork.getCell(cell.col, cell.row);
+	if (cellItem) {
+		selectColor(cellItem.color);
+		$("#btn-pick-color").button("toggle");
+		setMode("paint");
 	}
 }
 
@@ -203,6 +225,15 @@ function getArtworkEffectiveRect(grid, artwork) {
 		top: Math.floor(y1),
 		width: Math.round(x2-x1+1),
 		height: Math.round(y2-y1+1)
+	}
+}
+
+function setMode(m) {
+	mode=m;
+	if (mode=="paint") {
+		$("#canvas-wrapper").css("cursor","crosshair");
+	} else if (mode=="pick-color") {
+		$("#canvas-wrapper").css("cursor","pointer");
 	}
 }
 
@@ -311,7 +342,13 @@ $(function() {
 	.mousedown(
 		function(event) {
 			paperMouseDown=true;
-			paintOnCanvasByMouseEvent(event);
+			updateCellCoordiantesPanel(event);
+			
+			if (mode=="paint") {
+				paintOnCanvasByMouseEvent(event);
+			} else if (mode=="pick-color") {
+				pickColorByMouseEvent(event);
+			}
 		}
 	)
 	.mouseup(
@@ -321,7 +358,10 @@ $(function() {
 	)
 	.mousemove(
 		function(event) {
-			paintOnCanvasByMouseEvent(event);
+			updateCellCoordiantesPanel(event);
+			if (mode=="paint") {
+				paintOnCanvasByMouseEvent(event);
+			}
 		}
 	)
 	
@@ -415,6 +455,18 @@ $(function() {
 	}
 	selectColor(recentColors[0]);
 	$("#color-picker").minicolors("value",recentColors[0]);
+	
+	$("#btn-pick-color").click(
+		function() {
+			if (mode=="pick-color") {
+			  setMode("paint");
+			} else {
+			  setMode("pick-color");
+			}
+		}
+	);
+	
+	setMode("paint");
 })
 </script>
 
