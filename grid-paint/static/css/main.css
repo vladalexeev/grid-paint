@@ -76,6 +76,14 @@ body {
 	margin:1px;
 }
 
+.painter-toolbar-header {
+	background-color: #f0f0f0;
+}
+
+.painter-toolbar-container {
+	padding: 2px;
+}
+
 .grid-shape-button {
 }
 
