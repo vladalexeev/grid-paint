@@ -484,9 +484,15 @@ $(function() {
 	
 	$("#btn-shift-left").click(
 		function() {
-			gridArtwork.shiftCellsLeft(grid);
-		}
-	)
+			gridArtwork.shiftLeft(grid);
+			changed=true;
+		});
+	
+	$("#btn-shift-right").click(
+		function() {
+			gridArtwork.shiftRight(grid);
+			changed=true;
+		});
 })
 </script>
 
