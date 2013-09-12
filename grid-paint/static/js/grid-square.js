@@ -189,7 +189,7 @@ function GridSquare() {
 	        height: this.cellSize
 	    }
 	}
-	
+		
 	this.shapes={
 	    "empty": new GridSquare_ShapeEmpty(this),
 		"flat": new GridSquare_ShapeFlat(this),
@@ -199,6 +199,33 @@ function GridSquare() {
 		"diamond": new GridSquare_ShapeDiamond(this)
 	}
 	
+	this.shiftLeft={
+	    cell_dx:-1,
+	    cell_dy:0,
+	    dx: -this.cellSize,
+	    dy: 0
+	}
+	
+	this.shiftRight={
+	    cell_dx:1,
+	    cell_dy:0,
+	    dx: this.cellSize,
+	    dy: 0
+	}
+	
+	this.shitUp={
+	    cell_dx:0,
+	    cell_dy:-1,
+	    dx: 0,
+	    dy: -this.cellSize
+	}
+	
+	this.shiftDown={
+	    cell_dx:0,
+	    cell_dy:1,
+	    dx:0,
+	    dy: this.cellSize
+	}
 }
 
 // Register grid

@@ -481,6 +481,12 @@ $(function() {
 	);
 	
 	setMode("paint");
+	
+	$("#btn-shift-left").click(
+		function() {
+			gridArtwork.shiftCellsLeft(grid);
+		}
+	)
 })
 </script>
 
