@@ -101,7 +101,7 @@ function GridArtwork() {
         return this.cells[row][col];
     }
     
-    this.shiftCellsLeft=function(grid) {
+    this.shiftLeft=function(grid) {
         var shift=grid.shiftLeft;
         for (var row=0; row<this.cells.length; row++) {
             for (var col=0; col<Math.min(-shift.cell_dx, this.cells[row].length); col++) {
@@ -118,7 +118,21 @@ function GridArtwork() {
             }
         }
     }
-
+    
+    this.shiftRight=function(grid) {
+    	var shift=grid.shiftRight;
+    	for (var row=0; row<this.cells.length; row++) {
+    		for (var i=0; i<shift.cell_dx; i++) {
+    			this.cells[row].unshift(null);
+    		}
+    		
+    		for (var col=0; col<this.cells[row].length; col++) {
+    			if (this.cells[row][col]) {
+    				this.cells[row][col].element.translate(shift.dx, shift.dy);
+    			}
+    		}
+    	}
+ 	}
 }
 
 /*
