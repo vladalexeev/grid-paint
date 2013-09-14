@@ -213,7 +213,7 @@ function GridSquare() {
 	    dy: 0
 	}
 	
-	this.shitUp={
+	this.shiftUp={
 	    cell_dx:0,
 	    cell_dy:-1,
 	    dx: 0,

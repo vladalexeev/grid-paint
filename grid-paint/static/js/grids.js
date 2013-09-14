@@ -101,7 +101,17 @@ function GridArtwork() {
         return this.cells[row][col];
     }
     
-    this.shiftLeft=function(grid) {
+    this._shiftAllElements=function(dx, dy) {
+    	for (var row=0; this.cells.length; row++) {
+ 			for (var col=0; col<this.cells[row].length; col++) {
+ 				if (this.cells[row][col]) {
+ 					this.cells[row][col].element.translate(dx, dy);
+ 				}
+ 			}
+ 		}
+    }
+    
+    this.doShiftLeft=function(grid) {
         var shift=grid.shiftLeft;
         for (var row=0; row<this.cells.length; row++) {
             for (var col=0; col<Math.min(-shift.cell_dx, this.cells[row].length); col++) {
@@ -111,27 +121,44 @@ function GridArtwork() {
             }
             
             this.cells[row]=this.cells[row].slice(-shift.cell_dx);
-            for (var col=0; col<this.cells[row].length; col++) {
-                if (this.cells[row][col]) {
-                    this.cells[row][col].element.translate(shift.dx, shift.dy);
-                }    
-            }
         }
+        
+        this._shiftAllElements(shift.dx, shift.dy);
     }
     
-    this.shiftRight=function(grid) {
+    this.doShiftRight=function(grid) {
     	var shift=grid.shiftRight;
     	for (var row=0; row<this.cells.length; row++) {
     		for (var i=0; i<shift.cell_dx; i++) {
     			this.cells[row].unshift(null);
     		}
-    		
-    		for (var col=0; col<this.cells[row].length; col++) {
-    			if (this.cells[row][col]) {
-    				this.cells[row][col].element.translate(shift.dx, shift.dy);
-    			}
-    		}
     	}
+    	
+    	this._shiftAllElements(shift.dx, shift.dy);
+ 	}
+ 	
+ 	this.doShiftUp=function(grid) {
+ 		var shift=grid.shiftUp;
+ 		for (var row=0; row<-shift.cell_dy; row++) {
+ 			for (var col=0; col<this.cells[row].length; col++) {
+ 				if (this.cells[row][col]) {
+ 					this.cells[row][col].element.remove();
+ 				}
+ 			}
+ 		}
+ 		
+ 		this.cells=this.cells.slice(-shift.cell_dy);
+
+		this._shiftAllElements(shift.dx, shift.dy);
+ 	}
+ 	
+ 	this.doShiftDown=function(grid) {
+ 		var shift=grid.shiftDown;
+ 		for (var row=0; row<shift.cell_dy; row++) {
+ 			this.cells.unshift([]);
+ 		}
+
+		this._shiftAllElements(shift.dx, shift.dy); 		
  	}
 }
 

@@ -484,15 +484,27 @@ $(function() {
 	
 	$("#btn-shift-left").click(
 		function() {
-			gridArtwork.shiftLeft(grid);
+			gridArtwork.doShiftLeft(grid);
 			changed=true;
 		});
 	
 	$("#btn-shift-right").click(
 		function() {
-			gridArtwork.shiftRight(grid);
+			gridArtwork.doShiftRight(grid);
 			changed=true;
 		});
+		
+	$("#btn-shift-up").click(
+		function() {
+			gridArtwork.doShiftUp(grid);
+			changed=true;
+		});
+		
+	$("#btn-shift-down").click(
+		function() {
+			gridArtwork.doShiftDown(grid);
+			changed=true;
+		})
 })
 </script>
 
