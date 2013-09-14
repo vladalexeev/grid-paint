@@ -29,6 +29,10 @@ class PageIndex(BasicPageRequestHandler):
 class PagePrivacyPolicy(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/privacy-policy.html',{})
+
+class PageHistory(BasicPageRequestHandler):
+    def get(self):
+        self.write_template('templates/history.html',{})
         
 class PageNewImage(BasicPageRequestHandler):
     def get(self):
