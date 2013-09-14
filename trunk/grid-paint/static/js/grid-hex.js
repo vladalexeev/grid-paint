@@ -314,6 +314,34 @@ function GridHex() {
 		"diamond": new GridHex_ShapeDiamond(this),
 		"jewel": new GridHex_ShapeJewel(this)
 	};
+	
+	this.shiftLeft={
+	    cell_dx:-2,
+	    cell_dy:0,
+	    dx: -this.cellSize-this.cellSize*cos60,
+	    dy: 0
+	}
+	
+	this.shiftRight={
+	    cell_dx:2,
+	    cell_dy:0,
+	    dx: this.cellSize+this.cellSize*cos60,
+	    dy: 0
+	}
+	
+	this.shiftUp={
+	    cell_dx:0,
+	    cell_dy:-1,
+	    dx: 0,
+	    dy: -this.cellSize*sin60
+	}
+	
+	this.shiftDown={
+	    cell_dx:0,
+	    cell_dy:1,
+	    dx:0,
+	    dy: this.cellSize*sin60
+	}
 }
 
 // Register grid

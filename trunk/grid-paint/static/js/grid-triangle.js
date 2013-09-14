@@ -170,6 +170,35 @@ function GridTriangle () {
 		"diamond": new GridTriangle_ShapeDiamond(this),
 		"jewel": new GridTriangle_ShapeJewel(this)
 	}
+	
+	this.shiftLeft={
+	    cell_dx:-2,
+	    cell_dy:0,
+	    dx: -this.cellSize,
+	    dy: 0
+	}
+	
+	this.shiftRight={
+	    cell_dx:2,
+	    cell_dy:0,
+	    dx: this.cellSize,
+	    dy: 0
+	}
+	
+	this.shiftUp={
+	    cell_dx:0,
+	    cell_dy:-2,
+	    dx: 0,
+	    dy: -this.cellSize*sin60*2
+	}
+	
+	this.shiftDown={
+	    cell_dx:0,
+	    cell_dy:2,
+	    dx:0,
+	    dy: this.cellSize*sin60*2
+	}
+
 }
 
 // Register grid
