@@ -95,6 +95,10 @@ class ActionDeleteImage(BasicRequestHandler):
         artwork_id=self.request.get('id')
         artwork=db.Artwork.get(artwork_id)
         if self.user_info.superadmin or artwork.author==self.user_info.user:
+            comments=db.Comment.all().filter('artwork_ref =', artwork)
+            for comment in comments:
+                comment.delete()
+                
             artwork.delete();
             self.redirect("/my-images")
         else:
