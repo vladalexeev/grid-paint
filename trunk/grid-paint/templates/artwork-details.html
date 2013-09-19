@@ -1,5 +1,7 @@
 {% extends "base-adv.html" %}
 
+{% block title %}{{ artwork.name }} - {{ block.super }}{% endblock %}
+
 {% block include_css %}
 {{ block.super }}
  <link href="/social-likes/social-likes.css" rel="stylesheet">
