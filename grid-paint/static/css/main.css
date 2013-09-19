@@ -92,7 +92,7 @@ body {
  */
 
 .thumb-container {
-	min-height:600px;
+	min-height:610px;
 }
 
 .thumb-button {
@@ -197,6 +197,10 @@ body {
 	margin:10px;
 }
 
+/*
+ * Misc styles
+ */
+
 .delimiter {
 	box-shadow: 0 0 10px rgba(0, 0, 0, .5);
 	width:80%;
@@ -207,6 +211,16 @@ body {
 	margin-right:auto;
 	background-color: #a0a0a0;
 	border: 1 solid #a0a0a0;
+}
+
+.empty-page-message {
+	padding-top:60px;
+	text-align:center;
+	font-size: 32pt; 
+	color: #e0e0e0; 
+	font-weight: bold;
+	line-height: 40pt;
+	text-shadow: #a0a0a0 1px 2px 2px;
 }
 
 
