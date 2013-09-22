@@ -1,5 +1,5 @@
 application: grid-paint
-version: 0-03
+version: 0-04
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -33,6 +33,10 @@ handlers:
 - url: /robots.txt
   static_files: static/robots.txt
   upload: static/robots.txt
+
+- url: /favicon.ico
+  static_files: static/favicon.ico
+  upload: static/favicon.ico
 
 - url: /.*
   script: main.application
