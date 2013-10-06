@@ -20,7 +20,6 @@
 	<div class="painter-toolbar-full text-center">
 		<div style="margin-bottom:10px;">
 			<button id="btn-save" class="btn btn-small btn-primary" type="button" title="Save image"><i class="icon icon-hdd icon-white"></i> Save</button>
-			<button id="btn-properties" class="btn btn-small btn-success" type="button" title="Image properties"><i class="icon icon-edit icon-white"></i></button>
 			<button id="btn-pick-color" class="btn btn-small" type="button" data-toggle="button" title="Pick color"><i class="icon icon-pencil"></i></button>
 		</div>
 		<div id="color-selection" >
@@ -396,22 +395,18 @@ $(function() {
 	
 	$("#btn-save").click(
 		function() {
-			if ($("#artwork_name").val()) {
-				saveArtwork();	
-			} else {
-				showPropertiesDialog("save");
-			}
-		}
-	)
-	
-	$("#btn-properties").click(
-		function() {
-			showPropertiesDialog("");
+			showPropertiesDialog("save");
 		}
 	)
 	
 	$("#btn-properties-save").click(
 		function() {
+			if ($("#modal_artwork_tags").val()) {
+				// move current edited tag to tags manager
+				$("#modal_artwork_tags").tagsManager("pushTag",$("#modal_artwork_tags").val());
+				$("#modal_artwork_tags").val("");
+			}
+			
 			$("#artwork_name").val($("#modal_artwork_name").val());
 			$("#artwork_tags").val($("#modal_artwork_tags_hidden").val());
 			$("#properties-modal").modal('hide');
