@@ -56,6 +56,7 @@ class BasicRequestHandler(webapp.RequestHandler):
         """Вывод шаблона в выходной поток"""
         template_values['user_info']=self.user_info
         template_values['settings']=self.settings
+        template_values['app_version']=os.environ.get('CURRENT_VERSION_ID').split('.')[0]
         path = os.path.join(os.path.dirname(__file__), "../"+template_name)
         self.response.out.write(template.render(path, template_values))
         
