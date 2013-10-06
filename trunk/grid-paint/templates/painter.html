@@ -20,6 +20,8 @@
 	<div class="painter-toolbar-full text-center">
 		<div style="margin-bottom:10px;">
 			<button id="btn-save" class="btn btn-small btn-primary" type="button" title="Save image"><i class="icon icon-hdd icon-white"></i> Save</button>
+			<button id="btn-undo" class="btn btn-small" type="button" title="Undo"><i class="icon icon-arrow-left"></i></button>
+			<button id="btn-redo" class="btn btn-small" type="button" title="Redo"><i class="icon icon-arrow-right"></i></button>
 			<button id="btn-pick-color" class="btn btn-small" type="button" data-toggle="button" title="Pick color"><i class="icon icon-pencil"></i></button>
 		</div>
 		<div id="color-selection" >
@@ -113,6 +115,9 @@ var paperMouseDown=false;
 
 var gridArtwork=new GridArtwork();
 
+var undoStack=[];
+var redoStack=[];
+
 
 // 
 function adjustCanvasWrapper() {
@@ -190,6 +195,19 @@ function paintOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 			
 	if (paperMouseDown) {
+		var oldCell=gridArtwork.getCell(cell.col, cell.row)
+		var oldShapeName="empty";
+		var oldColor="#ffffff";
+		if (oldCell) {
+			oldShapeName=oldCell.shapeName;
+			oldColor=oldCell.color;
+		}
+		
+		undoStack[undoStack.length-1].pushCellChange(
+			cell.col, cell.row, 
+			oldShapeName, selectedShapeName,
+			oldColor, selectedColor);
+		
 		paintOnCanvas(cell.col, cell.row, selectedShapeName, selectedColor);
 		if (selectedShapeName!="empty") {
 			pushRecentColor(selectedColor);	
@@ -326,6 +344,20 @@ function selectColor(hexColor) {
 	}
 }
 
+function updateUndoRedoButtons() {
+	if (undoStack.length>0) {
+		$("#btn-undo").removeAttr("disabled");
+	} else {
+		$("#btn-undo").attr("disabled", "disabled");
+	}
+	
+	if (redoStack.length>0) {
+		$("#btn-redo").removeAttr("disabled");
+	} else {
+		$("#btn-redo").attr("disabled", "disabled");
+	}
+
+}
 
 $(function() {
 	adjustCanvasWrapper();
@@ -345,6 +377,7 @@ $(function() {
 	grid.cellSize=artwork.layers[0].cellSize;
 	grid.paintGrid(paper);
 	createShapesToolbar();
+	updateUndoRedoButtons();
 	
 	var layer=artwork.layers[0];
 	for (var i=0; i<layer.cells.length; i++) {
@@ -358,6 +391,9 @@ $(function() {
 			updateCellCoordiantesPanel(event);
 			
 			if (mode=="paint") {
+				undoStack.push(new UndoStep());
+				redoStack=[];
+				updateUndoRedoButtons();
 				paintOnCanvasByMouseEvent(event);
 			} else if (mode=="pick-color") {
 				pickColorByMouseEvent(event);
@@ -499,7 +535,33 @@ $(function() {
 		function() {
 			gridArtwork.doShiftDown(grid);
 			changed=true;
-		})
+		});
+		
+	$("#btn-undo").click(
+		function() {
+			if (undoStack.length>0) {
+				var undoStep=undoStack.pop();
+				for (var i=0; i<undoStep.cellChanges.length; i++) {
+					cc=undoStep.cellChanges[i];
+					paintOnCanvas(cc.col, cc.row, cc.oldShapeName, cc.oldColor);
+				}
+				redoStack.push(undoStep);
+				updateUndoRedoButtons();
+			}
+		});
+		
+	$("#btn-redo").click(
+		function() {
+			if (redoStack.length>0) {
+				var redoStep=redoStack.pop();
+				for (var i=0; i<redoStep.cellChanges.length; i++) {
+					cc=redoStep.cellChanges[i];
+					paintOnCanvas(cc.col, cc.row, cc.newShapeName, cc.newColor);
+				}
+				undoStack.push(redoStep);
+				updateUndoRedoButtons();
+			}	
+		});
 })
 </script>
 
