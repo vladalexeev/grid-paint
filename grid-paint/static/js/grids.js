@@ -251,3 +251,25 @@ function trianglePath(col, row, sideLength) {
 }
 
 
+function UndoStep() {
+	this.cellChanges=[];
+	
+	this.pushCellChange=function(col, row, oldShapeName, newShapeName, oldColor, newColor) {
+		for (var i=0; i<this.cellChanges.length; i++) {
+			var cc=this.cellChanges[i];
+			if (cc.col==col && cc.row==row) {
+				return;
+			}
+		}
+		
+		this.cellChanges.push({
+			col: col,
+			row: row,
+			oldShapeName: oldShapeName, 
+			newShapeName: newShapeName,
+			oldColor: oldColor,
+			newColor: newColor
+		});
+	}
+}
+
