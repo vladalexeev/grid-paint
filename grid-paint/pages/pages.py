@@ -12,7 +12,7 @@ from common import BasicPageRequestHandler
 import db
 import tags
 
-page_size=6
+page_size=10
 
 class PageIndex(BasicPageRequestHandler):
     def get(self):            
