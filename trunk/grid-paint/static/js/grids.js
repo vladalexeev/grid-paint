@@ -102,10 +102,12 @@ function GridArtwork() {
     }
     
     this._shiftAllElements=function(dx, dy) {
-    	for (var row=0; this.cells.length; row++) {
+    	for (var row=0; row<this.cells.length; row++) {
  			for (var col=0; col<this.cells[row].length; col++) {
  				if (this.cells[row][col]) {
- 					this.cells[row][col].element.translate(dx, dy);
+ 					if (this.cells[row][col].element) {
+ 						this.cells[row][col].element.translate(dx, dy);
+ 					} 
  				}
  			}
  		}
