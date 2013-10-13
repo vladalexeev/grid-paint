@@ -40,17 +40,22 @@
 			<div id="shapes-toolbar"></div>
 		</div>
 		<div class="painter-toolbar">
-			<div class="painter-toolbar-header">Shift</div>
-			<div class="painter-toolbar-container text-center">
-				<button id="btn-shift-up" class="btn btn-small" type="button" title="Shift up"><i class="icon icon-arrow-up"></i></button>
+			<div class="painter-toolbar-header" id="shift-toolbar-header" style="cursor:pointer;">
+				Shift
+				<div class="pull-right"><i class="icon-chevron-down"></i></div>
 			</div>
-			<div class="painter-toolbar-container text-center">
-				<button id="btn-shift-left" class="btn btn-small" type="button" title="Shift left"><i class="icon icon-arrow-left"></i></button>
-				<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-				<button id="btn-shift-right" class="btn btn-small" type="button" title="Shift right"><i class="icon icon-arrow-right"></i></button>
-			</div>			
-			<div class="painter-toolbar-container text-center">
-				<button id="btn-shift-down" class="btn btn-small" type="button" title="Shift down"><i class="icon icon-arrow-down"></i></button>
+			<div id="shift-toolbar-content" style="display:none">
+				<div class="painter-toolbar-container text-center">
+					<button id="btn-shift-up" class="btn btn-small" type="button" title="Shift up"><i class="icon icon-arrow-up"></i></button>
+				</div>
+				<div class="painter-toolbar-container text-center">
+					<button id="btn-shift-left" class="btn btn-small" type="button" title="Shift left"><i class="icon icon-arrow-left"></i></button>
+					<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+					<button id="btn-shift-right" class="btn btn-small" type="button" title="Shift right"><i class="icon icon-arrow-right"></i></button>
+				</div>			
+				<div class="painter-toolbar-container text-center">
+					<button id="btn-shift-down" class="btn btn-small" type="button" title="Shift down"><i class="icon icon-arrow-down"></i></button>
+				</div>
 			</div>
 		</div>
 		<div id="coordinates"></div>
@@ -563,6 +568,21 @@ $(function() {
 				undoStack.push(redoStep);
 				updateUndoRedoButtons();
 			}	
+		});
+		
+	$("#shift-toolbar-header").click(
+		function() {
+			if ($(this).attr("content-visible")) {
+				$("#shift-toolbar-content").slideUp();
+				$("#shift-toolbar-header i").removeClass("icon-chevron-up");
+				$("#shift-toolbar-header i").addClass("icon-chevron-down");
+				$(this).removeAttr("content-visible");
+			} else {
+				$("#shift-toolbar-content").slideDown();
+				$("#shift-toolbar-header i").removeClass("icon-chevron-down");
+				$("#shift-toolbar-header i").addClass("icon-chevron-up");
+				$(this).attr("content-visible","visible");				
+			}
 		});
 })
 </script>
