@@ -21,8 +21,6 @@ from graphics.svg import SvgImageWriter
 import tags
 import common
 
-import logging
-
 grids={
        'square': GridSquare,
        'triangle': GridTriangle,
