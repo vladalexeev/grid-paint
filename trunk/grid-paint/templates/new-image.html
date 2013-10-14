@@ -10,23 +10,53 @@
 {% block content %}  
 
 <div style="min-height: 600px;">
+	<div class="text-center">
+	<h2>Choose a grid for new image</h2>	
+	</div>
 
-<div class="text-center">
-<h2>Choose a grid for new image</h2>	
+	<div class="row text-center">
+		<div class="grid-selector-wrapper">
+			<div class="grid-selector-element" id="square"></div>
+		</div>
+		<div class="grid-selector-wrapper">
+			<div class="grid-selector-element" id="triangle"></div>
+		</div>
+		<div class="grid-selector-wrapper">
+			<div class="grid-selector-element" id="hex"></div>
+		</div>
+	</div>
 </div>
 
-<div class="row text-center">
-	<div class="grid-selector-wrapper">
-		<div class="grid-selector-element" id="square"></div>
-	</div>
-	<div class="grid-selector-wrapper">
-		<div class="grid-selector-element" id="triangle"></div>
-	</div>
-	<div class="grid-selector-wrapper">
-		<div class="grid-selector-element" id="hex"></div>
-	</div>
-</div>
-
+<div id="init-properties-modal" class="modal hide fade" tabindex="-1" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h3 id="myModalLabel">Initial artwork properties</h3>
+  </div>
+  <div class="modal-body">
+    <form id="init-form" action="/painter" method="GET">
+    	<table>
+    		<tr>
+    			<td>
+			    	<label>Width (px)</label>
+    				<input type="number" name="artwork_width" id="artwork_width" value="2000" style="width:200px;"/>
+    			</td>
+    			<td width="10">
+    			</td>
+    			<td>
+			    	<label>Height (px)</label>
+    				<input type="number" name="artwork_height" id="artwork_height" value="2000" style="width:200px;"/>
+    			</td>
+    		</tr>
+    	</table>
+    	<label>Cell size (px)</label>
+    	<input type="number" name="cell_size" id="cell_size" value="24" style="width:200px;"/>
+    	<input type="hidden" name="artwork_grid" id="artwork_grid" value=""/>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+    <button id="btn-create" type="button" class="btn btn-primary">Create new artwork</button>
+  </div>
 </div>
 
 
@@ -37,6 +67,8 @@
 
 <script>
 $(function() {
+	$("#top-menu-new-image").addClass("active");
+	
 	$(".grid-selector-element").each(
 		function() {
 			var gridName=$(this).attr("id");
@@ -48,11 +80,15 @@ $(function() {
 	
 	$(".grid-selector-element").click(
 		function() {
-			document.location="/painter?grid="+$(this).attr("id");
-			//alert($(this).attr("id"));
+			$("#artwork_grid").val($(this).attr("id"));
+			$("#init-properties-modal").modal();
+			//document.location="/painter?grid="+$(this).attr("id");
 		});
 		
-	$("#top-menu-new-image").addClass("active");
+	$("#btn-create").click(
+		function() {
+			$("#init-form")[0].submit();
+		});
 });
 </script>
 

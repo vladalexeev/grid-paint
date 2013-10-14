@@ -58,12 +58,12 @@ class PagePainter(BasicPageRequestHandler):
             new_artwork={
                          'backgroundColor': '#ffffff',
                          'canvasSize':{
-                                       'width': 2000,
-                                       'height': 2000,                                       
+                                       'width': int(self.request.get('artwork_width')),
+                                       'height': int(self.request.get('artwork_height')),                                       
                                        },
                          'layers': [{
-                                     'grid':self.request.get('grid'),
-                                     'cellSize':24,                     
+                                     'grid': self.request.get('artwork_grid'),
+                                     'cellSize': int(self.request.get('cell_size')),                     
                                      'cells':[]
                                      }],
                          'recentColors':['#4096EE', '#FFFFFF', '#000000', '#EEEEEE', 
