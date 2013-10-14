@@ -21,6 +21,8 @@ from graphics.svg import SvgImageWriter
 import tags
 import common
 
+import logging
+
 grids={
        'square': GridSquare,
        'triangle': GridTriangle,
@@ -76,6 +78,8 @@ class ActionSaveImage(BasicRequestHandler):
         
         layer=json_obj['layers'][0]
         grid=grids[layer['grid']]();
+        grid.cell_size=layer['cellSize']
+
         for cell in layer['cells']:
             grid.paintShape(image_draw, cell, dx, dy)
         
@@ -174,7 +178,9 @@ class SVGImageRequest(BasicRequestHandler):
         dy=-json_obj['effectiveRect']['top']
         
         layer=json_obj['layers'][0]
-        grid=grids[layer['grid']]();
+        grid=grids[layer['grid']]()
+        grid.cell_size=layer['cellSize']
+        
         for cell in layer['cells']:
             grid.paintShape(image, cell, dx, dy)
             
