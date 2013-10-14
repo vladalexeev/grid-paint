@@ -87,6 +87,25 @@ $(function() {
 		
 	$("#btn-create").click(
 		function() {
+			var width=$("#artwork_width").val();
+			var height=$("#artwork_height").val();
+			var cellSize=$("#cell_size").val();
+			
+			if (width<200 || width>4000) {
+				alert("Artwork width should by between 200 and 4000 pixels.");
+				return;
+			}
+			
+			if (height<200 || height>4000) {
+				alert("Artwork height should be between 200 and 4000 pixels");
+				return;
+			}
+			
+			if (cellSize<10 || cellSize>32) {
+				alert("Cell size should be between 10 and 32 pixels");
+				return;
+			}
+			
 			$("#init-form")[0].submit();
 		});
 });
