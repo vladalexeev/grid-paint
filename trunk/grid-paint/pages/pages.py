@@ -11,6 +11,7 @@ from common import BasicPageRequestHandler
 
 import db
 import tags
+import common
 
 page_size=10
 
@@ -89,20 +90,26 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
             'full_image_width': artwork.full_image_height,
             'full_image_height': artwork.full_image_height
             }
-        
-    width_aspect=float(artwork.full_image_width)/thumbnail_width
-    height_aspect=float(artwork.full_image_height)/thumbnail_height
-        
-    if width_aspect>height_aspect:
-        divisor=width_aspect
+    
+    if artwork.small_image_width<thumbnail_width and artwork.small_image_height<thumbnail_height:
+        thumbnail_size = common.calc_resize(
+                                            artwork.full_image_width, 
+                                            artwork.full_image_height, 
+                                            thumbnail_width, 
+                                            thumbnail_height)
+        image_name = str(artwork.key())+'.png'
     else:
-        divisor=height_aspect
-        
-    if divisor<1:
-        divisor=1
-        
-    result['thumbnail_width']=int(artwork.full_image_width/divisor)
-    result['thumbnail_height']=int(artwork.full_image_height/divisor)
+        thumbnail_size = common.calc_resize(
+                                            artwork.small_image_width,
+                                            artwork.small_image_height,
+                                            thumbnail_width,
+                                            thumbnail_height
+                                            )
+        image_name = str(artwork.key())+'-small.png'
+                
+    result['thumbnail_width'] = thumbnail_size[0]
+    result['thumbnail_height'] = thumbnail_size[1]
+    result['thumbnail_image_name'] = image_name
     
     return result
     

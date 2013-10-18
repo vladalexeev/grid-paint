@@ -7,6 +7,9 @@ Created on 23.07.2013
 
 from google.appengine.ext import db
 
+artwork_small_image_width=200
+artwork_small_image_height=150
+
 class Artwork(db.Model):
     name = db.StringProperty()
     author = db.UserProperty(auto_current_user_add=True)
@@ -15,7 +18,10 @@ class Artwork(db.Model):
     json = db.TextProperty()
     full_image = db.BlobProperty()
     full_image_width = db.IntegerProperty()
-    full_image_height = db.IntegerProperty();
+    full_image_height = db.IntegerProperty()
+    small_image = db.BlobProperty()
+    small_image_width = db.IntegerProperty()
+    small_image_height = db.IntegerProperty()
     
 class Tag(db.Model):
     url_name = db.StringProperty()
