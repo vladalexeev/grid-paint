@@ -81,12 +81,25 @@ class ActionSaveImage(BasicRequestHandler):
         for cell in layer['cells']:
             grid.paintShape(image_draw, cell, dx, dy)
         
-        memory_file=StringIO.StringIO()
+        memory_file = StringIO.StringIO()
         image.save(memory_file, 'png')
         
-        artwork.full_image=memory_file.getvalue()
-        artwork.full_image_width=image_width
-        artwork.full_image_height=image_height
+        artwork.full_image = memory_file.getvalue()
+        artwork.full_image_width = image_width
+        artwork.full_image_height = image_height
+        
+        small_image_size = common.calc_resize(image_width, 
+                                              image_height, 
+                                              db.artwork_small_image_width, 
+                                              db.artwork_small_image_height)
+        small_image = image.resize(small_image_size, Image.ANTIALIAS)
+        small_memory_file = StringIO.StringIO()
+        small_image.save(small_memory_file, 'png')
+        
+        artwork.small_image = small_memory_file.getvalue()
+        artwork.small_image_width = small_image_size[0]
+        artwork.small_image_height = small_image_size[1]
+        
         saved_id=artwork.put()
         
         
@@ -151,6 +164,14 @@ class PNGImageRequest(BasicRequestHandler):
         
         self.response.headers['Content-Type']='image/png'     
         self.response.out.write(artwork.full_image)
+        
+class PNGSmallImageRequest(BasicRequestHandler):
+    def get(self, *ar):
+        artwork_id=ar[0]
+        artwork=db.Artwork.get(artwork_id)
+        
+        self.response.headers['Content-Type']='image/png'     
+        self.response.out.write(artwork.small_image)
         
 class SVGImageRequest(BasicRequestHandler):
     def get(self, *ar):
@@ -218,3 +239,29 @@ class ActionSaveSettings(BasicRequestHandler):
         common.save_settings(settings)
         
         self.redirect('/admin')
+        
+        
+class ActionUpdate(BasicRequestHandler):
+    '''
+    Migration from version 0-07 to 0-08
+    '''
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        for a in db.Artwork.all():
+            image = Image.open(StringIO.StringIO(a.full_image));
+            small_size = common.calc_resize(
+                                            a.full_image_width, 
+                                            a.full_image_height, 
+                                            db.artwork_small_image_width, 
+                                            db.artwork_small_image_height)
+            small_image = image.resize(small_size, Image.ANTIALIAS)
+            small_memory_file = StringIO.StringIO()
+            small_image.save(small_memory_file, 'png')
+            
+            a.small_image = small_memory_file.getvalue()
+            a.small_image_width = small_size[0]
+            a.small_image_height = small_size[1]
+            a.put()

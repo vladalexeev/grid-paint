@@ -79,3 +79,22 @@ class BasicPageRequestHandler(BasicRequestHandler):
 
 
 
+def calc_resize(image_width, image_height, max_width, max_height):
+    '''
+    Calculates resized image dimensions and return tuple (width,height)
+    '''
+    width_aspect=float(image_width)/max_width
+    height_aspect=float(image_height)/max_height
+        
+    if width_aspect>height_aspect:
+        divisor=width_aspect
+    else:
+        divisor=height_aspect
+        
+    if divisor<1:
+        divisor=1
+    
+    return (
+            int(image_width/divisor),
+            int(image_height/divisor)
+            )

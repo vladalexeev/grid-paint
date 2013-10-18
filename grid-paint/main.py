@@ -20,9 +20,11 @@ application = webapp.WSGIApplication([
                                       ('/save-comment', pages.actions.ActionSaveComment),
                                       ('/delete-comment', pages.actions.ActionDeleteComment),
                                       ('/tag-typeahead', pages.actions.ActionTagTypeahead),
+                                      ('/images/png/(.*)-small.png', pages.actions.PNGSmallImageRequest),
                                       ('/images/png/(.*).png', pages.actions.PNGImageRequest),
                                       ('/images/svg/(.*).svg', pages.actions.SVGImageRequest),
-                                      ('/images/details/(.*)', pages.pages.PageImage)
+                                      ('/images/details/(.*)', pages.pages.PageImage),
+                                      ('/update', pages.actions.ActionUpdate)
                                       ], debug=True)
 
 
