@@ -102,6 +102,9 @@ class ActionSaveImage(BasicRequestHandler):
         
         saved_id=artwork.put()
         
+        common.mm_cache.delete(common.MC_SMALL_IMAGE_PREFIX+str(saved_id))
+        common.mm_cache.delete(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+        
         
         self.redirect('/images/details/'+str(saved_id))
         
@@ -115,6 +118,10 @@ class ActionDeleteImage(BasicRequestHandler):
                 comment.delete()
                 
             artwork.delete();
+            
+            common.mm_cache.delete(common.MC_SMALL_IMAGE_PREFIX+str(artwork_id))
+            common.mm_cache.delete(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+
             self.redirect("/my-images")
         else:
             self.response.set_status(403)
@@ -168,10 +175,16 @@ class PNGImageRequest(BasicRequestHandler):
 class PNGSmallImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
-        artwork=db.Artwork.get(artwork_id)
+        
+        small_image=common.mm_cache.get('small_image_'+artwork_id)
+        
+        if not small_image:        
+            artwork=db.Artwork.get(artwork_id)
+            small_image = artwork.small_image;
+            common.mm_cache.add(common.MC_SMALL_IMAGE_PREFIX+artwork_id, small_image)
         
         self.response.headers['Content-Type']='image/png'     
-        self.response.out.write(artwork.small_image)
+        self.response.out.write(small_image)
         
 class SVGImageRequest(BasicRequestHandler):
     def get(self, *ar):
@@ -241,27 +254,3 @@ class ActionSaveSettings(BasicRequestHandler):
         self.redirect('/admin')
         
         
-class ActionUpdate(BasicRequestHandler):
-    '''
-    Migration from version 0-07 to 0-08
-    '''
-    def get(self):
-        if not self.user_info.superadmin:
-            self.response.set_status(403)
-            return
-        
-        for a in db.Artwork.all():
-            image = Image.open(StringIO.StringIO(a.full_image));
-            small_size = common.calc_resize(
-                                            a.full_image_width, 
-                                            a.full_image_height, 
-                                            db.artwork_small_image_width, 
-                                            db.artwork_small_image_height)
-            small_image = image.resize(small_size, Image.ANTIALIAS)
-            small_memory_file = StringIO.StringIO()
-            small_image.save(small_memory_file, 'png')
-            
-            a.small_image = small_memory_file.getvalue()
-            a.small_image_width = small_size[0]
-            a.small_image_height = small_size[1]
-            a.put()
