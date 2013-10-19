@@ -16,15 +16,18 @@ import common
 page_size=10
 
 class PageIndex(BasicPageRequestHandler):
-    def get(self):            
-        all_artworks=db.Artwork.all()
-        all_artworks=all_artworks.order('-date').fetch(3,0)
+    def get(self):
+        recent_artworks = common.mm_cache.get(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         
-        artworks=[convert_artwork_for_page(a,200,150) for a in all_artworks]
+        if not recent_artworks:                    
+            all_artworks=db.Artwork.all()
+            all_artworks=all_artworks.order('-date').fetch(3,0)        
+            recent_artworks=[convert_artwork_for_page(a,200,150) for a in all_artworks]
+            common.mm_cache.add(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY, recent_artworks)
         
         self.write_template('templates/index.html', 
                             {
-                             'artworks': artworks
+                             'artworks': recent_artworks
                              })
         
 class PagePrivacyPolicy(BasicPageRequestHandler):

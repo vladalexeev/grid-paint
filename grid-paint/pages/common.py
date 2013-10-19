@@ -7,8 +7,16 @@ import os
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+from google.appengine.api import memcache
 
 import db
+
+mm_cache = memcache.Client();
+
+# Ключи memcache
+MC_SMALL_IMAGE_PREFIX = 'small_image_'
+MC_MAIN_PAGE_RECENT_IMAGES_KEY = 'main_page_recent_images'
+
 
 class UserInfo:
     """ Информация о пользователе для страницы """
