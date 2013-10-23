@@ -40,6 +40,11 @@ handlers:
 - url: /favicon.ico
   static_files: static/favicon.ico
   upload: static/favicon.ico
+  
+- url: /google5c784bef2ace5509.html
+  static_files: static/google5c784bef2ace5509.html
+  upload: static/google5c784bef2ace5509.html
+
 
 - url: /.*
   script: main.application
