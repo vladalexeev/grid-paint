@@ -60,7 +60,7 @@ function GridTriangles4_ShapeFlat(parent) {
 
 function GridTriangles4() {
 	this.cellSize=24;
-	this.name="4triangles";
+	this.name="triangles4";
 	
 	this._createGridLine=function(paper, pathArray) {
 		var path=paper.path(pathArray);
@@ -112,7 +112,7 @@ function GridTriangles4() {
 	
 	this.getCellRect=function(col, row) {
 	    return {
-	        left: col*this.cellSize,
+	        left: Math.floor(col/4)*this.cellSize,
 	        top: row*this.cellSize,
 	        width: this.cellSize,
 	        height: this.cellSize

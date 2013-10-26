@@ -15,6 +15,7 @@ from common import BasicRequestHandler
 from grid.square import GridSquare
 from grid.triangle import GridTriangle
 from grid.hex import GridHex
+from grid.triangles4 import GridTriangles4
 
 from graphics.svg import SvgImageWriter
 
@@ -24,7 +25,8 @@ import common
 grids={
        'square': GridSquare,
        'triangle': GridTriangle,
-       'hex': GridHex
+       'hex': GridHex,
+       'triangles4': GridTriangles4
        }
 
 class ActionSaveImage(BasicRequestHandler):
