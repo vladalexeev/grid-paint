@@ -97,11 +97,11 @@ function GridTriangles4() {
         var mainDiagPos=xx-yy;
         var subDiagPos=xx-(this.cellSize-yy);
         
-        if (mainDiagPos>0 && subDiagPos<0) {
+        if (mainDiagPos>=0 && subDiagPos<0) {
         	return {col: squareCol*4, row: squareRow};	
-        } else if (mainDiagPos>0 && subDiagPos>0) {
+        } else if (mainDiagPos>=0 && subDiagPos>=0) {
         	return {col: squareCol*4+1, row: squareRow};
-        } else if (mainDiagPos<0 && subDiagPos>0) {
+        } else if (mainDiagPos<0 && subDiagPos>=0) {
         	return {col: squareCol*4+2, row: squareRow};
         } else { //mainDiagPos<0 && subDiagPos<0
         	return {col: squareCol*4+3, row: squareRow};
