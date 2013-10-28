@@ -18,18 +18,19 @@ function GridTriangles4_TrianglePoints(col, row, cellSize) {
 			{x: centerX, y: centerY}];
 	} else if (innerTriangle==1) {
 		return [
+			{x: squareLeft, y: squareTop+cellSize},
+			{x: squareLeft, y: squareTop},
+			{x: centerX, y: centerY}];
+
+	} else if (innerTriangle==2) {
+		return [
 			{x: squareLeft+cellSize, y: squareTop},
 			{x: squareLeft+cellSize, y: squareTop+cellSize},
 			{x: centerX, y: centerY}];
-	} else if (innerTriangle==2) {
+	} else { //innerTriangle==3
 		return [
 			{x: squareLeft+cellSize, y: squareTop+cellSize},
 			{x: squareLeft, y: squareTop+cellSize},
-			{x: centerX, y: centerY}];		
-	} else { //innerTriangle==3
-		return [
-			{x: squareLeft, y: squareTop+cellSize},
-			{x: squareLeft, y: squareTop},
 			{x: centerX, y: centerY}];
 	}
 }
@@ -100,11 +101,11 @@ function GridTriangles4() {
         if (mainDiagPos>=0 && subDiagPos<0) {
         	return {col: squareCol*4, row: squareRow};	
         } else if (mainDiagPos>=0 && subDiagPos>=0) {
-        	return {col: squareCol*4+1, row: squareRow};
-        } else if (mainDiagPos<0 && subDiagPos>=0) {
         	return {col: squareCol*4+2, row: squareRow};
-        } else { //mainDiagPos<0 && subDiagPos<0
+        } else if (mainDiagPos<0 && subDiagPos>=0) {
         	return {col: squareCol*4+3, row: squareRow};
+        } else { //mainDiagPos<0 && subDiagPos<0
+        	return {col: squareCol*4+1, row: squareRow};
         }
         	    
         
