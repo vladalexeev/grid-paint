@@ -13,8 +13,8 @@ def triangle_points(col, row, cell_size):
     
     square_top=row*cell_size;
     square_left=square_col*cell_size;
-    center_x=square_left+float(cell_size+1)/2;
-    center_y=square_top+float(cell_size+1)/2;
+    center_x=square_left+float(cell_size)/2;
+    center_y=square_top+float(cell_size)/2;
     
     if inner_triangle==0:
         return [{'x': square_left, 'y': square_top},
@@ -44,7 +44,7 @@ class ShapeFlat:
                        (pp[1]['x']+dx, pp[1]['y']+dy),
                        (pp[2]['x']+dx, pp[2]['y']+dy)],
                       fill=color)
-        #image.point([(pp[2]['x'], pp[2]['y']-1)], fill=color)
+        #image.point([(pp[2]['x']+dx, pp[2]['y']-1+dy)], fill=color)
 
 
 class GridTriangles4(base.GridBase):

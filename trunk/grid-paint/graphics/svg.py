@@ -55,3 +55,6 @@ class SvgImageWriter:
         
         self.writer.write(
             '<path d="{0}" fill="{1}" stroke-width="0" />'.format(path_str, color))
+        
+    def point(self, point, fill):
+        pass
