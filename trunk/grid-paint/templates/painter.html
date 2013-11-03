@@ -79,6 +79,8 @@
     <form>
     	<label>Artwork title</label>
     	<input type="text" name="modal_artwork_name" id="modal_artwork_name" value="{{ artwork_name }}" style="width:500px;"/>
+    	<label>Artwork description</label>
+    	<textarea name="modal_artwork_description" id="modal_artwork_description" style="width:500px; height:150px;">{{ artwork_description|default_if_none:"" }}</textarea>
     	<label>Tags</label>
     	<input type="text" name="modal_artwork_tags" id="modal_artwork_tags" class="tm-input tm-input-info" autocomplete="off"/>
     	<input type="hidden" name="modal_artwork_tags_hidden" id="modal_artwork_tags_hidden" value="{{ artwork_tags }}"/>
@@ -94,6 +96,7 @@
 <form name="f" style="display:none" action="/save-image" method="post">
 	<input type="hidden" name="artwork_id" value="{{ artwork_id }}" />
 	<input type="hidden" name="artwork_name" id="artwork_name" value="{{ artwork_name }}" />
+	<textarea name="artwork_description" id="artwork_description">{{ artwork_description|default_if_none:"" }}</textarea>
 	<input type="hidden" name="artwork_tags" id="artwork_tags" value="{{ artwork_tags }}" />
 	<input type="hidden" name="artwork_json" value="" />
 </form>
@@ -453,6 +456,7 @@ $(function() {
 			
 			$("#artwork_name").val($("#modal_artwork_name").val());
 			$("#artwork_tags").val($("#modal_artwork_tags_hidden").val());
+			$("#artwork_description").val($("#modal_artwork_description").val());
 			$("#properties-modal").modal('hide');
 			
 			var modalAction=$("#modal_success_action").val();

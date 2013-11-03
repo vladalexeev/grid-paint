@@ -12,6 +12,7 @@ artwork_small_image_height=150
 
 class Artwork(db.Model):
     name = db.StringProperty()
+    description = db.TextProperty()
     author = db.UserProperty(auto_current_user_add=True)
     tags = db.StringListProperty()
     date = db.DateTimeProperty(auto_now_add=True)

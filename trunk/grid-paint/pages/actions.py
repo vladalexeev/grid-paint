@@ -22,6 +22,8 @@ from graphics.svg import SvgImageWriter
 import tags
 import common
 
+import logging
+
 grids={
        'square': GridSquare,
        'triangle': GridTriangle,
@@ -34,6 +36,7 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_json=self.request.get('artwork_json')
         artwork_id=self.request.get('artwork_id')
         artwork_name=self.request.get('artwork_name')
+        artwork_description=self.request.get('artwork_description')
         artwork_tags=self.request.get('artwork_tags')
         
         if artwork_id:
@@ -50,6 +53,13 @@ class ActionSaveImage(BasicRequestHandler):
             artwork.name=artwork_name
         else:
             artwork.name='Untitled'
+            
+        logging.error('artwork_description = '+artwork_description)
+            
+        if artwork_description:
+            artwork.description=artwork_description
+        else:
+            artwork.description=''
             
         artwork.json=artwork_json
         
