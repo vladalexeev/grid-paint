@@ -161,12 +161,16 @@ body {
 	margin-bottom:0;
 }
 
-.image-details-actions {
-	margin:10px;
+.image-details-header .artist {
+	font-weight: bold;
 }
 
-.image-details-artist {
-	font-weight: bold;
+.image-details-header .details {
+	color: #808080;
+}
+
+.image-details-actions {
+	margin:10px;
 }
 
 .image-details-comments {

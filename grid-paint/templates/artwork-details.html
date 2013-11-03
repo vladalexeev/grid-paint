@@ -26,7 +26,7 @@
 		</div>
 				
 		<h3 id="artwork-name">{{ artwork.name }}</h3>
-		<div><small>{{ artwork.date|date:"d M Y H:i" }}</small> by <span class="image-details-artist">{{ artwork.author.nickname }}</span></div>
+		<div class="details"><small>{{ artwork.date|date:"d M Y H:i" }}</small> by <span class="artist">{{ artwork.author.nickname }}</span></div>
 		<div style="white-space: pre;">{{ artwork.description|default_if_none:"" }}</div>
 		{% if artwork.tags %}
 		<div>
