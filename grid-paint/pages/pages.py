@@ -51,10 +51,12 @@ class PagePainter(BasicPageRequestHandler):
         if self.request.get('id'):
             artwork_id=self.request.get('id')
             artwork=db.Artwork.get(artwork_id)
+            
             self.write_template('templates/painter.html', 
                                 {
                                  'artwork_id': artwork_id,
                                  'artwork_name': artwork.name,
+                                 'artwork_description': artwork.description,
                                  'artwork_json': artwork.json,
                                  'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
                                  })
@@ -87,6 +89,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
     result={
             'key': artwork.key(),
             'name': artwork.name,
+            'description': artwork.description,
             'date': artwork.date,
             'author': artwork.author,
             'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
