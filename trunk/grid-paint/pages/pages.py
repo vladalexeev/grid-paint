@@ -15,6 +15,62 @@ import common
 
 page_size=10
 
+
+def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
+    result={
+            'key': artwork.key(),
+            'name': artwork.name,
+            'description': artwork.description,
+            'date': artwork.date,
+            'author': artwork.author,
+            'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
+            'full_image_width': artwork.full_image_height,
+            'full_image_height': artwork.full_image_height
+            }
+    
+    if artwork.small_image_width<thumbnail_width and artwork.small_image_height<thumbnail_height:
+        thumbnail_size = common.calc_resize(
+                                            artwork.full_image_width, 
+                                            artwork.full_image_height, 
+                                            thumbnail_width, 
+                                            thumbnail_height)
+        image_name = str(artwork.key())+'.png'
+    else:
+        thumbnail_size = common.calc_resize(
+                                            artwork.small_image_width,
+                                            artwork.small_image_height,
+                                            thumbnail_width,
+                                            thumbnail_height
+                                            )
+        image_name = str(artwork.key())+'-small.png'
+        
+    if artwork.author:
+        result['author_name'] = common.auto_nickname(artwork.author.nickname())
+    else:
+        result['author_name'] = 'Unknown'
+                
+    result['thumbnail_width'] = thumbnail_size[0]
+    result['thumbnail_height'] = thumbnail_size[1]
+    result['thumbnail_image_name'] = image_name
+    
+    return result
+
+def convert_comment_for_page(comment):
+    result = {
+              'text': comment.text,
+              'author': comment.author,
+              'date': comment.date,
+              'artwork_ref': comment.artwork_ref
+              }
+    
+    if comment.author:
+        result['author_name'] = common.auto_nickname(comment.author.nickname())
+    else:
+        result['author_name'] = 'Unknown'
+    
+    return result
+
+
 class PageIndex(BasicPageRequestHandler):
     def get(self):
         recent_artworks = common.mm_cache.get(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
@@ -84,43 +140,6 @@ class PagePainter(BasicPageRequestHandler):
                                  'artwork_json': artwork_json
                                  })
 
-
-def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
-    result={
-            'key': artwork.key(),
-            'name': artwork.name,
-            'description': artwork.description,
-            'date': artwork.date,
-            'author': artwork.author,
-            'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
-            'full_image_width': artwork.full_image_height,
-            'full_image_height': artwork.full_image_height
-            }
-    
-    if artwork.small_image_width<thumbnail_width and artwork.small_image_height<thumbnail_height:
-        thumbnail_size = common.calc_resize(
-                                            artwork.full_image_width, 
-                                            artwork.full_image_height, 
-                                            thumbnail_width, 
-                                            thumbnail_height)
-        image_name = str(artwork.key())+'.png'
-    else:
-        thumbnail_size = common.calc_resize(
-                                            artwork.small_image_width,
-                                            artwork.small_image_height,
-                                            thumbnail_width,
-                                            thumbnail_height
-                                            )
-        image_name = str(artwork.key())+'-small.png'
-                
-    result['thumbnail_width'] = thumbnail_size[0]
-    result['thumbnail_height'] = thumbnail_size[1]
-    result['thumbnail_image_name'] = image_name
-    
-    return result
-    
-    
-        
 class PageMyImages(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:
@@ -211,9 +230,11 @@ class PageGallery(BasicPageRequestHandler):
         
 class PageImage(BasicPageRequestHandler):
     def get(self, *arg):
-        artwork_id=arg[0]
-        artwork=db.Artwork.get(artwork_id)
-        comments=db.Comment.all().filter('artwork_ref =', artwork).order('date')
+        artwork_id = arg[0]
+        artwork = db.Artwork.get(artwork_id)
+        db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('date')
+        comments = [convert_comment_for_page(c) for c in db_comments]
+        
         self.write_template('templates/artwork-details.html', 
                             {
                              'artwork': convert_artwork_for_page(artwork, 600, 400),
