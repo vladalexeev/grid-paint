@@ -86,6 +86,22 @@ body {
 	padding: 2px;
 }
 
+.painter-toolbar-form {
+	margin-bottom:4px;	
+}
+
+.painter-toolbar-form label {
+	width:150px;
+	text-align: left;
+	margin-left: 4px;
+}
+
+.painter-toolbar-form input {
+	text-align: left;
+	width:150px;
+	margin-bottom:0;
+}
+
 .grid-shape-button {
 }
 
