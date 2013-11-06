@@ -68,13 +68,13 @@
 			<div id="size-toolbar-content" style="display:none">
 				<div class="painter-toolbar-form">
 					<label>Workspace size:</label>
-					<input type="number" id="toolbar_workspace_width" style="width:60px;"/>
+					<input type="number" id="toolbar-workspace-width" style="width:60px;"/>
 					&times;
-					<input type="number" id="toolbar_workspace_height" style="width:60px;"/>
+					<input type="number" id="toolbar-workspace-height" style="width:60px;"/>
 				</div>
 				<div class="painter-toolbar-form">
 					<label>Cell size:</label>
-					<input type="number" id="toolbar_cell_size" />
+					<input type="number" id="toolbar-cell-size" />
 				</div>
 				<div class="painter-toolbar-form">
 					<button type="button" id="btn-apply-workspace-size" class="btn btn-primary">Apply</button>
@@ -148,6 +148,8 @@ var changed=false;
 var paperMouseDown=false;
 
 var gridArtwork=new GridArtwork();
+var workspaceWidth;
+var workspaceHeight;
 
 var undoStack=[];
 var redoStack=[];
@@ -310,8 +312,8 @@ function saveArtwork() {
 		},
 		effectiveRect: getArtworkEffectiveRect(grid,gridArtwork),
 		canvasSize: {
-			width: artwork.canvasSize.width,
-			height: artwork.canvasSize.height
+			width: grid.workspaceWidth,
+			height: grid.workspaceHeight
 		},
 		backgroundColor: backgroundColor,
 		layers:[{
@@ -409,9 +411,15 @@ $(function() {
 	paper=new Raphael("canvas",artwork.canvasSize.width,artwork.canvasSize.height);
 	grid=gridFactory[artwork.layers[0].grid]();
 	grid.cellSize=artwork.layers[0].cellSize;
+	grid.workspaceWidth=artwork.canvasSize.width;
+	grid.workspaceHeight=artwork.canvasSize.height;	
 	grid.paintGrid(paper);
 	createShapesToolbar();
 	updateUndoRedoButtons();
+	
+	$("#toolbar-workspace-width").val(artwork.canvasSize.width);
+	$("#toolbar-workspace-height").val(artwork.canvasSize.height);
+	$("#toolbar-cell-size").val(artwork.layers[0].cellSize);
 	
 	var layer=artwork.layers[0];
 	for (var i=0; i<layer.cells.length; i++) {
@@ -625,6 +633,37 @@ $(function() {
 				$("#size-toolbar-header i").removeClass("icon-chevron-down");
 				$("#size-toolbar-header i").addClass("icon-chevron-up");
 				$(this).attr("content-visible","visible");				
+			}
+		});
+		
+	$("#btn-apply-workspace-size").click(
+		function() {
+			var newWidth=parseInt($("#toolbar-workspace-width").val(),10);
+			var newHeight=parseInt($("#toolbar-workspace-height").val(),10);
+			$("#canvas")
+				.css("width",newWidth)
+				.css("height",newHeight);
+			grid.workspaceWidth=newWidth;
+			grid.workspaceHeight=newHeight;
+			grid.cellSize=parseInt($("#toolbar-cell-size").val(),10);
+			
+			paper.remove();
+			paper=new Raphael("canvas",newWidth,newHeight);
+			grid.paintGrid(paper);
+			createShapesToolbar();
+			
+			var oldGridArtwork=gridArtwork;
+			gridArtwork=new GridArtwork();
+			for (var row=0; row<oldGridArtwork.cells.length; row++) {
+				for (var col=0; col<oldGridArtwork.cells[row].length; col++) {
+					var cell=oldGridArtwork.cells[row][col];
+					if (cell) {
+						var cellRect=grid.getCellRect(col,row);
+						if (cellRect.left+cellRect.width<newWidth && cellRect.top+cellRect.height<newHeight) {
+							paintOnCanvas(col,row,cell.shapeName,cell.color);
+						}
+					}
+				}
 			}
 		});
 })
