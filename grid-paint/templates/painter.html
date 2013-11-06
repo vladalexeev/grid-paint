@@ -640,12 +640,29 @@ $(function() {
 		function() {
 			var newWidth=parseInt($("#toolbar-workspace-width").val(),10);
 			var newHeight=parseInt($("#toolbar-workspace-height").val(),10);
+			var newCellSize=parseInt($("#toolbar-cell-size").val(),10);
+			
+			if (newWidth<200 || newWidth>4000) {
+				alert("Artwork width should by between 200 and 4000 pixels.");
+				return;
+			}
+			
+			if (newHeight<200 || newHeight>4000) {
+				alert("Artwork height should be between 200 and 4000 pixels");
+				return;
+			}
+			
+			if (newCellSize<10 || newCellSize>32) {
+				alert("Cell size should be between 10 and 32 pixels");
+				return;
+			}
+			
 			$("#canvas")
 				.css("width",newWidth)
 				.css("height",newHeight);
 			grid.workspaceWidth=newWidth;
 			grid.workspaceHeight=newHeight;
-			grid.cellSize=parseInt($("#toolbar-cell-size").val(),10);
+			grid.cellSize=newCellSize;
 			
 			paper.remove();
 			paper=new Raphael("canvas",newWidth,newHeight);
