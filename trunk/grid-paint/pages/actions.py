@@ -21,6 +21,7 @@ from graphics.svg import SvgImageWriter
 
 import tags
 import common
+import zlib
 
 import logging
 
@@ -61,7 +62,12 @@ class ActionSaveImage(BasicRequestHandler):
         else:
             artwork.description=''
             
-        artwork.json=artwork_json
+        if len(artwork_json)>250000:
+            artwork.json = unicode(zlib.compress(artwork_json), 'ISO-8859-1')
+            artwork.json_compressed = True 
+        else:            
+            artwork.json=artwork_json
+            artwork.json_compressed = False
         
         original_tags=artwork_tags.split(',')
         url_tags=[]
