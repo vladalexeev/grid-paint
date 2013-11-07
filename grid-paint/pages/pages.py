@@ -13,6 +13,8 @@ import db
 import tags
 import common
 
+import zlib
+
 page_size=10
 
 
@@ -108,12 +110,17 @@ class PagePainter(BasicPageRequestHandler):
             artwork_id=self.request.get('id')
             artwork=db.Artwork.get(artwork_id)
             
+            if artwork.json_compressed:
+                artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+            else:
+                artwork_json = artwork.json
+            
             self.write_template('templates/painter.html', 
                                 {
                                  'artwork_id': artwork_id,
                                  'artwork_name': artwork.name,
                                  'artwork_description': artwork.description,
-                                 'artwork_json': artwork.json,
+                                 'artwork_json': artwork_json,
                                  'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
                                  })
         else:
