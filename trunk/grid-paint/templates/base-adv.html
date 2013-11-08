@@ -5,7 +5,7 @@
 <div class="container-fluid" style="padding-left:0; padding-right:0;">
 	<div class="row-fluid">
 		<div class="sidebar-adv text-center">
-			{% if settings.show_ads %}
+			{% if settings.show_ads and not user_info.superadmin %}
 <script type="text/javascript">
 google_ad_client = "ca-pub-0036569436360210";
 google_ad_slot = "7723143793";
