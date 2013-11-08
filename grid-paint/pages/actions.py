@@ -123,6 +123,9 @@ class ActionSaveImage(BasicRequestHandler):
         common.mm_cache.delete(common.MC_SMALL_IMAGE_PREFIX+str(saved_id))
         common.mm_cache.delete(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         
+        memory_file.close()
+        small_memory_file.close()
+        
         
         self.redirect('/images/details/'+str(saved_id))
         
