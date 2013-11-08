@@ -179,7 +179,10 @@ function GridArtwork() {
  */
 
 
-
+/**
+ * convert mouse coordinate to triangle grid coordinate.
+ * Uses in 'triangle' and 'hex' grids 
+ */
 function pointToTriangleCoord(x,y,sideLength) {
 	var rowHeight=sideLength*sin60;
 	var cellY=Math.floor(y/rowHeight);
@@ -207,7 +210,38 @@ function pointToTriangleCoord(x,y,sideLength) {
 }
 
 /**
- * get path and center point of triangle by it's cell coordinates 
+ * Convert mouse coordiante to iso-triangle grid coordinate.
+ * Used in 'iso-triangle' and 'iso-hex' grids
+ */
+function pointToIsoTriangleCoord(x,y,sideLength) {
+	var colWidth=sideLength*sin60;
+	var cellX=Math.floor(x/colWidth);
+	    
+    var relativeX;
+    if (cellX % 2 == 0) {
+        relativeX=x-cellX*colWidth;
+    } else {
+        relativeX=x-(cellX-1)*colWidth;
+    }
+	    	    
+    var A1=-tan60;
+    var B1=-1;
+    var C1=-sideLength*sin60;
+    var dist1=Math.abs(A1*y+B1*relativeX+C1)/Math.sqrt(A1*A1+B1*B1);
+    var d1=Math.floor(dist1/colWidth)-1;
+	    
+    var A2=-tan60;
+    var B2=1;
+    var C2=-3*sideLength*sin60;
+    var dist2=Math.abs(A2*y+B2*relativeX+C2)/Math.sqrt(A2*A2+B2*B2);
+    var d2=Math.floor(dist2/colWidth)-1;
+        
+    return {col:cellX, row:d1+d2}
+}
+
+/**
+ * get path and center point of triangle by it's cell coordinates.
+ * Used in 'triangle' and 'hex' grids
  * @param {Object} col
  * @param {Object} row
  * @param {Object} sideLength
@@ -247,6 +281,54 @@ function trianglePath(col, row, sideLength) {
 				{x:x+sideLength/2, y:y},
 				{x:x+sideLength, y:y+rowHeight},
 				{x:x+sideLength/2, y:y+rowHeight*2/3}
+				]
+		}
+	}
+}
+
+
+/**
+ * Get path and center point of isometric triangle by it's cell coordinates.
+ * Used in 'iso-triangle' and 'iso-hex' grids
+ * @param {Object} col
+ * @param {Object} row
+ * @param {Object} sideLength
+ * @return array of four points: points [0,1,2] - corners, point[3] - center point
+ */
+function isotrianglePath(col, row, sideLength) {
+	colWidth=sideLength*sin60
+	y=row*sideLength/2
+	x=col*colWidth;
+	if (col % 2 == 0) {
+		if (row % 2 == 0) {
+			return [
+				{y:y, x:x+colWidth},
+				{y:y+sideLength/2, x:x},
+				{y:y+sideLength, x:x+colWidth},
+				{y:y+sideLength/2, x:x+colWidth*2/3}
+				]
+		} else {
+			return [
+				{y:y, x:x},
+				{y:y+sideLength, x:x},
+				{y:y+sideLength/2, x:x+colWidth},
+				{y:y+sideLength/2, x:x+colWidth/3}
+				]
+		}
+	} else {
+		if (row % 2 == 0) {
+			return [
+				{y:y, x:x},
+				{y:y+sideLength, x:x},
+				{y:y+sideLength/2, x:x+colWidth},
+				{y:y+sideLength/2, x:x+colWidth/3}
+				]
+		} else {
+			return [
+				{y:y, x:x+colWidth},
+				{y:y+sideLength/2, x:x},
+				{y:y+sideLength, x:x+colWidth},
+				{y:y+sideLength/2, x:x+colWidth*2/3}
 				]
 		}
 	}
