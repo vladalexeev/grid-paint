@@ -14,6 +14,7 @@ from PIL import Image, ImageDraw
 from common import BasicRequestHandler
 from grid.square import GridSquare
 from grid.triangle import GridTriangle
+from grid.iso_triangle import GridIsoTriangle
 from grid.hex import GridHex
 from grid.triangles4 import GridTriangles4
 
@@ -28,6 +29,7 @@ import logging
 grids={
        'square': GridSquare,
        'triangle': GridTriangle,
+       'iso-triangle': GridIsoTriangle,
        'hex': GridHex,
        'triangles4': GridTriangles4
        }
