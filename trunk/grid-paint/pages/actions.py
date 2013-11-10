@@ -220,7 +220,12 @@ class SVGImageRequest(BasicRequestHandler):
         
         self.response.headers['Content-Type']='image/svg'
         
-        json_obj=json.loads(artwork.json)
+        if artwork.json_compressed:
+            artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+        else:
+            artwork_json = artwork.json
+        
+        json_obj=json.loads(artwork_json)
         
         image_width=json_obj['effectiveRect']['width']
         image_height=json_obj['effectiveRect']['height']
