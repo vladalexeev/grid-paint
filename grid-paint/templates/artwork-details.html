@@ -47,6 +47,9 @@
 		{% endif %}
 		<a href="/images/png/{{ artwork.key }}.png" class="btn btn-small" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
 		<a href="/images/svg/{{ artwork.key }}.svg" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
+		{% if user_info.superadmin %}
+		<a href="/images/json/{{ artwork.key }}.json" class="btn btn-small" title="Download JSON"><i class="icon icon-arrow-down"></i>JSON</a>
+		{% endif %}
 	</div>
 	
 	
