@@ -239,6 +239,10 @@ class PageImage(BasicPageRequestHandler):
     def get(self, *arg):
         artwork_id = arg[0]
         artwork = db.Artwork.get(artwork_id)
+        if not artwork:
+            self.response.set_status(404)
+            return
+        
         db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('date')
         comments = [convert_comment_for_page(c) for c in db_comments]
         

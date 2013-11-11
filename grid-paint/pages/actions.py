@@ -192,6 +192,10 @@ class PNGImageRequest(BasicRequestHandler):
         artwork_id=ar[0]
         artwork=db.Artwork.get(artwork_id)
         
+        if not artwork:
+            self.response.set_status(404)
+            return
+        
         self.response.headers['Content-Type']='image/png'     
         self.response.out.write(artwork.full_image)
         
@@ -203,6 +207,9 @@ class PNGSmallImageRequest(BasicRequestHandler):
         
         if not small_image:        
             artwork=db.Artwork.get(artwork_id)
+            if not artwork:
+                self.response.set_status(404)
+                return
             small_image = artwork.small_image;
             common.mm_cache.add(common.MC_SMALL_IMAGE_PREFIX+artwork_id, small_image)
         
