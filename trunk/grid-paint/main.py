@@ -23,6 +23,7 @@ application = webapp.WSGIApplication([
                                       ('/images/png/(.*)-small.png', pages.actions.PNGSmallImageRequest),
                                       ('/images/png/(.*).png', pages.actions.PNGImageRequest),
                                       ('/images/svg/(.*).svg', pages.actions.SVGImageRequest),
+                                      ('/images/json/(.*).json', pages.actions.JSONImageRequest),
                                       ('/images/details/(.*)', pages.pages.PageImage)
                                       ], debug=True)
 

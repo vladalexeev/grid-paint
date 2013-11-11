@@ -253,6 +253,25 @@ class SVGImageRequest(BasicRequestHandler):
             
         image.endImage()
         
+class JSONImageRequest(BasicRequestHandler):
+    def get(self, *ar):
+        artwork_id=ar[0]
+        artwork=db.Artwork.get(artwork_id)
+        
+        if not artwork:
+            self.response.set_status(404)
+            return
+        
+        self.response.headers['Content-Type']='text/json'
+        
+        if artwork.json_compressed:
+            artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+        else:
+            artwork_json = artwork.json
+        
+        self.response.out.write(artwork_json)
+        
+        
 class ActionTagTypeahead(BasicRequestHandler):
     def get(self):
         self._tag_typeahead()
