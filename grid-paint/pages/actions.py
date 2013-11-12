@@ -125,6 +125,8 @@ class ActionSaveImage(BasicRequestHandler):
         common.mm_cache.delete(common.MC_SMALL_IMAGE_PREFIX+str(saved_id))
         common.mm_cache.delete(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         
+        del image
+        del small_image
         memory_file.close()
         small_memory_file.close()
         
