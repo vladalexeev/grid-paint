@@ -21,3 +21,7 @@ class GridBase:
         color=jsonCell['color']
         shape=self.shapes[jsonCell['shape']]
         shape.paint(image, col, row, color, dx, dy)
+        
+    def paintShape2(self, image, col, row, shapeName, color, dx, dy):
+        shape=self.shapes[shapeName]
+        shape.paint(image, col, row, color, dx, dy)

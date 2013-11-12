@@ -319,7 +319,7 @@ function setMode(m) {
 function saveArtwork() {
 	var a={
 		version: {
-			major:1,
+			major:2,
 			minor:0
 		},
 		effectiveRect: getArtworkEffectiveRect(grid,gridArtwork),
@@ -331,7 +331,7 @@ function saveArtwork() {
 		layers:[{
 			grid:grid.name,
 			cellSize:grid.cellSize,
-			cells:[]	
+			rows:[]	
 		}],
 		recentColors: recentColors
 	}
@@ -341,16 +341,23 @@ function saveArtwork() {
 	}
 	
 	for (var row=0; row<gridArtwork.cells.length; row++) {
+		var rowElement={
+			row:row
+		}
+		var cellArray=[];
+		
 		for (var col=0; col<gridArtwork.cells[row].length; col++) {
 			if (gridArtwork.cells[row][col] && gridArtwork.cells[row][col].shapeName!="empty") {
-				a.layers[0].cells.push({
-					col:col,
-					row:row,
-					shape:gridArtwork.cells[row][col].shapeName,
-					color:gridArtwork.cells[row][col].color	
-				})
+				cellArray.push([
+					col,
+					gridArtwork.cells[row][col].shapeName,
+					gridArtwork.cells[row][col].color	
+				])
 			}
 		}
+		
+		rowElement.cells=cellArray;
+		a.layers[0].rows.push(rowElement)
 	}
 	
     $("input[name=artwork_json]").val(JSON.stringify(a));
@@ -435,9 +442,21 @@ $(function() {
 	$("#toolbar-workspace-height").val(artwork.canvasSize.height);
 	$("#toolbar-cell-size").val(artwork.layers[0].cellSize);
 	
-	var layer=artwork.layers[0];
-	for (var i=0; i<layer.cells.length; i++) {
-		paintOnCanvas(layer.cells[i].col, layer.cells[i].row, layer.cells[i].shape, layer.cells[i].color);
+	
+	if (artwork.version.major==1) {
+		var layer=artwork.layers[0];
+		for (var i=0; i<layer.cells.length; i++) {
+			paintOnCanvas(layer.cells[i].col, layer.cells[i].row, layer.cells[i].shape, layer.cells[i].color);
+		}
+	} else if (artwork.version.major==2) {
+		var layer=artwork.layers[0];
+		for (var rowIndex=0; rowIndex<layer.rows.length; rowIndex++) {
+			var cellRow=layer.rows[rowIndex]; 
+			for (var cellIndex=0; cellIndex<cellRow.cells.length; cellIndex++) {
+				var cell=cellRow.cells[cellIndex];
+				paintOnCanvas(cell[0], cellRow.row, cell[1], cell[2]);
+			}
+		}
 	}
 	
 	$("#canvas")
