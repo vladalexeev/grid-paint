@@ -146,6 +146,13 @@ class PagePainter(BasicPageRequestHandler):
                                 {
                                  'artwork_json': artwork_json
                                  })
+            
+    def post(self):
+        artwork_json=self.request.get('artwork_json')
+        self.write_template('templates/painter.html', 
+                                {
+                                 'artwork_json': artwork_json
+                                 })
 
 class PageMyImages(BasicPageRequestHandler):
     def get(self):
