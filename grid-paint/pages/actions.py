@@ -98,8 +98,13 @@ class ActionSaveImage(BasicRequestHandler):
         grid=grids[layer['grid']]();
         grid.cell_size=layer['cellSize']
 
-        for cell in layer['cells']:
-            grid.paintShape(image_draw, cell, dx, dy)
+        if json_obj['version']['major']==1:
+            for cell in layer['cells']:
+                grid.paintShape(image_draw, cell, dx, dy)
+        elif json_obj['version']['major']==2:
+            for row in layer['rows']:
+                for cell in row['cells']:
+                    grid.paintShape2(image_draw, cell[0], row['row'], cell[1], cell[2],dx,dy)
         
         memory_file = StringIO.StringIO()
         image.save(memory_file, 'png')
@@ -250,8 +255,13 @@ class SVGImageRequest(BasicRequestHandler):
         grid=grids[layer['grid']]()
         grid.cell_size=layer['cellSize']
         
-        for cell in layer['cells']:
-            grid.paintShape(image, cell, dx, dy)
+        if json_obj['version']['major']==1:
+            for cell in layer['cells']:
+                grid.paintShape(image, cell, dx, dy)
+        elif json_obj['version']['major']==2:
+            for row in layer['rows']:
+                for cell in row['cells']:
+                    grid.paintShape2(image, cell[0], row['row'], cell[1], cell[2],dx,dy)
             
         image.endImage()
         
