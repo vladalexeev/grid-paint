@@ -121,3 +121,13 @@ def auto_nickname(src_nickname):
                 return src_nickname
             else:
                 return src_nickname[:a_index+2]+'...'+domain[point_index+1:]
+            
+def get_artwork(id_or_key):
+    try:
+        return db.Artwork.get(id_or_key)
+    except:
+        try:
+            return db.Artwork.get_by_id(int(id_or_key))
+        except:
+            return None
+        

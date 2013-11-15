@@ -36,7 +36,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
                                             artwork.full_image_height, 
                                             thumbnail_width, 
                                             thumbnail_height)
-        image_name = str(artwork.key())+'.png'
+        image_name = str(artwork.key().id())+'.png'
     else:
         thumbnail_size = common.calc_resize(
                                             artwork.small_image_width,
@@ -44,7 +44,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
                                             thumbnail_width,
                                             thumbnail_height
                                             )
-        image_name = str(artwork.key())+'-small.png'
+        image_name = str(artwork.key().id())+'-small.png'
         
     if artwork.author:
         result['author_name'] = common.auto_nickname(artwork.author.nickname())
@@ -59,6 +59,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
 
 def convert_comment_for_page(comment):
     result = {
+              'key': comment.key(),
               'text': comment.text,
               'author': comment.author,
               'date': comment.date,
@@ -108,7 +109,7 @@ class PagePainter(BasicPageRequestHandler):
     def get(self):
         if self.request.get('id'):
             artwork_id=self.request.get('id')
-            artwork=db.Artwork.get(artwork_id)
+            artwork=common.get_artwork(artwork_id)
             
             if artwork.json_compressed:
                 artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
@@ -125,6 +126,10 @@ class PagePainter(BasicPageRequestHandler):
                                  })
         else:
             new_artwork={
+                         'version': {
+                                     'major': 2,
+                                     'minor': 0
+                                     },
                          'backgroundColor': '#ffffff',
                          'canvasSize':{
                                        'width': int(self.request.get('artwork_width')),
@@ -133,7 +138,7 @@ class PagePainter(BasicPageRequestHandler):
                          'layers': [{
                                      'grid': self.request.get('artwork_grid'),
                                      'cellSize': int(self.request.get('cell_size')),                     
-                                     'cells':[]
+                                     'rows':[]
                                      }],
                          'recentColors':['#4096EE', '#FFFFFF', '#000000', '#EEEEEE', 
                                          '#FFFF88', '#CDEB8B', '#6BBA70', '#006E2E', 
@@ -245,7 +250,7 @@ class PageGallery(BasicPageRequestHandler):
 class PageImage(BasicPageRequestHandler):
     def get(self, *arg):
         artwork_id = arg[0]
-        artwork = db.Artwork.get(artwork_id)
+        artwork = common.get_artwork(artwork_id)
         if not artwork:
             self.response.set_status(404)
             return
