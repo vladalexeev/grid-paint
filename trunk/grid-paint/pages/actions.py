@@ -43,7 +43,7 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_tags=self.request.get('artwork_tags')
         
         if artwork_id:
-            artwork=db.Artwork.get(artwork_id)
+            artwork=common.get_artwork(artwork_id)
             if not self.user_info.superadmin and artwork.author <> self.user_info.user:
                 # should be the same user or superadmin
                 self.response.set_status(403)
@@ -136,12 +136,12 @@ class ActionSaveImage(BasicRequestHandler):
         small_memory_file.close()
         
         
-        self.redirect('/images/details/'+str(saved_id))
+        self.redirect('/images/details/'+str(saved_id.id()))
         
 class ActionDeleteImage(BasicRequestHandler):
     def get(self):
         artwork_id=self.request.get('id')
-        artwork=db.Artwork.get(artwork_id)
+        artwork=common.get_artwork(artwork_id)
         if self.user_info.superadmin or artwork.author==self.user_info.user:
             comments=db.Comment.all().filter('artwork_ref =', artwork)
             for comment in comments:
@@ -165,9 +165,9 @@ class ActionSaveComment(BasicRequestHandler):
         artwork_id=self.request.get('artwork_id')
         comment_text=self.request.get('comment_text')
         
-        artwork=db.Artwork.get(artwork_id)
+        artwork=common.get_artwork(artwork_id)
         if not artwork:
-            self.response.set_status(403)
+            self.response.set_status(404)
             return
         
         comment=db.Comment(parent=artwork)
@@ -184,12 +184,14 @@ class ActionDeleteComment(BasicRequestHandler):
             return
         
         comment_id=self.request.get('id')
+        logging.error('delete comment '+comment_id)
+        
         comment=db.Comment.get(comment_id)
         
         if comment:
             artwork=comment.artwork_ref
             comment.delete()
-            self.redirect('/images/details/'+str(artwork.key()))
+            self.redirect('/images/details/'+str(artwork.key().id()))
         else:
             self.response.set_status(404)
             return
@@ -197,7 +199,7 @@ class ActionDeleteComment(BasicRequestHandler):
 class PNGImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
-        artwork=db.Artwork.get(artwork_id)
+        artwork=common.get_artwork(artwork_id)
         
         if not artwork:
             self.response.set_status(404)
@@ -213,7 +215,7 @@ class PNGSmallImageRequest(BasicRequestHandler):
         small_image=common.mm_cache.get('small_image_'+artwork_id)
         
         if not small_image:        
-            artwork=db.Artwork.get(artwork_id)
+            artwork=common.get_artwork(artwork_id)
             if not artwork:
                 self.response.set_status(404)
                 return
@@ -226,8 +228,8 @@ class PNGSmallImageRequest(BasicRequestHandler):
 class SVGImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
-        artwork=db.Artwork.get(artwork_id)
         
+        artwork=common.get_artwork(artwork_id)        
         if not artwork:
             self.response.set_status(404)
             return
@@ -268,8 +270,8 @@ class SVGImageRequest(BasicRequestHandler):
 class JSONImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
-        artwork=db.Artwork.get(artwork_id)
         
+        artwork=common.get_artwork(artwork_id)        
         if not artwork:
             self.response.set_status(404)
             return

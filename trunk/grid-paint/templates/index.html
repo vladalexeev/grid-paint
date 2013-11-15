@@ -36,7 +36,7 @@ link at the top.
 {% for a in artworks %}
 	<li class="thumbnail">
   		<div class="thumb-image">
-  			<a href="/images/details/{{ a.key }}">
+  			<a href="/images/details/{{ a.key.id }}">
 			  <img src="/images/png/{{ a.thumbnail_image_name }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
 			</a>
 		</div>
