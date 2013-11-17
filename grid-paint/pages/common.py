@@ -16,6 +16,7 @@ mm_cache = memcache.Client();
 # Ключи memcache
 MC_SMALL_IMAGE_PREFIX = 'small_image_'
 MC_MAIN_PAGE_RECENT_IMAGES_KEY = 'main_page_recent_images'
+MC_USER_NOTIFICATION_PREFIX = 'user_notification_count_'
 
 
 class UserInfo:
@@ -32,10 +33,11 @@ class UserInfo:
         self.user=users.get_current_user()
         if users.get_current_user():
             self.user_name=users.get_current_user().nickname()
-            self.superadmin = users.is_current_user_admin()
-            
+            self.superadmin = users.is_current_user_admin()            
             self.login_url=users.create_logout_url('/')
             self.login_url_text='Logout'
+            self.notifications_count = get_notification_count(self.user)
+            self.has_notifications = self.notifications_count > 0
         else:
             self.login_url=users.create_login_url(request_uri)
             self.login_url_text='Login into Google account'
@@ -131,3 +133,13 @@ def get_artwork(id_or_key):
         except:
             return None
         
+def get_notification_count(user):
+    cache_key = MC_USER_NOTIFICATION_PREFIX + user.email()
+    value = mm_cache.get(cache_key)
+    
+    if value<>None:
+        return value
+    else:
+        count = db.Notification.all().filter('recipient', user).filter('read =',False).count()
+        mm_cache.add(cache_key, count)
+        return count
