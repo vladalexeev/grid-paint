@@ -175,6 +175,15 @@ class ActionSaveComment(BasicRequestHandler):
         comment.text=comment_text
         comment.put()
         
+        if artwork.author:
+            notification = db.Notification()
+            notification.recipient = artwork.author
+            notification.type = 'comment'
+            notification.artwork = artwork
+            notification.comment = comment
+            notification.put()
+            
+        
         self.redirect('/images/details/'+artwork_id)
         
 class ActionDeleteComment(BasicRequestHandler):
