@@ -3,3 +3,5 @@ Disallow: /delete-image
 Disallow: /save-image
 Disallow: /save-comment
 Disallow: /delete-comment
+Disallow: /notifications
+Disallow: /delete-notification
