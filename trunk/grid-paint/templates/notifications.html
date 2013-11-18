@@ -2,6 +2,7 @@
 
 
 {% block content %}
+<div style="min-height:610px;">
 
 <div class="container">
 
@@ -11,8 +12,10 @@
 <div class="image-details-comments">
 	{% for n in notifications %}
 	<div class="comment">
-		<div class="comment-header"><b><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></b></div>		
-		<div class="comment-header">{{ n.date }} <b>{{n.comment.author}}</b></div>
+		<div class="comment-header">
+			<h2><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></h2>
+			<div>{{ n.date }} <b>{{n.comment.author}}</b></div>
+		</div>		
 		<div class="comment-text">
 			{{ n.comment.text}}
 		</div>
@@ -20,12 +23,10 @@
 	{% endfor %}
 </div>
 
-
-
-
 </div>
 
-  
+ 
+</div>
 {% endblock content %}
 
 
