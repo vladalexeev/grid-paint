@@ -11,8 +11,8 @@
 <div class="image-details-comments">
 	{% for n in notifications %}
 	<div class="comment">
+		<div class="comment-header"><b><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></b></div>		
 		<div class="comment-header">{{ n.date }} <b>{{n.comment.author}}</b></div>
-		<div class="comment-header"><b>{{ n.artwork.name}}</b></div>	
 		<div class="comment-text">
 			{{ n.comment.text}}
 		</div>
