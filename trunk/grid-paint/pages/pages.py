@@ -276,3 +276,23 @@ class PageAdmin(BasicPageRequestHandler):
                             {
                             })
         
+class PageNotifications(BasicPageRequestHandler):
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        req_offset = self.request.get('offset')
+        
+        if req_offset:
+            offset = int(req_offset)
+        else:
+            offset = 0
+            
+        query = db.Notification.all().filter('recipient =', self.user_info.user).order('-date').fetch(20,offset)
+        
+        self.write_template('templates/notifications.html', 
+                            {
+                             'notifications': query
+                             })
+        

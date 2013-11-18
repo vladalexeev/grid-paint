@@ -1,0 +1,31 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}
+
+<div class="container">
+
+<h2>Notifications on comments</h2>
+
+
+<div class="image-details-comments">
+	{% for n in notifications %}
+	<div class="comment">
+		<div class="comment-header">{{ n.date }} <b>{{n.comment.author}}</b></div>
+		<div class="comment-header"><b>{{ n.artwork.name}}</b></div>	
+		<div class="comment-text">
+			{{ n.comment.text}}
+		</div>
+	</div>						
+	{% endfor %}
+</div>
+
+
+
+
+</div>
+
+  
+{% endblock content %}
+
+
