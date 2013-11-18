@@ -143,3 +143,8 @@ def get_notification_count(user):
         count = db.Notification.all().filter('recipient', user).filter('read =',False).count()
         mm_cache.add(cache_key, count)
         return count
+    
+def delete_notification(notification):
+    cache_key = MC_USER_NOTIFICATION_PREFIX + notification.recipient.email()
+    mm_cache.delete(cache_key)
+    notification.delete()

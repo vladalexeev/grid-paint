@@ -156,6 +156,15 @@ class ActionDeleteImage(BasicRequestHandler):
         else:
             self.response.set_status(403)
             
+class ActionDeleteNotification(BasicRequestHandler):
+    def get(self):
+        notification_id = self.request.get('id')
+        notification = db.Notification.get(notification_id)
+        if notification.recipient == self.user_info.user:
+            common.delete_notification(notification)
+        else:
+            self.response.set_status(403)
+            
 class ActionSaveComment(BasicRequestHandler):
     def post(self):
         if not self.user_info.user:

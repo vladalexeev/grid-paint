@@ -11,8 +11,11 @@
 
 <div class="image-details-comments">
 	{% for n in notifications %}
-	<div class="comment">
+	<div class="comment" id="row-{{ n.key }}">
 		<div class="comment-header">
+			<div class="pull-right">
+		  		<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
+		  	</div>			
 			<h2><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></h2>
 			<div>{{ n.date }} <b>{{n.comment.author}}</b></div>
 		</div>		
@@ -27,6 +30,19 @@
 
  
 </div>
+
+<script>
+$(function() {
+	$(".btn-delete-notification").click(
+		function() {
+			var notificationId=$(this).attr("notification_id");
+			$.get("/delete-notification?id="+notificationId,
+				function() {
+					$("#row-"+notificationId).slideUp();	
+				});
+		});
+})
+</script>
 {% endblock content %}
 
 
