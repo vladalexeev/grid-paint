@@ -26,3 +26,9 @@ indexes:
   properties:
   - name: artwork_ref
   - name: date
+
+- kind: Notification
+  properties:
+  - name: recipient
+  - name: date
+    direction: desc
