@@ -190,7 +190,7 @@ class ActionSaveComment(BasicRequestHandler):
             notification.type = 'comment'
             notification.artwork = artwork
             notification.comment = comment
-            notification.put()
+            common.add_notification(notification)
             
         
         self.redirect('/images/details/'+artwork_id)
