@@ -12,6 +12,8 @@ from common import BasicPageRequestHandler
 import db
 import tags
 import common
+import cache
+import dao
 
 import zlib
 
@@ -76,13 +78,13 @@ def convert_comment_for_page(comment):
 
 class PageIndex(BasicPageRequestHandler):
     def get(self):
-        recent_artworks = common.mm_cache.get(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+        recent_artworks = cache.get(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         
         if not recent_artworks:                    
             all_artworks=db.Artwork.all()
             all_artworks=all_artworks.order('-date').fetch(3,0)        
             recent_artworks=[convert_artwork_for_page(a,200,150) for a in all_artworks]
-            common.mm_cache.add(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY, recent_artworks)
+            cache.add(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY, recent_artworks)
         
         self.write_template('templates/index.html', 
                             {
@@ -109,7 +111,7 @@ class PagePainter(BasicPageRequestHandler):
     def get(self):
         if self.request.get('id'):
             artwork_id=self.request.get('id')
-            artwork=common.get_artwork(artwork_id)
+            artwork=dao.get_artwork(artwork_id)
             
             if artwork.json_compressed:
                 artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
@@ -250,7 +252,7 @@ class PageGallery(BasicPageRequestHandler):
 class PageImage(BasicPageRequestHandler):
     def get(self, *arg):
         artwork_id = arg[0]
-        artwork = common.get_artwork(artwork_id)
+        artwork = dao.get_artwork(artwork_id)
         if not artwork:
             self.response.set_status(404)
             return

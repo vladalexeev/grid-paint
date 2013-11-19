@@ -7,16 +7,9 @@ import os
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
-from google.appengine.api import memcache
 
 import db
-
-mm_cache = memcache.Client();
-
-# Ключи memcache
-MC_SMALL_IMAGE_PREFIX = 'small_image_'
-MC_MAIN_PAGE_RECENT_IMAGES_KEY = 'main_page_recent_images'
-MC_USER_NOTIFICATION_PREFIX = 'user_notification_count_'
+import dao
 
 
 class UserInfo:
@@ -36,7 +29,7 @@ class UserInfo:
             self.superadmin = users.is_current_user_admin()            
             self.login_url=users.create_logout_url('/')
             self.login_url_text='Logout'
-            self.notifications_count = get_notification_count(self.user)
+            self.notifications_count = dao.get_notification_count(self.user)
             self.has_notifications = self.notifications_count > 0
         else:
             self.login_url=users.create_login_url(request_uri)
@@ -124,32 +117,4 @@ def auto_nickname(src_nickname):
             else:
                 return src_nickname[:a_index+2]+'...'+domain[point_index+1:]
             
-def get_artwork(id_or_key):
-    try:
-        return db.Artwork.get(id_or_key)
-    except:
-        try:
-            return db.Artwork.get_by_id(int(id_or_key))
-        except:
-            return None
         
-def get_notification_count(user):
-    cache_key = MC_USER_NOTIFICATION_PREFIX + user.email()
-    value = mm_cache.get(cache_key)
-    
-    if value<>None:
-        return value
-    else:
-        count = db.Notification.all().filter('recipient', user).filter('read =',False).count()
-        mm_cache.add(cache_key, count)
-        return count
-    
-def delete_notification(notification):
-    cache_key = MC_USER_NOTIFICATION_PREFIX + notification.recipient.email()
-    mm_cache.delete(cache_key)
-    notification.delete()
-    
-def add_notification(notification):
-    cache_key = MC_USER_NOTIFICATION_PREFIX + notification.recipient.email()
-    mm_cache.delete(cache_key)
-    notification.put()

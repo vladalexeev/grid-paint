@@ -22,6 +22,9 @@ from graphics.svg import SvgImageWriter
 
 import tags
 import common
+import cache
+import dao
+
 import zlib
 
 import logging
@@ -43,7 +46,7 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_tags=self.request.get('artwork_tags')
         
         if artwork_id:
-            artwork=common.get_artwork(artwork_id)
+            artwork=dao.get_artwork(artwork_id)
             if not self.user_info.superadmin and artwork.author <> self.user_info.user:
                 # should be the same user or superadmin
                 self.response.set_status(403)
@@ -127,8 +130,8 @@ class ActionSaveImage(BasicRequestHandler):
         
         saved_id=artwork.put()
         
-        common.mm_cache.delete(common.MC_SMALL_IMAGE_PREFIX+str(saved_id))
-        common.mm_cache.delete(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+        cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(saved_id))
+        cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         
         del image
         del small_image
@@ -141,7 +144,7 @@ class ActionSaveImage(BasicRequestHandler):
 class ActionDeleteImage(BasicRequestHandler):
     def get(self):
         artwork_id=self.request.get('id')
-        artwork=common.get_artwork(artwork_id)
+        artwork=dao.get_artwork(artwork_id)
         if self.user_info.superadmin or artwork.author==self.user_info.user:
             comments=db.Comment.all().filter('artwork_ref =', artwork)
             for comment in comments:
@@ -149,8 +152,8 @@ class ActionDeleteImage(BasicRequestHandler):
                 
             artwork.delete();
             
-            common.mm_cache.delete(common.MC_SMALL_IMAGE_PREFIX+str(artwork_id))
-            common.mm_cache.delete(common.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+            cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(artwork_id))
+            cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
 
             self.redirect("/my-images")
         else:
@@ -161,7 +164,7 @@ class ActionDeleteNotification(BasicRequestHandler):
         notification_id = self.request.get('id')
         notification = db.Notification.get(notification_id)
         if notification.recipient == self.user_info.user:
-            common.delete_notification(notification)
+            dao.delete_notification(notification)
         else:
             self.response.set_status(403)
             
@@ -174,7 +177,7 @@ class ActionSaveComment(BasicRequestHandler):
         artwork_id=self.request.get('artwork_id')
         comment_text=self.request.get('comment_text')
         
-        artwork=common.get_artwork(artwork_id)
+        artwork=dao.get_artwork(artwork_id)
         if not artwork:
             self.response.set_status(404)
             return
@@ -190,7 +193,7 @@ class ActionSaveComment(BasicRequestHandler):
             notification.type = 'comment'
             notification.artwork = artwork
             notification.comment = comment
-            common.add_notification(notification)
+            dao.add_notification(notification)
             
         
         self.redirect('/images/details/'+artwork_id)
@@ -217,7 +220,7 @@ class ActionDeleteComment(BasicRequestHandler):
 class PNGImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
-        artwork=common.get_artwork(artwork_id)
+        artwork=dao.get_artwork(artwork_id)
         
         if not artwork:
             self.response.set_status(404)
@@ -230,15 +233,15 @@ class PNGSmallImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
         
-        small_image=common.mm_cache.get('small_image_'+artwork_id)
+        small_image=cache.get('small_image_'+artwork_id)
         
         if not small_image:        
-            artwork=common.get_artwork(artwork_id)
+            artwork=dao.get_artwork(artwork_id)
             if not artwork:
                 self.response.set_status(404)
                 return
             small_image = artwork.small_image;
-            common.mm_cache.add(common.MC_SMALL_IMAGE_PREFIX+artwork_id, small_image)
+            cache.add(cache.MC_SMALL_IMAGE_PREFIX+artwork_id, small_image)
         
         self.response.headers['Content-Type']='image/png'     
         self.response.out.write(small_image)
@@ -247,7 +250,7 @@ class SVGImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
         
-        artwork=common.get_artwork(artwork_id)        
+        artwork=dao.get_artwork(artwork_id)        
         if not artwork:
             self.response.set_status(404)
             return
@@ -289,7 +292,7 @@ class JSONImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
         
-        artwork=common.get_artwork(artwork_id)        
+        artwork=dao.get_artwork(artwork_id)        
         if not artwork:
             self.response.set_status(404)
             return
