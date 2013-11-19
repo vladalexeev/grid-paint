@@ -11,69 +11,13 @@ from common import BasicPageRequestHandler
 
 import db
 import tags
-import common
 import cache
 import dao
+import convert
 
 import zlib
 
 page_size=10
-
-
-def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
-    result={
-            'key': artwork.key(),
-            'name': artwork.name,
-            'description': artwork.description,
-            'date': artwork.date,
-            'author': artwork.author,
-            'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
-            'full_image_width': artwork.full_image_height,
-            'full_image_height': artwork.full_image_height
-            }
-    
-    if artwork.small_image_width<thumbnail_width and artwork.small_image_height<thumbnail_height:
-        thumbnail_size = common.calc_resize(
-                                            artwork.full_image_width, 
-                                            artwork.full_image_height, 
-                                            thumbnail_width, 
-                                            thumbnail_height)
-        image_name = str(artwork.key().id())+'.png'
-    else:
-        thumbnail_size = common.calc_resize(
-                                            artwork.small_image_width,
-                                            artwork.small_image_height,
-                                            thumbnail_width,
-                                            thumbnail_height
-                                            )
-        image_name = str(artwork.key().id())+'-small.png'
-        
-    if artwork.author:
-        result['author_name'] = common.auto_nickname(artwork.author.nickname())
-    else:
-        result['author_name'] = 'Unknown'
-                
-    result['thumbnail_width'] = thumbnail_size[0]
-    result['thumbnail_height'] = thumbnail_size[1]
-    result['thumbnail_image_name'] = image_name
-    
-    return result
-
-def convert_comment_for_page(comment):
-    result = {
-              'key': comment.key(),
-              'text': comment.text,
-              'author': comment.author,
-              'date': comment.date,
-              'artwork_ref': comment.artwork_ref
-              }
-    
-    if comment.author:
-        result['author_name'] = common.auto_nickname(comment.author.nickname())
-    else:
-        result['author_name'] = 'Unknown'
-    
-    return result
 
 
 class PageIndex(BasicPageRequestHandler):
@@ -83,7 +27,7 @@ class PageIndex(BasicPageRequestHandler):
         if not recent_artworks:                    
             all_artworks=db.Artwork.all()
             all_artworks=all_artworks.order('-date').fetch(3,0)        
-            recent_artworks=[convert_artwork_for_page(a,200,150) for a in all_artworks]
+            recent_artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
             cache.add(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY, recent_artworks)
         
         self.write_template('templates/index.html', 
@@ -187,7 +131,7 @@ class PageMyImages(BasicPageRequestHandler):
         if len(my_artworks)>page_size:
             my_artworks=my_artworks[:page_size]
             
-        artworks=[convert_artwork_for_page(ma,200,150) for ma in my_artworks]
+        artworks=[convert.convert_artwork_for_page(ma,200,150) for ma in my_artworks]
 
         
         self.write_template('templates/my-artworks.html', 
@@ -227,7 +171,7 @@ class PageGallery(BasicPageRequestHandler):
         if len(all_artworks)>page_size:
             all_artworks=all_artworks[:page_size]
             
-        artworks=[convert_artwork_for_page(a,200,150) for a in all_artworks]
+        artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
         
         next_page_href='/gallery?offset='+str(offset+page_size)
         prev_page_href='/gallery?offset='+str(offset-page_size)
@@ -258,11 +202,11 @@ class PageImage(BasicPageRequestHandler):
             return
         
         db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('date')
-        comments = [convert_comment_for_page(c) for c in db_comments]
+        comments = [convert.convert_comment_for_page(c) for c in db_comments]
         
         self.write_template('templates/artwork-details.html', 
                             {
-                             'artwork': convert_artwork_for_page(artwork, 600, 400),
+                             'artwork': convert.convert_artwork_for_page(artwork, 600, 400),
                              'can_edit_artwork': self.user_info.superadmin or artwork.author==self.user_info.user,
                              'comments': comments
                             })
@@ -295,6 +239,6 @@ class PageNotifications(BasicPageRequestHandler):
         
         self.write_template('templates/notifications.html', 
                             {
-                             'notifications': query
+                             'notifications': [convert.convert_notification(n) for n in query]
                              })
         

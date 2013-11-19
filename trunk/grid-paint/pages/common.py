@@ -82,39 +82,3 @@ class BasicPageRequestHandler(BasicRequestHandler):
 
 
 
-def calc_resize(image_width, image_height, max_width, max_height):
-    '''
-    Calculates resized image dimensions and return tuple (width,height)
-    '''
-    width_aspect=float(image_width)/max_width
-    height_aspect=float(image_height)/max_height
-        
-    if width_aspect>height_aspect:
-        divisor=width_aspect
-    else:
-        divisor=height_aspect
-        
-    if divisor<1:
-        divisor=1
-    
-    return (
-            int(image_width/divisor),
-            int(image_height/divisor)
-            )
-    
-def auto_nickname(src_nickname):
-    a_index = src_nickname.find('@')
-    if a_index < 0:
-        return src_nickname
-    else:
-        domain = src_nickname[a_index:]
-        if len(domain) == 0:
-            return src_nickname
-        else:
-            point_index = domain.rfind('.')
-            if point_index<0 or point_index == len(domain)-1:
-                return src_nickname
-            else:
-                return src_nickname[:a_index+2]+'...'+domain[point_index+1:]
-            
-        
