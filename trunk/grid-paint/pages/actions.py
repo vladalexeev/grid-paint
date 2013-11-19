@@ -131,7 +131,7 @@ class ActionSaveImage(BasicRequestHandler):
         
         saved_id=artwork.put()
         
-        cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(saved_id))
+        cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(saved_id.id()))
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         
         del image
