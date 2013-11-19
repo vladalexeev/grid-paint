@@ -38,3 +38,5 @@ def add_notification(notification):
     cache_key = cache.MC_USER_NOTIFICATION_PREFIX + notification.recipient.email()
     cache.delete(cache_key)
     notification.put()
+    
+

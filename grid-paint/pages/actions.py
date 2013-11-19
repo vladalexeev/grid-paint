@@ -24,6 +24,7 @@ import tags
 import common
 import cache
 import dao
+import convert
 
 import zlib
 
@@ -116,7 +117,7 @@ class ActionSaveImage(BasicRequestHandler):
         artwork.full_image_width = image_width
         artwork.full_image_height = image_height
         
-        small_image_size = common.calc_resize(image_width, 
+        small_image_size = convert.calc_resize(image_width, 
                                               image_height, 
                                               db.artwork_small_image_width, 
                                               db.artwork_small_image_height)
