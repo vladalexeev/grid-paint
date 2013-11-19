@@ -188,7 +188,7 @@ class ActionSaveComment(BasicRequestHandler):
         comment.text=comment_text
         comment.put()
         
-        if artwork.author:
+        if artwork.author and artwork.author<>self.user_info.user:
             notification = db.Notification()
             notification.recipient = artwork.author
             notification.type = 'comment'
