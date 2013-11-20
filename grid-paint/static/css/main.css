@@ -330,3 +330,26 @@ body {
 .typeahead.dropdown-menu { z-index: 200000; }
 .modal-body{overflow-y: inherit;}
 
+
+
+.index-page-section {
+background: -moz-linear-gradient(top, rgba(237,237,237,0.65) 0%, rgba(0,0,0,0) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(237,237,237,0.65)), color-stop(100%,rgba(0,0,0,0))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, rgba(237,237,237,0.65) 0%,rgba(0,0,0,0) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, rgba(237,237,237,0.65) 0%,rgba(0,0,0,0) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, rgba(237,237,237,0.65) 0%,rgba(0,0,0,0) 100%); /* IE10+ */
+background: linear-gradient(to bottom, rgba(237,237,237,0.65) 0%,rgba(0,0,0,0) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6ededed', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
+border-radius: 10px;
+}
+
+.index-page-thumbnail {
+	background-color: white;
+}
+
+.index-page-thumb-button {
+	border:0;
+	box-shadow: none;
+}
+
+
