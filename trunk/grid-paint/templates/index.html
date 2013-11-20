@@ -29,12 +29,12 @@ link at the top.
 </div>
 	
 
-<div class="text-center">
+<div class="container text-center index-page-section">
 <h3>Recent images</h3>
 	
 <ul class="thumbnails" style="display: inline-block">	
 {% for a in artworks %}
-	<li class="thumbnail">
+	<li class="thumbnail index-page-thumbnail">
   		<div class="thumb-image">
   			<a href="/images/details/{{ a.key.id }}">
 			  <img src="/images/png/{{ a.thumbnail_image_name }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
@@ -48,7 +48,7 @@ link at the top.
 	</li>
 {% endfor %}
 
-	<li class="thumbnail thumb-button">
+	<li class="thumbnail index-page-thumb-button">
 		<a href="/gallery">
 		<img src="/img/goto-gallery.png" border="0" />
 		</a>
@@ -59,7 +59,7 @@ link at the top.
 </div>
 
 
-<div class="container">
+<div class="container index-page-section">
 <div class="text-center">
 <h3>Recent comments</h3>
 </div>
