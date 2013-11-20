@@ -55,6 +55,27 @@ link at the top.
 </div>
 
 
+<div class="container">
+<div class="text-center">
+<h3>Recent comments</h3>
+</div>
+
+<div class="image-details-comments">
+	{% for c in comments %}
+	<div class="comment">
+		<div class="comment-header">
+			<h2><a href="/images/details/{{ c.artwork_key.id }}">{{ c.artwork_name }}</a></h2>
+			<div>{{ c.date }} <b>{{c.author_name}}</b></div>
+		</div>		
+		<div class="comment-text">
+			{{ c.text}}
+		</div>
+	</div>						
+	{% endfor %}
+</div>
+</div>
+
+
 </div>
 
 

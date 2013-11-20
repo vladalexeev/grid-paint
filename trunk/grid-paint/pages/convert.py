@@ -97,7 +97,8 @@ def convert_comment_for_page(comment):
               'text': comment.text,
               'author': comment.author,
               'date': comment.date,
-              'artwork_ref': comment.artwork_ref
+              'artwork_key': comment.artwork_ref.key(),
+              'artwork_name': comment.artwork_ref.name
               }
     
     if comment.author:

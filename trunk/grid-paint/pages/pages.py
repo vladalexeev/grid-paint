@@ -22,17 +22,23 @@ page_size=10
 
 class PageIndex(BasicPageRequestHandler):
     def get(self):
-        recent_artworks = cache.get(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
-        
+        recent_artworks = cache.get(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)        
         if not recent_artworks:                    
             all_artworks=db.Artwork.all()
             all_artworks=all_artworks.order('-date').fetch(3,0)        
             recent_artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
             cache.add(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY, recent_artworks)
+            
+        recent_comments = cache.get(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+        if not recent_comments:
+            comments = db.Comment.all().order('-date').fetch(5, 0)
+            recent_comments = [convert.convert_comment_for_page(c) for c in comments]
+            cache.add(cache.MC_MAIN_PAGE_RECENT_COMMENTS, recent_comments)
         
         self.write_template('templates/index.html', 
                             {
-                             'artworks': recent_artworks
+                             'artworks': recent_artworks,
+                             'comments': recent_comments
                              })
         
 class PagePrivacyPolicy(BasicPageRequestHandler):
