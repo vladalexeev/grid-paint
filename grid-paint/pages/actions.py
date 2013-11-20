@@ -196,6 +196,8 @@ class ActionSaveComment(BasicRequestHandler):
             notification.comment = comment
             dao.add_notification(notification)
             
+        cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+            
         
         self.redirect('/images/details/'+artwork_id)
         
@@ -213,6 +215,7 @@ class ActionDeleteComment(BasicRequestHandler):
         if comment:
             artwork=comment.artwork_ref
             comment.delete()
+            cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
             self.redirect('/images/details/'+str(artwork.key().id()))
         else:
             self.response.set_status(404)
