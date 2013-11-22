@@ -45,7 +45,7 @@ def auto_nickname(src_nickname):
         
 def convert_notification(notification):
     return {
-            'key': notification.key,
+            'key': notification.key(),
             'recipient': notification.recipient,
             'date': notification.date,
             'type': notification.type,
