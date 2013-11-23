@@ -44,6 +44,10 @@ class Notification(db.Expando):
     artwork = db.ReferenceProperty(reference_class=Artwork)
     comment = db.ReferenceProperty(reference_class=Comment)
     
+class UserProfile(db.Model):
+    user = db.UserProperty()
+    name = db.StringProperty()
+    
     
 class Settings(db.Model):
     show_ads = db.BooleanProperty()

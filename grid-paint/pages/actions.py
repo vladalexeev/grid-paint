@@ -139,6 +139,12 @@ class ActionSaveImage(BasicRequestHandler):
         memory_file.close()
         small_memory_file.close()
         
+        if not dao.get_user_profile(self.user_info.user):
+            user_profile = db.UserProfile()
+            user_profile.user = self.user_info.user
+            user_profile.name = convert.auto_nickname(self.user_info.user.nickname())
+            dao.add_user_profile(user_profile)
+        
         
         self.redirect('/images/details/'+str(saved_id.id()))
         
