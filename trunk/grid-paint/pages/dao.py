@@ -39,4 +39,25 @@ def add_notification(notification):
     cache.delete(cache_key)
     notification.put()
     
+def get_user_profile(user):
+    cache_value = cache.get(cache.MC_USER_PROFILE+user.email())
+    if cache_value:
+        return cache_value
+    else:
+        user_profile = db.UserProfile.all().filter('user =', user).get()
+        if user_profile:
+            cache.add(cache.MC_USER_PROFILE+user.email(), user_profile)
+            return user_profile
+        else:
+            return None
+        
+def add_user_profile(profile):
+    if get_user_profile(profile.user):
+        raise Exception('User profile already exists '+profile.user.email())
+    
+    return profile.put()
+    
+def set_user_profile(profile):
+    profile.put()
+    
 
