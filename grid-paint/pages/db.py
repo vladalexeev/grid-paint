@@ -45,8 +45,8 @@ class Notification(db.Expando):
     comment = db.ReferenceProperty(reference_class=Comment)
     
 class UserProfile(db.Model):
-    user = db.UserProperty()
-    name = db.StringProperty()
+    email = db.StringProperty()
+    nickname = db.StringProperty()
     
     
 class Settings(db.Model):

@@ -6,6 +6,7 @@ Created on 19 nov 2013
 '''
 
 import tags
+import dao
 
 def calc_resize(image_width, image_height, max_width, max_height):
     '''
@@ -46,7 +47,7 @@ def auto_nickname(src_nickname):
 def convert_notification(notification):
     return {
             'key': notification.key(),
-            'recipient': notification.recipient,
+            'recipient': convert_user(notification.recipient),
             'date': notification.date,
             'type': notification.type,
             'artwork': convert_artwork_for_page(notification.artwork,300,300),
@@ -59,7 +60,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
             'name': artwork.name,
             'description': artwork.description,
             'date': artwork.date,
-            'author': artwork.author,
+            'author': convert_user(artwork.author),
             'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
             'full_image_width': artwork.full_image_height,
             'full_image_height': artwork.full_image_height
@@ -80,10 +81,10 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
                                      thumbnail_height)
         image_name = str(artwork.key().id())+'-small.png'
         
-    if artwork.author:
-        result['author_name'] = auto_nickname(artwork.author.nickname())
-    else:
-        result['author_name'] = 'Unknown'
+#    if artwork.author:
+#        result['author_name'] = auto_nickname(artwork.author.nickname())
+#    else:
+#        result['author_name'] = 'Unknown'
                 
     result['thumbnail_width'] = thumbnail_size[0]
     result['thumbnail_height'] = thumbnail_size[1]
@@ -95,15 +96,31 @@ def convert_comment_for_page(comment):
     result = {
               'key': comment.key(),
               'text': comment.text,
-              'author': comment.author,
+              'author': convert_user(comment.author),
               'date': comment.date,
               'artwork_key': comment.artwork_ref.key(),
               'artwork_name': comment.artwork_ref.name
               }
     
-    if comment.author:
-        result['author_name'] = auto_nickname(comment.author.nickname())
-    else:
-        result['author_name'] = 'Unknown'
+#    if comment.author:
+#        result['author_name'] = auto_nickname(comment.author.nickname())
+#    else:
+#        result['author_name'] = 'Unknown'
     
     return result
+
+
+def convert_user(user):
+    user_profile = dao.get_user_profile(user.email())
+    if user_profile:
+        return {
+                'email': user_profile.email,
+                'nickname': user_profile.nickname,
+                'profile_id': user_profile.key().id()
+                }
+    else:
+        return {
+                'email': user.email(),
+                'nickname': auto_nickname(user.nickname())+'!!!'
+                }
+
