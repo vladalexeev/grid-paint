@@ -139,10 +139,10 @@ class ActionSaveImage(BasicRequestHandler):
         memory_file.close()
         small_memory_file.close()
         
-        if not dao.get_user_profile(self.user_info.user):
+        if not dao.get_user_profile(self.user_info.user.email()):
             user_profile = db.UserProfile()
-            user_profile.user = self.user_info.user
-            user_profile.name = convert.auto_nickname(self.user_info.user.nickname())
+            user_profile.email = self.user_info.user.email()
+            user_profile.nickname = convert.auto_nickname(self.user_info.user.nickname())
             dao.add_user_profile(user_profile)
         
         

@@ -26,7 +26,7 @@
 		</div>
 				
 		<h3 id="artwork-name">{{ artwork.name }}</h3>
-		<div class="details"><small>{{ artwork.date|date:"d M Y H:i" }}</small> by <span class="artist">{{ artwork.author_name }}</span></div>
+		<div class="details"><small>{{ artwork.date|date:"d M Y H:i" }}</small> by <span class="artist">{{ artwork.author.nickname }}</span></div>
 		<div style="white-space: pre;">{{ artwork.description|default_if_none:"" }}</div>
 		{% if artwork.tags %}
 		<div>
@@ -58,7 +58,7 @@
 	<div class="image-details-comments">
 		{% for comment in comments %}
 		  <div class="comment">
-		  	<div class="comment-header"><b>{{ comment.author_name }}</b> - {{ comment.date|date:"d M Y H:i" }}
+		  	<div class="comment-header"><b>{{ comment.author.nickname }}</b> - {{ comment.date|date:"d M Y H:i" }}
 		  		{% if user_info.superadmin %}
 		  			<div class="pull-right">
 		  				<a href="/delete-comment?id={{ comment.key }}" title="Delete comment"><i class="icon icon-remove"></i></a>
