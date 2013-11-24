@@ -23,6 +23,10 @@
 		      {{ user_info.user_name }}<b class="caret"></b>
 		    </a>
 		    <ul class="dropdown-menu">
+		    {% if user_info.has_profile %}
+		  	  	<li><a href="/my-profile">My profile</a></li>
+		    	<li class="delimiter"></li>
+		    {% endif %}
 		  	  <li><a href="{{ user_info.login_url }}">{{ user_info.login_url_text }}</a></li>
 		    </ul>
         </li>      

@@ -25,15 +25,21 @@ class UserInfo:
     def __init__(self,request_uri):
         self.user=users.get_current_user()
         if users.get_current_user():
-            self.user_name=users.get_current_user().nickname()
+            user_profile = dao.get_user_profile(self.user.email())
+            if user_profile:
+                self.user_name = user_profile.nickname
+                self.has_profile = True
+            else:            
+                self.user_name = users.get_current_user().nickname()
+                self.has_profile = False
             self.superadmin = users.is_current_user_admin()            
-            self.login_url=users.create_logout_url('/')
-            self.login_url_text='Logout'
+            self.login_url = users.create_logout_url('/')
+            self.login_url_text = 'Logout'
             self.notifications_count = dao.get_notification_count(self.user)
             self.has_notifications = self.notifications_count > 0
         else:
-            self.login_url=users.create_login_url(request_uri)
-            self.login_url_text='Login into Google account'
+            self.login_url = users.create_login_url(request_uri)
+            self.login_url_text = 'Login into Google account'
             
 def get_settings():
     settings=db.Settings.all().get()
