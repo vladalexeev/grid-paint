@@ -5,3 +5,5 @@ Disallow: /save-comment
 Disallow: /delete-comment
 Disallow: /notifications
 Disallow: /delete-notification
+Disallow: /my-profile
+Disallow: /save-profile

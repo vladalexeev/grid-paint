@@ -352,4 +352,26 @@ class ActionSaveSettings(BasicRequestHandler):
         
         self.redirect('/admin')
         
+class ActionSaveProfile(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
         
+        nickname = self.request.get('nickname')
+        if not nickname:
+            self.response.set_status(400)
+            return
+
+        user_profile = dao.get_user_profile(self.user_info.user.email())
+        if user_profile:
+            user_profile.nickname = nickname
+            dao.set_user_profile(user_profile)
+        else:
+            user_profile = db.UserProfile()
+            user_profile.email = self.user_info.user.email()
+            user_profile.nickname = nickname
+            dao.add_user_profile(user_profile)
+            
+        self.redirect('/')
+            
