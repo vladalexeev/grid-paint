@@ -10,6 +10,10 @@ body {
 	text-align: center;
 }
 
+.single-container {
+	min-height: 610px;
+}
+
 .grid-selector-wrapper {
 	display:inline-block;
 	border: solid 1px #CCC;

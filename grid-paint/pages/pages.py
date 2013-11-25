@@ -248,3 +248,17 @@ class PageNotifications(BasicPageRequestHandler):
                              'notifications': [convert.convert_notification(n) for n in query]
                              })
         
+        
+class PageMyProfile(BasicPageRequestHandler):
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return;
+        
+        user_profile = dao.get_user_profile(self.user_info.user.email())
+        
+        self.write_template('templates/my-profile.html', 
+                            {
+                             'profile': user_profile
+                             })
+        

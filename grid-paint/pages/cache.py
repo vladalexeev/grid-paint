@@ -24,5 +24,6 @@ def get(key):
 def delete(key):
     mm_cache.delete(key)
     
-def add(key,value):
-    mm_cache.add(key, value)
+def add(key, value):
+    mm_cache.set(key, value)
+    

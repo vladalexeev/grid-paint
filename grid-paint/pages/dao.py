@@ -55,9 +55,17 @@ def add_user_profile(profile):
     if get_user_profile(profile.email):
         raise Exception('User profile already exists '+profile.user.email())
     
-    return profile.put()
+    result = profile.put()
+    cache.add(cache.MC_USER_PROFILE+profile.email, profile)
+    cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+    cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+    return result
     
 def set_user_profile(profile):
     profile.put()
+    cache.add(cache.MC_USER_PROFILE+profile.email, profile)
+    cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+    cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+    
     
 
