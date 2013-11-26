@@ -374,4 +374,32 @@ class ActionSaveProfile(BasicRequestHandler):
             dao.add_user_profile(user_profile)
             
         self.redirect('/')
+        
+import sets
+        
+class ActionUpdate(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        artworks = db.Artwork.all()
+        
+        profile_emails = sets.Set()
+        
+        for a in artworks:
+            if a.author:
+                email = a.author.email()
+                if email in profile_emails:
+                    continue
+                
+                user_profile = dao.get_user_profile(email)
+                if user_profile:
+                    profile_emails.add(email)
+                else:
+                    user_profile = db.UserProfile()
+                    user_profile.email = a.author.email()
+                    user_profile.nickname = convert.auto_nickname(a.author.nickname())
+                    user_profile.put()
+                    profile_emails.add(email)
             

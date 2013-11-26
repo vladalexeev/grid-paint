@@ -28,7 +28,9 @@ application = webapp.WSGIApplication([
                                       ('/notifications', pages.pages.PageNotifications),
                                       ('/delete-notification', pages.actions.ActionDeleteNotification),
                                       ('/my-profile', pages.pages.PageMyProfile),
-                                      ('/save-profile', pages.actions.ActionSaveProfile)
+                                      ('/save-profile', pages.actions.ActionSaveProfile),
+                                      
+                                      ('/update', pages.actions.ActionUpdate)
                                       ], debug=True)
 
 
