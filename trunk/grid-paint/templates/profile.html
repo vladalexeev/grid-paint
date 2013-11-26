@@ -1,0 +1,64 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}  
+<div class="container">
+	<div class="row">
+		<div class="offset2 span2">
+			<img src="/img/empty-profile.png" />
+		</div>
+		
+		<div class="span6">
+			<big>{{ profile.nickname }}</big>
+		</div>
+	
+	</div>
+</div>
+
+<div style="height:20px;"></div>
+
+<div class="thumb-container">
+	
+{% if artworks|length_is:"0" %}
+	<div class="empty-page-message">
+		No images found by your query.<br>
+		Try to <a href="/new-image">draw</a> your own image.
+	</div>
+{% else %}
+	<ul class="thumbnails">	
+	{% if has_prev_page %}
+	<li class="thumbnail thumb-button">	
+		<div class="caption">
+			<div class="thumb-button-image">
+			<a href="{{ prev_page_href }}"><img src="/img/prev-page.png"></a>
+			</div>
+		</div>
+	</li>
+	{% endif%}	
+	
+	{% for a in artworks %}
+		{% include "thumbnail.html" %}
+	{% endfor %}
+
+	{% if has_next_page %}
+	<li class="thumbnail thumb-button">
+		<div class="caption">
+			<div class="thumb-button-image">
+			<a href="{{ next_page_href }}"><img src="/img/next-page.png" width="200" height="200"></a>
+			</div>
+		</div>
+	</li>
+	{% endif %}
+	</ul>
+{% endif %}
+
+</div>
+
+<script>
+$(function() {
+	$("#top-menu-gallery").addClass("active");
+})
+</script>
+
+
+{% endblock content %}

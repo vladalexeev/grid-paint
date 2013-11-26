@@ -77,6 +77,7 @@ class BasicRequestHandler(webapp.RequestHandler):
         else:
             super(BasicRequestHandler,self).handle_exception(exception,debug_mode)
             
+            
 class BasicRequestHandlerException(Exception):
     def __init__(self,code,message):
         self.code = code

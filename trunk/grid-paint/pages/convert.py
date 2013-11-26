@@ -118,14 +118,17 @@ def convert_user(user):
     
     user_profile = dao.get_user_profile(user.email())
     if user_profile:
-        return {
-                'email': user_profile.email,
-                'nickname': user_profile.nickname,
-                'profile_id': user_profile.key().id()
-                }
+        return convert_user_profile(user_profile)
     else:
         return {
                 'email': user.email(),
                 'nickname': auto_nickname(user.nickname())+'!!!'
                 }
+        
+def convert_user_profile(user_profile):
+    return {
+            'email': user_profile.email,
+            'nickname': user_profile.nickname,
+            'profile_id': user_profile.key().id()
+            }
 
