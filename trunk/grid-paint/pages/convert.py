@@ -111,6 +111,11 @@ def convert_comment_for_page(comment):
 
 
 def convert_user(user):
+    if not user:
+        return {
+                'nickname': 'Unknown'
+                }
+    
     user_profile = dao.get_user_profile(user.email())
     if user_profile:
         return {
