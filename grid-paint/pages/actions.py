@@ -40,6 +40,10 @@ grids={
 
 class ActionSaveImage(BasicRequestHandler):
     def post(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return            
+        
         artwork_json=self.request.get('artwork_json')
         artwork_id=self.request.get('artwork_id')
         artwork_name=self.request.get('artwork_name')

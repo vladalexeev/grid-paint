@@ -7,8 +7,6 @@ Created on 23.07.2013
 
 import json
 
-from common import BasicPageRequestHandler
-
 import db
 import tags
 import cache
@@ -16,6 +14,11 @@ import dao
 import convert
 
 import zlib
+
+from common import BasicPageRequestHandler
+from common import BasicRequestHandler
+
+from google.appengine.api import users
 
 page_size=10
 
@@ -262,3 +265,38 @@ class PageMyProfile(BasicPageRequestHandler):
                              'profile': user_profile
                              })
         
+class PageProfile(BasicRequestHandler):
+    def get(self, *arg):
+        profile_id = int(arg[0])
+        user_profile = dao.get_user_profile_by_id(profile_id)
+        
+        if self.request.get('offset'):
+            offset = int(self.request.get('offset'))
+        else:
+            offset = 0
+            
+        if offset<0:
+            offset = 0
+        
+        all_artworks = db.Artwork.all().filter('author =',users.User(user_profile.email)).order('-date').fetch(page_size+1, offset)
+        
+        has_prev_page=(offset>0)
+        has_next_page=len(all_artworks)>page_size
+        
+        if len(all_artworks)>page_size:
+            all_artworks=all_artworks[:page_size]
+            
+        artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
+        
+        next_page_href='/profiles/'+str(profile_id)+'?offset='+str(offset+page_size)
+        prev_page_href='/profiles/'+str(profile_id)+'?offset='+str(offset-page_size)
+        
+        self.write_template('templates/profile.html', 
+                            {
+                             'profile': convert.convert_user_profile(user_profile),
+                             'has_next_page': has_next_page,
+                             'has_prev_page': has_prev_page,
+                             'next_page_href': next_page_href,
+                             'prev_page_href': prev_page_href,
+                             'artworks': artworks
+                             })

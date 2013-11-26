@@ -51,6 +51,10 @@ def get_user_profile(user_email):
         else:
             return None
         
+def get_user_profile_by_id(profile_id):
+    return db.UserProfile.get_by_id(profile_id)
+    
+        
 def add_user_profile(profile):
     if get_user_profile(profile.email):
         raise Exception('User profile already exists '+profile.user.email())
