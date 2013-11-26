@@ -1,0 +1,12 @@
+    <li class="thumbnail index-page-thumbnail">
+  		<div class="thumb-image">
+  			<a href="/images/details/{{ a.key.id }}">
+			  <img src="/images/png/{{ a.thumbnail_image_name }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
+			</a>
+		</div>
+		<div class="caption" >
+			<div class="thumb-title">{{ a.name }}</div>
+			<div class="thumb-author"><a href="/profile/{{ a.author.profile_id }}">{{ a.author.nickname }}</a></div>
+			<div class="thumb-date">{{ a.date|date:"d M Y H:i" }}</div>
+		</div>
+	</li>
