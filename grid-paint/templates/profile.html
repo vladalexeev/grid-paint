@@ -9,7 +9,10 @@
 		</div>
 		
 		<div class="span6">
-			<big>{{ profile.nickname }}</big>
+			<div style="font-weight: bold; font-size: 16pt;">{{ profile.nickname }}</div>
+			{% if user_info.superadmin %}
+			<div>{{ profile.email }}</div>
+			{% endif%}
 		</div>
 	
 	</div>
