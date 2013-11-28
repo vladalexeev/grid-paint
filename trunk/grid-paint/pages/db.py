@@ -15,7 +15,7 @@ class Artwork(db.Model):
     description = db.TextProperty()
     author = db.UserProperty()
     tags = db.StringListProperty()
-    date = db.DateTimeProperty(auto_now_add=True)
+    date = db.DateTimeProperty()
     json = db.TextProperty()
     json_compressed = db.BooleanProperty()
     full_image = db.BlobProperty()

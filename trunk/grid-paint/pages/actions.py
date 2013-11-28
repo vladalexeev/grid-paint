@@ -7,6 +7,7 @@ Created on 23.07.2013
 
 import db
 import json
+import datetime
 import StringIO
 
 from PIL import Image, ImageDraw
@@ -133,7 +134,8 @@ class ActionSaveImage(BasicRequestHandler):
         artwork.small_image_width = small_image_size[0]
         artwork.small_image_height = small_image_size[1]
         
-        saved_id=artwork.put()
+        artwork.date = datetime.datetime.now()
+        saved_id = artwork.put()
         
         cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(saved_id.id()))
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
