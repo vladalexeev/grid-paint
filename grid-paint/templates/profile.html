@@ -10,6 +10,7 @@
 		
 		<div class="span6">
 			<div style="font-weight: bold; font-size: 16pt;">{{ profile.nickname }}</div>
+			<div style="color: gray;">joined {{ profile.join_date|date:"d M Y" }}</div>
 			{% if user_info.superadmin %}
 			<div>{{ profile.email }}</div>
 			{% endif%}
