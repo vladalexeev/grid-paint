@@ -129,6 +129,7 @@ def convert_user_profile(user_profile):
     return {
             'email': user_profile.email,
             'nickname': user_profile.nickname,
-            'profile_id': user_profile.key().id()
+            'profile_id': user_profile.key().id(),
+            'join_date': user_profile.join_date
             }
 

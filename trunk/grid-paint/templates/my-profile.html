@@ -21,6 +21,13 @@
 						<input type="text" disabled value="{{ profile.email }}" />
 					</div>
 				</div>
+
+				<div class="control-group">
+					<label class="control-label">Joined</label>
+					<div class="controls">
+						<input type="text" disabled value="{{ profile.join_date|date:"d M Y" }}" />
+					</div>
+				</div>
 				
 				<div class="control-group">
 					<label class="control-label">Display name</label>
