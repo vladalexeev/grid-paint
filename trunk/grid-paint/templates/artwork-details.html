@@ -1,6 +1,9 @@
 {% extends "base-adv.html" %}
 
 {% block title %}{{ artwork.name }} - {{ block.super }}{% endblock %}
+{% block description %}
+<meta name="description" content="Artwork &quot;{{ artwork.name }}&quot; by {{ artwork.author.nickname }} at Grid Paint." />
+{% endblock %}
 
 {% block include_css %}
 {{ block.super }}
