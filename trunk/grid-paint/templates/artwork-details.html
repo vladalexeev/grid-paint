@@ -61,6 +61,7 @@
 		<a href="/images/svg/{{ artwork.key.id }}.svg" class="btn btn-small" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
 		{% if user_info.superadmin %}
 		<a href="/images/json/{{ artwork.key.id }}.json" class="btn btn-small" title="Download JSON"><i class="icon icon-arrow-down"></i>JSON</a>
+		<a href="#" id="admin-artwork-properties" class="btn btn-small" title="Artwork properties">Properties</a>
 		{% endif %}
 	</div>
 	
@@ -129,6 +130,61 @@ $(function() {
 })
 </script>
 
+
+
+{% if user_info.superadmin %}
+<link href="/tagmanager/bootstrap-tagmanager.css" rel="stylesheet">
+<script src="/tagmanager/bootstrap-tagmanager.js"></script>
+
+<div id="properties-modal" class="modal hide fade" tabindex="-1" role="dialog">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h3 id="myModalLabel">Artwork properties</h3>
+  </div>
+  <div class="modal-body">
+    <form>
+    	<input type="hidden" name="artwork_id" value="{{ artwork.key.id }}" />
+    	<label>Artwork title</label>
+    	<input type="text" name="modal_artwork_name" id="modal_artwork_name" value="{{ artwork.name }}" style="width:500px;"/>
+    	<label>Artwork description</label>
+    	<textarea name="modal_artwork_description" id="modal_artwork_description" style="width:500px; height:150px;">{{ artwork.description|default_if_none:"" }}</textarea>
+    	<label>Tags</label>
+    	<input type="text" name="modal_artwork_tags" id="modal_artwork_tags" class="tm-input tm-input-info" autocomplete="off"/>
+    	<input type="hidden" name="modal_artwork_tags_hidden" id="modal_artwork_tags_hidden" value="{{ artwork.tags_merged }}"/>
+    	<input type="hidden" name="modal_success_action" id="modal_success_action" />
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" data-dismiss="modal">Close</button>
+    <button id="btn-properties-save" type="button" class="btn btn-primary">Save changes</button>
+  </div>
+</div>
+
+<script>
+$(function() {
+	$("#modal_artwork_tags")
+		.typeahead({
+			source: function(query, process) {
+				$.post("/tag-typeahead", {query:query},
+					function(data) {
+						process(data);
+					}, "json");
+			}
+		})
+		.tagsManager({
+			hiddenTagListId: "modal_artwork_tags_hidden",
+			typeahead: true
+		});	
+	
+	$("#admin-artwork-properties").click(
+		function() {
+			$("#properties-modal").modal();
+		})
+})
+</script>
+
+
+{% endif %}
 
 
 
