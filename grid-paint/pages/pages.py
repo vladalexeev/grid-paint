@@ -213,9 +213,12 @@ class PageImage(BasicPageRequestHandler):
         db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('date')
         comments = [convert.convert_comment_for_page(c) for c in db_comments]
         
+        converted_artwork = convert.convert_artwork_for_page(artwork, 600, 400)
+        converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']]) 
+        
         self.write_template('templates/artwork-details.html', 
                             {
-                             'artwork': convert.convert_artwork_for_page(artwork, 600, 400),
+                             'artwork': converted_artwork,
                              'can_edit_artwork': self.user_info.superadmin or artwork.author==self.user_info.user,
                              'comments': comments
                             })
