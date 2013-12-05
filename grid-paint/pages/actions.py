@@ -398,6 +398,34 @@ class ActionUpdate(BasicRequestHandler):
             if artworks:
                 up.join_date = artworks[len(artworks)-1].date
                 up.put()
+                
+class ActionAdminSetArtworkProperties(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        artwork_id = int(self.request.get('admin_artwork_id'))
+        artwork_name = self.request.get('admin_artwork_name')
+        artwork_description = self.request.get('admin_artwork_description')
+        artwork_tags = self.request.get('admin_artwork_tags_hidden')
+        
+        artwork = db.Artwork.get_by_id(artwork_id)
+        artwork.name = artwork_name
+        artwork.description = artwork_description
+        
+        original_tags=artwork_tags.split(',')
+        url_tags=[]
+        for tag_title in original_tags:
+            if len(tag_title)>0:
+                db_tag=tags.tag_by_title(tag_title);
+                url_tags.append(db_tag.url_name)
+        
+        artwork.tags=url_tags
+        
+        artwork.put()
+        
+        self.redirect('/images/details/'+str(artwork_id))
             
             
             

@@ -142,27 +142,26 @@ $(function() {
     <h3 id="myModalLabel">Artwork properties</h3>
   </div>
   <div class="modal-body">
-    <form>
-    	<input type="hidden" name="artwork_id" value="{{ artwork.key.id }}" />
+    <form name="adminForm" method="POST" action="/admin/saveArtworkProperties">
+    	<input type="hidden" name="admin_artwork_id" value="{{ artwork.key.id }}" />
     	<label>Artwork title</label>
-    	<input type="text" name="modal_artwork_name" id="modal_artwork_name" value="{{ artwork.name }}" style="width:500px;"/>
+    	<input type="text" name="admin_artwork_name" id="admin_artwork_name" value="{{ artwork.name }}" style="width:500px;"/>
     	<label>Artwork description</label>
-    	<textarea name="modal_artwork_description" id="modal_artwork_description" style="width:500px; height:150px;">{{ artwork.description|default_if_none:"" }}</textarea>
+    	<textarea name="admin_artwork_description" id="admin_artwork_description" style="width:500px; height:150px;">{{ artwork.description|default_if_none:"" }}</textarea>
     	<label>Tags</label>
-    	<input type="text" name="modal_artwork_tags" id="modal_artwork_tags" class="tm-input tm-input-info" autocomplete="off"/>
-    	<input type="hidden" name="modal_artwork_tags_hidden" id="modal_artwork_tags_hidden" value="{{ artwork.tags_merged }}"/>
-    	<input type="hidden" name="modal_success_action" id="modal_success_action" />
+    	<input type="text" name="admin_artwork_tags" id="admin_artwork_tags" class="tm-input tm-input-info" autocomplete="off"/>
+    	<input type="hidden" name="admin_artwork_tags_hidden" id="admin_artwork_tags_hidden" value="{{ artwork.tags_merged }}"/>
     </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn" data-dismiss="modal">Close</button>
-    <button id="btn-properties-save" type="button" class="btn btn-primary">Save changes</button>
+    <button id="btn-admin-artwork-properties-save" type="button" class="btn btn-primary">Save changes</button>
   </div>
 </div>
 
 <script>
 $(function() {
-	$("#modal_artwork_tags")
+	$("#admin_artwork_tags")
 		.typeahead({
 			source: function(query, process) {
 				$.post("/tag-typeahead", {query:query},
@@ -172,13 +171,18 @@ $(function() {
 			}
 		})
 		.tagsManager({
-			hiddenTagListId: "modal_artwork_tags_hidden",
+			hiddenTagListId: "admin_artwork_tags_hidden",
 			typeahead: true
 		});	
 	
 	$("#admin-artwork-properties").click(
 		function() {
 			$("#properties-modal").modal();
+		})
+		
+	$("#btn-admin-artwork-properties-save").click(
+		function() {
+			$("form[name=adminForm]")[0].submit();	
 		})
 })
 </script>

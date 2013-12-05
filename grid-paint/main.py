@@ -9,6 +9,7 @@ application = webapp.WSGIApplication([
                                       ('/', pages.pages.PageIndex),
                                       ('/gallery', pages.pages.PageGallery),
                                       ('/admin',pages.pages.PageAdmin),
+                                      ('/admin/saveArtworkProperties', pages.actions.ActionAdminSetArtworkProperties),
                                       ('/save-settings', pages.actions.ActionSaveSettings),
                                       ('/new-image', pages.pages.PageNewImage),
                                       ('/painter', pages.pages.PagePainter),
