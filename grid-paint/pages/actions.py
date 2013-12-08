@@ -104,6 +104,7 @@ class ActionSaveImage(BasicRequestHandler):
         dy=-json_obj['effectiveRect']['top']
         
         layer=json_obj['layers'][0]
+        artwork.grid = layer['grid']
         grid=grids[layer['grid']]();
         grid.cell_size=layer['cellSize']
 
@@ -382,7 +383,6 @@ class ActionSaveProfile(BasicRequestHandler):
         self.redirect('/')
         
 
-from google.appengine.api import users
 
 class ActionUpdate(BasicRequestHandler):
     def get(self):
@@ -390,14 +390,21 @@ class ActionUpdate(BasicRequestHandler):
             self.response.set_status(403)
             return
         
-        user_profiles = db.UserProfile.all()
-        for up in user_profiles:
-            logging.error(up.email)
-            artworks = db.Artwork.all().filter('author =', users.User(up.email)).order('-date').fetch(100,0)
-            logging.error(str(artworks))
-            if artworks:
-                up.join_date = artworks[len(artworks)-1].date
-                up.put()
+        artworks = db.Artwork.all()
+        
+        for artwork in artworks:
+            if artwork.json_compressed:
+                artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+            else:
+                artwork_json = artwork.json
+                
+            json_obj=json.loads(artwork_json)
+                
+            artwork.grid = json_obj['layers'][0]['grid']
+            artwork.put()
+                
+
+
                 
 class ActionAdminSetArtworkProperties(BasicRequestHandler):
     def post(self):
