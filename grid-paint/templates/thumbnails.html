@@ -1,0 +1,35 @@
+{% if artworks|length_is:"0" %}
+	<div class="empty-page-message">
+		No images found by your query.<br>
+		Try to <a href="/new-image">draw</a> your own image.
+	</div>
+{% else %}
+	<div class="row">	
+	{% if has_prev_page %}
+	<div class="col-xs-3">
+	<div class="thumbnail thumb-button">	
+		<div class="caption">
+			<div class="thumb-button-image">
+			<a href="{{ prev_page_href }}"><img src="/img/prev-page.png"></a>
+			</div>
+		</div>
+	</div>
+	</div>
+	{% endif%}	
+	
+	{% for a in artworks %}
+		{% include "thumbnail.html" %}
+	{% endfor %}
+
+	{% if has_next_page %}
+	<div class="col-xs-3">
+	<div class="thumbnail thumb-button">
+		<div class="caption">
+			<div class="thumb-button-image">
+			<a href="{{ next_page_href }}"><img src="/img/next-page.png" width="200" height="200"></a>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+	</div>
+{% endif %}

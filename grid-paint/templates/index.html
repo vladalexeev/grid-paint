@@ -32,17 +32,20 @@ link at the top.
 <div class="container text-center index-page-section">
 <h3>Recent images</h3>
 	
-<ul class="thumbnails" style="display: inline-block">	
+<div class="row" style="margin-left:20px; margin-right:20px;">	
 {% for a in artworks %}
 	{% include "thumbnail.html" %}
 {% endfor %}
 
-	<li class="thumbnail index-page-thumb-button">
+	<div class="col-xs-3">
+	  <div class="thumbnail index-page-thumb-button" style="background-color: transparent;">
 		<a href="/gallery">
-		<img src="/img/goto-gallery.png" border="0" />
+		  <img src="/img/goto-gallery.png" border="0" />
 		</a>
-	</li>
-</ul>
+	  </div>
+	</div>
+
+</div>
 
 
 </div>

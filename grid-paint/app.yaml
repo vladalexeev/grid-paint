@@ -15,6 +15,9 @@ handlers:
 - url: /bootstrap
   static_dir: static/bootstrap
 
+- url: /typeahead
+  static_dir: static/typeahead
+
 - url: /tagmanager
   static_dir: static/tagmanager
 

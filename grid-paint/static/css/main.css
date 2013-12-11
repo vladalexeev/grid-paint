@@ -1,5 +1,5 @@
 body {
-	padding-top:50px;
+	padding-top:60px;
 }
 
 .common-page-footer {
@@ -107,9 +107,11 @@ body {
  * Thumbnails
  */
 
+/*
 .thumb-container {
 	min-height:610px;
 }
+*/
 
 .thumb-button {
 	border:1px solid white;
