@@ -1,4 +1,5 @@
-    <li class="thumbnail index-page-thumbnail">
+  <div class="col-xs-3">  
+    <div class="thumbnail index-page-thumbnail">
   		<div class="thumb-image">
   			<a href="/images/details/{{ a.key.id }}">
 			  <img src="/images/png/{{ a.thumbnail_image_name }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
@@ -9,4 +10,5 @@
 			<div class="thumb-author">{{ a.author.nickname }}</div>
 			<div class="thumb-date">{{ a.date|date:"d M Y H:i" }}</div>
 		</div>
-	</li>
+	</div>
+  </div>

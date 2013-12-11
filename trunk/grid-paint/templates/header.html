@@ -1,12 +1,18 @@
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <a class="brand" href="/"><img src="/img/logo.png" style="float: left; margin-top:-6px; margin-bottom:-20px; margin-left:10px; margin-right:10px;"> Grid paint</a>
-    <ul class="nav">
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+  <div class="navbar-header">
+  	<a class="navbar-brand" href="/">
+  		<img src="/img/logo.png" style="float: left; margin-top:-6px; margin-bottom:-20px; margin-left:10px; margin-right:10px;"> 
+  		Grid paint
+  	</a>
+  </div>
+  <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <ul class="nav navbar-nav">
       <li id="top-menu-gallery"><a href="/gallery">Gallery</a></li>
       <li id="top-menu-my-images"><a href="/my-images">My images</a></li>
       <li id="top-menu-new-image"><a href="/new-image">New image</a></li>
     </ul>
-    <ul class="nav pull-right">
+            
+    <ul class="nav navbar-nav navbar-right">
       {% if user_info.user_name%}
         {% if user_info.has_notifications %}
 	        <li>
@@ -35,16 +41,19 @@
 		  <a href="{{ user_info.login_url }}">{{ user_info.login_url_text }}</a>
         </li>
       {% endif %}
-      <li>&nbsp;&nbsp;</li>
+        <li style="width:20px;"></li>
     </ul>
-    <form class="navbar-search form-search pull-right" method="GET" action="/gallery">
-    	<div class="input-append">
-    		<input type="text" value="{{ search_query }}" class="search-query" name="q" autocomplete="off">
-    		<button type="submit" class="btn btn-success">Search</button>	
-    	</div>
-	</form>
+    
+    <form class="navbar-form navbar-right" role="search" method="GET" action="/gallery">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Search" value="{{ search_query }}" name="q" autocomplete="off">
+      </div>
+      <button type="submit" class="btn btn-success">Search</button>
+    </form>
+
   </div>
-</div>
+  
+</nav>
 
 <script>
 $.fn.flash = function(duration, iterations) {
@@ -57,17 +66,15 @@ $.fn.flash = function(duration, iterations) {
     }
 }
 
+
 $(function() {
 	$("input[name=q]")
 		.typeahead({
-			source: function(query, process) {
-				$.post("/tag-typeahead", {query:query},
-					function(data) {
-						process(data);
-					}, "json");
-			}
+			name: "dataset",
+			remote: "/tag-typeahead?query=%QUERY"
 		})
 		
 	$('.blink').flash(5000,10);
 });
+
 </script>

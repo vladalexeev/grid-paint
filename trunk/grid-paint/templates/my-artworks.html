@@ -2,44 +2,15 @@
 
 
 {% block content %}  
-<div class="thumb-container">
+<div class="single-container">
+<div class="container">
 	
-{% if artworks|length_is:"0" %}
+	{% include "thumbnails.html" %}
 	
-	<div class="empty-page-message">
-		You didn't draw any images.<br>
-		Start drawing <a href="/new-image">now</a>.
-	</div>
-	
-{% else %}
-	<ul class="thumbnails">	
-	{% if has_prev_page %}
-	<li class="thumbnail thumb-button">	
-		<div class="caption">
-			<div class="thumb-button-image">
-				<a href="/my-images?offset={{ prev_offset }}"><img src="/img/prev-page.png"></a>
-			</div>
-		</div>
-	</li>
-	{% endif%}	
-	
-	{% for a in artworks %}
-		{% include "thumbnail.html" %}
-	{% endfor %}
 
-	{% if has_next_page %}
-	<li class="thumbnail thumb-button">
-		<div class="caption">
-			<div class="thumb-button-image">
-			<a href="/my-images?offset={{ next_offset }}"><img src="/img/next-page.png" width="200" height="200"></a>
-			</div>
-		</div>
-	</li>
-{% endif %}
-</ul>
+</div>
 </div>
 
-{% endif %}
 
 <script>
 $(function() {
