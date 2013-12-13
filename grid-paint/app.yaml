@@ -20,6 +20,9 @@ handlers:
 
 - url: /tagmanager
   static_dir: static/tagmanager
+  
+- url: /bootstrap-tagsinput
+  static_dir: static/bootstrap-tagsinput
 
 - url: /social-likes
   static_dir: static/social-likes

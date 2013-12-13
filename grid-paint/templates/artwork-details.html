@@ -104,20 +104,24 @@
 </div>
 
 
-
-<div id="modal-confirm-delete" class="modal hide fade">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>Confirmation</h3>
-  </div>
-  <div class="modal-body">
-    <p>One fine body</p>
-  </div>
-  <div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-    <a href="#" id="btn-confirm-delete" class="btn btn-danger">Delete</a>
+<div id="modal-confirm-delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+        <a href="#" id="btn-confirm-delete" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
   </div>
 </div>
+
 
 
 <script>
@@ -137,47 +141,77 @@ $(function() {
 
 
 {% if user_info.superadmin %}
-<link href="/tagmanager/bootstrap-tagmanager.css" rel="stylesheet">
-<script src="/tagmanager/bootstrap-tagmanager.js"></script>
+<link href="/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
+<script src="/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
 
-<div id="properties-modal" class="modal hide fade" tabindex="-1" role="dialog">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3 id="myModalLabel">Artwork properties</h3>
-  </div>
-  <div class="modal-body">
-    <form name="adminForm" method="POST" action="/admin/saveArtworkProperties">
-    	<input type="hidden" name="admin_artwork_id" value="{{ artwork.key.id }}" />
-    	<label>Artwork title</label>
-    	<input type="text" name="admin_artwork_name" id="admin_artwork_name" value="{{ artwork.name }}" style="width:500px;"/>
-    	<label>Artwork description</label>
-    	<textarea name="admin_artwork_description" id="admin_artwork_description" style="width:500px; height:150px;">{{ artwork.description|default_if_none:"" }}</textarea>
-    	<label>Tags</label>
-    	<input type="text" name="admin_artwork_tags" id="admin_artwork_tags" class="tm-input tm-input-info" autocomplete="off"/>
-    	<input type="hidden" name="admin_artwork_tags_hidden" id="admin_artwork_tags_hidden" value="{{ artwork.tags_merged }}"/>
-    </form>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn" data-dismiss="modal">Close</button>
-    <button id="btn-admin-artwork-properties-save" type="button" class="btn btn-primary">Save changes</button>
+
+<div id="properties-modal" id="modal-confirm-delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Artwork properties</h4>
+      </div>
+      <div class="modal-body">
+        <form name="adminForm" method="POST" action="/admin/saveArtworkProperties" role="form">
+        	<input type="hidden" name="admin_artwork_id" value="{{ artwork.key.id }}" />
+        	<div class="form-group">
+    			<label>Artwork title</label>
+    			<input type="text" name="admin_artwork_name" id="admin_artwork_name" value="{{ artwork.name }}" class="form-control"/>
+    		</div>
+    		<div class="form-group">
+    			<label>Artwork description</label>
+    			<textarea name="admin_artwork_description" id="admin_artwork_description" class="form-control" style="height:150px;">{{ artwork.description|default_if_none:"" }}</textarea>
+    		</div>
+    		<div class="form-group">
+    			<label>Tags</label>
+    			<div>
+    				<input type="text" value="{{ artwork.tags_merged }}" name="admin_artwork_tags" id="admin_artwork_tags" class="tm-input tm-input-info" autocomplete="off"/>
+    			</div>
+    		</div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    	<button id="btn-admin-artwork-properties-save" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
 $(function() {
+/*	data-role="tagsinput" 
 	$("#admin_artwork_tags")
 		.typeahead({
-			source: function(query, process) {
-				$.post("/tag-typeahead", {query:query},
-					function(data) {
-						process(data);
-					}, "json");
-			}
-		})
+			name: "dataset",
+			remote: "/tag-typeahead?query=%QUERY"
+		});
+	$("#admin_artwork_tags")
 		.tagsManager({
 			hiddenTagListId: "admin_artwork_tags_hidden",
 			typeahead: true
-		});	
+		});
+*/
+	var tags=$("#admin_artwork_tags");
+	tags.tagsinput();
+	tags.tagsinput('input').typeahead({
+		name: "dataset",
+		remote: "/tag-typeahead?query=%QUERY"
+    }).bind('typeahead:selected', $.proxy(function (obj, datum) {
+      tags.tagsinput('add', datum.value);
+      tags.tagsinput('input').typeahead('setQuery', '');
+    }, $('input')));
+	
+/*	$("#admin_artwork_tags")
+		.tagsinput({
+			typeahead:
+			 {
+			name: "dataset",
+			remote: "/tag-typeahead?query=%QUERY"
+		}
+		})
+	*/
 	
 	$("#admin-artwork-properties").click(
 		function() {
