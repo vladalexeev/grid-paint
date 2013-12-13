@@ -58,3 +58,10 @@
     border-radius:4px;
 }
 
+/*
+ * fix for bootstrap-tagsinput (hide hint element) 	
+ */
+.bootstrap-tagsinput .tt-hint {
+	display: none;
+}
+

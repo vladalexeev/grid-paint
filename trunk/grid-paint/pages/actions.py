@@ -415,7 +415,7 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork_id = int(self.request.get('admin_artwork_id'))
         artwork_name = self.request.get('admin_artwork_name')
         artwork_description = self.request.get('admin_artwork_description')
-        artwork_tags = self.request.get('admin_artwork_tags_hidden')
+        artwork_tags = self.request.get('admin_artwork_tags')
         
         artwork = db.Artwork.get_by_id(artwork_id)
         artwork.name = artwork_name
