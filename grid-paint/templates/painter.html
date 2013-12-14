@@ -25,17 +25,16 @@
 {% block content_full %}  
 
 <script src="/js/jquery.minicolors.js"></script>
-<script src="/tagmanager/bootstrap-tagmanager.js"></script>
 
 <div class="row-fluid">
 	<div class="painter-toolbar-full text-center">
 		<div style="margin-bottom:10px;">
-			<button id="btn-save" class="btn btn-small btn-primary" type="button" title="Save image"><i class="icon icon-hdd icon-white"></i> Save</button>
+			<button id="btn-save" class="btn btn-sm btn-primary" type="button" title="Save image"><i class="icon icon-hdd icon-white"></i> Save</button>
 			<div class="btn-group">
-				<button id="btn-undo" class="btn btn-small" type="button" title="Undo"><i class="icon icon-reply"></i></button>
-				<button id="btn-redo" class="btn btn-small" type="button" title="Redo"><i class="icon icon-share-alt"></i></button>
+				<button id="btn-undo" class="btn btn-sm" type="button" title="Undo"><i class="icon icon-reply"></i></button>
+				<button id="btn-redo" class="btn btn-sm" type="button" title="Redo"><i class="icon icon-share-alt"></i></button>
 			</div>
-			<button id="btn-pick-color" class="btn btn-small" type="button" data-toggle="button" title="Pick color"><i class="icon icon-pencil"></i></button>
+			<button id="btn-pick-color" class="btn btn-sm" type="button" data-toggle="button" title="Pick color"><i class="icon icon-pencil"></i></button>
 		</div>
 		<div id="color-selection" >
 			<div id="color-picker"></div>
@@ -58,15 +57,15 @@
 			</div>
 			<div id="shift-toolbar-content" style="display:none">
 				<div class="painter-toolbar-container text-center">
-					<button id="btn-shift-up" class="btn btn-small" type="button" title="Shift up"><i class="icon icon-arrow-up"></i></button>
+					<button id="btn-shift-up" class="btn btn-sm" type="button" title="Shift up"><i class="icon icon-arrow-up"></i></button>
 				</div>
 				<div class="painter-toolbar-container text-center">
-					<button id="btn-shift-left" class="btn btn-small" type="button" title="Shift left"><i class="icon icon-arrow-left"></i></button>
+					<button id="btn-shift-left" class="btn btn-sm" type="button" title="Shift left"><i class="icon icon-arrow-left"></i></button>
 					<span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-					<button id="btn-shift-right" class="btn btn-small" type="button" title="Shift right"><i class="icon icon-arrow-right"></i></button>
+					<button id="btn-shift-right" class="btn btn-sm" type="button" title="Shift right"><i class="icon icon-arrow-right"></i></button>
 				</div>			
 				<div class="painter-toolbar-container text-center">
-					<button id="btn-shift-down" class="btn btn-small" type="button" title="Shift down"><i class="icon icon-arrow-down"></i></button>
+					<button id="btn-shift-down" class="btn btn-sm" type="button" title="Shift down"><i class="icon icon-arrow-down"></i></button>
 				</div>
 			</div>
 		</div>
@@ -88,7 +87,7 @@
 					<input type="number" id="toolbar-cell-size" />
 				</div>
 				<div class="painter-toolbar-form">
-					<button type="button" id="btn-apply-workspace-size" class="btn btn-primary">Apply</button>
+					<button type="button" id="btn-apply-workspace-size" class="btn btn-sm btn-primary">Apply</button>
 				</div>							
 			</div>
 		</div>
@@ -96,7 +95,7 @@
 		<div id="test"></div>
 	</div>
 	
-	<div class="span12" style="margin-left:0 !important;">
+	<div style="margin-left:0 !important;">
 		<div id="canvas-wrapper" class="painter-canvas-wrapper">
 			<div id="canvas"></div>			
 		</div>
@@ -169,7 +168,7 @@ var redoStack=[];
 
 // 
 function adjustCanvasWrapper() {
-	$("#canvas-wrapper").height($(window).height()-50);
+	$("#canvas-wrapper").height($(window).height()-60);
 }
 
 function paintShapeToolButton(shapeName) {
@@ -514,7 +513,7 @@ $(function() {
 		function() {
 			if ($("#modal_artwork_tags").val()) {
 				// move current edited tag to tags manager
-				$("#modal_artwork_tags").tagsManager("pushTag",$("#modal_artwork_tags").val());
+				//$("#modal_artwork_tags").tagsManager("pushTag",$("#modal_artwork_tags").val());
 				$("#modal_artwork_tags").val("");
 			}
 			
@@ -539,17 +538,13 @@ $(function() {
 		
 	$("#modal_artwork_tags")
 		.typeahead({
-			source: function(query, process) {
-				$.post("/tag-typeahead", {query:query},
-					function(data) {
-						process(data);
-					}, "json");
-			}
-		})
-		.tagsManager({
+			name: "dataset",
+			remote: "/tag-typeahead?query=%QUERY"
+    	})
+/*		.tagsManager({
 			hiddenTagListId: "modal_artwork_tags_hidden",
 			typeahead: true
-		});
+		});*/
 	
 	//Create color palette
 	var paletteHtml="";
