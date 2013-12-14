@@ -3,8 +3,7 @@
 {% block include_css %}
  {{ block.super }}
  <link href="/css/jquery.minicolors.css" rel="stylesheet">
- <link href="/tagmanager/bootstrap-tagmanager.css" rel="stylesheet">
- 
+ <link href="/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
  <style>
  	body {
 		-webkit-touch-callout: none;
@@ -20,6 +19,7 @@
 {% block include_js %}
 {{ block.super }}
 <script src="/js/raphael-min.js"></script>
+<script src="/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
 {% endblock %}
 
 {% block content_full %}  
@@ -102,6 +102,41 @@
 		
 	</div>
 </div>
+
+<div id="properties-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Artwork properties</h4>
+      </div>
+      <div class="modal-body">
+        <form role="form">
+        	<div class="form-group">
+	    		<label>Artwork title</label>
+    			<input type="text" name="modal_artwork_name" id="modal_artwork_name" value="{{ artwork_name }}" class="form-control"/>
+    		</div>
+    		<div class="form-group">
+    			<label>Artwork description</label>
+    			<textarea name="modal_artwork_description" id="modal_artwork_description" style="height:150px;" class="form-control">{{ artwork_description|default_if_none:"" }}</textarea>
+    		</div>
+    		<div class="form-group">
+    			<label>Tags</label>
+    			<div>
+    				<input type="text" value="{{ artwork_tags }}" name="modal_artwork_tags" id="modal_artwork_tags" autocomplete="off"/>
+    			</div>
+    		</div>
+    		<input type="hidden" name="modal_success_action" id="modal_success_action" />
+    	</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal">Close</button>
+    	<button id="btn-properties-save" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div id="properties-modal" class="modal hide fade" tabindex="-1" role="dialog">
   <div class="modal-header">
@@ -511,14 +546,8 @@ $(function() {
 	
 	$("#btn-properties-save").click(
 		function() {
-			if ($("#modal_artwork_tags").val()) {
-				// move current edited tag to tags manager
-				//$("#modal_artwork_tags").tagsManager("pushTag",$("#modal_artwork_tags").val());
-				$("#modal_artwork_tags").val("");
-			}
-			
 			$("#artwork_name").val($("#modal_artwork_name").val());
-			$("#artwork_tags").val($("#modal_artwork_tags_hidden").val());
+			$("#artwork_tags").val($("#modal_artwork_tags").val());
 			$("#artwork_description").val($("#modal_artwork_description").val());
 			$("#properties-modal").modal('hide');
 			
@@ -536,15 +565,16 @@ $(function() {
 			}
 		}
 		
-	$("#modal_artwork_tags")
-		.typeahead({
-			name: "dataset",
-			remote: "/tag-typeahead?query=%QUERY"
-    	})
-/*		.tagsManager({
-			hiddenTagListId: "modal_artwork_tags_hidden",
-			typeahead: true
-		});*/
+	var tags=$("#modal_artwork_tags");
+	tags.tagsinput();
+	tags.tagsinput('input').typeahead({
+		name: "dataset",
+		remote: "/tag-typeahead?query=%QUERY"
+    }).bind('typeahead:selected', $.proxy(function (obj, datum) {
+      tags.tagsinput('add', datum.value);
+      tags.tagsinput('input').typeahead('setQuery', '');
+    }, $('input')));
+		
 	
 	//Create color palette
 	var paletteHtml="";
