@@ -144,14 +144,17 @@ body {
 	text-overflow: ellipsis;
 	font-size:12pt;
 	font-weight: bold;
+	text-align: center;
 }
 
-.thumb-auhtor {
+.thumb-author {
 	font-size:10pt;
+	text-align: center;
 }
 
 .thumb-date {
 	font-size:8pt;
+	text-align: center;
 }
 
 /**
