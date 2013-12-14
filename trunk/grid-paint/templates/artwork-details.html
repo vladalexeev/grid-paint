@@ -181,18 +181,6 @@ $(function() {
 
 <script>
 $(function() {
-/*	data-role="tagsinput" 
-	$("#admin_artwork_tags")
-		.typeahead({
-			name: "dataset",
-			remote: "/tag-typeahead?query=%QUERY"
-		});
-	$("#admin_artwork_tags")
-		.tagsManager({
-			hiddenTagListId: "admin_artwork_tags_hidden",
-			typeahead: true
-		});
-*/
 	var tags=$("#admin_artwork_tags");
 	tags.tagsinput();
 	tags.tagsinput('input').typeahead({
@@ -203,15 +191,6 @@ $(function() {
       tags.tagsinput('input').typeahead('setQuery', '');
     }, $('input')));
 	
-/*	$("#admin_artwork_tags")
-		.tagsinput({
-			typeahead:
-			 {
-			name: "dataset",
-			remote: "/tag-typeahead?query=%QUERY"
-		}
-		})
-	*/
 	
 	$("#admin-artwork-properties").click(
 		function() {
