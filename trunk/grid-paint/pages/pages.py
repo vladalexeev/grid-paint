@@ -142,8 +142,8 @@ class PageMyImages(BasicPageRequestHandler):
             
         artworks=[convert.convert_artwork_for_page(ma,200,150) for ma in my_artworks]
         
-        next_page_href='/gallery?offset='+str(offset+page_size)
-        prev_page_href='/gallery?offset='+str(offset-page_size)
+        next_page_href='/my-images?offset='+str(offset+page_size)
+        prev_page_href='/my-images?offset='+str(offset-page_size)
 
         
         self.write_template('templates/my-artworks.html', 
