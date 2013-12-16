@@ -285,13 +285,18 @@ function paintOnCanvasByMouseEvent(event) {
 			oldColor=oldCell.color;
 		}
 		
+		newShapeName=selectedShapeName;
+		if (event.which==3) {
+			newShapeName="empty";
+		}
+		
 		undoStack[undoStack.length-1].pushCellChange(
 			cell.col, cell.row, 
-			oldShapeName, selectedShapeName,
+			oldShapeName, newShapeName,
 			oldColor, selectedColor);
 		
-		paintOnCanvas(cell.col, cell.row, selectedShapeName, selectedColor);
-		if (selectedShapeName!="empty") {
+		paintOnCanvas(cell.col, cell.row, newShapeName, selectedColor);
+		if (newShapeName!="empty") {
 			pushRecentColor(selectedColor);	
 		}
 		changed=true;
@@ -741,6 +746,10 @@ $(function() {
 				}
 			}
 		});
+		
+	$("#canvas").bind("contextmenu", function(e) {
+    	return false;
+	});
 })
 </script>
 
