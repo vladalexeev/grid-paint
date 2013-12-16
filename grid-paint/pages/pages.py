@@ -155,53 +155,84 @@ class PageMyImages(BasicPageRequestHandler):
                              'artworks': artworks
                              })
         
-class PageGallery(BasicPageRequestHandler):
-    def get(self):
-        if self.request.get('offset'):
-            offset=int(self.request.get('offset'))
-        else:
-            offset=0
+def create_gallery_model(request, artworks_query_func, href_create_func):
+    """
+    Create a model of artwork list based on request.
+    artworks_query_func(request) - function for create query for artworks
+    href_create_func(request,offset) - function for create next and prev page hyperlinks
+    """
+    if request.get('offset'):
+        offset=int(request.get('offset'))
+    else:
+        offset=0
             
-        if offset<0:
-            offset=0
+    if offset<0:
+        offset=0
             
-        query=self.request.get('q')
-        if query:
-            filter_tag=tags.tag_by_title(query)
-        else:
-            filter_tag=None
+    if offset == 0:
+        fetch_count = page_size+1
+    else:
+        fetch_count = page_size
             
-        all_artworks=db.Artwork.all()
-        if filter_tag:
-            all_artworks=all_artworks.filter('tags =',filter_tag.url_name)
+    all_artworks=artworks_query_func(request).fetch(fetch_count+1,offset)
         
-        all_artworks=all_artworks.order('-date').fetch(page_size+1,offset)
+    has_prev_page=(offset>0)
+    has_next_page=len(all_artworks)>fetch_count
         
-        has_prev_page=(offset>0)
-        has_next_page=len(all_artworks)>page_size
-        
-        if len(all_artworks)>page_size:
-            all_artworks=all_artworks[:page_size]
+    if len(all_artworks)>fetch_count:
+        all_artworks=all_artworks[:fetch_count]
             
-        artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
+    artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
         
-        next_page_href='/gallery?offset='+str(offset+page_size)
-        prev_page_href='/gallery?offset='+str(offset-page_size)
+    next_page_href=href_create_func(request,offset+fetch_count)
         
-        if query:
-            next_page_href+='&q='+query
-            prev_page_href+='&q='+query
+    if offset-page_size <=1:
+        prev_page_href=href_create_func(request,0)
+    else:
+        prev_page_href=href_create_func(request, offset-page_size)
+        
+    return  {
+             'has_next_page': has_next_page,
+             'has_prev_page': has_prev_page,
+             'next_page_href': next_page_href,
+             'prev_page_href': prev_page_href,
+             'artworks': artworks
+            }
 
         
-        self.write_template('templates/gallery.html', 
-                            {
-                             'has_next_page': has_next_page,
-                             'has_prev_page': has_prev_page,
-                             'next_page_href': next_page_href,
-                             'prev_page_href': prev_page_href,
-                             'artworks': artworks,
-                             'search_query': query
-                             })
+class PageGallery(BasicPageRequestHandler):
+    def get(self):
+        def artworks_query_func(request):
+            query=self.request.get('q')
+            if query:
+                filter_tag=tags.tag_by_title(query)
+            else:
+                filter_tag=None
+            
+            all_artworks=db.Artwork.all()
+            if filter_tag:
+                all_artworks=all_artworks.filter('tags =',filter_tag.url_name)
+
+            return all_artworks.order('-date')
+        
+        def href_create_func(request,offset):
+            query=self.request.get('q')
+            if query:
+                filter_tag=tags.tag_by_title(query)
+            else:
+                filter_tag=None
+            
+            if filter_tag:
+                return '/gallery?offset='+str(offset)+'&q='+query
+            else   : 
+                return '/gallery?offset='+str(offset)
+            
+        
+            
+        model = create_gallery_model(self.request, artworks_query_func, href_create_func)
+        model['search_query'] = self.request.get('q')
+        
+        self.write_template('templates/gallery.html', model)
         
         
         
