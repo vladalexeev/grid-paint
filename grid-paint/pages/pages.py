@@ -184,12 +184,12 @@ def create_gallery_model(request, artworks_query_func, href_create_func):
             
     artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
         
-    next_page_href=href_create_func(request,offset+fetch_count)
+    next_page_href=href_create_func(offset+fetch_count)
         
     if offset-page_size <=1:
-        prev_page_href=href_create_func(request,0)
+        prev_page_href=href_create_func(0)
     else:
-        prev_page_href=href_create_func(request, offset-page_size)
+        prev_page_href=href_create_func(offset-page_size)
         
     return  {
              'has_next_page': has_next_page,
@@ -202,6 +202,8 @@ def create_gallery_model(request, artworks_query_func, href_create_func):
         
 class PageGallery(BasicPageRequestHandler):
     def get(self):
+        query=self.request.get('q')
+        
         def artworks_query_func(request):
             query=self.request.get('q')
             if query:
@@ -215,22 +217,16 @@ class PageGallery(BasicPageRequestHandler):
 
             return all_artworks.order('-date')
         
-        def href_create_func(request,offset):
-            query=self.request.get('q')
+        def href_create_func(offset):
             if query:
-                filter_tag=tags.tag_by_title(query)
-            else:
-                filter_tag=None
-            
-            if filter_tag:
                 return '/gallery?offset='+str(offset)+'&q='+query
-            else   : 
+            else:
                 return '/gallery?offset='+str(offset)
             
         
             
         model = create_gallery_model(self.request, artworks_query_func, href_create_func)
-        model['search_query'] = self.request.get('q')
+        model['search_query'] = query
         
         self.write_template('templates/gallery.html', model)
         
