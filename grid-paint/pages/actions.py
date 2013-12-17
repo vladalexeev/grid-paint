@@ -84,7 +84,7 @@ class ActionSaveImage(BasicRequestHandler):
         url_tags=[]
         for tag_title in original_tags:
             if len(tag_title)>0:
-                db_tag=tags.tag_by_title(tag_title);
+                db_tag=tags.create_tag_by_title(tag_title);
                 url_tags.append(db_tag.url_name)
         
         artwork.tags=url_tags
@@ -425,7 +425,7 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         url_tags=[]
         for tag_title in original_tags:
             if len(tag_title)>0:
-                db_tag=tags.tag_by_title(tag_title);
+                db_tag=tags.create_tag_by_title(tag_title);
                 url_tags.append(db_tag.url_name)
         
         artwork.tags=url_tags

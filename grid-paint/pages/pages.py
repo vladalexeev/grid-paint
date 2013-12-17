@@ -186,8 +186,7 @@ class PageGallery(BasicPageRequestHandler):
         def artworks_query_func():
             all_artworks=db.Artwork.all()
             if query:
-                filter_tag=tags.tag_by_title(query)
-                all_artworks=all_artworks.filter('tags =',filter_tag.url_name)                
+                all_artworks=all_artworks.filter('tags =', tags.tag_url_name(query))                
 
             return all_artworks.order('-date')
         
