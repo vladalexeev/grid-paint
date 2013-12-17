@@ -155,14 +155,15 @@ class PageMyImages(BasicPageRequestHandler):
                              'artworks': artworks
                              })
         
-def create_gallery_model(request, artworks_query_func, href_create_func):
+def create_gallery_model(offset_param, artworks_query_func, href_create_func):
     """
     Create a model of artwork list based on request.
-    artworks_query_func(request) - function for create query for artworks
-    href_create_func(request,offset) - function for create next and prev page hyperlinks
+    offset_param - offset parameter from request
+    artworks_query_func() - function for create query for artworks
+    href_create_func(offset) - function for create next and prev page hyperlinks
     """
-    if request.get('offset'):
-        offset=int(request.get('offset'))
+    if offset_param:
+        offset=int(offset_param)
     else:
         offset=0
             
@@ -174,7 +175,7 @@ def create_gallery_model(request, artworks_query_func, href_create_func):
     else:
         fetch_count = page_size
             
-    all_artworks=artworks_query_func(request).fetch(fetch_count+1,offset)
+    all_artworks=artworks_query_func().fetch(fetch_count+1,offset)
         
     has_prev_page=(offset>0)
     has_next_page=len(all_artworks)>fetch_count
@@ -204,7 +205,7 @@ class PageGallery(BasicPageRequestHandler):
     def get(self):
         query=self.request.get('q')
         
-        def artworks_query_func(request):
+        def artworks_query_func():
             all_artworks=db.Artwork.all()
             if query:
                 filter_tag=tags.tag_by_title(query)
@@ -218,9 +219,10 @@ class PageGallery(BasicPageRequestHandler):
             else:
                 return '/gallery?offset='+str(offset)
             
+        model = create_gallery_model(self.request.get('offset'), 
+                                     artworks_query_func, 
+                                     href_create_func)
         
-            
-        model = create_gallery_model(self.request, artworks_query_func, href_create_func)
         model['search_query'] = query
         
         self.write_template('templates/gallery.html', model)
