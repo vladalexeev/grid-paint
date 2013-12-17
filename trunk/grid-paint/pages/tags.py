@@ -10,12 +10,25 @@ import unidecode
 
 import cache
 
-def tag_by_title(title):
-    url_name=unidecode.unidecode(title).\
-                        replace(' ','-').\
-                        replace('/','-').\
-                        replace('\\','-').\
-                        replace(':','-')
+def tag_url_name(title):
+    return unidecode.unidecode(title).\
+                     replace(' ','-').\
+                     replace('/','-').\
+                     replace('\\','-').\
+                     replace(':','-')
+
+def get_tag_by_title(title):
+    url_name = tag_url_name(title)
+    cache_tag = cache.get(cache.MC_TAG+url_name)
+    
+    if cache_tag:
+        return cache_tag
+    else:
+        tag=db.Tag.all().filter('url_name =',url_name).get()
+        return tag
+
+def create_tag_by_title(title):
+    url_name = tag_url_name(title)
     cache_tag = cache.get(cache.MC_TAG+url_name)
     if cache_tag:
         return cache_tag
