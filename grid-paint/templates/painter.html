@@ -239,16 +239,20 @@ function createShapesToolbar() {
 	
 	$(".grid-shape-button").click(
 		function() {
-			var oldSelectedShapeName=selectedShapeName;
-			selectedShapeName=$(this).attr("shape-name");
-			for (var shapeName in grid.shapes) {
-				if (shapeName==selectedShapeName ||
-					shapeName==oldSelectedShapeName) {
-					paintShapeToolButton(shapeName);		
-				}
-			}
+			selectShape($(this).attr("shape-name"));
 		}
 	)
+}
+
+function selectShape(shapeName) {
+	var oldSelectedShapeName=selectedShapeName;
+	selectedShapeName=shapeName;
+	for (var shapeName in grid.shapes) {
+		if (shapeName==selectedShapeName ||
+			shapeName==oldSelectedShapeName) {
+			paintShapeToolButton(shapeName);		
+		}
+	}
 }
 
 function paintOnCanvas(col, row, shapeName, color) {
@@ -310,6 +314,10 @@ function pickColorByMouseEvent(event) {
 		selectColor(cellItem.color);
 		$("#btn-pick-color").button("toggle");
 		setMode("paint");
+		
+		if (selectedShapeName=="empty") {
+			selectShape("flat");
+		}
 	}
 }
 
