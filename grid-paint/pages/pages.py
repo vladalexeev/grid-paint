@@ -120,40 +120,18 @@ class PageMyImages(BasicPageRequestHandler):
             self.redirect(self.user_info.login_url)
             return;
         
-        if self.request.get('offset'):
-            offset=int(self.request.get('offset'))
-        else:
-            offset=0
-            
-        if offset<0:
-            offset=0
+        def artworks_query_func():
+            return db.Artwork.all().filter('author', self.user_info.user).order('-date')
         
-        my_artworks=db.Artwork.\
-                        all().\
-                        filter('author', self.user_info.user).\
-                        order('-date').\
-                        fetch(page_size+1,offset)
+        def href_create_func(offset):
+            return '/my-images?offset='+str(offset)
         
-        has_prev_page=(offset>0)
-        has_next_page=len(my_artworks)>page_size
+        model = create_gallery_model(self.request.get('offset'), 
+                                     artworks_query_func, 
+                                     href_create_func)
         
-        if len(my_artworks)>page_size:
-            my_artworks=my_artworks[:page_size]
-            
-        artworks=[convert.convert_artwork_for_page(ma,200,150) for ma in my_artworks]
-        
-        next_page_href='/my-images?offset='+str(offset+page_size)
-        prev_page_href='/my-images?offset='+str(offset-page_size)
+        self.write_template('templates/my-artworks.html', model)
 
-        
-        self.write_template('templates/my-artworks.html', 
-                            {
-                             'has_next_page': has_next_page,
-                             'has_prev_page': has_prev_page,
-                             'next_page_href': next_page_href,
-                             'prev_page_href': prev_page_href,                             
-                             'artworks': artworks
-                             })
         
 def create_gallery_model(offset_param, artworks_query_func, href_create_func):
     """
@@ -300,33 +278,15 @@ class PageProfile(BasicRequestHandler):
         profile_id = int(arg[0])
         user_profile = dao.get_user_profile_by_id(profile_id)
         
-        if self.request.get('offset'):
-            offset = int(self.request.get('offset'))
-        else:
-            offset = 0
-            
-        if offset<0:
-            offset = 0
+        def artworks_query_func():
+            return db.Artwork.all().filter('author =',users.User(user_profile.email)).order('-date')
         
-        all_artworks = db.Artwork.all().filter('author =',users.User(user_profile.email)).order('-date').fetch(page_size+1, offset)
+        def href_create_func(offset):
+            return '/profiles/'+str(profile_id)+'?offset='+str(offset)
         
-        has_prev_page=(offset>0)
-        has_next_page=len(all_artworks)>page_size
+        model = create_gallery_model(self.request.get('offset'), 
+                                     artworks_query_func, 
+                                     href_create_func)
+        model['profile'] = convert.convert_user_profile(user_profile)
         
-        if len(all_artworks)>page_size:
-            all_artworks=all_artworks[:page_size]
-            
-        artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
-        
-        next_page_href='/profiles/'+str(profile_id)+'?offset='+str(offset+page_size)
-        prev_page_href='/profiles/'+str(profile_id)+'?offset='+str(offset-page_size)
-        
-        self.write_template('templates/profile.html', 
-                            {
-                             'profile': convert.convert_user_profile(user_profile),
-                             'has_next_page': has_next_page,
-                             'has_prev_page': has_prev_page,
-                             'next_page_href': next_page_href,
-                             'prev_page_href': prev_page_href,
-                             'artworks': artworks
-                             })
+        self.write_template('templates/profile.html', model)
