@@ -205,15 +205,10 @@ class PageGallery(BasicPageRequestHandler):
         query=self.request.get('q')
         
         def artworks_query_func(request):
-            query=self.request.get('q')
+            all_artworks=db.Artwork.all()
             if query:
                 filter_tag=tags.tag_by_title(query)
-            else:
-                filter_tag=None
-            
-            all_artworks=db.Artwork.all()
-            if filter_tag:
-                all_artworks=all_artworks.filter('tags =',filter_tag.url_name)
+                all_artworks=all_artworks.filter('tags =',filter_tag.url_name)                
 
             return all_artworks.order('-date')
         
