@@ -192,6 +192,46 @@ function GridHex_ShapeJewel(parent) {
 	}   	
 }
 
+function GridHex_ShapeCube(parent) {
+    this.name="diamond";
+    this.parent=parent;
+    this.paint=function(paper, col, row, color, dx, dy) {
+        var pp=getHexCellPoints(col, row, parent.cellSize/2);
+        var c=hexToHsl(color);
+        paper.setStart();
+        cx=pp[6].x
+        cy=pp[6].y
+        
+        var c0=hslToHex(c.h, c.s, c.l+0.2);
+        var e0=paper.path([
+                "M",pp[0].x+dx, pp[0].y+dy,
+                "L",pp[1].x+dx, pp[1].y+dy,
+                "L",pp[2].x+dx, pp[2].y+dy,
+                "L",cx+dx, cy+dy,"Z"]);
+        e0.attr({"fill":c0, "stroke-width":0});
+        
+        var c1=c;
+        var e1=paper.path([
+                "M",pp[2].x+dx, pp[2].y+dy,
+                "L",pp[3].x+dx, pp[3].y+dy,
+                "L",pp[4].x+dx, pp[4].y+dy,
+                "L",cx+dx, cy+dy,"Z"]);
+        e1.attr({"fill":c1, "stroke-width":0});
+
+        var c2=hslToHex(c.h, c.s, c.l-0.2);     
+        var e2=paper.path([
+                "M",pp[4].x+dx, pp[4].y+dy,
+                "L",pp[5].x+dx, pp[5].y+dy,
+                "L",pp[0].x+dx, pp[0].y+dy,
+                "L",cx+dx, cy+dy,"Z"]);
+        e2.attr({"fill":c2, "stroke-width":0});
+        
+        return paper.setFinish();;
+    }       
+}
+
+
+
 
 function GridHex() {
 	this.cellSize=24;
@@ -312,7 +352,8 @@ function GridHex() {
 		"empty": new GridHex_ShapeEmpty(this),
 		"flat": new GridHex_ShapeFlat(this),
 		"diamond": new GridHex_ShapeDiamond(this),
-		"jewel": new GridHex_ShapeJewel(this)
+		"jewel": new GridHex_ShapeJewel(this),
+		"cube": new GridHex_ShapeCube(this)
 	};
 	
 	this.shiftLeft={
