@@ -89,6 +89,38 @@ class ShapeDiamond:
                        (cx+dx, cy+dy)],
                       fill=c5)
         
+class ShapeCube:
+    def __init__(self, grid):
+        self.grid=grid
+        
+    def paint(self, image, col, row, color, dx, dy):
+        rgb=clr.hex_to_rgb(color)
+        hls=colorsys.rgb_to_hls(*rgb)
+        pp=hex_points(col, row, self.grid.cell_size/2);
+        cx=pp[6]['x']
+        cy=pp[6]['y']
+
+        
+        c0=clr.rgb256(*colorsys.hls_to_rgb(*clr.lighten_hls(hls, 0.2)))
+        image.polygon([(pp[0]['x']+dx, pp[0]['y']+dy),
+                       (pp[1]['x']+dx, pp[1]['y']+dy),
+                       (pp[2]['x']+dx, pp[2]['y']+dy),
+                       (cx+dx, cy+dy)],
+                      fill=c0)
+        
+        c1=color
+        image.polygon([(pp[2]['x']+dx, pp[2]['y']+dy),
+                       (pp[3]['x']+dx, pp[3]['y']+dy),
+                       (pp[4]['x']+dx, pp[4]['y']+dy),
+                       (cx+dx, cy+dy)],
+                      fill=c1)
+
+        c2=clr.rgb256(*colorsys.hls_to_rgb(*clr.darken_hls(hls, 0.2)))
+        image.polygon([(pp[4]['x']+dx, pp[4]['y']+dy),
+                       (pp[5]['x']+dx, pp[5]['y']+dy),
+                       (pp[0]['x']+dx, pp[0]['y']+dy),
+                       (cx+dx, cy+dy)],
+                      fill=c2)
 
 
 class ShapeJewel:
@@ -158,5 +190,6 @@ class GridHex(base.GridBase):
         self.shapes={
                      'flat': ShapeFlat(self),
                      'diamond': ShapeDiamond(self),
-                     'jewel': ShapeJewel(self)
+                     'jewel': ShapeJewel(self),
+                     'cube': ShapeCube(self)
                     }
