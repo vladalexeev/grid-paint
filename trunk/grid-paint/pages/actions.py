@@ -191,6 +191,10 @@ class ActionSaveComment(BasicRequestHandler):
         artwork_id=self.request.get('artwork_id')
         comment_text=self.request.get('comment_text')
         
+        if not comment_text or len(comment_text.strip())==0:
+            self.redirect('/images/details/'+artwork_id)
+            return
+        
         artwork=dao.get_artwork(artwork_id)
         if not artwork:
             self.response.set_status(404)
@@ -210,7 +214,6 @@ class ActionSaveComment(BasicRequestHandler):
             dao.add_notification(notification)
             
         cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
-            
         
         self.redirect('/images/details/'+artwork_id)
         
