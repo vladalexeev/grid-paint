@@ -450,6 +450,9 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         
         artwork.put()
         
+        cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
+        cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+        
         self.redirect('/images/details/'+str(artwork_id))
             
             
