@@ -419,10 +419,17 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork_name = self.request.get('admin_artwork_name')
         artwork_description = self.request.get('admin_artwork_description')
         artwork_tags = self.request.get('admin_artwork_tags')
+        artwork_editor_choice = self.request.get('admin_artwork_editor_choice')
+        
+        logging.error("editor choice = "+str(artwork_editor_choice))
         
         artwork = db.Artwork.get_by_id(artwork_id)
         artwork.name = artwork_name
         artwork.description = artwork_description
+        if artwork_editor_choice:
+            artwork.editor_choice = True
+        else:
+            artwork.editor_choice = False
         
         original_tags=artwork_tags.split(',')
         url_tags=[]

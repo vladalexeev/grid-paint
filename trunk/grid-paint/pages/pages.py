@@ -31,8 +31,16 @@ class PageIndex(BasicPageRequestHandler):
             all_artworks=all_artworks.order('-date').fetch(3,0)        
             recent_artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
             cache.add(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY, recent_artworks)
+
+        editor_choice = cache.get(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
+        if not editor_choice:
+            choice_artworks = db.Artwork.all().filter('editor_choice =', True)
+            choice_artworks = choice_artworks.order('-date').fetch(3,0)
+            editor_choice = [convert.convert_artwork_for_page(a,200,150) for a in choice_artworks]
+            cache.add(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE, editor_choice)
             
         recent_comments = cache.get(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+        
         if not recent_comments:
             comments = db.Comment.all().order('-date').fetch(5, 0)
             recent_comments = [convert.convert_comment_for_page(c) for c in comments]
@@ -41,6 +49,7 @@ class PageIndex(BasicPageRequestHandler):
         self.write_template('templates/index.html', 
                             {
                              'artworks': recent_artworks,
+                             'editor_choice': editor_choice,
                              'comments': recent_comments
                              })
         
@@ -203,6 +212,29 @@ class PageGallery(BasicPageRequestHandler):
         model['search_query'] = query
         
         self.write_template('templates/gallery.html', model)
+        
+        
+class PageEditorChoice(BasicPageRequestHandler):
+    def get(self):
+        query=self.request.get('q')
+        
+        def artworks_query_func():
+            all_artworks=db.Artwork.all().filter('editor_choice =', True)
+            return all_artworks.order('-date')
+        
+        def href_create_func(offset):
+            if query:
+                return '/editor-choice?offset='+str(offset)
+            else:
+                return '/editor-choice?offset='+str(offset)
+            
+        model = create_gallery_model(self.request.get('offset'), 
+                                     artworks_query_func, 
+                                     href_create_func)
+        
+        model['search_query'] = query
+        
+        self.write_template('templates/editor-choice.html', model)
         
         
         

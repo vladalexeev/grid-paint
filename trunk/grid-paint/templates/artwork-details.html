@@ -29,7 +29,12 @@
 			</ul>
 		</div>
 				
-		<h3 id="artwork-name"><img src="/img/grid-icons/{{ artwork.grid }}.png" /> {{ artwork.name }}</h3>
+		<h3 id="artwork-name">
+			{% if artwork.editor_choice %}
+				<img src="/img/editor_choice.png" title="Editor's choice" />
+			{% endif %}
+			<img src="/img/grid-icons/{{ artwork.grid }}.png" /> {{ artwork.name }}
+		</h3>
 		<div class="details">
 			<small>{{ artwork.date|date:"d M Y H:i" }}</small> by 
 			<span class="artist">
@@ -168,6 +173,11 @@ $(function() {
     			<div>
     				<input type="text" value="{{ artwork.tags_merged }}" name="admin_artwork_tags" id="admin_artwork_tags" autocomplete="off"/>
     			</div>
+    		</div>
+    		<div class="checkbox">
+    			<label>
+    				<input name="admin_artwork_editor_choice" type="checkbox" {% if artwork.editor_choice %}checked{% endif %}/> Editor's choice
+    			</label>
     		</div>
         </form>
       </div>

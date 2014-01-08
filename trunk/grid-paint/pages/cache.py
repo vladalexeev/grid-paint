@@ -14,6 +14,7 @@ mm_cache = memcache.Client();
 MC_SMALL_IMAGE_PREFIX = 'small_image_'
 MC_MAIN_PAGE_RECENT_IMAGES_KEY = 'main_page_recent_images'
 MC_MAIN_PAGE_RECENT_COMMENTS = 'main_page_recent_comments'
+MC_MAIN_PAGE_RECENT_EDITOR_CHOICE = 'main_page_recent_editor_choice'
 MC_USER_NOTIFICATION_PREFIX = 'user_notification_count_'
 MC_USER_PROFILE = 'user_profile_'
 MC_TAG = 'tag_'

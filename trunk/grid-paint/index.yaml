@@ -18,6 +18,12 @@ indexes:
 
 - kind: Artwork
   properties:
+  - name: editor_choice
+  - name: date
+    direction: desc
+
+- kind: Artwork
+  properties:
   - name: tags
   - name: date
     direction: desc
