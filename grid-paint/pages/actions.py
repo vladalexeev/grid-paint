@@ -66,7 +66,7 @@ class ActionSaveImage(BasicRequestHandler):
         else:
             artwork.name='Untitled'
             
-        logging.error('artwork_description = '+artwork_description)
+        
             
         if artwork_description:
             artwork.description=artwork_description
@@ -91,6 +91,14 @@ class ActionSaveImage(BasicRequestHandler):
         
         
         json_obj=json.loads(artwork_json)
+        
+        logging.error('save artwork id={} name={} effectiveRect={} cellSize={} grid={}'.
+                        format(
+                               artwork_id,
+                               artwork_name,
+                               str(json_obj['effectiveRect']),
+                               str(json_obj['layers'][0]['cellSize']),
+                               str(json_obj['layers'][0]['grid'])))
         
         ###
         image_width=json_obj['effectiveRect']['width']
