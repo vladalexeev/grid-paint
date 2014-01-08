@@ -1,0 +1,23 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}  
+<div class="single-container">
+<h2 class="text-center"><img src="/img/editor_choice.png" /> Editor's choice</h2>
+	
+<div class="container">
+	
+	{% include "thumbnails.html" %}
+	
+
+</div>
+</div>
+
+<script>
+$(function() {
+	$("#top-menu-gallery").addClass("active");
+})
+</script>
+
+
+{% endblock content %}

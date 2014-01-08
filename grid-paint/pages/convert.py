@@ -64,7 +64,8 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
             'author': convert_user(artwork.author),
             'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
             'full_image_width': artwork.full_image_height,
-            'full_image_height': artwork.full_image_height
+            'full_image_height': artwork.full_image_height,
+            'editor_choice': artwork.editor_choice
             }
     
     if artwork.small_image_width<thumbnail_width and artwork.small_image_height<thumbnail_height:

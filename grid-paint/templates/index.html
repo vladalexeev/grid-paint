@@ -32,7 +32,7 @@ link at the top.
 <div class="container text-center index-page-section">
 <h3>Recent images</h3>
 	
-<div class="row">	
+<div class="row" id="recent_images">	
 {% for a in artworks %}
 	{% include "thumbnail.html" %}
 {% endfor %}
@@ -44,7 +44,25 @@ link at the top.
 		</a>
 	  </div>
 	</div>
+</div>
 
+</div>
+
+<div class="container text-center index-page-section">
+<h3><img src="/img/editor_choice.png" /> Editor's choice</h3>
+	
+<div class="row" id="editor_choice">
+{% for a in editor_choice %}
+	{% include "thumbnail.html" %}
+{% endfor %}
+
+	<div class="col-xs-3">
+	  <div class="thumbnail index-page-thumb-button" style="background-color: transparent;">
+		<a href="/editor-choice">
+		  <img src="/img/goto-gallery.png" border="0" />
+		</a>
+	  </div>
+	</div>
 </div>
 
 

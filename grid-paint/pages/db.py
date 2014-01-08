@@ -25,6 +25,7 @@ class Artwork(db.Model):
     small_image = db.BlobProperty()
     small_image_width = db.IntegerProperty()
     small_image_height = db.IntegerProperty()
+    editor_choice = db.BooleanProperty()
     
 class Tag(db.Model):
     url_name = db.StringProperty()
