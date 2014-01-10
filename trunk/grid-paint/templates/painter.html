@@ -138,6 +138,24 @@
 </div>
 
 
+<div id="message-modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Warning</h4>
+      </div>
+      <div class="modal-body">
+      	<div id="message-text"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
 <div id="properties-modal" class="modal hide fade" tabindex="-1" role="dialog">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -160,6 +178,7 @@
     <button id="btn-properties-save" type="button" class="btn btn-primary">Save changes</button>
   </div>
 </div>
+-->
 
 <form name="f" style="display:none" action="/save-image" method="post">
 	<input type="hidden" name="artwork_id" value="{{ artwork_id }}" />
@@ -381,6 +400,13 @@ function saveArtwork() {
 			rows:[]	
 		}],
 		recentColors: recentColors
+	}
+	
+	if (a.effectiveRect.width<0 || a.effectiveRect.height<0) {
+		var messageModal=$("#message-modal");
+		messageModal.find("#message-text").text("Cannot save empty image");
+		messageModal.modal();
+		return;
 	}
 	
 	if (artwork.id) {
