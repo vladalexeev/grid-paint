@@ -15,13 +15,19 @@
 		<div class="comment-header">
 			<div class="pull-right">
 		  		<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
-		  	</div>			
+		  	</div>
+		  	{% if not n.artwork  or not n.comment %}
+		  	<div>Image or comment was deleted</div>
+		  	{% else %}	
 			<h2><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></h2>
 			<div>{{ n.date }} <b>{{n.comment.author.nickname}}</b></div>
-		</div>		
+			{% endif %}
+		</div>
+		{% if n.comment %}
 		<div class="comment-text">
 			{{ n.comment.text}}
 		</div>
+		{% endif %}
 	</div>						
 	{% endfor %}
 </div>

@@ -45,14 +45,24 @@ def auto_nickname(src_nickname):
             
         
 def convert_notification(notification):
-    return {
+    result =  {
             'key': notification.key(),
             'recipient': convert_user(notification.recipient),
             'date': notification.date,
-            'type': notification.type,
-            'artwork': convert_artwork_for_page(notification.artwork,300,300),
-            'comment': convert_comment_for_page(notification.comment),
+            'type': notification.type
             }
+    
+    try:
+        result['artwork'] = convert_artwork_for_page(notification.artwork,300,300)
+    except:
+        pass
+        
+    try:
+        result['comment'] = convert_comment_for_page(notification.comment)
+    except:
+        pass
+    
+    return result;
     
 def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
     result={
