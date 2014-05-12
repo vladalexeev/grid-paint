@@ -197,9 +197,9 @@ class ActionSaveComment(BasicRequestHandler):
             return
         
         artwork_id=self.request.get('artwork_id')
-        comment_text=self.request.get('comment_text')
+        comment_text=self.request.get('comment_text').strip();
         
-        if not comment_text or len(comment_text.strip())==0:
+        if not comment_text or len(comment_text)==0 or len(comment_text)>1000:
             self.redirect('/images/details/'+artwork_id)
             return
         
