@@ -92,7 +92,7 @@ class ActionSaveImage(BasicRequestHandler):
         
         json_obj=json.loads(artwork_json)
         
-        logging.error('save artwork id={} name={} effectiveRect={} cellSize={} grid={}'.
+        logging.error(u'save artwork id={} name={} effectiveRect={} cellSize={} grid={}'.
                         format(
                                artwork_id,
                                artwork_name,

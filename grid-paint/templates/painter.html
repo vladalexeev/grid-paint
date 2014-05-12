@@ -609,6 +609,14 @@ $(function() {
 	
 	$("#btn-properties-save").click(
 		function() {
+			var artworkName=$("#modal_artwork_name").val();
+			if (artworkName=="") {
+				var messageModal=$("#message-modal");
+				messageModal.find("#message-text").text("Please enter artwork name");
+				messageModal.modal();
+				return;
+			}
+						
 			$("#artwork_name").val($("#modal_artwork_name").val());
 			$("#artwork_tags").val($("#modal_artwork_tags").val());
 			$("#artwork_description").val($("#modal_artwork_description").val());
