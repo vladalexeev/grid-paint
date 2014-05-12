@@ -17,9 +17,9 @@ class SvgImageWriter:
     
     def startImage(self, width, height):
         self.writer.write(
-                '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="{0}" height="{1}">'.format(
+                u'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="{0}" height="{1}">'.format(
                 width, height))
-        self.writer.write('<desc>Created by Grid Painter http://grid-painter.appspot.com</desc>')
+        self.writer.write(u'<desc>Created by Grid Painter http://grid-painter.appspot.com</desc>')
 
     def endImage(self):
         self.writer.write('</svg>')
@@ -35,7 +35,7 @@ class SvgImageWriter:
             color=fill
             
         self.writer.write(
-            '<rect x="{0}" y="{1}" width="{2}" height="{3}" fill="{4}" stroke-width="0" />'.format(
+            u'<rect x="{0}" y="{1}" width="{2}" height="{3}" fill="{4}" stroke-width="0" />'.format(
                           rect[0], rect[1], rect[2]-rect[0]+1, rect[3]-rect[1]+1, color))
         
     def polygon(self, points, fill):
@@ -54,7 +54,7 @@ class SvgImageWriter:
         path_str+="Z"
         
         self.writer.write(
-            '<path d="{0}" fill="{1}" stroke-width="0" />'.format(path_str, color))
+            u'<path d="{0}" fill="{1}" stroke-width="0" />'.format(path_str, color))
         
     def point(self, point, fill):
         pass
