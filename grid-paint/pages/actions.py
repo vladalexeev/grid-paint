@@ -149,6 +149,9 @@ class ActionSaveImage(BasicRequestHandler):
         cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(saved_id.id()))
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         
+        if artwork.editor_choice:
+            cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
+        
         del image
         del small_image
         memory_file.close()
