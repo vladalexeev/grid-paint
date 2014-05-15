@@ -157,8 +157,9 @@ class ActionSaveImage(BasicRequestHandler):
         artwork.small_image_file_name = small_image_file_name
         artwork.put()
         
-        cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(saved_id.id()))
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+        cache.delete(cache.MC_IMAGE_PREFIX+full_image_file_name)
+        cache.delete(cache.MC_IMAGE_PREFIX+small_image_file_name)
         
         if artwork.editor_choice:
             cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
@@ -190,7 +191,6 @@ class ActionDeleteImage(BasicRequestHandler):
             cs.delete_file(artwork.small_image_file_name)
             artwork.delete();
             
-            cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(artwork_id))
             cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
             cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
             cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
@@ -262,59 +262,21 @@ class ActionDeleteComment(BasicRequestHandler):
         else:
             self.response.set_status(404)
             return
-
+        
 class PNGImageRequest(BasicRequestHandler):
     def get(self, *ar):
-        artwork_id=ar[0]
-        file_content = cs.read_file('/images/png/'+artwork_id+".png")
+        image_name=ar[0]
+        file_name = '/images/png/'+image_name
+        cache_key = cache.MC_IMAGE_PREFIX+file_name
+        
+        file_content = cache.get(cache_key)
+        if not file_content:
+            file_content = cs.read_file(file_name)
+            if len(file_content)<50000:
+                cache.add(cache_key, file_content)
         
         self.response.headers['Content-Type']='image/png'     
-        self.response.out.write(file_content)
-
-
-#class PNGImageRequest(BasicRequestHandler):
-#    def get(self, *ar):
-#        artwork_id=ar[0]
-#        artwork=dao.get_artwork(artwork_id)
-#        
-#        if not artwork:
-#            self.response.set_status(404)
-#            return
-#        
-#        self.response.headers['Content-Type']='image/png'     
-#        self.response.out.write(artwork.full_image)
-
-
-        
-class PNGSmallImageRequest(BasicRequestHandler):
-    def get(self, *ar):
-        artwork_id=ar[0]
-        
-        small_image=cache.get('small_image_'+artwork_id)
-        
-        if not small_image:
-            small_image = cs.read_file('/images/png/'+artwork_id+"-small.png")        
-            cache.add(cache.MC_SMALL_IMAGE_PREFIX+artwork_id, small_image)
-        
-        self.response.headers['Content-Type']='image/png'     
-        self.response.out.write(small_image)
-        
-#class PNGSmallImageRequest(BasicRequestHandler):
-#    def get(self, *ar):
-#        artwork_id=ar[0]
-#        
-#        small_image=cache.get('small_image_'+artwork_id)
-#        
-#        if not small_image:        
-#            artwork=dao.get_artwork(artwork_id)
-#            if not artwork:
-#                self.response.set_status(404)
-#                return
-#            small_image = artwork.small_image;
-#            cache.add(cache.MC_SMALL_IMAGE_PREFIX+artwork_id, small_image)
-#        
-#        self.response.headers['Content-Type']='image/png'     
-#        self.response.out.write(small_image)
+        self.response.out.write(file_content)        
         
 class SVGImageRequest(BasicRequestHandler):
     def get(self, *ar):

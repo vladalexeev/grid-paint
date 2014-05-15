@@ -75,6 +75,10 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
             'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
             'full_image_width': artwork.full_image_height,
             'full_image_height': artwork.full_image_height,
+            'full_image_file_name': artwork.full_image_file_name,
+            'small_image_width': artwork.small_image_height,
+            'small_image_height': artwork.small_image_height,            
+            'small_image_file_name': artwork.small_image_file_name,
             'editor_choice': artwork.editor_choice
             }
     
@@ -84,14 +88,14 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
                                      artwork.full_image_height, 
                                      thumbnail_width, 
                                      thumbnail_height)
-        image_name = str(artwork.key().id())+'.png'
+        image_name = artwork.full_image_file_name
     else:
         thumbnail_size = calc_resize(
                                      artwork.small_image_width,
                                      artwork.small_image_height,
                                      thumbnail_width,
                                      thumbnail_height)
-        image_name = str(artwork.key().id())+'-small.png'
+        image_name = artwork.small_image_file_name
         
 #    if artwork.author:
 #        result['author_name'] = auto_nickname(artwork.author.nickname())
