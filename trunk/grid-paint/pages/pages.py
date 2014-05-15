@@ -270,6 +270,17 @@ class PageAdmin(BasicPageRequestHandler):
                             {
                             })
         
+class PageAdminUpdateArtworkIterate(BasicPageRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        self.write_template('templates/admin-update-artwork-iterate.html', 
+                            {
+                            })
+        
+        
 class PageNotifications(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:

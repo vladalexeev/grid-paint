@@ -11,7 +11,7 @@ artwork_small_image_width=200
 artwork_small_image_height=150
 
 class Artwork(db.Model):
-    name = db.StringProperty()
+    name = db.TextProperty()
     description = db.TextProperty()
     author = db.UserProperty()
     tags = db.StringListProperty()
@@ -20,9 +20,11 @@ class Artwork(db.Model):
     json_compressed = db.BooleanProperty()
     grid = db.StringProperty()
     full_image = db.BlobProperty()
+    full_image_file_name = db.TextProperty()
     full_image_width = db.IntegerProperty()
     full_image_height = db.IntegerProperty()
     small_image = db.BlobProperty()
+    small_image_file_name = db.TextProperty()
     small_image_width = db.IntegerProperty()
     small_image_height = db.IntegerProperty()
     editor_choice = db.BooleanProperty()
