@@ -17,7 +17,7 @@
 <div class="single-container">
 <div class="container">
 	<div class="image-details-image">
-		<img src="/images/png/{{ artwork.key.id }}.png" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
+		<img src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 	</div>
 	<div class="image-details-header">
 		<div class="pull-right">
@@ -63,7 +63,7 @@
 		<a href="/painter?id={{ artwork.key.id }}" class="btn btn-sm btn-success" title="Edit image"><i class="icon icon-pencil icon-white"></i> Edit</a>
 		<a href="#" image-key="{{ artwork.key.id }}" class="btn btn-sm btn-danger btn-delete-image" title="Delete image"><i class="icon icon-remove icon-white"></i> Delete</a>		
 		{% endif %}
-		<a href="/images/png/{{ artwork.key.id }}.png" class="btn btn-sm btn-default" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
+		<a href="{{ artwork.full_image_file_name }}" class="btn btn-sm btn-default" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
 		<a href="/images/svg/{{ artwork.key.id }}.svg" class="btn btn-sm btn-default" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
 		{% if user_info.superadmin %}
 		<a href="/images/json/{{ artwork.key.id }}.json" class="btn btn-sm btn-default" title="Download JSON"><i class="icon icon-arrow-down"></i>JSON</a>
