@@ -413,7 +413,7 @@ class ActionUpdateArtworkIterate(BasicRequestHandler):
             return
 
         offset = int(self.request.get('offset'))
-        limit = 5
+        limit = 20
         
         artworks = db.Artwork.all().order('-date').fetch(limit, offset)
         
