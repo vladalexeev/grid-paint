@@ -26,6 +26,7 @@ import common
 import cache
 import dao
 import convert
+import cs
 
 import zlib
 
@@ -127,7 +128,7 @@ class ActionSaveImage(BasicRequestHandler):
         memory_file = StringIO.StringIO()
         image.save(memory_file, 'png')
         
-        artwork.full_image = memory_file.getvalue()
+        #artwork.full_image = memory_file.getvalue()
         artwork.full_image_width = image_width
         artwork.full_image_height = image_height
         
@@ -139,12 +140,22 @@ class ActionSaveImage(BasicRequestHandler):
         small_memory_file = StringIO.StringIO()
         small_image.save(small_memory_file, 'png')
         
-        artwork.small_image = small_memory_file.getvalue()
+        #artwork.small_image = small_memory_file.getvalue()
         artwork.small_image_width = small_image_size[0]
         artwork.small_image_height = small_image_size[1]
         
         artwork.date = datetime.datetime.now()
         saved_id = artwork.put()
+        
+        full_image_file_name = '/images/png/'+str(saved_id.id())+'.png'
+        small_image_file_name = '/images/png/'+str(saved_id.id())+'-small.png'
+        
+        cs.create_file(full_image_file_name, 'image/png', memory_file.getvalue())
+        cs.create_file(small_image_file_name, 'image/png', small_memory_file.getvalue())
+        
+        artwork.full_image_file_name = full_image_file_name
+        artwork.small_image_file_name = small_image_file_name
+        artwork.put()
         
         cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(saved_id.id()))
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
@@ -175,10 +186,14 @@ class ActionDeleteImage(BasicRequestHandler):
             for comment in comments:
                 comment.delete()
                 
+            cs.delete_file(artwork.full_image_file_name)
+            cs.delete_file(artwork.small_image_file_name)
             artwork.delete();
             
             cache.delete(cache.MC_SMALL_IMAGE_PREFIX+str(artwork_id))
             cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+            cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
+            cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
 
             self.redirect("/my-images")
         else:
@@ -251,14 +266,25 @@ class ActionDeleteComment(BasicRequestHandler):
 class PNGImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
-        artwork=dao.get_artwork(artwork_id)
-        
-        if not artwork:
-            self.response.set_status(404)
-            return
+        file_content = cs.read_file('/images/png/'+artwork_id+".png")
         
         self.response.headers['Content-Type']='image/png'     
-        self.response.out.write(artwork.full_image)
+        self.response.out.write(file_content)
+
+
+#class PNGImageRequest(BasicRequestHandler):
+#    def get(self, *ar):
+#        artwork_id=ar[0]
+#        artwork=dao.get_artwork(artwork_id)
+#        
+#        if not artwork:
+#            self.response.set_status(404)
+#            return
+#        
+#        self.response.headers['Content-Type']='image/png'     
+#        self.response.out.write(artwork.full_image)
+
+
         
 class PNGSmallImageRequest(BasicRequestHandler):
     def get(self, *ar):
@@ -266,16 +292,29 @@ class PNGSmallImageRequest(BasicRequestHandler):
         
         small_image=cache.get('small_image_'+artwork_id)
         
-        if not small_image:        
-            artwork=dao.get_artwork(artwork_id)
-            if not artwork:
-                self.response.set_status(404)
-                return
-            small_image = artwork.small_image;
+        if not small_image:
+            small_image = cs.read_file('/images/png/'+artwork_id+"-small.png")        
             cache.add(cache.MC_SMALL_IMAGE_PREFIX+artwork_id, small_image)
         
         self.response.headers['Content-Type']='image/png'     
         self.response.out.write(small_image)
+        
+#class PNGSmallImageRequest(BasicRequestHandler):
+#    def get(self, *ar):
+#        artwork_id=ar[0]
+#        
+#        small_image=cache.get('small_image_'+artwork_id)
+#        
+#        if not small_image:        
+#            artwork=dao.get_artwork(artwork_id)
+#            if not artwork:
+#                self.response.set_status(404)
+#                return
+#            small_image = artwork.small_image;
+#            cache.add(cache.MC_SMALL_IMAGE_PREFIX+artwork_id, small_image)
+#        
+#        self.response.headers['Content-Type']='image/png'     
+#        self.response.out.write(small_image)
         
 class SVGImageRequest(BasicRequestHandler):
     def get(self, *ar):
@@ -404,19 +443,39 @@ class ActionUpdate(BasicRequestHandler):
             self.response.set_status(403)
             return
         
-        artworks = db.Artwork.all()
+
+class ActionUpdateArtworkIterate(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        offset = int(self.request.get('offset'))
+        limit = 5
         
-        for artwork in artworks:
-            if artwork.json_compressed:
-                artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
-            else:
-                artwork_json = artwork.json
-                
-            json_obj=json.loads(artwork_json)
-                
-            artwork.grid = json_obj['layers'][0]['grid']
-            artwork.put()
-                
+        artworks = db.Artwork.all().order('-date').fetch(limit, offset)
+        
+
+    
+        for a in artworks:
+            filename = '/images/png/'+str(a.key().id())+'.png'
+            a.full_image_file_name = filename
+            cs.create_file(filename, 'image/png', a.full_image)
+            
+            filename_small = '/images/png/'+str(a.key().id())+'-small.png'
+            a.small_image_file_name = filename_small
+            cs.create_file(filename_small, 'image/png', a.small_image)
+            
+            a.put()
+            
+            
+        
+        self.response.headers['Content-Type']='text/plain'
+        
+        if len(artworks) == limit:
+            self.response.out.write(str(offset+limit))
+        else:
+            self.response.out.write('end')
 
 
                 
@@ -432,7 +491,7 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork_tags = self.request.get('admin_artwork_tags')
         artwork_editor_choice = self.request.get('admin_artwork_editor_choice')
         
-        logging.error("editor choice = "+str(artwork_editor_choice))
+        logging.error(u"editor choice = "+str(artwork_editor_choice))
         
         artwork = db.Artwork.get_by_id(artwork_id)
         artwork.name = artwork_name
