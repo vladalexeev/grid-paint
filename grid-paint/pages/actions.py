@@ -31,6 +31,7 @@ import cs
 import zlib
 
 import logging
+from cloudstorage.errors import NotFoundError
 
 grids={
        'square': GridSquare,
@@ -271,7 +272,12 @@ class PNGImageRequest(BasicRequestHandler):
         
         file_content = cache.get(cache_key)
         if not file_content:
-            file_content = cs.read_file(file_name)
+            try:
+                file_content = cs.read_file(file_name)
+            except NotFoundError:
+                self.response.set_status(404)
+                return
+                
             if len(file_content)<50000:
                 cache.add(cache_key, file_content)
         
