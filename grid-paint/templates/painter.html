@@ -126,6 +126,11 @@
     				<input type="text" value="{{ artwork_tags }}" name="modal_artwork_tags" id="modal_artwork_tags" autocomplete="off"/>
     			</div>
     		</div>
+			<div class="checkbox" id="modal_grid_visible_row">
+    			<label>
+    				<input name="modal_artwork_grid_visible" id="modal_artwork_grid_visible" type="checkbox" /> Visible grid
+    			</label>
+    		</div>
     		<input type="hidden" name="modal_success_action" id="modal_success_action" />
     	</form>
       </div>
@@ -186,6 +191,7 @@
 	<textarea name="artwork_description" id="artwork_description">{{ artwork_description|default_if_none:"" }}</textarea>
 	<input type="hidden" name="artwork_tags" id="artwork_tags" value="{{ artwork_tags }}" />
 	<input type="hidden" name="artwork_json" value="" />
+	<input type="hidden" name="artwork_grid_visible" id="artwork_grid_visible" value="" />
 </form>
 
 <script src="/js/grids.js"></script>
@@ -439,7 +445,12 @@ function saveArtwork() {
 }
 
 function showPropertiesDialog(modalAction) {
-	//$("#modal_artwork_name").val($("#artwork_name").val());
+	if (artwork.layers[0].grid=='square') {
+		$("#modal_grid_visible_row").show();
+	} else {
+		$("#modal_grid_visible_row").hide();
+	}
+	
 	$("#modal_success_action").val(modalAction);
 	$("#properties-modal").modal('show');
 }
@@ -620,6 +631,11 @@ $(function() {
 			$("#artwork_name").val($("#modal_artwork_name").val());
 			$("#artwork_tags").val($("#modal_artwork_tags").val());
 			$("#artwork_description").val($("#modal_artwork_description").val());
+			if ($("#modal_artwork_grid_visible")[0].checked) {
+				$("#artwork_grid_visible").val('1');
+			} else {
+				$("#artwork_grid_visible").val('');
+			}
 			$("#properties-modal").modal('hide');
 			
 			var modalAction=$("#modal_success_action").val();
