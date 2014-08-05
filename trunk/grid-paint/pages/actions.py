@@ -52,6 +52,10 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_name=self.request.get('artwork_name')
         artwork_description=self.request.get('artwork_description')
         artwork_tags=self.request.get('artwork_tags')
+        artwork_grid_visible=self.request.get('artwork_grid_visible')
+        
+        logging.error('!!!!!!!!!!!!! artwork_grid_visible = '+artwork_grid_visible)
+        
         
         if artwork_id:
             artwork=dao.get_artwork(artwork_id)
@@ -125,6 +129,9 @@ class ActionSaveImage(BasicRequestHandler):
             for row in layer['rows']:
                 for cell in row['cells']:
                     grid.paintShape2(image_draw, cell[0], row['row'], cell[1], cell[2],dx,dy)
+                    
+        if artwork.grid=='square' and artwork_grid_visible:
+            grid.paintGrid(image_draw, '#000000', -dx, -dy, image_width, image_height, dx, dy)
         
         memory_file = StringIO.StringIO()
         image.save(memory_file, 'png')
