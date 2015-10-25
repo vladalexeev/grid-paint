@@ -69,6 +69,9 @@
 		<a href="/images/json/{{ artwork.key.id }}.json" class="btn btn-sm btn-default" title="Download JSON"><i class="icon icon-arrow-down"></i>JSON</a>
 		<a href="#" id="admin-artwork-properties" class="btn btn-sm btn-default" title="Artwork properties">Properties</a>
 		{% endif %}
+		{% if can_edit_artwork %}
+		<a href="/painter?copy_id={{ artwork.key.id }}" class="btn btn-sm btn-primary" title="Create a copy" style="float:right;"><i class="icon icon-copy icon-white"></i> Create a copy</a>
+		{% endif %}
 	</div>
 	
 	

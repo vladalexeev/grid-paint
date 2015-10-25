@@ -88,6 +88,22 @@ class PagePainter(BasicPageRequestHandler):
                                  'artwork_json': artwork_json,
                                  'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
                                  })
+        elif self.request.get('copy_id'):
+            artwork_id=self.request.get('copy_id')
+            artwork=dao.get_artwork(artwork_id)
+            
+            if artwork.json_compressed:
+                artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+            else:
+                artwork_json = artwork.json
+            
+            self.write_template('templates/painter.html', 
+                                {
+                                 'artwork_name': artwork.name+' (copy)',
+                                 'artwork_description': artwork.description+' (copy)',
+                                 'artwork_json': artwork_json,
+                                 'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
+                                 })
         else:
             new_artwork={
                          'version': {
