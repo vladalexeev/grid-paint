@@ -91,6 +91,19 @@
 				</div>							
 			</div>
 		</div>
+		<div class="painter-toolbar">
+			<!-- Copy/Paste toolbar -->
+			<div class="painter-toolbar-header" id="copy-paste-toolbar-header" style="cursor:pointer;">
+				Copy / Paste
+				<div class="pull-right"><i class="icon-chevron-down"></i></div>
+			</div>
+			<div id="copy-paste-toolbar-content" style="display:none">
+				<div class="painter-toolbar-container text-center">
+					<button type="button" id="btn-copy-mode" class="btn btn-sm btn-success" data-toggle="button"><i class="icon icon-copy"></i> Mark area</button>
+					<button type="button" id="btn-paste-mode" class="btn btn-sm btn-primary" data-toggle="button"><i class="icon icon-paste"></i> Paste</button>
+				</div>
+			</div>
+		</div>		
 		<div id="coordinates"></div>
 		<div id="test"></div>
 	</div>
@@ -208,7 +221,7 @@
 
 var artwork={{ artwork_json|safe }};
 
-var mode="paint"; //available values "paint", "pick-color"
+var mode="paint"; //available values "paint", "pick-color", "copy", "paste"
 var paper;
 var grid;
 var selectedShapeName=null;
@@ -224,7 +237,6 @@ var workspaceHeight;
 
 var undoStack=[];
 var redoStack=[];
-
 
 // 
 function adjustCanvasWrapper() {
@@ -383,8 +395,21 @@ function setMode(m) {
 	mode=m;
 	if (mode=="paint") {
 		$("#canvas-wrapper").css("cursor","crosshair");
+		$("#btn-pick-color").removeAttr("disabled");
+		$("#btn-copy-mode").removeAttr("disabled");
+		$("#btn-paste-mode").removeAttr("disabled");
 	} else if (mode=="pick-color") {
 		$("#canvas-wrapper").css("cursor","pointer");
+		$("#btn-copy-mode").attr("disabled","disabled");
+		$("#btn-paste-mode").attr("disabled","disabled");		
+	} else if (mode=="copy") {
+		$("#canvas-wrapper").css("cursor","crosshair"); // TODO change cursor
+		$("#btn-pick-color").attr("disabled","disabled");
+		$("#btn-paste-mode").attr("disabled","disabled");		
+	} else if (mode=="paste") {
+		$("#canvas-wrapper").css("cursor","crosshair"); // TODO change cursor
+		$("#btn-pick-color").attr("disabled","disabled");
+		$("#btn-copy-mode").attr("disabled","disabled");
 	}
 }
 
@@ -764,6 +789,21 @@ $(function() {
 				$(this).attr("content-visible","visible");				
 			}
 		});
+
+	$("#copy-paste-toolbar-header").click(
+		function() {
+			if ($(this).attr("content-visible")) {
+				$("#copy-paste-toolbar-content").slideUp();
+				$("#copy-paste-toolbar-header i").removeClass("icon-chevron-up");
+				$("#copy-paste-toolbar-header i").addClass("icon-chevron-down");
+				$(this).removeAttr("content-visible");
+			} else {
+				$("#copy-paste-toolbar-content").slideDown();
+				$("#copy-paste-toolbar-header i").removeClass("icon-chevron-down");
+				$("#copy-paste-toolbar-header i").addClass("icon-chevron-up");
+				$(this).attr("content-visible","visible");				
+			}
+		});
 		
 	$("#btn-apply-workspace-size").click(
 		function() {
@@ -826,6 +866,25 @@ $(function() {
 				doUndo();
 			}
 		});
+		
+	$("#btn-copy-mode").click(
+		function(event) {
+			if (mode=="paint") {
+				setMode("copy");
+			} else if (mode=="copy") {
+				setMode("paint");
+			}
+		});
+	
+	$("#btn-paste-mode").click(
+		function(event) {
+			if (mode=="paint") {
+				setMode("paste");
+			} else if (mode=="paste") {
+				setMode("paint");
+			}
+		});
+	
 })
 </script>
 
