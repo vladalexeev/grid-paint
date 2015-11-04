@@ -26,6 +26,25 @@ function GridSquare_ShapeFlat(parent) {
 	}
 }
 
+function GridSquare_ShapeSelected(parent) {
+	this.name="flat";
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		x=col*parent.cellSize+dx;
+		y=row*parent.cellSize+dy;		
+		var element=paper.rect(x,y,this.parent.cellSize,this.parent.cellSize);
+		element.attr({
+			//"fill":"#e0e0e0",
+			"fill":"url('/img/selection-hatch.png')", 
+			"fill-opacity": 0.5,
+			"stroke-width":0
+			/*, 
+			"stroke":"#808080",
+			"stroke-opacity": 0.5*/})
+		return element;
+	}	
+}
+
 function GridSquare_ShapeDiamond(parent) {
 	this.name="diamond";
 	this.parent=parent;
@@ -197,6 +216,10 @@ function GridSquare() {
 		"jewel2": new GridSquare_ShapeJewel2(this),
 		"jewel3": new GridSquare_ShapeJewel3(this),
 		"diamond": new GridSquare_ShapeDiamond(this)
+	}
+	
+	this.internalShapes={
+	    "selected": new GridSquare_ShapeSelected(this)
 	}
 	
 	this.shiftLeft={

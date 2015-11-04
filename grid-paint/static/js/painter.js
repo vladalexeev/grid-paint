@@ -20,6 +20,8 @@ var workspaceHeight;
 var undoStack=[];
 var redoStack=[];
 
+var selection=new GridSelection();
+
 // 
 function adjustCanvasWrapper() {
 	$("#canvas-wrapper").height($(window).height()-60);
@@ -123,6 +125,30 @@ function paintOnCanvasByMouseEvent(event) {
 			pushRecentColor(selectedColor);	
 		}
 		changed=true;
+	}
+}
+
+function selectOnCanvasByMouseEvent(event) {
+	var cell=getCellCoordByMouseEvent(event);
+	
+	if (paperMouseDown) {
+		var oldCell=gridArtwork.getCell(cell.col, cell.row)
+		
+		var cellShapeName="empty";
+		var cellColor="#ffffff";
+		if (oldCell) {
+			cellShapeName=oldCell.shapeName;
+			cellColor=oldCell.color;
+		}
+		
+		if (event.which==3) {
+			selection.forgetCell(cell.col, cell.row);
+		} else {
+			var item=selection.saveCell(cell.col, cell.row, cellShapeName, cellColor);
+			if (!item.element) {
+				item.element=grid.internalShapes["selected"].paint(paper, cell.col, cell.row, "#ffffff", 0, 0); 
+			}	
+		}
 	}
 }
 
@@ -387,6 +413,8 @@ $(function() {
 				paintOnCanvasByMouseEvent(event);
 			} else if (mode=="pick-color") {
 				pickColorByMouseEvent(event);
+			} else if (mode=="copy") {
+				selectOnCanvasByMouseEvent(event);
 			}
 		}
 	)
@@ -400,6 +428,8 @@ $(function() {
 			updateCellCoordiantesPanel(event);
 			if (mode=="paint") {
 				paintOnCanvasByMouseEvent(event);
+			} else if (mode=="copy") {
+				selectOnCanvasByMouseEvent(event);
 			}
 		}
 	)
@@ -653,7 +683,9 @@ $(function() {
 		function(event) {
 			if (mode=="paint") {
 				setMode("copy");
+				selection=new GridSelection();
 			} else if (mode=="copy") {
+				selection.hideSelection();
 				setMode("paint");
 			}
 		});

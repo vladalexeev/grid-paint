@@ -357,3 +357,53 @@ function UndoStep() {
 	}
 }
 
+function GridSelection() {
+	this.cells=[];
+	this.saveCell=function(col, row, shapeName, color) {
+		for (var i=0; i<this.cells.length; i++) {
+			var cc=this.cells[i];
+			if (cc.col==col && cc.row==row) {
+				return cc;
+			}
+		}
+		
+		var item={
+			col: col,
+			row: row,
+			shapeName: shapeName,
+			color: color	
+		};
+		
+		this.cells.push(item);
+		return item;
+	}
+	
+	this.forgetCell=function(col, row) {
+		var index=-1;
+		for (var i=0; i<this.cells.length; i++) {
+			var cc=this.cells[i];
+			if (cc.col==col && cc.row==row) {
+				index=i;
+				break;
+			}
+		}
+		
+		if (index>=0) {
+			if (this.cells[index].element) {
+				this.cells[index].element.remove();
+			}
+			
+			this.cells.splice(index,1);
+		}
+	}
+	
+	this.hideSelection=function() {
+		for (var i=0; i<this.cells.length; i++) {
+			var cc=this.cells[i];
+			if (cc.element) {
+				cc.element.hide();
+			}
+		}
+	}
+}
+
