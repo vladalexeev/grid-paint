@@ -144,12 +144,16 @@ function selectOnCanvasByMouseEvent(event) {
 		if (event.which==3) {
 			selection.forgetCell(cell.col, cell.row);
 		} else {
-			var item=selection.saveCell(cell.col, cell.row, cellShapeName, cellColor);
-			if (!item.element) {
-				item.element=grid.internalShapes["selected"].paint(paper, cell.col, cell.row, "#ffffff", 0, 0); 
-			}	
+			selection.saveCell(paper, grid, cell.col, cell.row, cellShapeName, cellColor);
 		}
 	}
+}
+
+function changePastePositionByMouseEvent(event) {
+	var cell=getCellCoordByMouseEvent(event);
+	var nearestCell=grid.nearestSameCell(selection.baseCol, selection.baseRow, cell.col, cell.row);
+	selection.changePasteCell(grid, nearestCell.col, nearestCell.row);
+	
 }
 
 function pickColorByMouseEvent(event) {
@@ -434,6 +438,8 @@ $(function() {
 				paintOnCanvasByMouseEvent(event);
 			} else if (mode=="copy") {
 				selectOnCanvasByMouseEvent(event);
+			} else if (mode=="paste") {
+				changePastePositionByMouseEvent(event);
 			}
 		}
 	)
@@ -687,9 +693,9 @@ $(function() {
 		function(event) {
 			if (mode=="paint") {
 				setMode("copy");
-				selection=new GridSelection();
+				selection.copyPrepare();
 			} else if (mode=="copy") {
-				selection.deleteElements();
+				selection.copyFinished();
 				setMode("paint");
 			}
 		});
@@ -698,7 +704,9 @@ $(function() {
 		function(event) {
 			if (mode=="paint") {
 				setMode("paste");
+				selection.pastePrepare(paper, grid);
 			} else if (mode=="paste") {
+				selection.pasteFinished();
 				setMode("paint");
 			}
 		});

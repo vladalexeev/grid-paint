@@ -34,13 +34,9 @@ function GridSquare_ShapeSelected(parent) {
 		y=row*parent.cellSize+dy;		
 		var element=paper.rect(x,y,this.parent.cellSize,this.parent.cellSize);
 		element.attr({
-			//"fill":"#e0e0e0",
 			"fill":"url('/img/selection-hatch.png')", 
 			"fill-opacity": 0.5,
-			"stroke-width":0
-			/*, 
-			"stroke":"#808080",
-			"stroke-opacity": 0.5*/})
+			"stroke-width":0})
 		return element;
 	}	
 }
@@ -207,6 +203,13 @@ function GridSquare() {
 	        width: this.cellSize,
 	        height: this.cellSize
 	    }
+	}
+	
+	this.nearestSameCell=function(col, row, nearCol, nearRow) {
+		return {
+			col: nearCol,
+			row: nearRow
+		};
 	}
 		
 	this.shapes={

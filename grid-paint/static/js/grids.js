@@ -359,7 +359,7 @@ function UndoStep() {
 
 function GridSelection() {
 	this.cells=[];
-	this.saveCell=function(col, row, shapeName, color) {
+	this.saveCell=function(paper, grid, col, row, shapeName, color) {
 		for (var i=0; i<this.cells.length; i++) {
 			var cc=this.cells[i];
 			if (cc.col==col && cc.row==row) {
@@ -367,11 +367,14 @@ function GridSelection() {
 			}
 		}
 		
+		var element=grid.internalShapes["selected"].paint(paper, col, row, "#ffffff", 0, 0);
+		
 		var item={
 			col: col,
 			row: row,
 			shapeName: shapeName,
-			color: color	
+			color: color,
+			element: element
 		};
 		
 		this.cells.push(item);
@@ -398,17 +401,73 @@ function GridSelection() {
 	}
 	
 	this.deleteElements=function() {
+		
+	}
+	
+	this.isEmpty=function() {
+		return this.cells.length==0;
+	}
+	
+	this._deleteElements=function() {
 		for (var i=0; i<this.cells.length; i++) {
 			var cc=this.cells[i];
 			if (cc.element) {
 				cc.element.remove();
 				delete cc.element;
 			}
-		}
+		}		
 	}
 	
-	this.isEmpty=function() {
-		return this.cells.length==0;
+	this.copyPrepare=function() {
+		this.cells=[];
+	}
+	
+	this.copyFinished=function() {
+		this._deleteElements();
+		
+		//Calculate base cell
+		var minCol=10000;
+		var minRow=10000;
+		for (var i=0; i<this.cells.length; i++) {
+			var cc=this.cells[i];
+			if (cc.col<minCol) {
+				minCol=cc.col;
+			}
+			
+			if (cc.row<minRow) {
+				minRow=cc.row;
+			}
+		}
+		
+		this.baseCol=minCol;
+		this.baseRow=minRow;
+	}
+	
+	this.pastePrepare=function(paper, grid) {
+		for (var i=0; i<this.cells.length; i++) {
+			var cc=this.cells[i];
+			cc.element=grid.internalShapes["selected"].paint(paper, cc.col, cc.row, "#ffffff", 0, 0);
+		}
+		
+		this.pasteCol=this.baseCol;
+		this.pasteRow=this.baseRow;
+	}
+	
+	this.pasteFinished=function() {
+		this._deleteElements();
+	}
+	
+	this.changePasteCell=function(grid, col, row) {
+		var oldCellRect=grid.getCellRect(this.pasteCol, this.pasteRow);
+		var newCellRect=grid.getCellRect(col, row);
+		var dx=newCellRect.left-oldCellRect.left;
+		var dy=newCellRect.top-oldCellRect.top;
+		
+		for (var i=0; i<this.cells.length; i++) {
+			this.cells[i].element.translate(dx,dy);
+		}
+		this.pasteCol=col;
+		this.pasteRow=row;
 	}
 }
 
