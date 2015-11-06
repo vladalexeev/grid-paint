@@ -397,13 +397,18 @@ function GridSelection() {
 		}
 	}
 	
-	this.hideSelection=function() {
+	this.deleteElements=function() {
 		for (var i=0; i<this.cells.length; i++) {
 			var cc=this.cells[i];
 			if (cc.element) {
-				cc.element.hide();
+				cc.element.remove();
+				delete cc.element;
 			}
 		}
+	}
+	
+	this.isEmpty=function() {
+		return this.cells.length==0;
 	}
 }
 

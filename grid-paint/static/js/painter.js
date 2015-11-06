@@ -205,7 +205,11 @@ function setMode(m) {
 		$("#canvas-wrapper").css("cursor","crosshair");
 		$("#btn-pick-color").removeAttr("disabled");
 		$("#btn-copy-mode").removeAttr("disabled");
-		$("#btn-paste-mode").removeAttr("disabled");
+		if (selection.isEmpty()) {
+			$("#btn-paste-mode").attr("disabled","disabled");
+		} else {
+			$("#btn-paste-mode").removeAttr("disabled");	
+		}
 	} else if (mode=="pick-color") {
 		$("#canvas-wrapper").css("cursor","pointer");
 		$("#btn-copy-mode").attr("disabled","disabled");
@@ -685,7 +689,7 @@ $(function() {
 				setMode("copy");
 				selection=new GridSelection();
 			} else if (mode=="copy") {
-				selection.hideSelection();
+				selection.deleteElements();
 				setMode("paint");
 			}
 		});
