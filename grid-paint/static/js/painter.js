@@ -98,27 +98,31 @@ function updateCellCoordiantesPanel(event) {
 	$("#coordinates").text(cell.col+" "+cell.row);
 }
 
+function storeUndoCell(col, row, newShapeName, newColor) {
+	var oldCell=gridArtwork.getCell(col, row)
+	var oldShapeName="empty";
+	var oldColor="#ffffff";
+	if (oldCell) {
+		oldShapeName=oldCell.shapeName;
+		oldColor=oldCell.color;
+	}
+	
+	undoStack[undoStack.length-1].pushCellChange(
+		col, row, 
+		oldShapeName, newShapeName,
+		oldColor, newColor);
+}
+
 function paintOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 			
 	if (paperMouseDown) {
-		var oldCell=gridArtwork.getCell(cell.col, cell.row)
-		var oldShapeName="empty";
-		var oldColor="#ffffff";
-		if (oldCell) {
-			oldShapeName=oldCell.shapeName;
-			oldColor=oldCell.color;
-		}
-		
 		newShapeName=selectedShapeName;
 		if (event.which==3) {
 			newShapeName="empty";
 		}
 		
-		undoStack[undoStack.length-1].pushCellChange(
-			cell.col, cell.row, 
-			oldShapeName, newShapeName,
-			oldColor, selectedColor);
+		storeUndoCell(cell.col, cell.row, newShapeName, selectedColor);
 		
 		paintOnCanvas(cell.col, cell.row, newShapeName, selectedColor);
 		if (newShapeName!="empty") {
@@ -365,6 +369,16 @@ function doRedo() {
 	}	
 }
 
+function pasteSelection() {
+	var colShift=selection.pasteCol-selection.baseCol;
+	var rowShift=selection.pasteRow-selection.baseRow;
+	for (var i=0; i<selection.cells.length; i++) {
+		var cc=selection.cells[i];
+		storeUndoCell(cc.col+colShift, cc.row+rowShift, cc.shapeName, cc.color);
+		paintOnCanvas(cc.col+colShift, cc.row+rowShift, cc.shapeName, cc.color);
+	}
+}
+
 $(function() {
 	adjustCanvasWrapper();
 	$(window).resize(
@@ -423,6 +437,13 @@ $(function() {
 				pickColorByMouseEvent(event);
 			} else if (mode=="copy") {
 				selectOnCanvasByMouseEvent(event);
+			} else if (mode=="paste") {
+				undoStack.push(new UndoStep());
+				redoStack=[];
+				updateUndoRedoButtons();
+				pasteSelection();
+				selection.pasteFinished();
+				setMode("paint");
 			}
 		}
 	)
