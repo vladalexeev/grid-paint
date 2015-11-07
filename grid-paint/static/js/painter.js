@@ -377,6 +377,7 @@ function pasteSelection() {
 		storeUndoCell(cc.col+colShift, cc.row+rowShift, cc.shapeName, cc.color);
 		paintOnCanvas(cc.col+colShift, cc.row+rowShift, cc.shapeName, cc.color);
 	}
+	changed=true;
 }
 
 $(function() {

@@ -27,7 +27,7 @@ function GridSquare_ShapeFlat(parent) {
 }
 
 function GridSquare_ShapeSelected(parent) {
-	this.name="flat";
+	this.name="selected";
 	this.parent=parent;
 	this.paint=function(paper, col, row, color, dx, dy) {
 		x=col*parent.cellSize+dx;
