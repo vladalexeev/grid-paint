@@ -444,13 +444,16 @@ $(function() {
 				updateUndoRedoButtons();
 				pasteSelection();
 				selection.pasteFinished();
-				setMode("paint");
 			}
 		}
 	)
 	.mouseup(
 		function(event) {
 			paperMouseDown=false;
+			
+			if (mode=="paste") {
+				setMode("paint");
+			}
 		}
 	)
 	.mousemove(
