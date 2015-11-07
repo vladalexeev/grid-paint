@@ -63,6 +63,26 @@ function GridHex_ShapeFlat(parent) {
 	}   
 }
 
+function GridHex_ShapeSelected(parent) {
+	this.name="selected";
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=getHexCellPoints(col, row, parent.cellSize/2);
+	    var element=paper.path([
+	    		"M",pp[0].x+dx, pp[0].y+dy,
+	    		"L",pp[1].x+dx, pp[1].y+dy,
+	    		"L",pp[2].x+dx, pp[2].y+dy,
+	    		"L",pp[3].x+dx, pp[3].y+dy,
+	    		"L",pp[4].x+dx, pp[4].y+dy,
+	    		"L",pp[5].x+dx, pp[5].y+dy,"Z"]);
+	    element.attr({
+			"fill":"url('/img/selection-hatch.png')", 
+			"fill-opacity": 0.5,
+			"stroke-width":0});
+	    return element;
+	}   
+}
+
 function GridHex_ShapeDiamond(parent) {
 	this.name="diamond";
 	this.parent=parent;
@@ -348,6 +368,40 @@ function GridHex() {
 		}
 	}
 	
+	this.nearestSameCell=function(col, row, nearCol, nearRow) {
+		return {
+			col: nearCol,
+			row: nearRow
+		};
+	}
+	
+	this.specialPasteShift=function(cells, baseCol, baseRow, pasteCol, pasteRow) {
+		var shiftCol=pasteCol-baseCol;
+		var shiftRow=pasteRow-baseRow;
+		var result=[];
+		
+		var baseCellTop=(baseCol % 2) == 0;
+		var pasteCellTop=(pasteCol % 2) == 0;
+		var rowAddition=0;
+		if (baseCellTop && !pasteCellTop) {
+			rowAddition=1;
+		} else if (!baseCellTop && pasteCellTop) {
+			rowAddition=-1;
+		}
+		
+		for (var i=0; i<cells.length; i++) {
+			var cc=cells[i];
+			result.push({
+				col: cc.col+shiftCol,
+				row: cc.row+shiftRow+((cc.col+shiftCol-pasteCol)%2)*rowAddition,
+				shapeName: cc.shapeName,
+				color: cc.color
+			})
+		}
+		
+		return result;
+	}
+	
 	this.shapes={
 		"empty": new GridHex_ShapeEmpty(this),
 		"flat": new GridHex_ShapeFlat(this),
@@ -355,6 +409,10 @@ function GridHex() {
 		"jewel": new GridHex_ShapeJewel(this),
 		"cube": new GridHex_ShapeCube(this)
 	};
+	
+	this.internalShapes={
+	    "selected": new GridHex_ShapeSelected(this)
+	}
 	
 	this.shiftLeft={
 	    cell_dx:-2,

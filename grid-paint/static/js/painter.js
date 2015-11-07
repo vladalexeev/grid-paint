@@ -370,12 +370,11 @@ function doRedo() {
 }
 
 function pasteSelection() {
-	var colShift=selection.pasteCol-selection.baseCol;
-	var rowShift=selection.pasteRow-selection.baseRow;
-	for (var i=0; i<selection.cells.length; i++) {
-		var cc=selection.cells[i];
-		storeUndoCell(cc.col+colShift, cc.row+rowShift, cc.shapeName, cc.color);
-		paintOnCanvas(cc.col+colShift, cc.row+rowShift, cc.shapeName, cc.color);
+	var pasteCells=selection.getPasteCells(grid);
+	for (var i=0; i<pasteCells.length; i++) {
+		var cc=pasteCells[i];
+		storeUndoCell(cc.col, cc.row, cc.shapeName, cc.color);
+		paintOnCanvas(cc.col, cc.row, cc.shapeName, cc.color);
 	}
 	changed=true;
 }

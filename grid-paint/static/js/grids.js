@@ -469,5 +469,26 @@ function GridSelection() {
 		this.pasteCol=col;
 		this.pasteRow=row;
 	}
+	
+	this.getPasteCells=function(grid) {
+		if (grid.specialPasteShift) {
+			return grid.specialPasteShift(this.cells, this.baseCol, this.baseRow, this.pasteCol, this.pasteRow);
+		} else {
+			var colShift=this.pasteCol-this.baseCol;
+			var rowShift=this.pasteRow-this.baseRow;
+			var result=[];
+			for (var i=0; i<this.cells.length; i++) {
+				var cc=selection.cells[i];
+				result.push({
+					col: cc.col+colShift,
+					row: cc.row+rowShift,
+					shapeName: cc.shapeName,
+					color: cc.color
+				});
+			}
+			
+			return result;
+		}
+	}
 }
 
