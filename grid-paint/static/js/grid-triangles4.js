@@ -57,7 +57,19 @@ function GridTriangles4_ShapeFlat(parent) {
 	}
 }
 
-
+function GridTriangles4_ShapeSelected(parent) {
+	this.name="selected";
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var points=GridTriangles4_TrianglePoints(col, row, parent.cellSize);
+		var element=paper.path(createSvgTrianglePath(points, dx, dy))
+		element.attr({
+			"fill":"url('/img/selection-hatch.png')", 
+			"fill-opacity": 0.5,
+			"stroke-width":0})
+		return element;
+	}
+}
 
 function GridTriangles4() {
 	this.cellSize=24;
@@ -119,10 +131,21 @@ function GridTriangles4() {
 	        height: this.cellSize
 	    }
 	}
+	
+	this.nearestSameCell=function(col, row, nearCol, nearRow) {
+		return {
+			col: Math.floor(nearCol / 4)*4 + (col % 4),
+			row: nearRow
+		};
+	}
 		
 	this.shapes={
 	    "empty": new GridTriangles4_ShapeEmpty(this),
 		"flat": new GridTriangles4_ShapeFlat(this)
+	}
+	
+	this.internalShapes={
+	    "selected": new GridTriangles4_ShapeSelected(this)
 	}
 	
 	this.shiftLeft={
