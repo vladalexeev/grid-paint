@@ -22,6 +22,20 @@ function GridIsoTriangle_ShapeFlat(parent) {
 	}   
 }
 
+function GridIsoTriangle_ShapeSelected(parent) {
+	this.name="selected";
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=isotrianglePath(col, row, parent.cellSize);
+		var element=paper.path(createSvgTrianglePath(pp, dx, dy))
+	    element.attr({
+			"fill":"url('/img/selection-hatch.png')", 
+			"fill-opacity": 0.5,
+			"stroke-width":0});
+	    return element;
+	}   
+}
+
 function GridIsoTriangle_ShapeDiamond(parent) {
 	this.name="diamond"
 	this.parent=parent;
@@ -156,11 +170,32 @@ function GridIsoTriangle() {
 		}
 	}
 	
+	this.nearestSameCell=function(col, row, nearCol, nearRow) {
+		var sum1=col+row;
+		var sum2=nearCol+nearRow;
+		
+		if ((sum1 % 2)!=(sum2 % 2)) {
+			return {
+				col: nearCol+1,
+				row: nearRow
+			}
+		} else {
+			return {
+				col: nearCol,
+				row: nearRow
+			}
+		}
+	}
+	
 	this.shapes={
 		"empty": new GridIsoTriangle_ShapeEmpty(this),
 		"flat": new GridIsoTriangle_ShapeFlat(this),
 		"diamond": new GridIsoTriangle_ShapeDiamond(this),
 		"jewel": new GridIsoTriangle_ShapeJewel(this)
+	}
+	
+	this.internalShapes={
+	    "selected": new GridIsoTriangle_ShapeSelected(this)
 	}
 	
 	this.shiftLeft={
