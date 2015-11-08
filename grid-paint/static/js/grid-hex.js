@@ -391,12 +391,17 @@ function GridHex() {
 		
 		for (var i=0; i<cells.length; i++) {
 			var cc=cells[i];
-			result.push({
-				col: cc.col+shiftCol,
-				row: cc.row+shiftRow+((cc.col+shiftCol-pasteCol)%2)*rowAddition,
-				shapeName: cc.shapeName,
-				color: cc.color
-			})
+			
+			var shiftedCol=cc.col+shiftCol;
+			var shiftedRow=cc.row+shiftRow+((cc.col+shiftCol-pasteCol)%2)*rowAddition;
+			if (shiftedRow>=0) {
+				result.push({
+					col: shiftedCol,
+					row: shiftedRow,
+					shapeName: cc.shapeName,
+					color: cc.color
+				})
+			}
 		}
 		
 		return result;
