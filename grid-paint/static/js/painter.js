@@ -647,7 +647,10 @@ $(function() {
 				$("#copy-paste-toolbar-content").slideDown();
 				$("#copy-paste-toolbar-header i").removeClass("icon-chevron-down");
 				$("#copy-paste-toolbar-header i").addClass("icon-chevron-up");
-				$(this).attr("content-visible","visible");				
+				$(this).attr("content-visible","visible");
+				if (!localStorage["dontShowCopyPasteMessage"]) {
+					$("#copy-paste-message-modal").modal();	
+				}
 			}
 		});
 		
@@ -732,6 +735,13 @@ $(function() {
 			} else if (mode=="paste") {
 				selection.pasteFinished();
 				setMode("paint");
+			}
+		});
+		
+	$("#copy-paste-message-modal").on("hidden.bs.modal",
+		function() {
+			if ($("#chk-dont-show-copy-paste-message")[0].checked) {
+				localStorage['dontShowCopyPasteMessage']=true;
 			}
 		});
 	
