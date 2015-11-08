@@ -359,7 +359,10 @@ function UndoStep() {
 
 function GridSelection() {
 	this.cells=[];
-	this.saveCell=function(paper, grid, col, row, shapeName, color) {
+	this.grid=null;
+	this.paper=null;
+	
+	this.saveCell=function(col, row, shapeName, color) {
 		for (var i=0; i<this.cells.length; i++) {
 			var cc=this.cells[i];
 			if (cc.col==col && cc.row==row) {
@@ -367,7 +370,7 @@ function GridSelection() {
 			}
 		}
 		
-		var element=grid.internalShapes["selected"].paint(paper, col, row, "#ffffff", 0, 0);
+		var element=this.grid.internalShapes["selected"].paint(this.paper, col, row, "#ffffff", 0, 0);
 		
 		var item={
 			col: col,
@@ -398,10 +401,6 @@ function GridSelection() {
 			
 			this.cells.splice(index,1);
 		}
-	}
-	
-	this.deleteElements=function() {
-		
 	}
 	
 	this.isEmpty=function() {
@@ -443,10 +442,10 @@ function GridSelection() {
 		this.baseRow=minRow;
 	}
 	
-	this.pastePrepare=function(paper, grid) {
+	this.pastePrepare=function() {
 		for (var i=0; i<this.cells.length; i++) {
 			var cc=this.cells[i];
-			cc.element=grid.internalShapes["selected"].paint(paper, cc.col, cc.row, "#ffffff", 0, 0);
+			cc.element=this.grid.internalShapes["selected"].paint(this.paper, cc.col, cc.row, "#ffffff", 0, 0);
 		}
 		
 		this.pasteCol=this.baseCol;
@@ -457,9 +456,9 @@ function GridSelection() {
 		this._deleteElements();
 	}
 	
-	this.changePasteCell=function(grid, col, row) {
-		var oldCellRect=grid.getCellRect(this.pasteCol, this.pasteRow);
-		var newCellRect=grid.getCellRect(col, row);
+	this.changePasteCell=function(col, row) {
+		var oldCellRect=this.grid.getCellRect(this.pasteCol, this.pasteRow);
+		var newCellRect=this.grid.getCellRect(col, row);
 		var dx=newCellRect.left-oldCellRect.left;
 		var dy=newCellRect.top-oldCellRect.top;
 		
@@ -470,9 +469,9 @@ function GridSelection() {
 		this.pasteRow=row;
 	}
 	
-	this.getPasteCells=function(grid) {
-		if (grid.specialPasteShift) {
-			return grid.specialPasteShift(this.cells, this.baseCol, this.baseRow, this.pasteCol, this.pasteRow);
+	this.getPasteCells=function() {
+		if (this.grid.specialPasteShift) {
+			return this.grid.specialPasteShift(this.cells, this.baseCol, this.baseRow, this.pasteCol, this.pasteRow);
 		} else {
 			var colShift=this.pasteCol-this.baseCol;
 			var rowShift=this.pasteRow-this.baseRow;

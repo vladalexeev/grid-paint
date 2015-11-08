@@ -148,7 +148,7 @@ function selectOnCanvasByMouseEvent(event) {
 		if (event.which==3) {
 			selection.forgetCell(cell.col, cell.row);
 		} else {
-			selection.saveCell(paper, grid, cell.col, cell.row, cellShapeName, cellColor);
+			selection.saveCell(cell.col, cell.row, cellShapeName, cellColor);
 		}
 	}
 }
@@ -156,7 +156,7 @@ function selectOnCanvasByMouseEvent(event) {
 function changePastePositionByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 	var nearestCell=grid.nearestSameCell(selection.baseCol, selection.baseRow, cell.col, cell.row);
-	selection.changePasteCell(grid, nearestCell.col, nearestCell.row);
+	selection.changePasteCell(nearestCell.col, nearestCell.row);
 	
 }
 
@@ -370,7 +370,7 @@ function doRedo() {
 }
 
 function pasteSelection() {
-	var pasteCells=selection.getPasteCells(grid);
+	var pasteCells=selection.getPasteCells();
 	for (var i=0; i<pasteCells.length; i++) {
 		var cc=pasteCells[i];
 		storeUndoCell(cc.col, cc.row, cc.shapeName, cc.color);
@@ -398,6 +398,10 @@ $(function() {
 	grid.workspaceWidth=artwork.canvasSize.width;
 	grid.workspaceHeight=artwork.canvasSize.height;	
 	grid.paintGrid(paper);
+	
+	selection.grid=grid;
+	selection.paper=paper;
+	
 	createShapesToolbar();
 	updateUndoRedoButtons();
 	
@@ -731,7 +735,7 @@ $(function() {
 		function(event) {
 			if (mode=="paint") {
 				setMode("paste");
-				selection.pastePrepare(paper, grid);
+				selection.pastePrepare();
 			} else if (mode=="paste") {
 				selection.pasteFinished();
 				setMode("paint");
