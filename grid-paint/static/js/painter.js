@@ -401,6 +401,7 @@ $(function() {
 	
 	selection.grid=grid;
 	selection.paper=paper;
+	selection.loadFromLocalStorage();
 	
 	createShapesToolbar();
 	updateUndoRedoButtons();

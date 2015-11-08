@@ -440,6 +440,41 @@ function GridSelection() {
 		
 		this.baseCol=minCol;
 		this.baseRow=minRow;
+		
+		//Save selection to LocalStorage
+		var arr=[];
+		for (var i=0; i<this.cells.length; i++) {
+			var c=this.cells[i];
+			arr.push(
+				[c.col, c.row, c.shapeName, c.color]);
+		}
+
+		localStorage['gridSelectionType']=this.grid.name;		
+		localStorage['gridSelection']=JSON.stringify({
+			selection: arr,
+			base: {
+				col: this.baseCol,
+				row: this.baseRow
+			}
+		});
+	}
+	
+	this.loadFromLocalStorage=function() {
+		if (this.grid.name==localStorage['gridSelectionType']) {
+			var s=JSON.parse(localStorage['gridSelection'])
+			for (var i=0; i<s.selection.length; i++) {
+				var ss=s.selection[i];
+				this.cells.push({
+					col: ss[0],
+					row: ss[1],
+					shapeName: ss[2],
+					color: ss[3]
+				})
+			}
+			
+			this.baseCol=s.base.col;
+			this.baseRow=s.base.row;
+		}
 	}
 	
 	this.pastePrepare=function() {
