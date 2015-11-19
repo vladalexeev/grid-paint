@@ -80,9 +80,7 @@ link at the top.
 			<h2><a href="/images/details/{{ c.artwork_key.id }}">{{ c.artwork_name }}</a></h2>
 			<div>{{ c.date }} <b>{{c.author.nickname}}</b></div>
 		</div>		
-		<div class="comment-text">
-			{{ c.text}}
-		</div>
+		<pre class="comment-text">{{ c.text}}</pre>
 	</div>						
 	{% endfor %}
 </div>
