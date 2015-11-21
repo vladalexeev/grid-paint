@@ -151,19 +151,24 @@ class PageMyImages(BasicPageRequestHandler):
         def href_create_func(offset):
             return '/my-images?offset='+str(offset)
         
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST+'my_images_'+self.user_info.user_name+'_'+str(offset)
+        
         model = create_gallery_model(self.request.get('offset'), 
                                      artworks_query_func, 
-                                     href_create_func)
+                                     href_create_func,
+                                     memcache_cursor_key_func)
         
         self.write_template('templates/my-artworks.html', model)
 
         
-def create_gallery_model(offset_param, artworks_query_func, href_create_func):
+def create_gallery_model(offset_param, artworks_query_func, href_create_func, memcache_cursor_key_func):
     """
     Create a model of artwork list based on request.
     offset_param - offset parameter from request
     artworks_query_func() - function for create query for artworks
     href_create_func(offset) - function for create next and prev page hyperlinks
+    memcache_cursor_key_func(offset) - function to generate keys for cursors stored in MemCache
     """
     if offset_param:
         offset=int(offset_param)
@@ -178,16 +183,33 @@ def create_gallery_model(offset_param, artworks_query_func, href_create_func):
     else:
         fetch_count = page_size
             
-    all_artworks=artworks_query_func().fetch(fetch_count+1,offset)
+    query = artworks_query_func()
+    
+    if offset==0:
+        all_artworks = query.run(limit=fetch_count+1)
+    else:
+        cursor=cache.get(memcache_cursor_key_func(offset))
+        if cursor:
+            query = query.with_cursor(start_cursor=cursor)
+            all_artworks = query.run(limit=fetch_count+1)
+        else:
+            all_artworks = query.run(limit=fetch_count+1,offset=offset)
+            cache.add(memcache_cursor_key_func(offset), query.cursor())
         
-    has_prev_page=(offset>0)
-    has_next_page=len(all_artworks)>fetch_count
-        
-    if len(all_artworks)>fetch_count:
-        all_artworks=all_artworks[:fetch_count]
-            
-    artworks=[convert.convert_artwork_for_page(a,200,150) for a in all_artworks]
-        
+    has_prev_page = (offset>0)
+    has_next_page = False
+    
+    index = 0
+    artworks = []    
+    for a in all_artworks:
+        index = index+1
+        if index>fetch_count:
+            has_next_page = True
+        else:
+            artworks.append(convert.convert_artwork_for_page(a,200,150))
+            if index==fetch_count:
+                cache.add(memcache_cursor_key_func(offset+fetch_count), query.cursor())
+                        
     next_page_href=href_create_func(offset+fetch_count)
         
     if offset-page_size <=1:
@@ -221,9 +243,16 @@ class PageGallery(BasicPageRequestHandler):
             else:
                 return '/gallery?offset='+str(offset)
             
+        def memcache_cursor_key_func(offset):
+            if query:
+                return cache.MC_ARTWORK_LIST+'gallery_'+query+'_'+str(offset)
+            else:
+                return cache.MC_ARTWORK_LIST+'gallery_'+str(offset)
+            
         model = create_gallery_model(self.request.get('offset'), 
                                      artworks_query_func, 
-                                     href_create_func)
+                                     href_create_func,
+                                     memcache_cursor_key_func)
         
         model['search_query'] = query
         
@@ -239,14 +268,15 @@ class PageEditorChoice(BasicPageRequestHandler):
             return all_artworks.order('-date')
         
         def href_create_func(offset):
-            if query:
-                return '/editor-choice?offset='+str(offset)
-            else:
-                return '/editor-choice?offset='+str(offset)
+            return '/editor-choice?offset='+str(offset)
+            
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST+'editors_choice_'+str(offset)
             
         model = create_gallery_model(self.request.get('offset'), 
                                      artworks_query_func, 
-                                     href_create_func)
+                                     href_create_func,
+                                     memcache_cursor_key_func)
         
         model['search_query'] = query
         
@@ -341,10 +371,14 @@ class PageProfile(BasicRequestHandler):
         
         def href_create_func(offset):
             return '/profiles/'+str(profile_id)+'?offset='+str(offset)
+    
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST+'profile_'+str(profile_id)+'_'+str(offset)
         
         model = create_gallery_model(self.request.get('offset'), 
                                      artworks_query_func, 
-                                     href_create_func)
+                                     href_create_func,
+                                     memcache_cursor_key_func)
         model['profile'] = convert.convert_user_profile(user_profile)
         
         self.write_template('templates/profile.html', model)
