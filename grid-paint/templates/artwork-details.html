@@ -17,6 +17,13 @@
 <div class="single-container">
 <div class="container">
 	<div class="image-details-image">
+		{% if user_info.user %}
+		<div class="image-details-favorite-wrapper">
+			<div class="image-details-favorite-count">0</div>
+			<div class="image-details-favorite {% if favorite %}star-favorite{% else %}star-not-favorite{% endif %}"></div>
+			<div class="image-details-favorite-hint" style="display:none;">Add image to favorites</div>
+		</div>
+		{% endif %}
 		<img src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 	</div>
 	<div class="image-details-header">
@@ -252,6 +259,14 @@ $(function() {
 	$("#btn-admin-artwork-properties-save").click(
 		function() {
 			$("form[name=adminForm]")[0].submit();	
+		})
+		
+	$(".image-details-favorite")
+		.mouseenter(function() {
+			$(".image-details-favorite-hint").show();
+		})
+		.mouseleave(function() {
+			$(".image-details-favorite-hint").hide();
 		})
 })
 </script>

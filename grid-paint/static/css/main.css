@@ -230,6 +230,48 @@ body {
 	margin:10px;
 }
 
+
+.image-details-favorite-wrapper {
+	position: absolute;
+}
+
+.image-details-favorite-count {
+	font-size: 30px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: -2px;
+}
+
+.image-details-favorite {
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+}
+
+.image-details-favorite-hint {
+	background-color: #666666;
+	background: linear-gradient(to right, rgba(0,0,0,0.4) 0%,rgba(0,0,0,0.1) 100%);
+	color: white;
+	border-radius: 3px;
+	padding-left:10px;
+	padding-right:10px;
+	padding-top:2px;
+	padding-bottom:2px;
+	text-align: left;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 5px;
+}
+
+.star-favorite {
+	background-image: url('/img/stars/star4.png');
+}
+
+.star-not-favorite {
+	background-image: url('/img/stars/star0.png');
+}
+
+
 /*
  * Misc styles
  */
