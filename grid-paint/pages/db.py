@@ -57,3 +57,12 @@ class UserProfile(db.Model):
 class Settings(db.Model):
     show_ads = db.BooleanProperty()
     show_analytics = db.BooleanProperty()
+    
+class Favorite(db.Model):
+    user = db.UserProperty()
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    date = db.DateTimeProperty(auto_now_add=True)
+    
+class FavoriteCounter(db.Model):
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    count = db.IntegerProperty()

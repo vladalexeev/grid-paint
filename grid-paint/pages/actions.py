@@ -493,5 +493,29 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         self.redirect('/images/details/'+str(artwork_id))
             
             
+class ActionToggleFavorite(BasicRequestHandler):            
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        else:
+            artwork_id = int(self.request.get('id'))
+            artwork = db.Artwork.get_by_id(artwork_id)
             
+            if not artwork:
+                self.response.set_status(404)
+                return
+            else:
+                if dao.is_artwork_favorite_by_user(artwork, self.user_info.user):
+                    fav_count = dao.unfavorite_artwork(artwork, self.user_info.user)
+                    self.response.out.write(json.dumps({
+                            'favorite': False,
+                            'favorite_count': fav_count 
+                            }))
+                else:
+                    fav_count = dao.favorite_artwork(artwork, self.user_info.user)
+                    self.response.out.write(json.dumps({
+                            'favorite': True,
+                            'favorite_count': fav_count 
+                            }))
             

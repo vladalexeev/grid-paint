@@ -18,6 +18,8 @@ MC_USER_NOTIFICATION_PREFIX = 'user_notification_count_'
 MC_USER_PROFILE = 'user_profile_'
 MC_TAG = 'tag_'
 MC_ARTWORK_LIST = 'list_'
+MC_FAVORITE_COUNT = 'img_fav_count_'
+MC_FAVORITE_BY_USER = 'img_fav_user_'
 
 MC_IMAGE_PREFIX = 'img:'
 

@@ -292,6 +292,9 @@ class PageImage(BasicPageRequestHandler):
             self.response.set_status(404)
             return
         
+        favorite_count = dao.get_artwork_favorite_count(artwork)
+        favorite = dao.is_artwork_favorite_by_user(artwork, self.user_info.user)
+        
         db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('date')
         comments = [convert.convert_comment_for_page(c) for c in db_comments]
         
@@ -302,7 +305,9 @@ class PageImage(BasicPageRequestHandler):
                             {
                              'artwork': converted_artwork,
                              'can_edit_artwork': self.user_info.superadmin or artwork.author==self.user_info.user,
-                             'comments': comments
+                             'comments': comments,
+                             'favorite_count': favorite_count,
+                             'favorite': favorite
                             })
         
         

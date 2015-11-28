@@ -71,5 +71,73 @@ def set_user_profile(profile):
     cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
     cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
     
+def get_artwork_favorite_count(artwork):
+    memcache_key = cache.MC_FAVORITE_COUNT+str(artwork.key().id())
+    result = cache.get(memcache_key)
+    if result:
+        return result
+    else:
+        fav = db.FavoriteCounter.all().filter('artwork =', artwork).get()
+        if fav:
+            result = fav.count
+        else:
+            result = 0
+        cache.add(memcache_key, result)
+        return result
     
+def is_artwork_favorite_by_user(artwork, user):
+    if not user:
+        return False
+    
+    memcache_key = cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email()
+    result = cache.get(memcache_key)
+    if result==True or result==False:
+        return result
+    else:
+        fav_user = db.Favorite.all().filter('artwork =', artwork).filter('user =', user).get()
+        if fav_user:
+            cache.add(memcache_key, True)
+            return True
+        else:
+            cache.add(memcache_key, False)
+            return False
+
+
+def favorite_artwork(artwork, user):
+    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email())
+    cache.delete(cache.MC_FAVORITE_COUNT+str(artwork.key().id()))
+
+    fav = db.Favorite()
+    fav.artwork = artwork
+    fav.user = user
+    fav.save()
+    
+    fav_count = db.FavoriteCounter.all().filter('artwork =', artwork).get()
+    if fav_count:
+        fav_count.count = fav_count.count+1
+    else:
+        fav_count = db.FavoriteCounter()
+        fav_count.artwork = artwork
+        fav_count.count = 1
+        
+    fav_count.save()
+    return fav_count.count
+
+def unfavorite_artwork(artwork, user):
+    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email())
+    cache.delete(cache.MC_FAVORITE_COUNT+str(artwork.key().id()))
+
+    fav = db.Favorite.all().filter('artwork =', artwork).filter('user =', user).get()
+    if fav:
+        fav.delete()
+        
+    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email())
+        
+    fav_count = db.FavoriteCounter.all().filter('artwork =', artwork).get()
+    if fav_count:
+        fav_count.count = fav_count.count-1
+        fav_count.save()
+        return fav_count.count
+    else:
+        return 0
 

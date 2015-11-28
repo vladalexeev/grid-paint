@@ -17,13 +17,15 @@
 <div class="single-container">
 <div class="container">
 	<div class="image-details-image">
-		{% if user_info.user %}
 		<div class="image-details-favorite-wrapper">
-			<div class="image-details-favorite-count">0</div>
-			<div class="image-details-favorite {% if favorite %}star-favorite{% else %}star-not-favorite{% endif %}"></div>
+			<div class="image-details-favorite-count">{{ favorite_count }}</div>
+			{% if user_info.user %}
+			<div class="image-details-favorite {% if favorite %}star-favorite{% else %}star-not-favorite{% endif %}" id="favorite-star"></div>
 			<div class="image-details-favorite-hint" style="display:none;">Add image to favorites</div>
+			{% else %}
+			<div class="image-details-favorite star-favorite"></div>
+			{% endif %}
 		</div>
-		{% endif %}
 		<img src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 	</div>
 	<div class="image-details-header">
@@ -158,6 +160,10 @@
 
 
 <script>
+artworkId='{{ artwork.key.id }}';
+favorite={% if favorite %}true{% else %}false{% endif %};
+favorite_count={{ favorite_count }};
+
 $(function() {
 	$(".btn-delete-image").click(
 		function() {
@@ -168,6 +174,27 @@ $(function() {
 			$("#modal-confirm-delete").modal('show');
 		}
 	)
+	
+	$("#favorite-star")
+		.mouseenter(function() {
+			$(".image-details-favorite-hint").show();
+		})
+		.mouseleave(function() {
+			$(".image-details-favorite-hint").hide();
+		})
+		.click(function() {
+			$.getJSON('/toggle-favorite?id='+artworkId,
+				function(data) {
+					favorite=data.favorite;
+					favorite_count=data.favorite_count;
+					$('.image-details-favorite-count').text(favorite_count);
+					if (favorite) {
+						$('.image-details-favorite').removeClass('star-not-favorite').addClass('star-favorite');
+					} else {
+						$('.image-details-favorite').removeClass('star-favorite').addClass('star-not-favorite');
+					}
+				});
+		})
 })
 
 function showErrorDialog(message) {
@@ -259,14 +286,6 @@ $(function() {
 	$("#btn-admin-artwork-properties-save").click(
 		function() {
 			$("form[name=adminForm]")[0].submit();	
-		})
-		
-	$(".image-details-favorite")
-		.mouseenter(function() {
-			$(".image-details-favorite-hint").show();
-		})
-		.mouseleave(function() {
-			$(".image-details-favorite-hint").hide();
 		})
 })
 </script>
