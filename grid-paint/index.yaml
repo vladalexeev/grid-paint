@@ -39,6 +39,13 @@ indexes:
   - name: date
     direction: desc
 
+- kind: FavoriteCounter
+  properties:
+  - name: date
+    direction: desc
+  - name: count
+    direction: desc
+
 - kind: Notification
   properties:
   - name: recipient

@@ -66,3 +66,4 @@ class Favorite(db.Model):
 class FavoriteCounter(db.Model):
     artwork = db.ReferenceProperty(reference_class=Artwork)
     count = db.IntegerProperty()
+    date = db.DateTimeProperty(auto_now_add=True)

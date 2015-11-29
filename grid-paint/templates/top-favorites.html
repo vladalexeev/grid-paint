@@ -1,0 +1,26 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}  
+<div class="single-container">	
+<h2 class="text-center"><img src="/img/stars/star4.png" style="vertical-align:top; margin-top:-2px;"/> Most rated artworks</h2>
+	
+<div class="container">
+	
+	{% include "thumbnails.html" %}
+	
+
+</div>
+</div>
+
+
+{% if this_user_profile %}
+<script>
+$(function() {
+	$("#top-menu-my-favorites").addClass("active");
+})
+</script>
+{% endif %}
+
+
+{% endblock content %}

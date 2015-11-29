@@ -419,3 +419,22 @@ class PageUserFavorites(BasicPageRequestHandler):
         
         self.write_template('templates/user-favorites.html', model)
         
+
+class PageTopFavorites(BasicPageRequestHandler):
+    def get(self):
+        def artworks_query_func():
+            all_artworks=db.FavoriteCounter.all()
+            return all_artworks.order('-date').order('-count')
+        
+        def href_create_func(offset):
+            return '/top-favorites?offset='+str(offset)
+            
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST+'top_favorites_'+str(offset)
+            
+        model = create_gallery_model(self.request.get('offset'), 
+                                     artworks_query_func, 
+                                     href_create_func,
+                                     memcache_cursor_key_func)
+                
+        self.write_template('templates/top-favorites.html', model)
