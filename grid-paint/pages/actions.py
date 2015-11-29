@@ -506,6 +506,7 @@ class ActionToggleFavorite(BasicRequestHandler):
                 self.response.set_status(404)
                 return
             else:
+                cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
                 if dao.is_artwork_favorite_by_user(artwork, self.user_info.user):
                     fav_count = dao.unfavorite_artwork(artwork, self.user_info.user)
                     self.response.out.write(json.dumps({
