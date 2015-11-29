@@ -1,0 +1,26 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}  
+<div class="single-container">	
+<h2 class="text-center">Favorites of {{ profile.nickname }}</h2>
+	
+<div class="container">
+	
+	{% include "thumbnails.html" %}
+	
+
+</div>
+</div>
+
+
+<script>
+/*
+$(function() {
+	$("#top-menu-my-images").addClass("active");
+})
+*/
+</script>
+
+
+{% endblock content %}

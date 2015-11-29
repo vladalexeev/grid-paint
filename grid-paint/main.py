@@ -31,6 +31,7 @@ application = webapp.WSGIApplication([
                                       ('/delete-notification', pages.actions.ActionDeleteNotification),
                                       ('/my-profile', pages.pages.PageMyProfile),
                                       ('/save-profile', pages.actions.ActionSaveProfile),
+                                      ('/profiles/(.*)/favorites', pages.pages.PageUserFavorites),
                                       ('/profiles/(.*)', pages.pages.PageProfile),
                                       ('/editor-choice', pages.pages.PageEditorChoice),
                                       ('/toggle-favorite', pages.actions.ActionToggleFavorite),

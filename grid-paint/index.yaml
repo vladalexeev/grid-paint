@@ -33,6 +33,12 @@ indexes:
   - name: artwork_ref
   - name: date
 
+- kind: Favorite
+  properties:
+  - name: user
+  - name: date
+    direction: desc
+
 - kind: Notification
   properties:
   - name: recipient

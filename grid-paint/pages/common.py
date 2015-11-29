@@ -29,6 +29,7 @@ class UserInfo:
             if user_profile:
                 self.user_name = user_profile.nickname
                 self.has_profile = True
+                self.profile_id = user_profile.key().id()
             else:            
                 self.user_name = users.get_current_user().nickname()
                 self.has_profile = False
