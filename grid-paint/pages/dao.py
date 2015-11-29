@@ -10,10 +10,10 @@ import cache
 
 def get_artwork(id_or_key):
     try:
-        return db.Artwork.get(id_or_key)
+        return db.Artwork.get_by_id(int(id_or_key))
     except:
         try:
-            return db.Artwork.get_by_id(int(id_or_key))
+            return db.Artwork.get(id_or_key)
         except:
             return None
 
