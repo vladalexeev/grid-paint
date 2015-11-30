@@ -163,6 +163,7 @@
 artworkId='{{ artwork.key.id }}';
 favorite={% if favorite %}true{% else %}false{% endif %};
 favorite_count={{ favorite_count }};
+authorsArtwork={% if artwork.author.email == user_info.user.email %}true{% else %}false{% endif %};
 
 $(function() {
 	$(".btn-delete-image").click(
@@ -183,6 +184,11 @@ $(function() {
 			$(".image-details-favorite-hint").hide();
 		})
 		.click(function() {
+			if (authorsArtwork) {
+				showWarningDialog("You cannot favorite your own artwork. Choose artwork of another artist.")
+				return;
+			}
+			
 			$.getJSON('/toggle-favorite?id='+artworkId,
 				function(data) {
 					favorite=data.favorite;
@@ -199,6 +205,13 @@ $(function() {
 
 function showErrorDialog(message) {
 	$("#modal-error .modal-body").html("<p>"+message+"</p>");
+	$("#modal-error .modal-title").html("Error");
+	$("#modal-error").modal();
+}
+
+function showWarningDialog(message) {
+	$("#modal-error .modal-body").html("<p>"+message+"</p>");
+	$("#modal-error .modal-title").html("Warning");
 	$("#modal-error").modal();
 }
 
