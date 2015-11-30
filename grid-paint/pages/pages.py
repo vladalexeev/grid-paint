@@ -41,7 +41,7 @@ class PageIndex(BasicPageRequestHandler):
             
         top_favorites = cache.get(cache.MC_MAIN_PAGE_TOP_FAVORITES)
         if not top_favorites:
-            top_favorite_artworks = db.FavoriteCounter.all().order('-date').order('-count')
+            top_favorite_artworks = db.FavoriteCounter.all().order('-count').order('-date')
             top_favorite_artworks = top_favorite_artworks.fetch(3,0)
             top_favorites = [convert.convert_artwork_for_page(a.artwork,200,150) for a in top_favorite_artworks]
             cache.add(cache.MC_MAIN_PAGE_TOP_FAVORITES, top_favorites)
@@ -432,7 +432,7 @@ class PageTopFavorites(BasicPageRequestHandler):
     def get(self):
         def artworks_query_func():
             all_artworks=db.FavoriteCounter.all()
-            return all_artworks.order('-date').order('-count')
+            return all_artworks.order('-count').order('-date')
         
         def href_create_func(offset):
             return '/top-favorites?offset='+str(offset)

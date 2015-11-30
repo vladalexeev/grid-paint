@@ -41,9 +41,9 @@ indexes:
 
 - kind: FavoriteCounter
   properties:
-  - name: date
-    direction: desc
   - name: count
+    direction: desc
+  - name: date
     direction: desc
 
 - kind: Notification
