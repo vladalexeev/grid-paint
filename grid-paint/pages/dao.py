@@ -135,9 +135,13 @@ def unfavorite_artwork(artwork, user):
         
     fav_count = db.FavoriteCounter.all().filter('artwork =', artwork).get()
     if fav_count:
-        fav_count.count = fav_count.count-1
-        fav_count.save()
-        return fav_count.count
+        if fav_count.count>1:
+            fav_count.count = fav_count.count-1
+            fav_count.save()
+            return fav_count.count
+        else:
+            fav_count.delete()
+            return 0
     else:
         return 0
 
