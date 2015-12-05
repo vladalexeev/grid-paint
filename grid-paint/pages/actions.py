@@ -54,8 +54,6 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_tags=self.request.get('artwork_tags')
         artwork_grid_visible=self.request.get('artwork_grid_visible')
         
-        logging.error('!!!!!!!!!!!!! artwork_grid_visible = '+artwork_grid_visible)
-        
         
         if artwork_id:
             artwork=dao.get_artwork(artwork_id)
@@ -79,12 +77,8 @@ class ActionSaveImage(BasicRequestHandler):
         else:
             artwork.description=''
             
-        if len(artwork_json)>250000:
-            artwork.json = unicode(zlib.compress(artwork_json), 'ISO-8859-1')
-            artwork.json_compressed = True 
-        else:            
-            artwork.json=artwork_json
-            artwork.json_compressed = False
+        json_file_content = zlib.compress(artwork_json)
+        #artwork.json_compressed = True 
         
         original_tags=artwork_tags.split(',')
         url_tags=[]
@@ -157,12 +151,28 @@ class ActionSaveImage(BasicRequestHandler):
         
         full_image_file_name = '/images/png/'+str(saved_id.id())+'.png'
         small_image_file_name = '/images/png/'+str(saved_id.id())+'-small.png'
+        json_image_file_name = '/images/png/'+str(saved_id.id())+'.json'
         
         cs.create_file(full_image_file_name, 'image/png', memory_file.getvalue())
         cs.create_file(small_image_file_name, 'image/png', small_memory_file.getvalue())
+        cs.create_file(json_image_file_name, 'application/octet-stream', json_file_content)
         
         artwork.full_image_file_name = full_image_file_name
         artwork.small_image_file_name = small_image_file_name
+        artwork.json_file_name = json_image_file_name
+        
+        if hasattr(artwork, 'json'):
+            delattr(artwork, 'json')
+            
+        if hasattr(artwork, 'json_compressed'):
+            delattr(artwork, 'json_compressed')
+            
+        if hasattr(artwork, 'full_image'):
+            delattr(artwork, 'full_image')
+            
+        if hasattr(artwork, 'small_image'):
+            delattr(artwork, 'small_image')
+        
         artwork.put()
         
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
@@ -197,6 +207,9 @@ class ActionDeleteImage(BasicRequestHandler):
                 
             cs.delete_file(artwork.full_image_file_name)
             cs.delete_file(artwork.small_image_file_name)
+            if hasattr(artwork,'json_file_name'):
+                cs.delete_file(artwork.json_file_name)
+                
             artwork.delete();
             
             cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
@@ -302,10 +315,14 @@ class SVGImageRequest(BasicRequestHandler):
         
         self.response.headers['Content-Type']='image/svg'
         
-        if artwork.json_compressed:
-            artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+        if hasattr(artwork, 'json'):
+            if artwork.json_compressed:
+                artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+            else:
+                artwork_json = artwork.json
         else:
-            artwork_json = artwork.json
+            artwork_json = zlib.decompress(cs.read_file(artwork.json_file_name))
+                    
         
         json_obj=json.loads(artwork_json)
         
@@ -344,10 +361,13 @@ class JSONImageRequest(BasicRequestHandler):
         
         self.response.headers['Content-Type']='text/json'
         
-        if artwork.json_compressed:
-            artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+        if hasattr(artwork, 'json'):
+            if artwork.json_compressed:
+                artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+            else:
+                artwork_json = artwork.json
         else:
-            artwork_json = artwork.json
+            artwork_json = zlib.decompress(cs.read_file(artwork.json_file_name))
         
         self.response.out.write(artwork_json)
         

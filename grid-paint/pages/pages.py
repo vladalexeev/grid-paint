@@ -12,6 +12,7 @@ import tags
 import cache
 import dao
 import convert
+import cs
 
 import zlib
 
@@ -83,10 +84,14 @@ class PagePainter(BasicPageRequestHandler):
             artwork_id=self.request.get('id')
             artwork=dao.get_artwork(artwork_id)
             
-            if artwork.json_compressed:
-                artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+            if hasattr(artwork,'json'):            
+                if artwork.json_compressed:
+                    artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
+                else:
+                    artwork_json = artwork.json
             else:
-                artwork_json = artwork.json
+                artwork_json = zlib.decompress(cs.read_file(artwork.json_file_name))
+                
             
             self.write_template('templates/painter.html', 
                                 {

@@ -8,8 +8,6 @@ Created on 14.05.2014
 import os
 import cloudstorage as gcs
 
-import logging
-
 from google.appengine.api import app_identity
 
 
@@ -56,12 +54,14 @@ def read_file(filename):
     """
     cs_file = gcs.open(get_bucket()+filename)
     
-    logging.error("cs_file = "+get_bucket()+filename);
     result = cs_file.read();
     cs_file.close()
     return result
 
 def delete_file(filename):
+    if not filename:
+        return
+    
     try:
         gcs.delete(get_bucket()+filename)
     except gcs.NotFoundError:
