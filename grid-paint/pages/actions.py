@@ -151,7 +151,7 @@ class ActionSaveImage(BasicRequestHandler):
         
         full_image_file_name = '/images/png/'+str(saved_id.id())+'.png'
         small_image_file_name = '/images/png/'+str(saved_id.id())+'-small.png'
-        json_image_file_name = '/images/png/'+str(saved_id.id())+'.json'
+        json_image_file_name = '/images/json/'+str(saved_id.id())+'.json'
         
         cs.create_file(full_image_file_name, 'image/png', memory_file.getvalue())
         cs.create_file(small_image_file_name, 'image/png', small_memory_file.getvalue())
