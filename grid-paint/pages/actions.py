@@ -438,6 +438,65 @@ class ActionUpdate(BasicRequestHandler):
             self.response.set_status(403)
             return
         
+        year = int(self.request.get('year'))
+        month = int(self.request.get('month'))
+        
+        date1 = datetime.datetime(year=year, month=month, day=1)
+        
+        month = month+1
+        if month>12:
+            month = 1
+            year = year+1
+            
+        date2 = datetime.datetime(year=year, month=month, day=1)
+        
+        artworks = db.Artwork.all().filter('date >=', date1).filter('date <=', date2)
+        total_count = 0
+        updated_count = 0
+        skipped_count = 0
+        
+        for a in artworks:
+            total_count = total_count+1
+            if hasattr(a, 'json'):
+                if a.json_compressed:
+                    artwork_json = zlib.decompress(a.json.encode('ISO-8859-1'))
+                else:
+                    artwork_json = a.json
+                    
+                json_image_file_name = '/images/json/'+str(a.key().id())+'.json'
+                json_file_content = zlib.compress(artwork_json)
+                
+                cs.create_file(json_image_file_name, 'application/octet-stream', json_file_content)
+        
+                a.json_file_name = json_image_file_name
+                
+        
+                if hasattr(a, 'json'):
+                    delattr(a, 'json')
+            
+                if hasattr(a, 'json_compressed'):
+                    delattr(a, 'json_compressed')
+            
+                if hasattr(a, 'full_image'):
+                    delattr(a, 'full_image')
+            
+                if hasattr(a, 'small_image'):
+                    delattr(a, 'small_image')
+        
+                a.put()
+                updated_count = updated_count+1
+            else:
+                skipped_count = skipped_count+1
+                    
+                
+        
+        self.response.write('<html><body>')
+        self.response.write('total_count = '+str(total_count)+'<br>')
+        self.response.write('updated_count = '+str(updated_count)+'<br>')
+        self.response.write('skipped_count = '+str(skipped_count)+'<br>')
+        self.response.write('</body></html>')
+        
+                
 
 class ActionUpdateArtworkIterate(BasicRequestHandler):
     def get(self):
