@@ -438,17 +438,16 @@ class ActionUpdate(BasicRequestHandler):
             self.response.set_status(403)
             return
         
-        year = int(self.request.get('year'))
-        month = int(self.request.get('month'))
+        year1 = int(self.request.get('year1'))
+        month1 = int(self.request.get('month1'))
+        day1 = int(self.request.get('day1'))
+        year2 = int(self.request.get('year2'))
+        month2 = int(self.request.get('month2'))
+        day2 = int(self.request.get('day2'))
         
-        date1 = datetime.datetime(year=year, month=month, day=1)
+        date1 = datetime.datetime(year=year1, month=month1, day=day1)
         
-        month = month+1
-        if month>12:
-            month = 1
-            year = year+1
-            
-        date2 = datetime.datetime(year=year, month=month, day=1)
+        date2 = datetime.datetime(year=year2, month=month2, day=day2)
         
         artworks = db.Artwork.all().filter('date >=', date1).filter('date <=', date2)
         total_count = 0
