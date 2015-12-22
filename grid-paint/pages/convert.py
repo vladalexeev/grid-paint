@@ -62,6 +62,11 @@ def convert_notification(notification):
     except:
         pass
     
+    try:
+        result['sender'] = convert_user(notification.sender)
+    except:
+        pass
+    
     return result;
     
 def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
@@ -138,7 +143,7 @@ def convert_user(user):
     else:
         return {
                 'email': user.email(),
-                'nickname': auto_nickname(user.nickname())+'!!!'
+                'nickname': auto_nickname(user.nickname())
                 }
         
 def convert_user_profile(user_profile):

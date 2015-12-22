@@ -258,6 +258,7 @@ class ActionSaveComment(BasicRequestHandler):
             notification.type = 'comment'
             notification.artwork = artwork
             notification.comment = comment
+            notification.sender = self.user_info.user
             dao.add_notification(notification)
             
         cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
@@ -593,6 +594,14 @@ class ActionToggleFavorite(BasicRequestHandler):
                             }))
                 else:
                     fav_count = dao.favorite_artwork(artwork, self.user_info.user)
+                    
+                    notification = db.Notification()
+                    notification.recipient = artwork.author
+                    notification.type = 'favorite'
+                    notification.artwork = artwork
+                    notification.sender = self.user_info.user
+                    dao.add_notification(notification)
+            
                     self.response.out.write(json.dumps({
                             'favorite': True,
                             'favorite_count': fav_count 

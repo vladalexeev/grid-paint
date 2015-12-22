@@ -6,29 +6,46 @@
 
 <div class="container">
 
-<h2>Notifications on comments</h2>
+<h2>Notifications</h2>
 
 
 <div class="image-details-comments">
 	{% for n in notifications %}
-	<div class="comment" id="row-{{ n.key }}">
-		<div class="comment-header">
-			<div class="pull-right">
-		  		<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
-		  	</div>
-		  	{% if not n.artwork  or not n.comment %}
-		  	<div>Image or comment was deleted</div>
-		  	{% else %}	
-			<h2><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></h2>
-			<div>{{ n.date }} <b>{{n.comment.author.nickname}}</b></div>
+	  {% if n.type == 'comment' %}
+		<div class="comment" id="row-{{ n.key }}">
+			<div class="comment-header">
+				<div class="pull-right">
+		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
+			  	</div>
+			  	<div>{{ n.date }} <b>{{n.comment.author.nickname}}</b> commented your artwork</div>
+			  	{% if not n.artwork  or not n.comment %}
+			  	<div>Image or comment was deleted</div>
+		  		{% else %}	
+				<h2><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></h2>
+				{% endif %}
+			</div>
+			{% if n.comment %}
+			<div class="comment-text">
+				{{ n.comment.text}}
+			</div>
 			{% endif %}
 		</div>
-		{% if n.comment %}
-		<div class="comment-text">
-			{{ n.comment.text}}
+	  {% endif %}
+	  {% if n.type == 'favorite' %}
+		<div class="comment" id="row-{{ n.key }}">
+			<div class="comment-header">
+				<div class="pull-right">
+		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
+			  	</div>
+			  	<div>{{ n.date }} <b>{{n.sender.nickname}}</b> favorited your artwork</div>
+			  	{% if not n.artwork %}
+			  	<div>Image or comment was deleted</div>
+		  		{% else %}	
+				<h2><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></h2>
+				{% endif %}
+			</div>
 		</div>
-		{% endif %}
-	</div>						
+	  {% endif %}
 	{% endfor %}
 </div>
 
