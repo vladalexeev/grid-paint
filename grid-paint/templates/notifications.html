@@ -12,12 +12,16 @@
 <div class="image-details-comments">
 	{% for n in notifications %}
 	  {% if n.type == 'comment' %}
-		<div class="comment" id="row-{{ n.key }}">
+	  	<div class="pull-left" style="margin-right: 10px; height:60px;">
+			<img src="/img/comment-icon.png" />
+		</div>							
+		<div class="comment" id="row-{{ n.key }}" style="margin-left:42px;">
 			<div class="comment-header">
 				<div class="pull-right">
 		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
 			  	</div>
-			  	<div>{{ n.date }} <b>{{n.comment.author.nickname}}</b> commented your artwork</div>
+			  	<div>{{ n.date }}</div>
+			  	<div><b>{{n.comment.author.nickname}}</b> commented your artwork</div>
 			  	{% if not n.artwork  or not n.comment %}
 			  	<div>Image or comment was deleted</div>
 		  		{% else %}	
@@ -32,12 +36,16 @@
 		</div>
 	  {% endif %}
 	  {% if n.type == 'favorite' %}
-		<div class="comment" id="row-{{ n.key }}">
+		<div class="pull-left" style="margin-right: 10px; height:60px;">
+			<img src="/img/stars/star4.png" />
+		</div>
+		<div class="comment" id="row-{{ n.key }}" style="margin-left:42px;">
 			<div class="comment-header">
 				<div class="pull-right">
 		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
 			  	</div>
-			  	<div>{{ n.date }} <b>{{n.sender.nickname}}</b> favorited your artwork</div>
+			  	<div>{{ n.date }}</div>
+			  	<div><b>{{n.sender.nickname}}</b> favorited your artwork</div>
 			  	{% if not n.artwork %}
 			  	<div>Image or comment was deleted</div>
 		  		{% else %}	
