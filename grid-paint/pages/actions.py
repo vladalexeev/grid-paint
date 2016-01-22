@@ -441,6 +441,27 @@ class ActionSaveProfile(BasicRequestHandler):
         self.redirect('/')
         
 
+class ActionUpdate2(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        favorites = db.Favorite.all()
+        for f in favorites:
+            try:
+                value = f.artwork.name
+            except:
+                f.delete()
+                
+        counts = db.FavoriteCounter.all()
+        for c in counts:
+            try:
+                value = c.artwork.name
+            except:
+                c.delete()
+                
+
 
 class ActionUpdate(BasicRequestHandler):
     def get(self):

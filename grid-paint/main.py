@@ -37,7 +37,8 @@ application = webapp.WSGIApplication([
                                       ('/editor-choice', pages.pages.PageEditorChoice),
                                       ('/toggle-favorite', pages.actions.ActionToggleFavorite),
                                       
-                                      ('/update', pages.actions.ActionUpdate)
+                                      ('/update', pages.actions.ActionUpdate),
+                                      ('/update2', pages.actions.ActionUpdate2)
                                       ], debug=True)
 
 
