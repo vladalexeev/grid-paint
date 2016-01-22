@@ -205,6 +205,14 @@ class ActionDeleteImage(BasicRequestHandler):
             for comment in comments:
                 comment.delete()
                 
+            favorite_counts = db.FavoriteCounter.all().filter('artwork =', artwork)
+            for fc in favorite_counts:
+                fc.delete()
+                
+            favorites = db.Favorite.all().filter('artwork =', artwork)
+            for f in favorites:
+                f.delete()
+                
             cs.delete_file(artwork.full_image_file_name)
             cs.delete_file(artwork.small_image_file_name)
             if hasattr(artwork,'json_file_name'):
@@ -215,6 +223,7 @@ class ActionDeleteImage(BasicRequestHandler):
             cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
             cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
             cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+            cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
 
             self.redirect("/my-images")
         else:
