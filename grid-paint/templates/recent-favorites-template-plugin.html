@@ -1,3 +1,8 @@
 <div style="margin-bottom: 4px; overflow: hidden;">
-	<i class="icon-star"></i> by {{ a.favoriter.nickname }}
+	<i class="icon-star"></i> by 
+	{% if a.favoriter.profile_id %}
+		<a href="/profiles/{{ a.favoriter.profile_id}}">{{ a.favoriter.nickname }}</a>
+	{% else %}
+		{{ a.favoriter.nickname }}
+	{% endif %}
 </div>
