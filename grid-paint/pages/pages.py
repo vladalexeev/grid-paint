@@ -178,13 +178,15 @@ class PageMyImages(BasicPageRequestHandler):
         self.write_template('templates/my-artworks.html', model)
 
         
-def create_gallery_model(offset_param, artworks_query_func, href_create_func, memcache_cursor_key_func):
+def create_gallery_model(offset_param, artworks_query_func, href_create_func, 
+                         memcache_cursor_key_func, addition_values_func=None):
     """
     Create a model of artwork list based on request.
     offset_param - offset parameter from request
     artworks_query_func() - function for create query for artworks
     href_create_func(offset) - function for create next and prev page hyperlinks
     memcache_cursor_key_func(offset) - function to generate keys for cursors stored in MemCache
+    addition_values_func(object, values_dict) - function extracts additional values from objects of query result
     """
     if offset_param:
         offset=int(offset_param)
@@ -223,9 +225,14 @@ def create_gallery_model(offset_param, artworks_query_func, href_create_func, me
             has_next_page = True
         else:
             if hasattr(a,'artwork'):
-                artworks.append(convert.convert_artwork_for_page(a.artwork,200,150))
+                converted_artwork = convert.convert_artwork_for_page(a.artwork,200,150)
             else:
-                artworks.append(convert.convert_artwork_for_page(a,200,150))
+                converted_artwork = convert.convert_artwork_for_page(a,200,150)
+                
+            if addition_values_func:
+                addition_values_func(a, converted_artwork)
+                
+            artworks.append(converted_artwork)
             if index==fetch_count:
                 cache.add(memcache_cursor_key_func(offset+fetch_count), query.cursor())
                         
@@ -466,10 +473,18 @@ class PageRecentFavorites(BasicPageRequestHandler):
             
         def memcache_cursor_key_func(offset):
             return cache.MC_ARTWORK_LIST+'recent_favorites_'+str(offset)
+        
+        def addition_values_func(obj, values):
+            user_profile = dao.get_user_profile(obj.user.email())
+            if user_profile:
+                values['favoriter'] = convert.convert_user_profile(user_profile)
+            else:
+                values['favoriter'] = convert.convert_user(obj.user)
             
         model = create_gallery_model(self.request.get('offset'), 
                                      artworks_query_func, 
                                      href_create_func,
-                                     memcache_cursor_key_func)
-                
+                                     memcache_cursor_key_func,
+                                     addition_values_func)
+        
         self.write_template('templates/recent-favorites.html', model)

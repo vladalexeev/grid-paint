@@ -1,5 +1,8 @@
   <div class="col-xs-3">  
     <div class="thumbnail index-page-thumbnail">
+    	{% if template_plugin %}
+    		{% include template_plugin %}
+    	{% endif %}
   		<div class="thumb-image">
   			<a href="/images/details/{{ a.key.id }}">
 			  <img src="{{ a.thumbnail_image_name }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
