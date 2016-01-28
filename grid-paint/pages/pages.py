@@ -179,14 +179,14 @@ class PageMyImages(BasicPageRequestHandler):
 
         
 def create_gallery_model(offset_param, artworks_query_func, href_create_func, 
-                         memcache_cursor_key_func, addition_values_func=None):
+                         memcache_cursor_key_func, additional_values_func=None):
     """
     Create a model of artwork list based on request.
     offset_param - offset parameter from request
     artworks_query_func() - function for create query for artworks
     href_create_func(offset) - function for create next and prev page hyperlinks
     memcache_cursor_key_func(offset) - function to generate keys for cursors stored in MemCache
-    addition_values_func(object, values_dict) - function extracts additional values from objects of query result
+    additional_values_func(object, values_dict) - function extracts additional values from objects of query result
     """
     if offset_param:
         offset=int(offset_param)
@@ -229,8 +229,8 @@ def create_gallery_model(offset_param, artworks_query_func, href_create_func,
             else:
                 converted_artwork = convert.convert_artwork_for_page(a,200,150)
                 
-            if addition_values_func:
-                addition_values_func(a, converted_artwork)
+            if additional_values_func:
+                additional_values_func(a, converted_artwork)
                 
             artworks.append(converted_artwork)
             if index==fetch_count:
@@ -454,11 +454,15 @@ class PageTopFavorites(BasicPageRequestHandler):
             
         def memcache_cursor_key_func(offset):
             return cache.MC_ARTWORK_LIST+'top_favorites_'+str(offset)
+        
+        def additional_values_func(obj, values):
+            values['favorites_count'] = obj.count
             
         model = create_gallery_model(self.request.get('offset'), 
                                      artworks_query_func, 
                                      href_create_func,
-                                     memcache_cursor_key_func)
+                                     memcache_cursor_key_func,
+                                     additional_values_func)
                 
         self.write_template('templates/top-favorites.html', model)
         
