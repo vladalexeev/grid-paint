@@ -636,4 +636,6 @@ class ActionToggleFavorite(BasicRequestHandler):
                             'favorite': True,
                             'favorite_count': fav_count 
                             }))
+                    
+                cache.delete(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
             

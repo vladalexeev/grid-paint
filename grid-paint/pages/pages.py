@@ -47,6 +47,13 @@ class PageIndex(BasicPageRequestHandler):
             top_favorites = [convert.convert_artwork_for_page(a.artwork,200,150) for a in top_favorite_artworks]
             cache.add(cache.MC_MAIN_PAGE_TOP_FAVORITES, top_favorites)
             
+        recent_favorites = cache.get(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
+        if not recent_favorites:
+            recent_favorites_artworks = db.Favorite.all().order('-date')
+            recent_favorites_artworks = recent_favorites_artworks.fetch(3,0)
+            recent_favorites = [convert.convert_artwork_for_page(a.artwork,200,150) for a in recent_favorites_artworks]
+            cache.add(cache.MC_MAIN_PAGE_RECENT_FAVORITES, recent_favorites)
+            
         recent_comments = cache.get(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
         
         if not recent_comments:
@@ -59,6 +66,7 @@ class PageIndex(BasicPageRequestHandler):
                              'artworks': recent_artworks,
                              'editor_choice': editor_choice,
                              'top_favorites': top_favorites,
+                             'recent_favorites': recent_favorites,
                              'comments': recent_comments
                              })
         
