@@ -1,3 +1,20 @@
+{% if a.not_found %}
+  <div class="col-xs-3">  
+    <div class="thumbnail index-page-thumbnail" style="background-color: #f8f8f8;">
+    	{% if template_plugin %}
+    		{% include template_plugin %}
+    	{% endif %}
+  		<div class="thumb-image">
+  			<img src="/img/no-image.png" width="200" height="150">
+		</div>
+		<div>
+			<div class="thumb-title">&nbsp;</div>
+			<div class="thumb-author">&nbsp;</div>
+			<div class="thumb-date">&nbsp;</div>
+		</div>
+	</div>
+  </div>
+{% else %}
   <div class="col-xs-3">  
     <div class="thumbnail index-page-thumbnail">
     	{% if template_plugin %}
@@ -15,3 +32,4 @@
 		</div>
 	</div>
   </div>
+{% endif%}

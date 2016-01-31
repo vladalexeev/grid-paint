@@ -44,14 +44,14 @@ class PageIndex(BasicPageRequestHandler):
         if not top_favorites:
             top_favorite_artworks = db.FavoriteCounter.all().order('-count').order('-date')
             top_favorite_artworks = top_favorite_artworks.fetch(3,0)
-            top_favorites = [convert.convert_artwork_for_page(a.artwork,200,150) for a in top_favorite_artworks]
+            top_favorites = [convert.convert_artwork_for_page(a,200,150) for a in top_favorite_artworks]
             cache.add(cache.MC_MAIN_PAGE_TOP_FAVORITES, top_favorites)
             
         recent_favorites = cache.get(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
         if not recent_favorites:
             recent_favorites_artworks = db.Favorite.all().order('-date')
             recent_favorites_artworks = recent_favorites_artworks.fetch(3,0)
-            recent_favorites = [convert.convert_artwork_for_page(a.artwork,200,150) for a in recent_favorites_artworks]
+            recent_favorites = [convert.convert_artwork_for_page(a,200,150) for a in recent_favorites_artworks]
             cache.add(cache.MC_MAIN_PAGE_RECENT_FAVORITES, recent_favorites)
             
         recent_comments = cache.get(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
@@ -232,10 +232,7 @@ def create_gallery_model(offset_param, artworks_query_func, href_create_func,
         if index>fetch_count:
             has_next_page = True
         else:
-            if hasattr(a,'artwork'):
-                converted_artwork = convert.convert_artwork_for_page(a.artwork,200,150)
-            else:
-                converted_artwork = convert.convert_artwork_for_page(a,200,150)
+            converted_artwork = convert.convert_artwork_for_page(a,200,150)
                 
             if additional_values_func:
                 additional_values_func(a, converted_artwork)

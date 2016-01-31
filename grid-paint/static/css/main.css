@@ -399,7 +399,7 @@ background: linear-gradient(to bottom, rgba(150,200,0,0.25) 0%,rgba(0,0,0,0) 100
 }
 
 .index-page-section#top_favorites {
-background: linear-gradient(to bottom, rgba(200,200,0,0.22) 0%,rgba(0,0,0,0) 100%); /* W3C */
+background: linear-gradient(to bottom, rgba(200,200,0,0.25) 0%,rgba(0,0,0,0) 100%); /* W3C */
 }
 
 .index-page-section#recent_favorites {

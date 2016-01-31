@@ -7,6 +7,7 @@ Created on 19 nov 2013
 
 import tags
 import dao
+import logging
 
 def calc_resize(image_width, image_height, max_width, max_height):
     '''
@@ -70,46 +71,51 @@ def convert_notification(notification):
     return result;
     
 def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
-    result={
-            'key': artwork.key(),
-            'name': artwork.name,
-            'description': artwork.description,
-            'date': artwork.date,
-            'grid': artwork.grid,
-            'author': convert_user(artwork.author),
-            'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
-            'full_image_width': artwork.full_image_height,
-            'full_image_height': artwork.full_image_height,
-            'full_image_file_name': artwork.full_image_file_name,
-            'small_image_width': artwork.small_image_height,
-            'small_image_height': artwork.small_image_height,            
-            'small_image_file_name': artwork.small_image_file_name,
-            'editor_choice': artwork.editor_choice
-            }
-    
-    if artwork.small_image_width<thumbnail_width and artwork.small_image_height<thumbnail_height:
-        thumbnail_size = calc_resize(
-                                     artwork.full_image_width, 
-                                     artwork.full_image_height, 
-                                     thumbnail_width, 
-                                     thumbnail_height)
-        image_name = artwork.full_image_file_name
-    else:
-        thumbnail_size = calc_resize(
-                                     artwork.small_image_width,
-                                     artwork.small_image_height,
-                                     thumbnail_width,
-                                     thumbnail_height)
-        image_name = artwork.small_image_file_name
+    try:
+        if hasattr(artwork, 'artwork'):
+            artwork = artwork.artwork
         
-#    if artwork.author:
-#        result['author_name'] = auto_nickname(artwork.author.nickname())
-#    else:
-#        result['author_name'] = 'Unknown'
-                
-    result['thumbnail_width'] = thumbnail_size[0]
-    result['thumbnail_height'] = thumbnail_size[1]
-    result['thumbnail_image_name'] = image_name
+        result={
+                'key': artwork.key(),
+                'name': artwork.name,
+                'description': artwork.description,
+                'date': artwork.date,
+                'grid': artwork.grid,
+                'author': convert_user(artwork.author),
+                'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
+                'full_image_width': artwork.full_image_height,
+                'full_image_height': artwork.full_image_height,
+                'full_image_file_name': artwork.full_image_file_name,
+                'small_image_width': artwork.small_image_height,
+                'small_image_height': artwork.small_image_height,            
+                'small_image_file_name': artwork.small_image_file_name,
+                'editor_choice': artwork.editor_choice
+                }
+    
+        if artwork.small_image_width<thumbnail_width and artwork.small_image_height<thumbnail_height:
+            thumbnail_size = calc_resize(
+                                         artwork.full_image_width, 
+                                         artwork.full_image_height, 
+                                         thumbnail_width, 
+                                         thumbnail_height)
+            image_name = artwork.full_image_file_name
+        else:
+            thumbnail_size = calc_resize(
+                                         artwork.small_image_width,
+                                         artwork.small_image_height,
+                                         thumbnail_width,
+                                         thumbnail_height)
+            image_name = artwork.small_image_file_name
+        
+        result['thumbnail_width'] = thumbnail_size[0]
+        result['thumbnail_height'] = thumbnail_size[1]
+        result['thumbnail_image_name'] = image_name
+    except Exception, e:
+        logging.error('Error', e)
+        result = {
+                  'key': artwork.key(),
+                  'not_found': True
+                  }
     
     return result
 
