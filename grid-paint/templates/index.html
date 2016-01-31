@@ -29,10 +29,10 @@ link at the top.
 </div>
 
 
-<div class="container text-center index-page-section">
+<div class="container text-center index-page-section" id="editor_choice">
 <h3><img src="/img/editor_choice.png" /> Editor's choice</h3>
 	
-<div class="row" id="editor_choice">
+<div class="row">
 {% for a in editor_choice %}
 	{% include "thumbnail.html" %}
 {% endfor %}
@@ -48,10 +48,10 @@ link at the top.
 </div>
 
 
-<div class="container text-center index-page-section">
+<div class="container text-center index-page-section" id="top_favorites">
 <h3><img src="/img/stars/star4.png" style="vertical-align:top; margin-top:-4px;"/> Top favorites</h3>
 	
-<div class="row" id="editor_choice">
+<div class="row">
 {% for a in top_favorites %}
 	{% include "thumbnail.html" %}
 {% endfor %}
@@ -68,10 +68,10 @@ link at the top.
 
 
 
-<div class="container text-center index-page-section">
+<div class="container text-center index-page-section" id="recent_favorites">
 <h3><img src="/img/stars/star4.png" style="vertical-align:top; margin-top:-4px;"/> Recent favorites</h3>
 	
-<div class="row" id="recent_favorites">
+<div class="row">
 {% for a in recent_favorites %}
 	{% include "thumbnail.html" %}
 {% endfor %}
@@ -87,10 +87,10 @@ link at the top.
 </div>
 	
 
-<div class="container text-center index-page-section">
+<div class="container text-center index-page-section" id="recent_images">
 <h3>Recent images</h3>
 	
-<div class="row" id="recent_images">	
+<div class="row">	
 {% for a in artworks %}
 	{% include "thumbnail.html" %}
 {% endfor %}

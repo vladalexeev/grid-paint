@@ -394,6 +394,24 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6ededed', e
 border-radius: 10px;
 }
 
+.index-page-section#editor_choice {
+background: linear-gradient(to bottom, rgba(150,200,0,0.25) 0%,rgba(0,0,0,0) 100%); /* W3C */
+}
+
+.index-page-section#top_favorites {
+background: linear-gradient(to bottom, rgba(200,200,0,0.22) 0%,rgba(0,0,0,0) 100%); /* W3C */
+}
+
+.index-page-section#recent_favorites {
+background: linear-gradient(to bottom, rgba(237,180,0,0.2) 0%,rgba(0,0,0,0) 100%); /* W3C */
+}
+
+.index-page-section#recent_images {
+background: linear-gradient(to bottom, rgba(237,110,0,0.14) 0%,rgba(0,0,0,0) 100%); /* W3C */
+}
+
+
+
 .index-page-thumbnail {
 	background-color: white;
 }
