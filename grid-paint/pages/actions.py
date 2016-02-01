@@ -30,7 +30,6 @@ import cs
 
 import zlib
 
-import logging
 from cloudstorage.errors import NotFoundError
 
 grids={
@@ -91,15 +90,7 @@ class ActionSaveImage(BasicRequestHandler):
         
         
         json_obj=json.loads(artwork_json)
-        
-        logging.error(u'save artwork id={} name={} effectiveRect={} cellSize={} grid={}'.
-                        format(
-                               artwork_id,
-                               artwork_name,
-                               str(json_obj['effectiveRect']),
-                               str(json_obj['layers'][0]['cellSize']),
-                               str(json_obj['layers'][0]['grid'])))
-        
+                
         ###
         image_width=json_obj['effectiveRect']['width']
         image_height=json_obj['effectiveRect']['height']
@@ -281,7 +272,6 @@ class ActionDeleteComment(BasicRequestHandler):
             return
         
         comment_id=self.request.get('id')
-        logging.error('delete comment '+comment_id)
         
         comment=db.Comment.get(comment_id)
         
@@ -574,8 +564,6 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork_description = self.request.get('admin_artwork_description')
         artwork_tags = self.request.get('admin_artwork_tags')
         artwork_editor_choice = self.request.get('admin_artwork_editor_choice')
-        
-        logging.error(u"editor choice = "+str(artwork_editor_choice))
         
         artwork = db.Artwork.get_by_id(artwork_id)
         artwork.name = artwork_name
