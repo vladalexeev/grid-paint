@@ -4,6 +4,11 @@ runtime: python27
 api_version: 1
 threadsafe: yes
 
+instance_class: F2
+automatic_scaling:
+  min_idle_instances: 1
+  max_idle_instances: 1
+  
 libraries:
 - name: django
   version: "1.5"
