@@ -29,7 +29,6 @@ import convert
 import cs
 
 import zlib
-import logging
 
 from cloudstorage.errors import NotFoundError
 
@@ -190,7 +189,6 @@ class ActionSaveImage(BasicRequestHandler):
             dao.add_user_profile(user_profile)
         else:
             if not artwork_id and hasattr(user_profile,'artworks_count'):
-                logging.error("increment artwork count")
                 user_profile.artworks_count = user_profile.artworks_count+1
                 dao.set_user_profile(user_profile)
         
