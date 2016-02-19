@@ -403,7 +403,7 @@ class PageProfile(BasicRequestHandler):
         user_profile = dao.get_user_profile_by_id(profile_id)
         
         def artworks_query_func():
-            return db.Artwork.all().filter('author =',users.User(user_profile.email)).order('-date')
+            return db.Artwork.all().filter('author =',users.User(str(user_profile.email))).order('-date')
         
         def href_create_func(offset):
             return '/profiles/'+str(profile_id)+'?offset='+str(offset)

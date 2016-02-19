@@ -16,15 +16,11 @@ class Artwork(db.Expando):
     author = db.UserProperty()
     tags = db.StringListProperty()
     date = db.DateTimeProperty()
-    #json = db.TextProperty()
-    #json_compressed = db.BooleanProperty()
     json_file_name = db.StringProperty(indexed=False)
     grid = db.StringProperty()
-    #full_image = db.BlobProperty()
     full_image_file_name = db.TextProperty()
     full_image_width = db.IntegerProperty(indexed=False)
     full_image_height = db.IntegerProperty(indexed=False)
-    #small_image = db.BlobProperty()
     small_image_file_name = db.TextProperty()
     small_image_width = db.IntegerProperty(indexed=False)
     small_image_height = db.IntegerProperty(indexed=False)
@@ -50,10 +46,11 @@ class Notification(db.Expando):
     comment = db.ReferenceProperty(reference_class=Comment, indexed=False)
     sender = db.UserProperty(indexed=False)
     
-class UserProfile(db.Model):
+class UserProfile(db.Expando):
     email = db.StringProperty()
     nickname = db.StringProperty()
     join_date = db.DateTimeProperty(auto_now_add=True)
+    #artworks_count = db.IntegerProperty()
     
     
 class Settings(db.Model):

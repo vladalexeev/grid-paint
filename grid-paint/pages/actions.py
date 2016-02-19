@@ -29,8 +29,11 @@ import convert
 import cs
 
 import zlib
+import logging
 
 from cloudstorage.errors import NotFoundError
+
+from google.appengine.api import users
 
 grids={
        'square': GridSquare,
@@ -165,7 +168,7 @@ class ActionSaveImage(BasicRequestHandler):
             delattr(artwork, 'small_image')
         
         artwork.put()
-        
+                
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         cache.delete(cache.MC_IMAGE_PREFIX+full_image_file_name)
         cache.delete(cache.MC_IMAGE_PREFIX+small_image_file_name)
@@ -178,11 +181,18 @@ class ActionSaveImage(BasicRequestHandler):
         memory_file.close()
         small_memory_file.close()
         
-        if not dao.get_user_profile(self.user_info.user.email()):
+        user_profile = dao.get_user_profile(self.user_info.user.email())
+        if not user_profile:
             user_profile = db.UserProfile()
             user_profile.email = self.user_info.user.email()
             user_profile.nickname = convert.auto_nickname(self.user_info.user.nickname())
+            user_profile.artworks_count = 1
             dao.add_user_profile(user_profile)
+        else:
+            if not artwork_id and hasattr(user_profile,'artworks_count'):
+                logging.error("increment artwork count")
+                user_profile.artworks_count = user_profile.artworks_count+1
+                dao.set_user_profile(user_profile)
         
         
         self.redirect('/images/details/'+str(saved_id.id()))
@@ -208,6 +218,11 @@ class ActionDeleteImage(BasicRequestHandler):
             cs.delete_file(artwork.small_image_file_name)
             if hasattr(artwork,'json_file_name'):
                 cs.delete_file(artwork.json_file_name)
+                
+            user_profile = dao.get_user_profile(artwork.author.email())
+            if hasattr(user_profile, 'artworks_count'):
+                user_profile.artworks_count = user_profile.artworks_count - 1
+                dao.set_user_profile(user_profile)
                 
             artwork.delete();
             
@@ -426,6 +441,7 @@ class ActionSaveProfile(BasicRequestHandler):
             user_profile = db.UserProfile()
             user_profile.email = self.user_info.user.email()
             user_profile.nickname = nickname
+            user_profile.artworks_count = 0
             dao.add_user_profile(user_profile)
             
         self.redirect('/')
@@ -470,43 +486,21 @@ class ActionUpdate(BasicRequestHandler):
         
         date2 = datetime.datetime(year=year2, month=month2, day=day2)
         
-        artworks = db.Artwork.all().filter('date >=', date1).filter('date <=', date2)
+        all_users = db.UserProfile.all().filter('join_date >=', date1).filter('join_date <=', date2).fetch(1000,0)
         total_count = 0
         updated_count = 0
         skipped_count = 0
         
-        for a in artworks:
+        for u in all_users:
             total_count = total_count+1
-            if hasattr(a, 'json'):
-                if a.json_compressed:
-                    artwork_json = zlib.decompress(a.json.encode('ISO-8859-1'))
-                else:
-                    artwork_json = a.json
-                    
-                json_image_file_name = '/images/json/'+str(a.key().id())+'.json'
-                json_file_content = zlib.compress(artwork_json)
-                
-                cs.create_file(json_image_file_name, 'application/octet-stream', json_file_content)
-        
-                a.json_file_name = json_image_file_name
-                
-        
-                if hasattr(a, 'json'):
-                    delattr(a, 'json')
-            
-                if hasattr(a, 'json_compressed'):
-                    delattr(a, 'json_compressed')
-            
-                if hasattr(a, 'full_image'):
-                    delattr(a, 'full_image')
-            
-                if hasattr(a, 'small_image'):
-                    delattr(a, 'small_image')
-        
-                a.put()
-                updated_count = updated_count+1
+            if not hasattr(u, 'artworks_count'):
+                uu = users.User(str(u.email))
+                count = db.Artwork.all().filter('author =', uu).count()
+                u.artworks_count = count
+                u.put()
+                updated_count = updated_count + 1
             else:
-                skipped_count = skipped_count+1
+                skipped_count = skipped_count + 1
                     
                 
         
