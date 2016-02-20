@@ -22,6 +22,7 @@ from common import BasicRequestHandler
 from google.appengine.api import users
 
 page_size=10
+users_page_size=50
 
 
 class PageIndex(BasicPageRequestHandler):
@@ -184,6 +185,63 @@ class PageMyImages(BasicPageRequestHandler):
                                      memcache_cursor_key_func)
         
         self.write_template('templates/my-artworks.html', model)
+        
+def create_user_model(offset_param, user_query_func, href_create_func, memcache_cursor_key_func):
+    if offset_param:
+        offset=int(offset_param)
+    else:
+        offset=0
+            
+    if offset<0:
+        offset=0
+            
+    fetch_count = users_page_size        
+    query = user_query_func()
+    
+    if offset==0:
+        all_users = query.run(limit=fetch_count+1)
+    else:
+        cursor=cache.get(memcache_cursor_key_func(offset))
+        if cursor:
+            query = query.with_cursor(start_cursor=cursor)
+            all_users = query.run(limit=fetch_count+1)
+        else:
+            all_users = query.run(limit=fetch_count+1,offset=offset)
+            cache.add(memcache_cursor_key_func(offset), query.cursor())
+    
+    import logging
+    has_prev_page = (offset>0)
+    has_next_page = False
+    
+    logging.error('offset={0} has_prev_page={1}'.format(offset, has_prev_page))
+    
+    index = 0
+    users = []    
+    for u in all_users:
+        index = index+1
+        if index>fetch_count:
+            has_next_page = True
+        else:
+            converted_user = convert.convert_user_profile(u)                
+            users.append(converted_user)
+            if index==fetch_count:
+                cache.add(memcache_cursor_key_func(offset+fetch_count), query.cursor())
+                        
+    next_page_href=href_create_func(offset+fetch_count)
+        
+    if offset-users_page_size <=1:
+        prev_page_href=href_create_func(0)
+    else:
+        prev_page_href=href_create_func(offset-users_page_size)
+        
+    return  {
+             'has_next_page': has_next_page,
+             'has_prev_page': has_prev_page,
+             'next_page_href': next_page_href,
+             'prev_page_href': prev_page_href,
+             'first_page_href': href_create_func(0),
+             'users': users
+            }
 
         
 def create_gallery_model(offset_param, artworks_query_func, href_create_func, 
@@ -497,3 +555,23 @@ class PageRecentFavorites(BasicPageRequestHandler):
                                      addition_values_func)
         
         self.write_template('templates/recent-favorites.html', model)
+        
+class PageUsersByArtworksCount(BasicPageRequestHandler):
+    def get(self):
+        def users_query_func():
+            all_users=db.UserProfile.all()
+            return all_users.order('-artworks_count')
+        
+        def href_create_func(offset):
+            return '/profiles?offset='+str(offset)
+            
+        def memcache_cursor_key_func(offset):
+            return cache.MC_USER_LIST+'by_count_'+str(offset)
+            
+        model = create_user_model(self.request.get('offset'), 
+                                  users_query_func, 
+                                  href_create_func,
+                                  memcache_cursor_key_func)
+        model['list_title'] = 'Artists by artworks count'
+        
+        self.write_template('templates/user-list.html', model)

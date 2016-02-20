@@ -1,0 +1,83 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}
+
+<div class="container single-container">
+<h2 class="text-center">{{ list_title }}</h2>
+
+	<div class="row" style="margin-bottom:10px;">
+		<div class="col-xs-8 col-xs-offset-2 text-center">
+			{% if has_prev_page %}
+				<a href="{{ prev_page_href }}" class="btn btn-default btn-small"><i class="icon-arrow-left"></i> Back</a>
+			{% else %}
+				<button href="" class="btn btn-default btn-small" disabled="disabled"><i class="icon-arrow-left"></i> Back</button>
+			{% endif %}
+			
+			<a href="{{ first_page_href }}" class="btn btn-default btn-small"><i class="icon-arrow-up"></i></a>
+			
+			{% if has_next_page %}
+				<a href="{{ next_page_href }}" class="btn btn-default btn-small">Next <i class="icon-arrow-right"></i></a>
+			{% else %}
+				<button href="" class="btn btn-default btn-small" disabled="disabled">Next <i class="icon-arrow-right"></i></button>
+			{% endif %}			
+		</div>
+	</div>
+	
+	
+	<div class="row">
+		<div class="col-xs-8 col-xs-offset-2">
+		
+<table class="table table-striped">
+<tr>
+	<th>
+		Artist name
+	</th>
+	<th>
+		Artwork count
+	</th>
+</tr>
+
+{% for u in users %}
+<tr>
+	<td>
+		<a href="/profiles/{{ u.profile_id }}">{{ u.nickname }}</a>
+	</td>
+	<td>
+		{{ u.artworks_count }}
+	</td>
+</tr>
+{% endfor %}
+
+</table>
+		
+		</div>
+	</div>
+	
+	
+	
+	<div class="row" style="margin-bottom:10px;">
+		<div class="col-xs-8 col-xs-offset-2 text-center">
+			{% if has_prev_page %}
+				<a href="{{ prev_page_href }}" class="btn btn-default btn-small"><i class="icon-arrow-left"></i> Back</a>
+			{% else %}
+				<button href="" class="btn btn-default btn-small" disabled="disabled"><i class="icon-arrow-left"></i> Back</button>
+			{% endif %}
+			
+			<a href="{{ first_page_href }}" class="btn btn-default btn-small"><i class="icon-arrow-up"></i></a>
+			
+			{% if has_next_page %}
+				<a href="{{ next_page_href }}" class="btn btn-default btn-small">Next <i class="icon-arrow-right"></i></a>
+			{% else %}
+				<button href="" class="btn btn-default btn-small" disabled="disabled">Next <i class="icon-arrow-right"></i></button>
+			{% endif %}			
+		</div>
+	</div>
+
+</div>
+
+
+  
+{% endblock content %}
+
+
