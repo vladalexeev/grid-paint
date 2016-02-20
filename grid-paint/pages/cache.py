@@ -16,6 +16,7 @@ MC_MAIN_PAGE_RECENT_COMMENTS = 'main_page_recent_comments'
 MC_MAIN_PAGE_RECENT_EDITOR_CHOICE = 'main_page_recent_editor_choice'
 MC_MAIN_PAGE_TOP_FAVORITES = 'main_page_top_favorites'
 MC_MAIN_PAGE_RECENT_FAVORITES = 'main_page_recent_favorites'
+MC_MAIN_PAGE_PRODUCTIVE_ARTISTS = 'main_page_productive_artists'
 
 MC_USER_NOTIFICATION_PREFIX = 'user_notification_count_'
 MC_USER_PROFILE = 'user_profile_'

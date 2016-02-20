@@ -56,11 +56,16 @@ class PageIndex(BasicPageRequestHandler):
             cache.add(cache.MC_MAIN_PAGE_RECENT_FAVORITES, recent_favorites)
             
         recent_comments = cache.get(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
-        
         if not recent_comments:
             comments = db.Comment.all().order('-date').fetch(5, 0)
             recent_comments = [convert.convert_comment_for_page(c) for c in comments]
             cache.add(cache.MC_MAIN_PAGE_RECENT_COMMENTS, recent_comments)
+            
+        productive_artists = cache.get(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
+        if not productive_artists:
+            p_artists = db.UserProfile.all().order('-artworks_count').fetch(5)
+            productive_artists = [convert.convert_user_profile(a) for a in p_artists]
+            cache.add(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS, productive_artists)
         
         self.write_template('templates/index.html', 
                             {
@@ -68,7 +73,8 @@ class PageIndex(BasicPageRequestHandler):
                              'editor_choice': editor_choice,
                              'top_favorites': top_favorites,
                              'recent_favorites': recent_favorites,
-                             'comments': recent_comments
+                             'comments': recent_comments,
+                             'productive_artists': productive_artists
                              })
         
 class PagePrivacyPolicy(BasicPageRequestHandler):

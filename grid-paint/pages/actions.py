@@ -169,6 +169,7 @@ class ActionSaveImage(BasicRequestHandler):
         artwork.put()
                 
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+        cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
         cache.delete(cache.MC_IMAGE_PREFIX+full_image_file_name)
         cache.delete(cache.MC_IMAGE_PREFIX+small_image_file_name)
         
@@ -228,6 +229,7 @@ class ActionDeleteImage(BasicRequestHandler):
             cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
             cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
             cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
+            cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
 
             self.redirect("/my-images")
         else:

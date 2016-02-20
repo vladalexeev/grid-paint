@@ -126,7 +126,37 @@ link at the top.
 </div>
 
 
+<div class="container index-page-section">
+<div class="text-center">
+<h3>Most productive artists</h3>
+</div>
+
+<div class="image-details-comments">
+	<table class="table table-striped">
+		<tr>
+			<th>Artist name</th>
+			<th>Artwork count</th>
+		</tr>
+
+		{% for u in productive_artists %}
+		<tr>
+			<td>
+				<a href="/profiles/{{ u.profile_id }}">{{ u.nickname }}</a>
+			</td>
+			<td>
+				{{ u.artworks_count }}
+			</td>
+		</tr>
+		{% endfor %}
+
+	</table>
+	<div class="text-right">
+		<a href="/profiles" class="btn btn-default btn-small">More artists <i class="icon-arrow-right"></i></a>
+	</div>
+</div>
 </div>
 
 
+
+</div>
 {% endblock content %}
