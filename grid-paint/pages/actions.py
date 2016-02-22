@@ -510,16 +510,20 @@ class ActionUpdate(BasicRequestHandler):
         skipped_count = 0
         
         for u in all_users:
-            total_count = total_count+1
-            if not hasattr(u, 'artworks_count'):
-                uu = users.User(str(u.email))
-                count = db.Artwork.all().filter('author =', uu).count()
-                u.artworks_count = count
-                u.put()
+            try:
+                total_count = total_count+1
+                favorite_counters = db.FavoriteCounter.all().filter('author =', users.User(email=u.email)).fetch(1000)
+                count = 0
+                for fc in favorite_counters:
+                    count = count + fc.count
+                
+                u.favorite_count = count
+                u.put();
                 updated_count = updated_count + 1
-            else:
+            except Exception as e:
+                import logging
+                logging.error('Error', e)
                 skipped_count = skipped_count + 1
-                    
                 
         
         self.response.write('<html><body>')
