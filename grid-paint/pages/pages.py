@@ -66,6 +66,12 @@ class PageIndex(BasicPageRequestHandler):
             p_artists = db.UserProfile.all().order('-artworks_count').fetch(5)
             productive_artists = [convert.convert_user_profile(a) for a in p_artists]
             cache.add(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS, productive_artists)
+            
+        top_rated_artists = cache.get(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
+        if not top_rated_artists:
+            r_artists = db.UserProfile.all().order('-favorite_count').fetch(5)
+            top_rated_artists = [convert.convert_user_profile(a) for a in r_artists]
+            cache.add(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS, top_rated_artists)
         
         self.write_template('templates/index.html', 
                             {
@@ -74,7 +80,8 @@ class PageIndex(BasicPageRequestHandler):
                              'top_favorites': top_favorites,
                              'recent_favorites': recent_favorites,
                              'comments': recent_comments,
-                             'productive_artists': productive_artists
+                             'productive_artists': productive_artists,
+                             'top_rated_artists': top_rated_artists
                              })
         
 class PagePrivacyPolicy(BasicPageRequestHandler):
@@ -569,10 +576,10 @@ class PageUsersByArtworksCount(BasicPageRequestHandler):
             return all_users.order('-artworks_count')
         
         def href_create_func(offset):
-            return '/profiles?offset='+str(offset)
+            return '/profiles/by-artwork-count?offset='+str(offset)
             
         def memcache_cursor_key_func(offset):
-            return cache.MC_USER_LIST+'by_count_'+str(offset)
+            return cache.MC_USER_LIST+'by_artworks_count_'+str(offset)
             
         model = create_user_model(self.request.get('offset'), 
                                   users_query_func, 
@@ -581,3 +588,27 @@ class PageUsersByArtworksCount(BasicPageRequestHandler):
         model['list_title'] = 'Artists by artworks count'
         
         self.write_template('templates/user-list.html', model)
+
+class PageUsersByFavortiesCount(BasicPageRequestHandler):
+    def get(self):
+        def users_query_func():
+            all_users=db.UserProfile.all()
+            return all_users.order('-favorite_count')
+        
+        def href_create_func(offset):
+            return '/profiles/by-stars-count?offset='+str(offset)
+            
+        def memcache_cursor_key_func(offset):
+            return cache.MC_USER_LIST+'by_stars_count_'+str(offset)
+            
+        model = create_user_model(self.request.get('offset'), 
+                                  users_query_func, 
+                                  href_create_func,
+                                  memcache_cursor_key_func)
+        model['list_title'] = 'Artists by stars count'
+        
+        self.write_template('templates/user-list.html', model)
+        
+class PageProfiles(BasicPageRequestHandler):
+    def get(self):
+        self.redirect('/profiles/by-stars-count', True)

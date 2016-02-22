@@ -127,11 +127,14 @@ link at the top.
 
 
 <div class="container index-page-section">
-<div class="text-center">
-<h3>Most productive artists</h3>
-</div>
 
 <div class="image-details-comments">
+<div class="row">
+<div class="col-xs-6">
+	<div class="text-center">
+	<h3>Most productive artists</h3>
+	</div>
+
 	<table class="table table-striped">
 		<tr>
 			<th>Artist name</th>
@@ -151,9 +154,39 @@ link at the top.
 
 	</table>
 	<div class="text-right">
-		<a href="/profiles" class="btn btn-default btn-small">More artists <i class="icon-arrow-right"></i></a>
+		<a href="/profiles/by-artwork-count" class="btn btn-default btn-small">More artists <i class="icon-arrow-right"></i></a>
 	</div>
 </div>
+<div class="col-xs-6">
+	<div class="text-center">
+	<h3>Top rated artists</h3>
+	</div>
+
+	<table class="table table-striped">
+		<tr>
+			<th>Artist name</th>
+			<th>Stars count</th>
+		</tr>
+
+		{% for u in top_rated_artists %}
+		<tr>
+			<td>
+				<a href="/profiles/{{ u.profile_id }}">{{ u.nickname }}</a>
+			</td>
+			<td>
+				{{ u.artworks_count }}
+			</td>
+		</tr>
+		{% endfor %}
+
+	</table>
+	<div class="text-right">
+		<a href="/profiles/by-stars-count" class="btn btn-default btn-small">More artists <i class="icon-arrow-right"></i></a>
+	</div>
+</div>
+</div>
+</div>
+
 </div>
 
 

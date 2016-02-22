@@ -642,4 +642,5 @@ class ActionToggleFavorite(BasicRequestHandler):
                             }))
                     
                 cache.delete(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
+                cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
             
