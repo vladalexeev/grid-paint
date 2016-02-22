@@ -124,8 +124,9 @@ def favorite_artwork(artwork, user):
     fav_count.save()
     
     user_profile = db.UserProfile.all().filter('email =', artwork.author.email()).get()
-    user_profile.favorite_count = user_profile.favorite_count + 1
-    user_profile.put()
+    if hasattr(user_profile, 'favorite_count'):
+        user_profile.favorite_count = user_profile.favorite_count + 1
+        user_profile.put()
     
     return fav_count.count
 
@@ -150,9 +151,9 @@ def unfavorite_artwork(artwork, user):
             fav_count.delete()
             
     user_profile = db.UserProfile.all().filter('email =', artwork.author.email()).get()
-    user_profile.favorite_count = user_profile.favorite_count - 1
-    user_profile.put()
-
+    if hasattr(user_profile, 'favorite_count'):
+        user_profile.favorite_count = user_profile.favorite_count - 1
+        user_profile.put()
     
     return result
 
