@@ -452,19 +452,38 @@ class ActionUpdate2(BasicRequestHandler):
             self.response.set_status(403)
             return
 
-        favorites = db.Favorite.all()
-        for f in favorites:
+        year1 = int(self.request.get('year1'))
+        month1 = int(self.request.get('month1'))
+        day1 = int(self.request.get('day1'))
+        year2 = int(self.request.get('year2'))
+        month2 = int(self.request.get('month2'))
+        day2 = int(self.request.get('day2'))
+        
+        date1 = datetime.datetime(year=year1, month=month1, day=day1)
+        
+        date2 = datetime.datetime(year=year2, month=month2, day=day2)
+        
+        all_fav_counts = db.FavoriteCounter.all().filter('date >=', date1).filter('date <=', date2).fetch(1000,0)
+        total_count = 0
+        updated_count = 0
+        skipped_count = 0
+        
+        for fc in all_fav_counts:
+            total_count = total_count+1
             try:
-                value = f.artwork.name
+                fc.author = fc.artwork.author
+                fc.put()
+                updated_count = updated_count + 1
             except:
-                f.delete()
+                skipped_count = skipped_count + 1
+                    
                 
-        counts = db.FavoriteCounter.all()
-        for c in counts:
-            try:
-                value = c.artwork.name
-            except:
-                c.delete()
+        
+        self.response.write('<html><body>')
+        self.response.write('total_count = '+str(total_count)+'<br>')
+        self.response.write('updated_count = '+str(updated_count)+'<br>')
+        self.response.write('skipped_count = '+str(skipped_count)+'<br>')
+        self.response.write('</body></html>')
                 
 
 
