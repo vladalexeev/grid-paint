@@ -46,12 +46,12 @@ class Notification(db.Expando):
     comment = db.ReferenceProperty(reference_class=Comment, indexed=False)
     sender = db.UserProperty(indexed=False)
     
-class UserProfile(db.Expando):
+class UserProfile(db.Model):
     email = db.StringProperty()
     nickname = db.StringProperty()
     join_date = db.DateTimeProperty(auto_now_add=True)
-    artworks_count = db.IntegerProperty()
-    #favorite_count = db.IntegerProperty()
+    artworks_count = db.IntegerProperty(default=0)
+    favorite_count = db.IntegerProperty(default=0)
     
     
 class Settings(db.Model):
