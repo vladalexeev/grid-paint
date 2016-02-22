@@ -189,7 +189,7 @@ class ActionSaveImage(BasicRequestHandler):
             user_profile.artworks_count = 1
             dao.add_user_profile(user_profile)
         else:
-            if not artwork_id and hasattr(user_profile,'artworks_count'):
+            if not artwork_id:
                 user_profile.artworks_count = user_profile.artworks_count+1
                 dao.set_user_profile(user_profile)
         
@@ -219,9 +219,8 @@ class ActionDeleteImage(BasicRequestHandler):
                 cs.delete_file(artwork.json_file_name)
                 
             user_profile = dao.get_user_profile(artwork.author.email())
-            if hasattr(user_profile, 'artworks_count'):
-                user_profile.artworks_count = user_profile.artworks_count - 1
-                dao.set_user_profile(user_profile)
+            user_profile.artworks_count = user_profile.artworks_count - 1
+            dao.set_user_profile(user_profile)
                 
             artwork.delete();
             

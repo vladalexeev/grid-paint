@@ -50,7 +50,7 @@ class UserProfile(db.Expando):
     email = db.StringProperty()
     nickname = db.StringProperty()
     join_date = db.DateTimeProperty(auto_now_add=True)
-    #artworks_count = db.IntegerProperty()
+    artworks_count = db.IntegerProperty()
     
     
 class Settings(db.Model):
