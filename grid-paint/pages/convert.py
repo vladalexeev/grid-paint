@@ -158,6 +158,7 @@ def convert_user_profile(user_profile):
             'nickname': user_profile.nickname,
             'profile_id': user_profile.key().id(),
             'join_date': user_profile.join_date,
-            'artworks_count': user_profile.artworks_count
+            'artworks_count': user_profile.artworks_count,
+            'favorite_count': user_profile.favorite_count
             }
 

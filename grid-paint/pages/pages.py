@@ -587,7 +587,7 @@ class PageUsersByArtworksCount(BasicPageRequestHandler):
                                   memcache_cursor_key_func)
         model['list_title'] = 'Artists by artworks count'
         
-        self.write_template('templates/user-list.html', model)
+        self.write_template('templates/user-list-by-artworks-count.html', model)
 
 class PageUsersByFavortiesCount(BasicPageRequestHandler):
     def get(self):
@@ -607,7 +607,7 @@ class PageUsersByFavortiesCount(BasicPageRequestHandler):
                                   memcache_cursor_key_func)
         model['list_title'] = 'Artists by stars count'
         
-        self.write_template('templates/user-list.html', model)
+        self.write_template('templates/user-list-by-stars-count.html', model)
         
 class PageProfiles(BasicPageRequestHandler):
     def get(self):
