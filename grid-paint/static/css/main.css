@@ -18,6 +18,15 @@ body {
 	width: 960px;
 }
 
+.header-user {
+	white-space: nowrap;
+	overflow: hidden; 
+	text-overflow: ellipsis;
+	max-width: 200px;
+	display: inline-block;
+	vertical-align: bottom;
+}
+
 .grid-selector-wrapper {
 	display:inline-block;
 	border: solid 1px #CCC;
@@ -150,6 +159,9 @@ body {
 .thumb-author {
 	font-size:10pt;
 	text-align: center;
+	white-space: nowrap;
+	overflow: hidden; 
+	text-overflow: ellipsis;
 }
 
 .thumb-date {
