@@ -26,7 +26,17 @@
 			<div class="image-details-favorite star-favorite"></div>
 			{% endif %}
 		</div>
+		{% if user_info.superadmin or not artwork.copyright_block %}
 		<img src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
+		{% endif %}
+		{% if artwork.copyright_block %}
+		<div>
+		 	<img src="/img/copyright-image.png" />
+		</div>
+		<div style="font-size:2em; color:red;">
+			This image is blocked due to copyright infringement.
+		</div>
+		{% endif %}
 	</div>
 	<div class="image-details-header">
 		<div class="pull-right">
@@ -266,6 +276,11 @@ function onCommentSubmit() {
     		<div class="checkbox">
     			<label>
     				<input name="admin_artwork_editor_choice" type="checkbox" {% if artwork.editor_choice %}checked{% endif %}/> Editor's choice
+    			</label>
+    		</div>
+    		<div class="checkbox">
+    			<label>
+    				<input name="admin_artwork_copyright_block" type="checkbox" {% if artwork.copyright_block %}checked{% endif %}/> Copyright block
     			</label>
     		</div>
         </form>

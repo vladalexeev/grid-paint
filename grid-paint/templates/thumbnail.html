@@ -22,7 +22,11 @@
     	{% endif %}
   		<div class="thumb-image">
   			<a href="/images/details/{{ a.key.id }}">
+  			  {% if a.copyright_block %}
+  			  <img src="/img/copyright-thumb.png" width="200" height="150">
+  			  {% else %}
 			  <img src="{{ a.thumbnail_image_name }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
+			  {% endif %}
 			</a>
 		</div>
 		<div>

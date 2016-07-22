@@ -580,6 +580,7 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork_description = self.request.get('admin_artwork_description')
         artwork_tags = self.request.get('admin_artwork_tags')
         artwork_editor_choice = self.request.get('admin_artwork_editor_choice')
+        artwork_copyright_block = self.request.get('admin_artwork_copyright_block')
         
         artwork = db.Artwork.get_by_id(artwork_id)
         artwork.name = artwork_name
@@ -597,6 +598,12 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
                 url_tags.append(db_tag.url_name)
         
         artwork.tags=url_tags
+        
+        if artwork_copyright_block:
+            artwork.copyright_block = True
+        else:
+            if hasattr(artwork, 'copyright_block'):
+                del artwork.copyright_block
         
         artwork.put()
         
