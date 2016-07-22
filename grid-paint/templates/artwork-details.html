@@ -26,7 +26,7 @@
 			<div class="image-details-favorite star-favorite"></div>
 			{% endif %}
 		</div>
-		{% if user_info.superadmin or not artwork.copyright_block %}
+		{% if not artwork.copyright_block or user_info.superadmin or artwork.author.email == user_info.user.email %}
 		<img src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 		{% endif %}
 		{% if artwork.copyright_block %}
