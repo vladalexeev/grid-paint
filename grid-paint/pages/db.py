@@ -13,7 +13,8 @@ artwork_small_image_height=150
 class Artwork(db.Expando):
     name = db.TextProperty()
     description = db.TextProperty()
-    author = db.UserProperty()
+    author = db.UserProperty() #for delete
+    author_email = db.StringProperty()
     tags = db.StringListProperty()
     date = db.DateTimeProperty()
     json_file_name = db.StringProperty(indexed=False)

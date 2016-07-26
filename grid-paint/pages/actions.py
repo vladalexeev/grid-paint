@@ -65,6 +65,7 @@ class ActionSaveImage(BasicRequestHandler):
         else:
             artwork=db.Artwork();
             artwork.author=self.user_info.user
+            artwork.author_email = self.user_info.user.email()
             
         if artwork_name:
             artwork.name=artwork_name
@@ -504,32 +505,32 @@ class ActionUpdate(BasicRequestHandler):
         
         date2 = datetime.datetime(year=year2, month=month2, day=day2)
         
-        all_users = db.UserProfile.all().filter('join_date >=', date1).filter('join_date <=', date2).fetch(1000,0)
+        all_artworks = db.Artwork.all().filter('date >=', date1).filter('date <=', date2).fetch(1000,0)
         total_count = 0
         updated_count = 0
         skipped_count = 0
+        error_count = 0
         
-        for u in all_users:
+        for a in all_artworks:
             try:
                 total_count = total_count+1
-                favorite_counters = db.FavoriteCounter.all().filter('author =', users.User(email=u.email)).fetch(1000)
-                count = 0
-                for fc in favorite_counters:
-                    count = count + fc.count
-                
-                u.favorite_count = count
-                u.put();
-                updated_count = updated_count + 1
+                if a.author and not a.author_email:
+                    a.author_email = a.author.email()
+                    updated_count = updated_count +1
+                    a.put()
+                else:
+                    skipped_count = skipped_count + 1
             except Exception as e:
                 import logging
                 logging.error('Error', e)
-                skipped_count = skipped_count + 1
+                error_count = error_count + 1
                 
         
         self.response.write('<html><body>')
         self.response.write('total_count = '+str(total_count)+'<br>')
         self.response.write('updated_count = '+str(updated_count)+'<br>')
         self.response.write('skipped_count = '+str(skipped_count)+'<br>')
+        self.response.write('error_count = '+str(error_count)+'<br>')
         self.response.write('</body></html>')
         
                 
