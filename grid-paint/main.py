@@ -40,10 +40,7 @@ application = webapp.WSGIApplication([
                                       ('/profiles/(.*)', pages.pages.PageProfile),
                                       ('/editor-choice', pages.pages.PageEditorChoice),
                                       ('/favorites', pages.pages.PageRecentFavorites),
-                                      ('/toggle-favorite', pages.actions.ActionToggleFavorite),
-                                      
-                                      ('/update', pages.actions.ActionUpdate),
-                                      ('/update2', pages.actions.ActionUpdate2)
+                                      ('/toggle-favorite', pages.actions.ActionToggleFavorite)
                                       ], debug=True)
 
 
