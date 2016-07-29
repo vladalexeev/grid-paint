@@ -6,10 +6,57 @@
 <div class="container">
 <div class="row">
 	<div class="offset2 span8">
-		<p>Iterate artworks starting from <span id="offset_index" style="font-weight: bold">0</span></p>
-		<p>
-			<button type="button" id="update_button">Iterate</button>
-		</p>
+		<p>Iterate artworks</p>
+		<table border="0">
+		  <tr>
+		    <td>From</td>
+		    <td><input name="year1" type="text" value="2013"/></td>
+		    <td><input name="month1" type="text" value="7"/></td>
+		    <td><input name="day1" type="text" value="1"/></td>
+		  </tr>
+		  <tr>
+		    <td>To</td>
+		    <td><input name="year2" type="text" /></td>
+		    <td><input name="month2" type="text" /></td>
+		    <td><input name="day2" type="text" /></td>		  
+		  </tr>
+		  <tr>
+		    <td>Add</td>
+		    <td><input name="add" type="text" value="15"/></td>
+		    <td></td>
+		    <td><button type="button" id="update_button">Update</button></td>
+		  </tr>
+		</table>
+
+		<div id="wait_block" style="text-align: center; display: none;">
+			<img src="/img/wait.gif" />
+		</div>
+		
+		<div id="result_block" style="display:none;">
+		  <table border="0">
+		    <tr>
+		      <td>total =</td>
+		      <td id="result_total"></td>
+		    </tr>
+		    <tr>
+		      <td>updated =</td>
+		      <td id="result_updated"></td>
+		    </tr>
+		    <tr>
+		      <td>skipped =</td>
+		      <td id="result_skipped"></td>
+		    </tr>
+		    <tr>
+		      <td>errors =</td>
+		      <td id="result_errors"></td>
+		    </tr>
+		  </table>
+		</div>
+		
+		<div id="fail_block" style="color:red; font-size: 3em; display:none;">
+			Request failed
+		</div>
+		
 	</div>
 </div>
 </div>
@@ -17,13 +64,60 @@
 <script>
 var offset = 0;
 
+function calculateEndDate() {
+	var d=new Date();
+	d.setFullYear($("input[name=year1]").val());
+	d.setMonth($("input[name=month1]").val()-1)
+	d.setDate($("input[name=day1]").val())
+
+	var addCount=$("input[name=add]").val();
+	var d2=new Date(d.getTime()+24*60*60*1000*addCount);
+	
+	$("input[name=year2]").val(d2.getFullYear());
+	$("input[name=month2]").val(d2.getMonth()+1);
+	$("input[name=day2]").val(d2.getDate());
+}
+
+function moveEndToStart() {
+	$("input[name=year1]").val($("input[name=year2]").val());
+	$("input[name=month1]").val($("input[name=month2]").val());
+	$("input[name=day1]").val($("input[name=day2]").val());
+}
+
 $(function() {
+	calculateEndDate();
+	
+	
 	$("#update_button").click(function() {
-		$.get("/admin/update-iterate-artworks-do?offset="+offset, 
-			function(data) {
-				$("#offset_index").text(data);
-				offset=parseInt(data,10);
+		var url='/admin/update-iterate-artworks-do?'+
+				'year1='+$("input[name=year1]").val()+
+				'&month1='+$("input[name=month1]").val()+
+				'&day1='+$("input[name=day1]").val()+
+				'&year2='+$("input[name=year2]").val()+
+				'&month2='+$("input[name=month2]").val()+
+				'&day2='+$("input[name=day2]").val();
+		
+		$("#result_block").hide();
+		$("#fail_block").hide();
+		$("#wait_block").show();
+		$.getJSON(url)
+			.success(function(data) {
+				$("#wait_block").hide();
+				$("#result_block").show();
+				$("#result_total").text(data.total_count);
+				$("#result_updated").text(data.updated_count);
+				$("#result_skipped").text(data.skipped_count);
+				$("#result_errors").text(data.error_count);
+			
+				if (data.all_done) {
+					moveEndToStart();
+					calculateEndDate();				
+				}
 			})
+			.fail(function() {
+				$("#wait_block").hide();
+				$("#fail_block").show();
+			});
 	})
 })
 </script>
