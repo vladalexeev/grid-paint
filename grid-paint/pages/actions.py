@@ -481,14 +481,14 @@ class ActionUpdateArtworkIterate(BasicRequestHandler):
         for a in all_items:
             try:
                 total_count = total_count+1
-                if a.author and not a.author_email:
-                    a.author_email = a.author.email()
+                if hasattr(a,'author'):
+                    del a.author
                     updated_count = updated_count +1
                     a.put()
                 else:
                     skipped_count = skipped_count + 1
-            except Exception as e:
-                logging.error('Error', e)
+            except:
+                logging.exception('Iterate error')
                 error_count = error_count + 1
                 
         result = {
