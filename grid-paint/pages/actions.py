@@ -34,6 +34,8 @@ from cloudstorage.errors import NotFoundError
 
 from google.appengine.api import users
 
+import logging
+
 grids={
        'square': GridSquare,
        'triangle': GridTriangle,
@@ -263,9 +265,15 @@ class ActionSaveComment(BasicRequestHandler):
             return
         
         comment=db.Comment(parent=artwork)
-        comment.artwork_ref=artwork
-        comment.text=comment_text
+        comment.author_email = self.user_info.user.email() 
+        comment.artwork_ref = artwork
+        comment.text = comment_text
         comment.put()
+        
+        logging.error("artwork.author = {}".format(artwork.author))
+        logging.error("self.user_info.user = {}".format(self.user_info.user))
+        logging.error("compare = {}".format(artwork.author<>self.user_info.user))
+        
         
         if artwork.author and artwork.author<>self.user_info.user:
             notification = db.Notification()
@@ -464,13 +472,13 @@ class ActionUpdateArtworkIterate(BasicRequestHandler):
         
         date2 = datetime.datetime(year=year2, month=month2, day=day2)
         
-        all_artworks = db.Artwork.all().filter('date >=', date1).filter('date <=', date2).fetch(1000,0)
+        all_items = db.Artwork.all().filter('date >=', date1).filter('date <=', date2).fetch(1000,0)
         total_count = 0
         updated_count = 0
         skipped_count = 0
         error_count = 0
         
-        for a in all_artworks:
+        for a in all_items:
             try:
                 total_count = total_count+1
                 if a.author and not a.author_email:
@@ -480,7 +488,6 @@ class ActionUpdateArtworkIterate(BasicRequestHandler):
                 else:
                     skipped_count = skipped_count + 1
             except Exception as e:
-                import logging
                 logging.error('Error', e)
                 error_count = error_count + 1
                 

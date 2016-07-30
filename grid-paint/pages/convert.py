@@ -48,7 +48,7 @@ def auto_nickname(src_nickname):
 def convert_notification(notification):
     result =  {
             'key': notification.key(),
-            'recipient': convert_user(notification.recipient),
+            'recipient': convert_user(notification.recipient.email()),
             'date': notification.date,
             'type': notification.type
             }
@@ -64,7 +64,7 @@ def convert_notification(notification):
         pass
     
     try:
-        result['sender'] = convert_user(notification.sender)
+        result['sender'] = convert_user(notification.sender.email())
     except:
         pass
     
@@ -81,7 +81,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
                 'description': artwork.description,
                 'date': artwork.date,
                 'grid': artwork.grid,
-                'author': convert_user(artwork.author),
+                'author': convert_user(artwork.author_email),
                 'tags': [tags.tag_by_url_name(t) for t in artwork.tags],
                 'full_image_width': artwork.full_image_height,
                 'full_image_height': artwork.full_image_height,
@@ -126,33 +126,28 @@ def convert_comment_for_page(comment):
     result = {
               'key': comment.key(),
               'text': comment.text,
-              'author': convert_user(comment.author),
+              'author': convert_user(comment.author_email),
               'date': comment.date,
               'artwork_key': comment.artwork_ref.key(),
               'artwork_name': comment.artwork_ref.name
               }
-    
-#    if comment.author:
-#        result['author_name'] = auto_nickname(comment.author.nickname())
-#    else:
-#        result['author_name'] = 'Unknown'
-    
+        
     return result
 
 
-def convert_user(user):
-    if not user:
+def convert_user(user_email):
+    if not user_email:
         return {
                 'nickname': 'Unknown'
                 }
     
-    user_profile = dao.get_user_profile(user.email())
+    user_profile = dao.get_user_profile(user_email)
     if user_profile:
         return convert_user_profile(user_profile)
     else:
         return {
-                'email': user.email(),
-                'nickname': auto_nickname(user.nickname())
+                'email': user_email,
+                'nickname': auto_nickname(user_email)
                 }
         
 def convert_user_profile(user_profile):
