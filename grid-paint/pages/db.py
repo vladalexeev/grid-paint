@@ -59,8 +59,9 @@ class Settings(db.Model):
     show_ads = db.BooleanProperty()
     show_analytics = db.BooleanProperty()
     
-class Favorite(db.Model):
+class Favorite(db.Expando):
     user = db.UserProperty()
+    user_email = db.StringProperty()
     artwork = db.ReferenceProperty(reference_class=Artwork)
     date = db.DateTimeProperty(auto_now_add=True)
     

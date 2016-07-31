@@ -110,6 +110,7 @@ def favorite_artwork(artwork, user):
     fav = db.Favorite()
     fav.artwork = artwork
     fav.user = user
+    fav.user_email = user.email()
     fav.save()
     
     fav_count = db.FavoriteCounter.all().filter('artwork =', artwork).get()

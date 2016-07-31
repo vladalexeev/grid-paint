@@ -423,13 +423,13 @@ class PageAdmin(BasicPageRequestHandler):
                             {
                             })
         
-class PageAdminUpdateArtworkIterate(BasicPageRequestHandler):
+class PageAdminUpdateIterate(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.superadmin:
             self.response.set_status(403)
             return
         
-        self.write_template('templates/admin-update-artwork-iterate.html', 
+        self.write_template('templates/admin-update-iterate.html', 
                             {
                             })
         

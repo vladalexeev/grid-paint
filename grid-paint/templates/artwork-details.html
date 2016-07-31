@@ -21,7 +21,7 @@
 			<div class="image-details-favorite-count">{{ favorite_count }}</div>
 			{% if user_info.user %}
 			<div class="image-details-favorite {% if favorite %}star-favorite{% else %}star-not-favorite{% endif %}" id="favorite-star"></div>
-			<div class="image-details-favorite-hint" style="display:none;">Add image to favorites</div>
+			<div class="image-details-favorite-hint" style="display:none;">{% if favorite %}Remove image from favorites{% else %}Add image to favorites{% endif %}</div>
 			{% else %}
 			<div class="image-details-favorite star-favorite"></div>
 			{% endif %}
@@ -206,8 +206,10 @@ $(function() {
 					$('.image-details-favorite-count').text(favorite_count);
 					if (favorite) {
 						$('.image-details-favorite').removeClass('star-not-favorite').addClass('star-favorite');
+						$('.image-details-favorite-hint').text('Remove image from favorites');
 					} else {
 						$('.image-details-favorite').removeClass('star-favorite').addClass('star-not-favorite');
+						$('.image-details-favorite-hint').text('Add image to favorites');
 					}
 				});
 		})

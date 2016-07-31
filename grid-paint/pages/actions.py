@@ -455,7 +455,7 @@ class ActionSaveProfile(BasicRequestHandler):
         self.redirect('/')        
                 
 
-class ActionUpdateArtworkIterate(BasicRequestHandler):
+class ActionUpdateIterate(BasicRequestHandler):
     def get(self):
         if not self.user_info.superadmin:
             self.response.set_status(403)
@@ -472,7 +472,7 @@ class ActionUpdateArtworkIterate(BasicRequestHandler):
         
         date2 = datetime.datetime(year=year2, month=month2, day=day2)
         
-        all_items = db.Comment.all().filter('date >=', date1).filter('date <=', date2).fetch(1000,0)
+        all_items = db.Favorite.all().filter('date >=', date1).filter('date <=', date2).fetch(1000,0)
         total_count = 0
         updated_count = 0
         skipped_count = 0
@@ -481,8 +481,8 @@ class ActionUpdateArtworkIterate(BasicRequestHandler):
         for a in all_items:
             try:
                 total_count = total_count+1
-                if hasattr(a,'author'):
-                    del a.author
+                if a.user and not a.user_email:
+                    a.user_email = a.user.email()
                     updated_count = updated_count +1
                     a.put()
                 else:
