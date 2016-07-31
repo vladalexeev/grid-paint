@@ -94,7 +94,7 @@ def is_artwork_favorite_by_user(artwork, user):
     if result==True or result==False:
         return result
     else:
-        fav_user = db.Favorite.all().filter('artwork =', artwork).filter('user =', user).get()
+        fav_user = db.Favorite.all().filter('artwork =', artwork).filter('user_email =', user.email()).get()
         if fav_user:
             cache.add(memcache_key, True)
             return True
@@ -109,7 +109,6 @@ def favorite_artwork(artwork, user):
 
     fav = db.Favorite()
     fav.artwork = artwork
-    fav.user = user
     fav.user_email = user.email()
     fav.save()
     
@@ -124,7 +123,7 @@ def favorite_artwork(artwork, user):
         
     fav_count.save()
     
-    user_profile = db.UserProfile.all().filter('email =', artwork.author.email()).get()
+    user_profile = db.UserProfile.all().filter('email =', artwork.author_email).get()
     if hasattr(user_profile, 'favorite_count'):
         user_profile.favorite_count = user_profile.favorite_count + 1
         user_profile.put()
@@ -135,7 +134,7 @@ def unfavorite_artwork(artwork, user):
     cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email())
     cache.delete(cache.MC_FAVORITE_COUNT+str(artwork.key().id()))
 
-    fav = db.Favorite.all().filter('artwork =', artwork).filter('user =', user).get()
+    fav = db.Favorite.all().filter('artwork =', artwork).filter('user_email =', user.email()).get()
     if fav:
         fav.delete()
         
@@ -151,7 +150,7 @@ def unfavorite_artwork(artwork, user):
         else:
             fav_count.delete()
             
-    user_profile = db.UserProfile.all().filter('email =', artwork.author.email()).get()
+    user_profile = db.UserProfile.all().filter('email =', artwork.author_email).get()
     if hasattr(user_profile, 'favorite_count'):
         user_profile.favorite_count = user_profile.favorite_count - 1
         user_profile.put()

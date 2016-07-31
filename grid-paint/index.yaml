@@ -35,7 +35,7 @@ indexes:
 
 - kind: Favorite
   properties:
-  - name: user
+  - name: user_email
   - name: date
     direction: desc
 

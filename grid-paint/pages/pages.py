@@ -498,7 +498,7 @@ class PageUserFavorites(BasicPageRequestHandler):
         
         def artworks_query_func():
             all_artworks=db.Favorite.all()
-            all_artworks=all_artworks.filter('user =', users.User(user_profile.email))                
+            all_artworks=all_artworks.filter('user_email =', user_profile.email)                
             return all_artworks.order('-date')
         
         def href_create_func(offset):

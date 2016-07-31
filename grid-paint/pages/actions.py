@@ -484,8 +484,8 @@ class ActionUpdateIterate(BasicRequestHandler):
         for a in all_items:
             try:
                 total_count = total_count+1
-                if a.user and not a.user_email:
-                    a.user_email = a.user.email()
+                if hasattr(a, 'user'):
+                    del a.user
                     updated_count = updated_count +1
                     a.put()
                 else:
