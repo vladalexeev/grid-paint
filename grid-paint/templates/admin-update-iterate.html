@@ -21,6 +21,12 @@
 		    <td><input name="day2" type="text" /></td>		  
 		  </tr>
 		  <tr>
+		    <td>Limit</td>
+		    <td><input name="limit" type="text" value="1000"/></td>
+		    <td>Offset</td>
+		    <td><input name="offset" type="text" value="0"/></td>
+		  </tr>
+		  <tr>
 		    <td>Add</td>
 		    <td><input name="add" type="text" value="15"/></td>
 		    <td></td>
@@ -65,7 +71,7 @@
 var offset = 0;
 
 function calculateEndDate() {
-	var d=new Date();
+	var d=new Date(0);
 	d.setFullYear($("input[name=year1]").val());
 	d.setMonth($("input[name=month1]").val()-1)
 	d.setDate($("input[name=day1]").val())
@@ -95,7 +101,9 @@ $(function() {
 				'&day1='+$("input[name=day1]").val()+
 				'&year2='+$("input[name=year2]").val()+
 				'&month2='+$("input[name=month2]").val()+
-				'&day2='+$("input[name=day2]").val();
+				'&day2='+$("input[name=day2]").val()+
+				'&limit='+$("input[name=limit]").val()+
+				'&offset='+$("input[name=offset]").val();
 		
 		$("#result_block").hide();
 		$("#fail_block").hide();

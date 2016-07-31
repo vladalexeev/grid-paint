@@ -468,11 +468,14 @@ class ActionUpdateIterate(BasicRequestHandler):
         month2 = int(self.request.get('month2'))
         day2 = int(self.request.get('day2'))
         
+        limit = int(self.request.get('limit'))
+        offset = int(self.request.get('offset'))
+        
         date1 = datetime.datetime(year=year1, month=month1, day=day1)
         
         date2 = datetime.datetime(year=year2, month=month2, day=day2)
         
-        all_items = db.Favorite.all().filter('date >=', date1).filter('date <=', date2).fetch(1000,0)
+        all_items = db.Favorite.all().filter('date >=', date1).filter('date <=', date2).fetch(limit,offset)
         total_count = 0
         updated_count = 0
         skipped_count = 0
@@ -496,7 +499,7 @@ class ActionUpdateIterate(BasicRequestHandler):
                   'updated_count': updated_count,
                   'skipped_count': skipped_count,
                   'error_count': error_count,
-                  'all_done': total_count<1000
+                  'all_done': total_count<limit
                   }
         self.response.write(json.dumps(result))
 
