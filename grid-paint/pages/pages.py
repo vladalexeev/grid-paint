@@ -555,11 +555,11 @@ class PageRecentFavorites(BasicPageRequestHandler):
             return cache.MC_ARTWORK_LIST+'recent_favorites_'+str(offset)
         
         def addition_values_func(obj, values):
-            user_profile = dao.get_user_profile(obj.user.email())
+            user_profile = dao.get_user_profile(obj.user_email)
             if user_profile:
                 values['favoriter'] = convert.convert_user_profile(user_profile)
             else:
-                values['favoriter'] = convert.convert_user(obj.user)
+                values['favoriter'] = convert.convert_user(obj.user_email)
             
         model = create_gallery_model(self.request.get('offset'), 
                                      artworks_query_func, 
