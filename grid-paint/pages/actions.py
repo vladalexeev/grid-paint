@@ -270,18 +270,20 @@ class ActionSaveComment(BasicRequestHandler):
         comment.text = comment_text
         comment.put()
         
-        logging.error("artwork.author = {}".format(artwork.author))
-        logging.error("self.user_info.user = {}".format(self.user_info.user))
-        logging.error("compare = {}".format(artwork.author<>self.user_info.user))
+        logging.error("artwork.author_email = {}".format(artwork.author_email))
+        logging.error("self.user_info.user.email() = {}".format(self.user_info.user.email()))
+        logging.error("compare = {}".format(artwork.author_email<>self.user_info.user.email()))
         
         
-        if artwork.author and artwork.author<>self.user_info.user:
+        if artwork.author_email and artwork.author_email<>self.user_info.user.email():
             notification = db.Notification()
             notification.recipient = artwork.author
+            notification.recipient_email = artwork.author_email
             notification.type = 'comment'
             notification.artwork = artwork
             notification.comment = comment
             notification.sender = self.user_info.user
+            notification.sender_email = self.user_info.user.email()
             dao.add_notification(notification)
             
         cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
@@ -475,7 +477,7 @@ class ActionUpdateIterate(BasicRequestHandler):
         
         date2 = datetime.datetime(year=year2, month=month2, day=day2)
         
-        all_items = db.Favorite.all().filter('date >=', date1).filter('date <=', date2).fetch(limit,offset)
+        all_items = db.Notification.all().filter('date >=', date1).filter('date <=', date2).fetch(limit,offset)
         total_count = 0
         updated_count = 0
         skipped_count = 0
@@ -484,12 +486,17 @@ class ActionUpdateIterate(BasicRequestHandler):
         for a in all_items:
             try:
                 total_count = total_count+1
-                if hasattr(a, 'user'):
-                    del a.user
-                    updated_count = updated_count +1
-                    a.put()
-                else:
-                    skipped_count = skipped_count + 1
+                a.recipient_email = a.recipient.email()
+                a.sender_email = a.sender.email();
+                a.put()
+                updated_count = updated_count +1
+                
+#                 if hasattr(a, 'user'):
+#                     del a.user
+#                     updated_count = updated_count +1
+#                     a.put()
+#                 else:
+#                     skipped_count = skipped_count + 1
             except:
                 logging.exception('Iterate error')
                 error_count = error_count + 1
@@ -574,9 +581,11 @@ class ActionToggleFavorite(BasicRequestHandler):
                     
                     notification = db.Notification()
                     notification.recipient = artwork.author
+                    notification.recipient_email = artwork.author_email
                     notification.type = 'favorite'
                     notification.artwork = artwork
                     notification.sender = self.user_info.user
+                    notification.sender_email = self.user_info.user.email()
                     dao.add_notification(notification)
             
                     self.response.out.write(json.dumps({
