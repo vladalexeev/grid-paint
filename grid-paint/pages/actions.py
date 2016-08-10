@@ -486,8 +486,12 @@ class ActionUpdateIterate(BasicRequestHandler):
         for a in all_items:
             try:
                 total_count = total_count+1
-                a.recipient_email = a.recipient.email()
-                a.sender_email = a.sender.email();
+                if a.recipient:
+                    a.recipient_email = a.recipient.email()
+                    
+                if a.sender:
+                    a.sender_email = a.sender.email();
+                    
                 a.put()
                 updated_count = updated_count +1
                 
