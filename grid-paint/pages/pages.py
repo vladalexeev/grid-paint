@@ -19,8 +19,6 @@ import zlib
 from common import BasicPageRequestHandler
 from common import BasicRequestHandler
 
-from google.appengine.api import users
-
 page_size=10
 users_page_size=50
 
@@ -184,7 +182,7 @@ class PageMyImages(BasicPageRequestHandler):
             return;
         
         def artworks_query_func():
-            return db.Artwork.all().filter('author', self.user_info.user).order('-date')
+            return db.Artwork.all().filter('author_email =', self.user_info.user.email()).order('-date')
         
         def href_create_func(offset):
             return '/my-images?offset='+str(offset)
@@ -406,7 +404,7 @@ class PageImage(BasicPageRequestHandler):
         self.write_template('templates/artwork-details.html', 
                             {
                              'artwork': converted_artwork,
-                             'can_edit_artwork': self.user_info.superadmin or artwork.author==self.user_info.user,
+                             'can_edit_artwork': self.user_info.superadmin or artwork.author_email==self.user_info.user.email(),
                              'comments': comments,
                              'favorite_count': favorite_count,
                              'favorite': favorite

@@ -32,8 +32,6 @@ import zlib
 
 from cloudstorage.errors import NotFoundError
 
-from google.appengine.api import users
-
 import logging
 
 grids={
@@ -60,13 +58,13 @@ class ActionSaveImage(BasicRequestHandler):
         
         if artwork_id:
             artwork=dao.get_artwork(artwork_id)
-            if not self.user_info.superadmin and artwork.author <> self.user_info.user:
+            if not self.user_info.superadmin and artwork.author_email <> self.user_info.user.email():
                 # should be the same user or superadmin
                 self.response.set_status(403)
                 return
         else:
             artwork=db.Artwork();
-            artwork.author=self.user_info.user
+            artwork.author = self.user_info.user
             artwork.author_email = self.user_info.user.email()
             
         if artwork_name:
@@ -203,7 +201,7 @@ class ActionDeleteImage(BasicRequestHandler):
     def get(self):
         artwork_id=self.request.get('id')
         artwork=dao.get_artwork(artwork_id)
-        if self.user_info.superadmin or artwork.author==self.user_info.user:
+        if self.user_info.superadmin or artwork.author_email==self.user_info.user.email():
             comments=db.Comment.all().filter('artwork_ref =', artwork)
             for comment in comments:
                 comment.delete()
@@ -221,7 +219,7 @@ class ActionDeleteImage(BasicRequestHandler):
             if hasattr(artwork,'json_file_name'):
                 cs.delete_file(artwork.json_file_name)
                 
-            user_profile = dao.get_user_profile(artwork.author.email())
+            user_profile = dao.get_user_profile(artwork.author_email)
             user_profile.artworks_count = user_profile.artworks_count - 1
             dao.set_user_profile(user_profile)
                 
@@ -269,11 +267,6 @@ class ActionSaveComment(BasicRequestHandler):
         comment.artwork_ref = artwork
         comment.text = comment_text
         comment.put()
-        
-        logging.error("artwork.author_email = {}".format(artwork.author_email))
-        logging.error("self.user_info.user.email() = {}".format(self.user_info.user.email()))
-        logging.error("compare = {}".format(artwork.author_email<>self.user_info.user.email()))
-        
         
         if artwork.author_email and artwork.author_email<>self.user_info.user.email():
             notification = db.Notification()

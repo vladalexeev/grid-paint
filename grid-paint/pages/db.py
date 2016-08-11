@@ -60,7 +60,6 @@ class Settings(db.Model):
     show_analytics = db.BooleanProperty()
     
 class Favorite(db.Expando):
-    #user = db.UserProperty()
     user_email = db.StringProperty()
     artwork = db.ReferenceProperty(reference_class=Artwork)
     date = db.DateTimeProperty(auto_now_add=True)
@@ -69,4 +68,3 @@ class FavoriteCounter(db.Expando):
     artwork = db.ReferenceProperty(reference_class=Artwork)
     count = db.IntegerProperty()
     date = db.DateTimeProperty(auto_now_add=True)
-    #author = db.UserProperty()

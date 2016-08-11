@@ -118,7 +118,6 @@ def favorite_artwork(artwork, user):
     else:
         fav_count = db.FavoriteCounter()
         fav_count.artwork = artwork
-        fav_count.author = artwork.author
         fav_count.count = 1
         
     fav_count.save()
