@@ -34,6 +34,9 @@
 		    <ul class="dropdown-menu">
 		    {% if user_info.has_profile %}
 		  	  	<li><a href="/my-profile">My profile</a></li>
+		  	  	{% if user_info.superadmin %}
+		  	  		<li><a href="/admin">Administration</a></li>
+		  	  	{% endif %}
 		    	<li class="delimiter"></li>
 		    {% endif %}
 		  	  <li><a href="{{ user_info.login_url }}">{{ user_info.login_url_text }}</a></li>
