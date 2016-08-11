@@ -25,17 +25,17 @@ def get_notification_count(user):
     if value<>None:
         return value
     else:
-        count = db.Notification.all().filter('recipient', user).filter('read =',False).count()
+        count = db.Notification.all().filter('recipient_email =', user.email()).filter('read =',False).count()
         cache.add(cache_key, count)
         return count
     
 def delete_notification(notification):
-    cache_key = cache.MC_USER_NOTIFICATION_PREFIX + notification.recipient.email()
+    cache_key = cache.MC_USER_NOTIFICATION_PREFIX + notification.recipient_email
     cache.delete(cache_key)
     notification.delete()
     
 def add_notification(notification):
-    cache_key = cache.MC_USER_NOTIFICATION_PREFIX + notification.recipient.email()
+    cache_key = cache.MC_USER_NOTIFICATION_PREFIX + notification.recipient_email
     cache.delete(cache_key)
     notification.put()
     

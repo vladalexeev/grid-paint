@@ -447,7 +447,7 @@ class PageNotifications(BasicPageRequestHandler):
         else:
             offset = 0
             
-        query = db.Notification.all().filter('recipient =', self.user_info.user).order('-date').fetch(20,offset)
+        query = db.Notification.all().filter('recipient_email =', self.user_info.user.email()).order('-date').fetch(20,offset)
         
         self.write_template('templates/notifications.html', 
                             {

@@ -48,7 +48,7 @@ def auto_nickname(src_nickname):
 def convert_notification(notification):
     result =  {
             'key': notification.key(),
-            'recipient': convert_user(notification.recipient.email()),
+            'recipient': convert_user(notification.recipient_email),
             'date': notification.date,
             'type': notification.type
             }
@@ -64,7 +64,7 @@ def convert_notification(notification):
         pass
     
     try:
-        result['sender'] = convert_user(notification.sender.email())
+        result['sender'] = convert_user(notification.sender_email)
     except:
         pass
     

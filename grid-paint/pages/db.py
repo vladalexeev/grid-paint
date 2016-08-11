@@ -40,13 +40,11 @@ class Comment(db.Expando):
     
 class Notification(db.Expando):
     date = db.DateTimeProperty(auto_now_add=True)
-    recipient = db.UserProperty()
     recipient_email = db.StringProperty()
     read = db.BooleanProperty(default = False)
     type = db.StringProperty(indexed=False)
     artwork = db.ReferenceProperty(reference_class=Artwork, indexed=False)
     comment = db.ReferenceProperty(reference_class=Comment, indexed=False)
-    sender = db.UserProperty(indexed=False)
     sender_email = db.StringProperty(indexed=False)
     
 class UserProfile(db.Model):

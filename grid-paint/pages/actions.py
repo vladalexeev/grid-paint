@@ -241,7 +241,7 @@ class ActionDeleteNotification(BasicRequestHandler):
     def get(self):
         notification_id = self.request.get('id')
         notification = db.Notification.get(notification_id)
-        if notification.recipient == self.user_info.user:
+        if notification.recipient_email == self.user_info.user.email():
             dao.delete_notification(notification)
         else:
             self.response.set_status(403)
@@ -277,12 +277,10 @@ class ActionSaveComment(BasicRequestHandler):
         
         if artwork.author_email and artwork.author_email<>self.user_info.user.email():
             notification = db.Notification()
-            notification.recipient = artwork.author
             notification.recipient_email = artwork.author_email
             notification.type = 'comment'
             notification.artwork = artwork
             notification.comment = comment
-            notification.sender = self.user_info.user
             notification.sender_email = self.user_info.user.email()
             dao.add_notification(notification)
             
@@ -486,21 +484,19 @@ class ActionUpdateIterate(BasicRequestHandler):
         for a in all_items:
             try:
                 total_count = total_count+1
-                if a.recipient:
-                    a.recipient_email = a.recipient.email()
-                    
-                if a.sender:
-                    a.sender_email = a.sender.email();
-                    
-                a.put()
-                updated_count = updated_count +1
                 
-#                 if hasattr(a, 'user'):
-#                     del a.user
-#                     updated_count = updated_count +1
-#                     a.put()
-#                 else:
-#                     skipped_count = skipped_count + 1
+                if hasattr(a,'recipient') or hasattr(a, 'sender'):
+                    if hasattr(a,'recipient'):
+                        del a.recipient
+                    
+                    if hasattr(a, 'sender'):
+                        del a.sender
+                    
+                    a.put()
+                    updated_count = updated_count +1
+                else:
+                    skipped_count = skipped_count + 1
+#                     
             except:
                 logging.exception('Iterate error')
                 error_count = error_count + 1
@@ -584,11 +580,9 @@ class ActionToggleFavorite(BasicRequestHandler):
                     fav_count = dao.favorite_artwork(artwork, self.user_info.user)
                     
                     notification = db.Notification()
-                    notification.recipient = artwork.author
                     notification.recipient_email = artwork.author_email
                     notification.type = 'favorite'
                     notification.artwork = artwork
-                    notification.sender = self.user_info.user
                     notification.sender_email = self.user_info.user.email()
                     dao.add_notification(notification)
             
