@@ -201,7 +201,7 @@ class ActionDeleteImage(BasicRequestHandler):
     def get(self):
         artwork_id=self.request.get('id')
         artwork=dao.get_artwork(artwork_id)
-        if self.user_info.superadmin or artwork.author_email==self.user_info.user.email():
+        if self.user_info.superadmin or artwork.author_email==self.user_info.user_email:
             comments=db.Comment.all().filter('artwork_ref =', artwork)
             for comment in comments:
                 comment.delete()
@@ -239,7 +239,7 @@ class ActionDeleteNotification(BasicRequestHandler):
     def get(self):
         notification_id = self.request.get('id')
         notification = db.Notification.get(notification_id)
-        if notification.recipient_email == self.user_info.user.email():
+        if notification.recipient_email == self.user_info.user_email:
             dao.delete_notification(notification)
         else:
             self.response.set_status(403)
