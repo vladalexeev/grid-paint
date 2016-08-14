@@ -404,7 +404,7 @@ class PageImage(BasicPageRequestHandler):
         self.write_template('templates/artwork-details.html', 
                             {
                              'artwork': converted_artwork,
-                             'can_edit_artwork': self.user_info.superadmin or artwork.author_email==self.user_info.user.email(),
+                             'can_edit_artwork': self.user_info.superadmin or artwork.author_email==self.user_info.user_email,
                              'comments': comments,
                              'favorite_count': favorite_count,
                              'favorite': favorite

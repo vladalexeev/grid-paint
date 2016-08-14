@@ -25,6 +25,7 @@ class UserInfo:
     def __init__(self,request_uri):
         self.user=users.get_current_user()
         if users.get_current_user():
+            self.user_email = self.user.email()
             user_profile = dao.get_user_profile(self.user.email())
             if user_profile:
                 self.user_name = user_profile.nickname
@@ -39,6 +40,7 @@ class UserInfo:
             self.notifications_count = dao.get_notification_count(self.user)
             self.has_notifications = self.notifications_count > 0
         else:
+            self.user_email = None
             self.login_url = users.create_login_url(request_uri)
             self.login_url_text = 'Login into Google account'
             
