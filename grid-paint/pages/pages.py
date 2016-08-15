@@ -491,7 +491,7 @@ class PageProfile(BasicRequestHandler):
 
 class PageUserFavorites(BasicPageRequestHandler):
     def get(self, *arg):
-        profile_id = int(arg[0])
+        profile_id = int(arg[0])        
         user_profile = dao.get_user_profile_by_id(profile_id)
         
         def artworks_query_func():
@@ -510,11 +510,38 @@ class PageUserFavorites(BasicPageRequestHandler):
                                      href_create_func,
                                      memcache_cursor_key_func)
         model['profile'] = user_profile
-        
-        if self.user_info.user and self.user_info.profile_id==profile_id:
+    
+        if self.user_info.user and self.user_info.has_profile and self.user_info.profile_id==profile_id:
             model['this_user_profile']=True
         
         self.write_template('templates/user-favorites.html', model)
+
+
+class PageMyFavorites(BasicPageRequestHandler):
+    def get(self, *arg):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        email = self.user_info.user.email()
+        
+        def artworks_query_func():
+            all_artworks=db.Favorite.all()
+            all_artworks=all_artworks.filter('user_email =', email)                
+            return all_artworks.order('-date')
+        
+        def href_create_func(offset):
+            return '/my-favorites?offset='+str(offset)
+            
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST+'my_favorites_'+email+'_'+str(offset)
+            
+        model = create_gallery_model(self.request.get('offset'), 
+                                     artworks_query_func, 
+                                     href_create_func,
+                                     memcache_cursor_key_func)
+        
+        self.write_template('templates/my-favorites.html', model)
         
 
 class PageTopFavorites(BasicPageRequestHandler):
