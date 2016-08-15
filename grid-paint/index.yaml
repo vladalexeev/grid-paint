@@ -54,12 +54,6 @@ indexes:
 
 - kind: Notification
   properties:
-  - name: recipient
-  - name: date
-    direction: desc
-
-- kind: Notification
-  properties:
   - name: recipient_email
   - name: date
     direction: desc
