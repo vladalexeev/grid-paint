@@ -222,6 +222,10 @@ body {
 	font-size: 9pt;
 }
 
+.image-details-comments .comment .comment-text {
+	padding: 2px 10px 2px 10px;
+}
+
 .image-details-comments .comment .comment-header h2 {
 	font-size: 14pt;
 	font-weight: bold;

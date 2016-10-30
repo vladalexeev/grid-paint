@@ -8,6 +8,7 @@ Created on 19 nov 2013
 import tags
 import dao
 import logging
+from string import split
 
 def calc_resize(image_width, image_height, max_width, max_height):
     '''
@@ -125,7 +126,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
 def convert_comment_for_page(comment):
     result = {
               'key': comment.key(),
-              'text': comment.text,
+              'text': split(comment.text, '\n'),
               'author': convert_user(comment.author_email),
               'date': comment.date,
               'artwork_key': comment.artwork_ref.key(),

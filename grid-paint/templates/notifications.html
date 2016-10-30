@@ -29,9 +29,9 @@
 				{% endif %}
 			</div>
 			{% if n.comment %}
-			<div class="comment-text">
-				{{ n.comment.text}}
-			</div>
+				{% for t in n.comment.text %}
+				  <div class="comment-text">{{t}}</div>
+				{% endfor %}
 			{% endif %}
 		</div>
 	  {% endif %}

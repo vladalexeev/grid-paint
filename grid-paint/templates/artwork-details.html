@@ -106,7 +106,9 @@
 		  			</div>
 		  		{% endif %}
 		  	</div>
-		  	<pre class="comment-text">{{ comment.text }}</pre>
+		  	{% for t in comment.text %}
+		  	  <div class="comment-text">{{t}}</div>
+		  	{% endfor %}
 		  </div>
 		{% endfor %}
 	</div>
