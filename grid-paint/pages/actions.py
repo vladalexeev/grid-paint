@@ -64,7 +64,6 @@ class ActionSaveImage(BasicRequestHandler):
                 return
         else:
             artwork=db.Artwork();
-            artwork.author = self.user_info.user
             artwork.author_email = self.user_info.user.email()
             
         if artwork_name:
@@ -468,7 +467,7 @@ class ActionUpdateIterate(BasicRequestHandler):
         
         date2 = datetime.datetime(year=year2, month=month2, day=day2)
         
-        all_items = db.Notification.all().filter('date >=', date1).filter('date <=', date2).fetch(limit,offset)
+        all_items = db.Artwork.all().filter('date >=', date1).filter('date <=', date2).fetch(limit,offset)
         total_count = 0
         updated_count = 0
         skipped_count = 0
@@ -478,12 +477,8 @@ class ActionUpdateIterate(BasicRequestHandler):
             try:
                 total_count = total_count+1
                 
-                if hasattr(a,'recipient') or hasattr(a, 'sender'):
-                    if hasattr(a,'recipient'):
-                        del a.recipient
-                    
-                    if hasattr(a, 'sender'):
-                        del a.sender
+                if hasattr(a,'author'):
+                    del a.author
                     
                     a.put()
                     updated_count = updated_count +1
