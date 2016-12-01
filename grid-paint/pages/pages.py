@@ -468,8 +468,16 @@ class PageMyProfile(BasicPageRequestHandler):
         
 class PageProfile(BasicRequestHandler):
     def get(self, *arg):
-        profile_id = int(arg[0])
+        try:
+            profile_id = int(arg[0])
+        except ValueError:
+            self.response.set_status(404)
+            return;
+            
         user_profile = dao.get_user_profile_by_id(profile_id)
+        if not user_profile:
+            self.response.set_status(404)
+            return;
         
         def artworks_query_func():
             return db.Artwork.all().filter('author_email =',user_profile.email).order('-date')
