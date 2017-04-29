@@ -320,6 +320,14 @@ function pushRecentColor(hexColor) {
 	}	
 }
 
+function selectColorFromPicker(hexColor) {
+	selectedColor=hexColor;
+	for (var shapeName in grid.shapes) {
+		paintShapeToolButton(shapeName);
+		$("#selected-color").css("background-color",selectedColor);
+	}	
+}
+
 function selectColor(hexColor) {
 	selectedColor=hexColor;
 	for (var shapeName in grid.shapes) {
@@ -477,7 +485,7 @@ $(function() {
 		inline:true,
 		control: "brightness",
 		change: function(hex,opacity) {
-			selectColor(hex);
+			selectColorFromPicker(hex);
 		}
 	}).minicolors("value",selectedColor);
 	
