@@ -64,7 +64,9 @@
 				{% endif %}
 			</span>
 		</div>
-		<div style="white-space: pre;">{{ artwork.description|default_if_none:"" }}</div>
+		{% for d in artwork.description%}
+		  <div class="description-text">{{ d }}</div>
+		{% endfor%}
 		{% if artwork.tags %}
 		<div>
 			<i class="icon icon-tag"></i>

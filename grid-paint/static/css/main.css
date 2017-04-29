@@ -200,6 +200,10 @@ body {
 	color: #808080;
 }
 
+.image-details-header .description-text {
+	padding: 4px 100px 4px 0px;
+}
+
 .image-details-actions {
 	margin:10px;
 }
