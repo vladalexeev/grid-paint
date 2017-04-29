@@ -79,7 +79,8 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
         result={
                 'key': artwork.key(),
                 'name': artwork.name,
-                'description': artwork.description.split('\n'),
+                'description': artwork.description,
+                'description_list': artwork.description.split('\n'),
                 'date': artwork.date,
                 'grid': artwork.grid,
                 'author': convert_user(artwork.author_email),
