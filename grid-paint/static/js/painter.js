@@ -321,18 +321,61 @@ function pushRecentColor(hexColor) {
 }
 
 function selectColorFromPicker(hexColor) {
+	if (selectedColor.toUpperCase()==hexColor.toUpperCase()) {
+		return;
+	}
+	
 	selectedColor=hexColor;
 	for (var shapeName in grid.shapes) {
 		paintShapeToolButton(shapeName);
 		$("#selected-color").css("background-color",selectedColor);
+	}
+	
+	var colorInText = $("#color-picker-text").val();
+	if (colorInText.toUpperCase != hexColor.toUpperCase()) { 
+		$("#color-picker-text").val(hexColor);
 	}	
 }
 
+function selectColorFromText(hexColor) {
+	if (selectedColor.toUpperCase()==hexColor.toUpperCase()) {
+		return;
+	}
+	
+	var testColor = /^#[0-9A-Fa-f]{6}$/i.test(hexColor);
+	
+	if (hexColor.length!=7 || !testColor) {
+		return;
+	}
+	
+	if (hexColor.toUpperCase()==selectedColor.toUpperCase()) {
+		return;
+	}
+	
+	selectedColor=hexColor;
+	
+	for (var shapeName in grid.shapes) {
+		paintShapeToolButton(shapeName);
+		$("#selected-color").css("background-color",selectedColor);
+	}
+	
+	$("#color-picker").minicolors("value",hexColor);
+}
+
 function selectColor(hexColor) {
+	if (selectedColor.toUpperCase()==hexColor.toUpperCase()) {
+		return;
+	}
+	
 	selectedColor=hexColor;
 	for (var shapeName in grid.shapes) {
 		paintShapeToolButton(shapeName);
 		$("#selected-color").css("background-color",selectedColor);
+	}
+	
+	var colorInText = $("#color-picker-text").val();
+	if (colorInText.toUpperCase != hexColor.toUpperCase()) { 
+		$("#color-picker-text").val(hexColor);
 	}
 	
 	$("#color-picker").minicolors("value",hexColor);
@@ -478,6 +521,18 @@ $(function() {
 			} else if (mode=="paste") {
 				changePastePositionByMouseEvent(event);
 			}
+		}
+	)
+	
+	$.mask.definitions['k'] = "[A-Fa-f0-9]";
+	$("#color-picker-text").mask("#kkkkkk");
+	$("#color-picker-text").change(
+		function() {
+			selectColorFromText($(this).val())
+		}
+	).keyup(
+		function() {
+			selectColorFromText($(this).val())
 		}
 	)
 	

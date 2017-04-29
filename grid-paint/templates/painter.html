@@ -20,6 +20,7 @@
 {{ block.super }}
 <script src="/js/raphael-min.js"></script>
 <script src="/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+<script src="/js/jquery.maskedinput.js"></script>
 {% endblock %}
 
 {% block content_full %}  
@@ -39,6 +40,11 @@
 		<div id="color-selection" >
 			<div id="color-picker"></div>
 		</div>
+		
+		<div class="painter-toolbar">
+			<input id="color-picker-text" />
+		</div>
+		
 		<div class="painter-toolbar">
 			<div id="selected-color"></div>
 			<div id="color-palette"></div>
