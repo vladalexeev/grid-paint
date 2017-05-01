@@ -10,6 +10,7 @@ application = webapp.WSGIApplication([
                                       ('/gallery', pages.pages.PageGallery),
                                       ('/admin',pages.pages.PageAdmin),
                                       ('/admin/saveArtworkProperties', pages.actions.ActionAdminSetArtworkProperties),
+                                      ('/admin/updateUserFavorites', pages.actions.ActionAdminUpdateUserFavoritesCount),
                                       ('/admin/update-iterate', pages.pages.PageAdminUpdateIterate),
                                       ('/admin/update-iterate-do', pages.actions.ActionUpdateIterate),
                                       ('/save-settings', pages.actions.ActionSaveSettings),

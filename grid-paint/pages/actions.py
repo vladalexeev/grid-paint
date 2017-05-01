@@ -542,6 +542,34 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
         
         self.redirect('/images/details/'+str(artwork_id))
+        
+class ActionAdminUpdateUserFavoritesCount(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        try:
+            profile_id = int(self.request.get('profile_id'))
+            user_profile = dao.get_user_profile_by_id(profile_id)
+            user_email = user_profile.email
+            
+            artworks = db.Artwork.all().filter('author_email =', user_email).order('date')
+            count = 0
+            for a in artworks:
+                count += dao.get_artwork_favorite_count(a)
+                
+            user_profile.favorite_count = count
+            dao.set_user_profile(user_profile)
+            
+            self.response.out.write(json.dumps({
+                                'count': count 
+                                }))
+        except Exception as e:
+            logging.exception('Error updating favorites count')
+            self.response.out.write(json.dumps({
+                                'error': '{}'.format(e) 
+                                }))
             
             
 class ActionToggleFavorite(BasicRequestHandler):            

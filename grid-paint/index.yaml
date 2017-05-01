@@ -20,7 +20,17 @@ indexes:
   properties:
   - name: author_email
   - name: date
+
+- kind: Artwork
+  properties:
+  - name: author_email
+  - name: date
     direction: desc
+
+- kind: Artwork
+  properties:
+  - name: author_email=
+  - name: date
 
 - kind: Artwork
   properties:
