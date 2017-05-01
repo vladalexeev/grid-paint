@@ -206,7 +206,9 @@ class ActionDeleteImage(BasicRequestHandler):
                 comment.delete()
                 
             favorite_counts = db.FavoriteCounter.all().filter('artwork =', artwork)
+            decrease_count = 0
             for fc in favorite_counts:
+                decrease_count += fc.count
                 fc.delete()
                 
             favorites = db.Favorite.all().filter('artwork =', artwork)
@@ -217,9 +219,10 @@ class ActionDeleteImage(BasicRequestHandler):
             cs.delete_file(artwork.small_image_file_name)
             if hasattr(artwork,'json_file_name'):
                 cs.delete_file(artwork.json_file_name)
-                
+                                
             user_profile = dao.get_user_profile(artwork.author_email)
             user_profile.artworks_count = user_profile.artworks_count - 1
+            user_profile.favorite_count = user_profile.favorite_count - decrease_count
             dao.set_user_profile(user_profile)
                 
             artwork.delete();
@@ -609,4 +612,5 @@ class ActionToggleFavorite(BasicRequestHandler):
                     
                 cache.delete(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
                 cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
+                cache.delete(cache.MC_USER_PROFILE+artwork.author_email)
             
