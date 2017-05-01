@@ -554,7 +554,7 @@ class ActionAdminUpdateUserFavoritesCount(BasicRequestHandler):
             user_profile = dao.get_user_profile_by_id(profile_id)
             user_email = user_profile.email
             
-            artworks = db.Artwork.all().filter('author_email =', user_email).order('date')
+            artworks = db.Artwork.all().filter('author_email =', user_email).order('-date')
             count = 0
             for a in artworks:
                 count += dao.get_artwork_favorite_count(a)
