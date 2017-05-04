@@ -8,7 +8,6 @@ Created on 19 nov 2013
 import tags
 import dao
 import logging
-from string import split
 
 def calc_resize(image_width, image_height, max_width, max_height):
     '''
