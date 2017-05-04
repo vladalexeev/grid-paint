@@ -136,6 +136,13 @@ def convert_comment_for_page(comment):
         
     return result
 
+def convert_comment_for_page_rich(comment):
+    result = convert_comment_for_page(comment)
+    result['small_image_file'] = comment.artwork_ref.small_image_file_name
+    result['small_image_width'] = int(comment.artwork_ref.small_image_width / 2)
+    result['small_image_height'] = int(comment.artwork_ref.small_image_height / 2)
+    return result
+
 
 def convert_user(user_email):
     if not user_email:

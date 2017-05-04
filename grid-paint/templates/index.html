@@ -114,15 +114,22 @@ link at the top.
 
 <div class="image-details-comments">
 	{% for c in comments %}
-	<div class="comment">
-		<div class="comment-header">
-			<h2><a href="/images/details/{{ c.artwork_key.id }}">{{ c.artwork_name }}</a></h2>
-			<div>{{ c.date }} <b>{{c.author.nickname}}</b></div>
+	<div class="rich-comment">
+		<div class="rich-comment-image">
+			<a href="/images/details/{{ c.artwork_key.id }}">
+				<img src="{{ c.small_image_file }}" width="{{ c.small_image_width }}" height="{{ c.small_image_height }}" border="0"/>
+			</a>
 		</div>
-	  	{% for t in c.text %}
-		  	  <div class="comment-text">{{t}}</div>
-	  	{% endfor %}
-	</div>						
+		<div class="comment">
+			<div class="comment-header">
+				<h2><a href="/images/details/{{ c.artwork_key.id }}">{{ c.artwork_name }}</a></h2>
+				<div>{{ c.date }} <b>{{c.author.nickname}}</b></div>
+			</div>
+		  	{% for t in c.text %}
+			  	  <div class="comment-text">{{t}}</div>
+		  	{% endfor %}
+		</div>
+	</div>
 	{% endfor %}
 </div>
 </div>

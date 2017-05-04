@@ -56,7 +56,7 @@ class PageIndex(BasicPageRequestHandler):
         recent_comments = cache.get(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
         if not recent_comments:
             comments = db.Comment.all().order('-date').fetch(5, 0)
-            recent_comments = [convert.convert_comment_for_page(c) for c in comments]
+            recent_comments = [convert.convert_comment_for_page_rich(c) for c in comments]
             cache.add(cache.MC_MAIN_PAGE_RECENT_COMMENTS, recent_comments)
             
         productive_artists = cache.get(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
