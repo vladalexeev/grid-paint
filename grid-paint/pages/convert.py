@@ -125,11 +125,11 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
 
 def convert_comment_for_page(comment):
     result = {
-              'key': comment.key(),
+              'key': comment.key().id(),
               'text': comment.text.split('\n'),
               'author': convert_user(comment.author_email),
               'date': comment.date,
-              'artwork_key': comment.artwork_ref.key(),
+              'artwork_key': comment.artwork_ref.key().id(),
               'artwork_name': comment.artwork_ref.name
               }
         

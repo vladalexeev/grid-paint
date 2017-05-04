@@ -289,9 +289,15 @@ class ActionDeleteComment(BasicRequestHandler):
             self.response.set_status(403)
             return
         
-        comment_id=self.request.get('id')
+        comment_id = self.request.get('id')
+        parent_id = self.request.get('parent_id')
         
-        comment=db.Comment.get(comment_id)
+        artwork = dao.get_artwork(parent_id)
+        if not artwork:
+            self.response.set_status(404)
+            return
+        
+        comment=db.Comment.get_by_id(long(comment_id), artwork.key())
         
         if comment:
             artwork=comment.artwork_ref
@@ -613,4 +619,20 @@ class ActionToggleFavorite(BasicRequestHandler):
                 cache.delete(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
                 cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
                 cache.delete(cache.MC_USER_PROFILE+artwork.author_email)
+                
+class JSONComments(BasicRequestHandler):
+    def get(self):
+        limit = int(self.request.get('limit'))
+        offset = int(self.request.get('offset'))
+        
+        def json_serial(obj):
+            if isinstance(obj, datetime.datetime):
+                serial = obj.isoformat()
+                return serial
+            raise TypeError ("Type not serializable {}", repr(obj))
+        
+        comments = db.Comment.all().order('-date').run(limit=limit, offset=offset)
+        dict_comments = [convert.convert_comment_for_page_rich(c) for c in comments]
+        
+        self.response.out.write(json.dumps(dict_comments, default=json_serial))
             

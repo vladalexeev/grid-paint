@@ -116,13 +116,13 @@ link at the top.
 	{% for c in comments %}
 	<div class="rich-comment">
 		<div class="rich-comment-image">
-			<a href="/images/details/{{ c.artwork_key.id }}">
+			<a href="/images/details/{{ c.artwork_key }}">
 				<img src="{{ c.small_image_file }}" width="{{ c.small_image_width }}" height="{{ c.small_image_height }}" border="0"/>
 			</a>
 		</div>
 		<div class="comment">
 			<div class="comment-header">
-				<h2><a href="/images/details/{{ c.artwork_key.id }}">{{ c.artwork_name }}</a></h2>
+				<h2><a href="/images/details/{{ c.artwork_key }}">{{ c.artwork_name }}</a></h2>
 				<div>{{ c.date }} <b>{{c.author.nickname}}</b></div>
 			</div>
 		  	{% for t in c.text %}
@@ -131,6 +131,10 @@ link at the top.
 		</div>
 	</div>
 	{% endfor %}
+</div>
+
+<div class="text-center">
+	<a href="/comments" class="btn btn-default btn-small">More comments<i class="icon-arrow-right"></i></a>
 </div>
 </div>
 
@@ -162,7 +166,7 @@ link at the top.
 		{% endfor %}
 
 	</table>
-	<div class="text-right">
+	<div class="text-center">
 		<a href="/profiles/by-artwork-count" class="btn btn-default btn-small">More artists <i class="icon-arrow-right"></i></a>
 	</div>
 </div>
@@ -189,7 +193,7 @@ link at the top.
 		{% endfor %}
 
 	</table>
-	<div class="text-right">
+	<div class="text-center">
 		<a href="/profiles/by-stars-count" class="btn btn-default btn-small">More artists <i class="icon-arrow-right"></i></a>
 	</div>
 </div>

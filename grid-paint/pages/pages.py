@@ -645,3 +645,7 @@ class PageUsersByFavortiesCount(BasicPageRequestHandler):
 class PageProfiles(BasicPageRequestHandler):
     def get(self):
         self.redirect('/profiles/by-stars-count', True)
+        
+class PageComments(BasicPageRequestHandler):
+    def get(self):
+        self.write_template('templates/comments.html', {})

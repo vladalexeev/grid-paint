@@ -42,7 +42,9 @@ application = webapp.WSGIApplication([
                                       ('/profiles/(.*)', pages.pages.PageProfile),
                                       ('/editor-choice', pages.pages.PageEditorChoice),
                                       ('/favorites', pages.pages.PageRecentFavorites),
-                                      ('/toggle-favorite', pages.actions.ActionToggleFavorite)
+                                      ('/toggle-favorite', pages.actions.ActionToggleFavorite),
+                                      ('/json/comments', pages.actions.JSONComments),
+                                      ('/comments', pages.pages.PageComments)
                                       ], debug=True)
 
 
