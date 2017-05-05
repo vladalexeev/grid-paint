@@ -11,21 +11,57 @@
 <div class="image-details-comments">
 </div>
 
+<div id="nav_buttons" style="display:none; margin:10px;" class="text-center">
+	<form name="a" class="form-inline">
+		<button id="button_prev" type="button" class="btn btn-small btn-desfault">Prev</button>
+		<input type="text" id="offset" class="form-control" size="4" />
+		<button id="button_next" type="button" class="btn btn-small btn-desfault">Next</button>
+	</form>
+</div>
+
 
 </div>
 
 <script>
-var maxCount = 25 
+var maxCount = 10;
+
+function getCurrentOffset() {
+	return parseInt($("#offset").val(), 10);
+}
+
+function setCurrentOffset(offset) {
+	$("#offset").val(offset);
+	showCurrentOffset();
+}
+
+function showCurrentOffset() {
+	loadComments(maxCount+1, getCurrentOffset());
+}
 
 function loadComments(limit, offset) {
 	$.getJSON(
 		'/json/comments?limit='+limit+"&offset="+offset
 	).done(function(data) {
 		html='';
-		for (var i=0; i<data.length; i++) {
+		for (var i=0; i<data.length && i<maxCount; i++) {
 			html+=commentToHtml(data[i]);
 		}
 		$(".image-details-comments").html(html);
+		
+		if (offset>0 || data.length>maxCount) {
+			$("#nav_buttons").show();
+			if (offset>0) {
+				$("#button_prev").removeAttr("disabled");
+			} else {
+				$("#button_prev").attr("disabled","disabled");
+			}
+			
+			if (data.length>maxCount) {
+				$("#button_next").removeAttr("disabled");
+			} else {
+				$("#button_next").attr("disabled","disabled");
+			}
+		}
 	});
 }
 
@@ -40,7 +76,7 @@ function commentToHtml(c) {
 			'<div class="comment">'+
 				'<div class="comment-header">'+
 					'<h2><a href="/images/details/'+c['artwork_key']+'">'+c['artwork_name']+'</a></h2>'+
-					'<div>'+c['date']+'<b>'+c['author.nickname']+'</b></div>'+
+					'<div>'+c['date']+'<b>'+c['author']['nickname']+'</b></div>'+
 				'</div>';
 				
 	for (var i=0; i<c['text'].length; i++) {
@@ -52,7 +88,27 @@ function commentToHtml(c) {
 }
 
 $(function() {
-	loadComments(maxCount, 0);
+	$("#button_prev").click(function() {
+		var offset = getCurrentOffset() - maxCount;
+		if (offset<0) {
+			offset=0;
+		}
+		setCurrentOffset(offset);
+	});
+	
+	$("#button_next").click(function() {
+		var offset = getCurrentOffset() + maxCount;
+		setCurrentOffset(offset);
+	});
+	
+	$("#offset").keypress(function(event) {
+		if (event.which==13) {
+			showCurrentOffset();
+			event.preventDefault();
+		}
+	});
+	
+	setCurrentOffset(0);
 });
 </script>
 
