@@ -123,7 +123,7 @@ link at the top.
 		<div class="comment">
 			<div class="comment-header">
 				<h2><a href="/images/details/{{ c.artwork_key }}">{{ c.artwork_name }}</a></h2>
-				<div>{{ c.date }} <b>{{c.author.nickname}}</b></div>
+				<div>{{ c.date|date:"d M Y H:i" }} <b>{{c.author.nickname}}</b></div>
 			</div>
 		  	{% for t in c.text %}
 			  	  <div class="comment-text">{{t}}</div>
