@@ -65,6 +65,34 @@ function loadComments(limit, offset) {
 	});
 }
 
+function formatDate(date) {
+	var months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+	result="";
+	if (date.getDay()<10) {
+		result+="0"+date.getDay();
+	} else {
+		result+=gate.getDay();
+	}
+	
+	result+=" "+months[date.getMonth()]+" ";
+	
+	if (date.getHours()<10) {
+		result+="0"+date.getHours();
+	} else {
+		result+=date.getHours();
+	}
+	
+	result+=":";
+	
+	if (date.getMinutes()<10) {
+		result+="0"+date.getMinutes();
+	} else {
+		result+=date.getMinutes();
+	}
+	
+	return result;
+}
+
 function commentToHtml(c) {
 	result=
 		'<div class="rich-comment">'+
@@ -76,7 +104,7 @@ function commentToHtml(c) {
 			'<div class="comment">'+
 				'<div class="comment-header">'+
 					'<h2><a href="/images/details/'+c['artwork_key']+'">'+c['artwork_name']+'</a></h2>'+
-					'<div>'+c['date']+'<b>'+c['author']['nickname']+'</b></div>'+
+					'<div>'+formatDate(new Date(Date.parse(c['date'])))+' <b>'+c['author']['nickname']+'</b></div>'+
 				'</div>';
 				
 	for (var i=0; i<c['text'].length; i++) {
