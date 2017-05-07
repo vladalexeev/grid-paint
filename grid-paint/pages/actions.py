@@ -303,7 +303,10 @@ class ActionDeleteComment(BasicRequestHandler):
             artwork=comment.artwork_ref
             comment.delete()
             cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
-            self.redirect('/images/details/'+str(artwork.key().id()))
+            if self.request.get('json'):
+                self.response.out.write(json.dumps('OK'))
+            else:
+                self.redirect('/images/details/'+str(artwork.key().id()))
         else:
             self.response.set_status(404)
             return

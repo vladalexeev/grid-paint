@@ -48,6 +48,14 @@ function loadComments(limit, offset) {
 		}
 		$(".image-details-comments").html(html);
 		
+		{% if user_info.superadmin %}
+		$(".delete_comment_button").click(function(data) {
+			comment_id = $(this).attr("comment_id");
+			parent_id = $(this).attr("parent_id");
+			deleteComment(comment_id, parent_id);
+		});
+		{% endif %}
+		
 		if (offset>0 || data.length>maxCount) {
 			$("#nav_buttons").show();
 			if (offset>0) {
@@ -95,7 +103,7 @@ function formatDate(date) {
 
 function commentToHtml(c) {
 	result=
-		'<div class="rich-comment">'+
+		'<div class="rich-comment" id="comment-'+c['key']+'">'+
 			'<div class="rich-comment-image">'+
 				'<a href="/images/details/'+c['artwork_key']+'">'+
 					'<img src="'+c['small_image_file']+'" width="'+c['small_image_width']+'" height="'+c['small_image_height']+'" border="0"/>'+
@@ -103,6 +111,11 @@ function commentToHtml(c) {
 			'</div>'+
 			'<div class="comment">'+
 				'<div class="comment-header">'+
+			  		{% if user_info.superadmin %}
+			  			'<div class="pull-right">'+
+			  			'<span class="delete_comment_button" title="Delete comment" comment_id="'+c['key']+'" parent_id="'+c['artwork_key']+'"><i class="icon icon-remove"></i></span>'+
+			  			'</div>'+
+			  		{% endif %}				
 					'<h2><a href="/images/details/'+c['artwork_key']+'">'+c['artwork_name']+'</a></h2>'+
 					'<div>'+formatDate(new Date(Date.parse(c['date'])))+' <b>'+c['author']['nickname']+'</b></div>'+
 				'</div>';
@@ -138,6 +151,18 @@ $(function() {
 	
 	setCurrentOffset(0);
 });
+
+{% if user_info.superadmin %}
+function deleteComment(id, parent_id) {
+	$.getJSON('/delete-comment?id='+id+'&parent_id='+parent_id+'&json=1')
+		.done(function(data) {
+			if (data=="OK") {
+				$("#comment-"+id).remove();
+			}
+		});
+}
+
+{% endif %}
 </script>
 
   
