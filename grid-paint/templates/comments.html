@@ -135,16 +135,19 @@ $(function() {
 			offset=0;
 		}
 		setCurrentOffset(offset);
+		window.scrollTo(0,0);
 	});
 	
 	$("#button_next").click(function() {
 		var offset = getCurrentOffset() + maxCount;
 		setCurrentOffset(offset);
+		window.scrollTo(0,0);
 	});
 	
 	$("#offset").keypress(function(event) {
 		if (event.which==13) {
 			showCurrentOffset();
+			window.scrollTo(0,0);
 			event.preventDefault();
 		}
 	});
@@ -158,6 +161,7 @@ function deleteComment(id, parent_id) {
 		.done(function(data) {
 			if (data=="OK") {
 				$("#comment-"+id).remove();
+				showCurrentOffset();
 			}
 		});
 }
