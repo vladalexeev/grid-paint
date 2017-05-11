@@ -132,6 +132,8 @@ def convert_comment_for_page(comment):
               'artwork_key': comment.artwork_ref.key().id(),
               'artwork_name': comment.artwork_ref.name
               }
+    if hasattr(comment, 'hidden'):
+        result['hidden'] = True
         
     return result
 

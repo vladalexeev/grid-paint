@@ -236,6 +236,7 @@ body {
 	font-weight: bold;
 	margin:0;
 	line-height:18pt;
+	min-height: 18pt;
 }
 
 

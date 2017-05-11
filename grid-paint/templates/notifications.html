@@ -29,9 +29,13 @@
 				{% endif %}
 			</div>
 			{% if n.comment %}
-				{% for t in n.comment.text %}
-				  <div class="comment-text">{{t}}</div>
-				{% endfor %}
+				{% if n.comment.hidden %}
+					<div class="comment-text" style="color:red;">Hidden by administrator</div>
+				{% else %}
+					{% for t in n.comment.text %}
+					  <div class="comment-text">{{t}}</div>
+					{% endfor %}
+				{% endif %}
 			{% endif %}
 		</div>
 	  {% endif %}

@@ -54,6 +54,18 @@ function loadComments(limit, offset) {
 			parent_id = $(this).attr("parent_id");
 			deleteComment(comment_id, parent_id);
 		});
+		
+		$(".hide_comment_button").click(function(data) {
+			comment_id = $(this).attr("comment_id");
+			parent_id = $(this).attr("parent_id");
+			hideComment(comment_id, parent_id);
+		});
+		
+		$(".show_comment_button").click(function(data) {
+			comment_id = $(this).attr("comment_id");
+			parent_id = $(this).attr("parent_id");
+			showComment(comment_id, parent_id);
+		});		
 		{% endif %}
 		
 		if (offset>0 || data.length>maxCount) {
@@ -113,16 +125,36 @@ function commentToHtml(c) {
 				'<div class="comment-header">'+
 			  		{% if user_info.superadmin %}
 			  			'<div class="pull-right">'+
-			  			'<span class="delete_comment_button" title="Delete comment" comment_id="'+c['key']+'" parent_id="'+c['artwork_key']+'"><i class="icon icon-remove"></i></span>'+
+			  			'<span class="hide_comment_button btn btn-small btn-default" title="Hide comment" comment_id="'+c['key']+'" parent_id="'+c['artwork_key']+'" '+
+			  					(c['hidden'] ? 'style="display:none"': '')+'>'+
+			  				'<i class="glyphicon glyphicon-eye-close"></i>'+
+			  			'</span>'+
+			  			'<span class="show_comment_button btn btn-small btn-default" title="Show comment" comment_id="'+c['key']+'" parent_id="'+c['artwork_key']+'" '+
+			  					(c['hidden'] ? '': 'style="display:none"')+'>'+
+			  				'<i class="glyphicon glyphicon-eye-open"></i>'+
+			  			'</span>'+
+			  			'<span class="delete_comment_button btn btn-small btn-default" title="Delete comment" comment_id="'+c['key']+'" parent_id="'+c['artwork_key']+'">'+
+			  				'<i class="glyphicon glyphicon-trash"></i>'+
+			  			'</span>'+
 			  			'</div>'+
 			  		{% endif %}				
 					'<h2><a href="/images/details/'+c['artwork_key']+'">'+c['artwork_name']+'</a></h2>'+
 					'<div>'+formatDate(new Date(Date.parse(c['date'])))+' <b>'+c['author']['nickname']+'</b></div>'+
 				'</div>';
 				
+	result+='<div class="comment-text" id="text_hidden" style="color:red;'+(c['hidden'] ? '' : 'display:none;')+'">Hidden by administrator</div>';
+	
+	{% if user_info.superadmin %}
 	for (var i=0; i<c['text'].length; i++) {
 		result+='<div class="comment-text">'+c['text'][i]+'</div>';
 	}
+	{% else %}
+	if (!c['hidden']) {
+		for (var i=0; i<c['text'].length; i++) {
+			result+='<div class="comment-text">'+c['text'][i]+'</div>';
+		}
+	}
+	{% endif %}
 	
 	result+='</div></div>';
 	return result;
@@ -157,13 +189,35 @@ $(function() {
 
 {% if user_info.superadmin %}
 function deleteComment(id, parent_id) {
-	$.getJSON('/delete-comment?id='+id+'&parent_id='+parent_id+'&json=1')
+	$.getJSON('/admin/delete-comment?id='+id+'&parent_id='+parent_id)
 		.done(function(data) {
 			if (data=="OK") {
 				$("#comment-"+id).remove();
 				showCurrentOffset();
 			}
 		});
+}
+
+function hideComment(id, parent_id) {
+	$.getJSON('/admin/hide-comment?id='+id+'&parent_id='+parent_id)
+		.done(function(data) {
+			if (data=="OK") {
+				$("#comment-"+id).find("#text_hidden").show();
+				$("#comment-"+id).find(".show_comment_button").show();
+				$("#comment-"+id).find(".hide_comment_button").hide();
+			}
+		});	
+}
+
+function showComment(id, parent_id) {
+	$.getJSON('/admin/show-comment?id='+id+'&parent_id='+parent_id)
+		.done(function(data) {
+			if (data=="OK") {
+				$("#comment-"+id).find("#text_hidden").hide();
+				$("#comment-"+id).find(".show_comment_button").hide();
+				$("#comment-"+id).find(".hide_comment_button").show();
+			}
+		});	
 }
 
 {% endif %}

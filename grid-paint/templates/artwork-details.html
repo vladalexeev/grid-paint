@@ -100,17 +100,40 @@
 	
 	<div class="image-details-comments">
 		{% for comment in comments %}
-		  <div class="comment">
+		  <div class="comment" id="comment-{{ comment.key }}">
 		  	<div class="comment-header"><b>{{ comment.author.nickname }}</b> - {{ comment.date|date:"d M Y H:i" }}
 		  		{% if user_info.superadmin %}
 		  			<div class="pull-right">
-		  				<a href="/delete-comment?id={{ comment.key }}&parent_id={{ comment.artwork_key }}" title="Delete comment"><i class="icon icon-remove"></i></a>
+			  			<span class="hide_comment_button btn btn-small btn-default" title="Hide comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+			  					{% if comment.hidden %}style="display:none;"{% endif%} >
+			  				<i class="glyphicon glyphicon-eye-close"></i>
+			  			</span>
+			  			<span class="show_comment_button btn btn-small btn-default" title="Show comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+			  					{% if not comment.hidden %}style="display:none"{% endif %} >
+			  				<i class="glyphicon glyphicon-eye-open"></i>
+			  			</span>
+			  			<span class="delete_comment_button btn btn-small btn-default" title="Delete comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
+			  				<i class="glyphicon glyphicon-trash"></i>
+			  			</span>
 		  			</div>
 		  		{% endif %}
 		  	</div>
-		  	{% for t in comment.text %}
-		  	  <div class="comment-text">{{t}}</div>
-		  	{% endfor %}
+		  	{% if user_info.superadmin %}
+		  		<div class="comment-text"  id="text_hidden" style="color:red;{% if not comment.hidden %}display:none;{% endif %}">Hidden by administrator</div>
+			  	{% for t in comment.text %}
+			  	  <div class="comment-text">{{t}}</div>
+			  	{% endfor %}		  	
+		  	{% else %}
+			  	{% if comment.hidden %}
+			  		<div class="comment-text" style="color:red;">Hidden by administrator</div>
+			  	{% endif %}
+			  	{% if not comment.hidden %}
+				  	{% for t in comment.text %}
+				  	  <div class="comment-text">{{t}}</div>
+				  	{% endfor %}
+			  	{% endif %}
+		  	{% endif %}
+		  	
 		  </div>
 		{% endfor %}
 	</div>
@@ -315,13 +338,62 @@ $(function() {
 	$("#admin-artwork-properties").click(
 		function() {
 			$("#properties-modal").modal();
-		})
+		});
 		
 	$("#btn-admin-artwork-properties-save").click(
 		function() {
 			$("form[name=adminForm]")[0].submit();	
-		})
-})
+		});
+		
+	$(".delete_comment_button").click(function(data) {
+		comment_id = $(this).attr("comment_id");
+		parent_id = $(this).attr("parent_id");
+		deleteComment(comment_id, parent_id);
+	});
+	
+	$(".hide_comment_button").click(function(data) {
+		comment_id = $(this).attr("comment_id");
+		parent_id = $(this).attr("parent_id");
+		hideComment(comment_id, parent_id);
+	});
+	
+	$(".show_comment_button").click(function(data) {
+		comment_id = $(this).attr("comment_id");
+		parent_id = $(this).attr("parent_id");
+		showComment(comment_id, parent_id);
+	});			
+});
+
+function deleteComment(id, parent_id) {
+	$.getJSON('/admin/delete-comment?id='+id+'&parent_id='+parent_id)
+		.done(function(data) {
+			if (data=="OK") {
+				$("#comment-"+id).remove();
+			}
+		});
+}
+
+function hideComment(id, parent_id) {
+	$.getJSON('/admin/hide-comment?id='+id+'&parent_id='+parent_id)
+		.done(function(data) {
+			if (data=="OK") {
+				$("#comment-"+id).find("#text_hidden").show();
+				$("#comment-"+id).find(".show_comment_button").show();
+				$("#comment-"+id).find(".hide_comment_button").hide();
+			}
+		});	
+}
+
+function showComment(id, parent_id) {
+	$.getJSON('/admin/show-comment?id='+id+'&parent_id='+parent_id)
+		.done(function(data) {
+			if (data=="OK") {
+				$("#comment-"+id).find("#text_hidden").hide();
+				$("#comment-"+id).find(".show_comment_button").hide();
+				$("#comment-"+id).find(".hide_comment_button").show();
+			}
+		});	
+}
 </script>
 
 

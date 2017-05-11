@@ -125,9 +125,13 @@ link at the top.
 				<h2><a href="/images/details/{{ c.artwork_key }}">{{ c.artwork_name }}</a></h2>
 				<div>{{ c.date|date:"d M Y H:i" }} <b>{{c.author.nickname}}</b></div>
 			</div>
-		  	{% for t in c.text %}
-			  	  <div class="comment-text">{{t}}</div>
-		  	{% endfor %}
+			{% if c.hidden %}
+				<div class="comment-text" style="color:red">Hidden by administrator</div>
+			{% else %}
+			  	{% for t in c.text %}
+				  	  <div class="comment-text">{{t}}</div>
+			  	{% endfor %}
+			{% endif %}
 		</div>
 	</div>
 	{% endfor %}

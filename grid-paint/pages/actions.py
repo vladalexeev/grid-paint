@@ -303,13 +303,59 @@ class ActionDeleteComment(BasicRequestHandler):
             artwork=comment.artwork_ref
             comment.delete()
             cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
-            if self.request.get('json'):
-                self.response.out.write(json.dumps('OK'))
-            else:
-                self.redirect('/images/details/'+str(artwork.key().id()))
+            self.response.out.write(json.dumps('OK'))
         else:
             self.response.set_status(404)
             return
+        
+class ActionHideComment(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        comment_id = self.request.get('id')
+        parent_id = self.request.get('parent_id')
+        
+        artwork = dao.get_artwork(parent_id)
+        if not artwork:
+            self.response.set_status(404)
+            return
+        
+        comment=db.Comment.get_by_id(long(comment_id), artwork.key())
+        if comment:
+            comment.hidden = True
+            comment.put()
+            cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+            self.response.write(json.dumps('OK'))
+        else:
+            self.response.write(json.dumps('404'))
+            
+class ActionShowComment(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        comment_id = self.request.get('id')
+        parent_id = self.request.get('parent_id')
+        
+        artwork = dao.get_artwork(parent_id)
+        if not artwork:
+            self.response.set_status(404)
+            return
+        
+        comment=db.Comment.get_by_id(long(comment_id), artwork.key())
+        if comment:
+            if hasattr(comment, 'hidden'):
+                del comment.hidden
+                comment.put()
+
+            cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+            self.response.write(json.dumps('OK'))
+        else:
+            self.response.write(json.dumps('404'))
+
         
 class PNGImageRequest(BasicRequestHandler):
     def get(self, *ar):
