@@ -246,6 +246,7 @@ body {
 	background: none;
 	font-size: 12pt;
 	margin-bottom: 0;
+	overflow: hidden;
 }
 
 .image-details-comment-add {
