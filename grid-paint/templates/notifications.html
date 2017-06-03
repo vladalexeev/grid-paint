@@ -21,7 +21,7 @@
 		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
 			  	</div>
 			  	<div>{{ n.date }}</div>
-			  	<div><b>{{n.comment.author.nickname}}</b> commented your artwork</div>
+			  	<div><b>{{n.comment.author.nickname}}</b> left a comment</div>
 			  	{% if not n.artwork  or not n.comment %}
 			  	<div>Image or comment was deleted</div>
 		  		{% else %}	

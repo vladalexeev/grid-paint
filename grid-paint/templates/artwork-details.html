@@ -100,23 +100,27 @@
 	
 	<div class="image-details-comments">
 		{% for comment in comments %}
-		  <div class="comment" id="comment-{{ comment.key }}">
-		  	<div class="comment-header"><b>{{ comment.author.nickname }}</b> - {{ comment.date|date:"d M Y H:i" }}
+		  <div class="comment" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
+		  	<div class="comment-header"><b><span id="commenter-name">{{ comment.author.nickname }}</span></b> - {{ comment.date|date:"d M Y H:i" }}
+		  		<div class="pull-right">
+		  			<span class="reply_comment_button btn btn-small btn-default" title="Reply" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+		  					{% if comment.hidden %}style="display:none;"{% endif%} >
+		  				<i class="glyphicon glyphicon-share-alt"></i>
+		  			</span>		  			
 		  		{% if user_info.superadmin %}
-		  			<div class="pull-right">
-			  			<span class="hide_comment_button btn btn-small btn-default" title="Hide comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-			  					{% if comment.hidden %}style="display:none;"{% endif%} >
-			  				<i class="glyphicon glyphicon-eye-close"></i>
-			  			</span>
-			  			<span class="show_comment_button btn btn-small btn-default" title="Show comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-			  					{% if not comment.hidden %}style="display:none"{% endif %} >
-			  				<i class="glyphicon glyphicon-eye-open"></i>
-			  			</span>
-			  			<span class="delete_comment_button btn btn-small btn-default" title="Delete comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
-			  				<i class="glyphicon glyphicon-trash"></i>
-			  			</span>
-		  			</div>
+		  			<span class="hide_comment_button btn btn-small btn-default" title="Hide comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+		  					{% if comment.hidden %}style="display:none;"{% endif%} >
+		  				<i class="glyphicon glyphicon-eye-close"></i>
+		  			</span>
+		  			<span class="show_comment_button btn btn-small btn-default" title="Show comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+		  					{% if not comment.hidden %}style="display:none"{% endif %} >
+		  				<i class="glyphicon glyphicon-eye-open"></i>
+		  			</span>
+		  			<span class="delete_comment_button btn btn-small btn-default" title="Delete comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
+		  				<i class="glyphicon glyphicon-trash"></i>
+		  			</span>
 		  		{% endif %}
+		  		</div>
 		  	</div>
 		  	{% if user_info.superadmin %}
 		  		<div class="comment-text"  id="text_hidden" style="color:red;{% if not comment.hidden %}display:none;{% endif %}">Hidden by administrator</div>
@@ -142,6 +146,7 @@
 	<div class="image-details-comment-add">
 		<form name="f" role="form" method="POST" action="/save-comment" onsubmit="return onCommentSubmit();">
 			<input type="hidden" name="artwork_id" value="{{ artwork.key.id }}" />
+			<input type="hidden" name="ref_comment_id" value="" />
 			<div class="form-group col-xs-12" style="padding-left: 0; padding-right: 0;">
 				<textarea name="comment_text" class="form-control"></textarea>
 			</div>
@@ -208,10 +213,10 @@ $(function() {
 			var imageName=$("#artwork-name").text();
 			$("#modal-confirm-delete .modal-body").html(
 				"<p>Are you sure to delete image <i>'"+imageName+"'</i></p>");
-			$("#btn-confirm-delete").attr("href","/delete-image?id="+$(this).attr("image-key"))
+			$("#btn-confirm-delete").attr("href","/delete-image?id="+$(this).attr("image-key"));
 			$("#modal-confirm-delete").modal('show');
 		}
-	)
+	);
 	
 	$("#favorite-star")
 		.mouseenter(function() {
@@ -222,7 +227,7 @@ $(function() {
 		})
 		.click(function() {
 			if (authorsArtwork) {
-				showWarningDialog("You cannot favorite your own artwork. Choose artwork of another artist.")
+				showWarningDialog("You cannot favorite your own artwork. Choose artwork of another artist.");
 				return;
 			}
 			
@@ -239,8 +244,18 @@ $(function() {
 						$('.image-details-favorite-hint').text('Add image to favorites');
 					}
 				});
-		})
-})
+		});
+		
+	$(".reply_comment_button").click(function(data) {
+		comment_id = $(this).attr("comment_id");
+		$("input[name=ref_comment_id]").val(comment_id);
+		
+		var commenter_name = $("#comment-"+comment_id).find("#commenter-name").text();
+		$("textarea[name=comment_text]").text("Reply to "+commenter_name+":\n");
+		
+		$("textarea[name=comment_text]").focus();
+	});		
+});
 
 function showErrorDialog(message) {
 	$("#modal-error .modal-body").html("<p>"+message+"</p>");
@@ -266,6 +281,13 @@ function onCommentSubmit() {
 		return false;
 	}
 	
+	input_ref_comment_id = $("input[name=ref_comment_id]");
+	if (!input_ref_comment_id.val()) {
+		ref_comment_id = $(".comment").last().attr("comment_id");
+		if (ref_comment_id) {
+			input_ref_comment_id.val(ref_comment_id);
+		}
+	}
 	
 	return true;
 }
@@ -361,7 +383,7 @@ $(function() {
 		comment_id = $(this).attr("comment_id");
 		parent_id = $(this).attr("parent_id");
 		showComment(comment_id, parent_id);
-	});			
+	});
 });
 
 function deleteComment(id, parent_id) {

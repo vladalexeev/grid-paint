@@ -252,8 +252,9 @@ class ActionSaveComment(BasicRequestHandler):
             self.response.set_status(403)
             return
         
-        artwork_id=self.request.get('artwork_id')
-        comment_text=self.request.get('comment_text').strip();
+        artwork_id = self.request.get('artwork_id')
+        comment_text = self.request.get('comment_text').strip();
+        ref_comment_id = self.request.get('ref_comment_id')
         
         if not comment_text or len(comment_text)==0 or len(comment_text)>1000:
             self.redirect('/images/details/'+artwork_id)
@@ -278,6 +279,18 @@ class ActionSaveComment(BasicRequestHandler):
             notification.comment = comment
             notification.sender_email = self.user_info.user.email()
             dao.add_notification(notification)
+            
+        if ref_comment_id:
+            ref_comment = db.Comment.get_by_id(int(ref_comment_id), artwork)
+            if ref_comment and ref_comment.author_email <> artwork.author_email and ref_comment.author_email <> self.user_info.user.email():
+                ref_notification = db.Notification()
+                ref_notification.recipient_email = ref_comment.author_email
+                ref_notification.type = 'comment'
+                ref_notification.artwork = artwork
+                ref_notification.comment = comment
+                ref_notification.sender_email = self.user_info.user.email()
+                dao.add_notification(ref_notification)
+                
             
         cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
         
