@@ -241,10 +241,11 @@ class ActionDeleteNotification(BasicRequestHandler):
     def get(self):
         notification_id = self.request.get('id')
         notification = db.Notification.get(notification_id)
-        if notification.recipient_email == self.user_info.user_email:
-            dao.delete_notification(notification)
-        else:
-            self.response.set_status(403)
+        if notification is not None:
+            if notification.recipient_email == self.user_info.user_email:
+                dao.delete_notification(notification)
+            else:
+                self.response.set_status(403)
             
 class ActionSaveComment(BasicRequestHandler):
     def post(self):
