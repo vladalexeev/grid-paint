@@ -35,6 +35,7 @@ class UserInfo:
             else:            
                 self.user_name = users.get_current_user().nickname()
                 self.has_profile = False
+                self.read_only = False
             self.superadmin = users.is_current_user_admin()            
             self.login_url = users.create_logout_url('/')
             self.login_url_text = 'Logout'
