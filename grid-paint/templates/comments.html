@@ -146,18 +146,22 @@ function commentToHtml(c) {
 	
 	{% if user_info.superadmin %}
 	for (var i=0; i<c['text'].length; i++) {
-		result+='<div class="comment-text">'+c['text'][i]+'</div>';
+		result+='<div class="comment-text">'+escapeDiamond(c['text'][i])+'</div>';
 	}
 	{% else %}
 	if (!c['hidden']) {
 		for (var i=0; i<c['text'].length; i++) {
-			result+='<div class="comment-text">'+c['text'][i]+'</div>';
+			result+='<div class="comment-text">'+escapeDiamond(c['text'][i])+'</div>';
 		}
 	}
 	{% endif %}
 	
 	result+='</div></div>';
 	return result;
+}
+
+function escapeDiamond(str) {
+	return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 $(function() {
