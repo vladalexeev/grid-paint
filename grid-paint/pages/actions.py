@@ -46,7 +46,11 @@ class ActionSaveImage(BasicRequestHandler):
     def post(self):
         if not self.user_info.user:
             self.response.set_status(403)
-            return            
+            return
+        
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
         
         artwork_json=self.request.get('artwork_json')
         artwork_id=self.request.get('artwork_id')
@@ -250,6 +254,10 @@ class ActionDeleteNotification(BasicRequestHandler):
 class ActionSaveComment(BasicRequestHandler):
     def post(self):
         if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        if self.user_info.read_only:
             self.response.set_status(403)
             return
         
@@ -500,6 +508,10 @@ class ActionSaveProfile(BasicRequestHandler):
             self.response.set_status(403)
             return
         
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
+        
         nickname = self.request.get('nickname')
         if not nickname:
             self.response.set_status(400)
@@ -649,39 +661,43 @@ class ActionToggleFavorite(BasicRequestHandler):
         if not self.user_info.user:
             self.response.set_status(403)
             return
+        
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
+        
+        artwork_id = int(self.request.get('id'))
+        artwork = db.Artwork.get_by_id(artwork_id)
+        
+        if not artwork:
+            self.response.set_status(404)
+            return
         else:
-            artwork_id = int(self.request.get('id'))
-            artwork = db.Artwork.get_by_id(artwork_id)
-            
-            if not artwork:
-                self.response.set_status(404)
-                return
+            cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
+            if dao.is_artwork_favorite_by_user(artwork, self.user_info.user):
+                fav_count = dao.unfavorite_artwork(artwork, self.user_info.user)
+                self.response.out.write(json.dumps({
+                        'favorite': False,
+                        'favorite_count': fav_count 
+                        }))
             else:
-                cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
-                if dao.is_artwork_favorite_by_user(artwork, self.user_info.user):
-                    fav_count = dao.unfavorite_artwork(artwork, self.user_info.user)
-                    self.response.out.write(json.dumps({
-                            'favorite': False,
-                            'favorite_count': fav_count 
-                            }))
-                else:
-                    fav_count = dao.favorite_artwork(artwork, self.user_info.user)
-                    
-                    notification = db.Notification()
-                    notification.recipient_email = artwork.author_email
-                    notification.type = 'favorite'
-                    notification.artwork = artwork
-                    notification.sender_email = self.user_info.user.email()
-                    dao.add_notification(notification)
-            
-                    self.response.out.write(json.dumps({
-                            'favorite': True,
-                            'favorite_count': fav_count 
-                            }))
-                    
-                cache.delete(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
-                cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
-                cache.delete(cache.MC_USER_PROFILE+artwork.author_email)
+                fav_count = dao.favorite_artwork(artwork, self.user_info.user)
+                
+                notification = db.Notification()
+                notification.recipient_email = artwork.author_email
+                notification.type = 'favorite'
+                notification.artwork = artwork
+                notification.sender_email = self.user_info.user.email()
+                dao.add_notification(notification)
+        
+                self.response.out.write(json.dumps({
+                        'favorite': True,
+                        'favorite_count': fav_count 
+                        }))
+                
+            cache.delete(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
+            cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
+            cache.delete(cache.MC_USER_PROFILE+artwork.author_email)
                 
 class JSONComments(BasicRequestHandler):
     def get(self):
