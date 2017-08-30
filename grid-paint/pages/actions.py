@@ -265,6 +265,14 @@ class ActionSaveComment(BasicRequestHandler):
             self.response.set_status(403)
             return
         
+        user_profile = dao.get_user_profile(self.user_info.user.email())
+        if not user_profile:
+            user_profile = db.UserProfile()
+            user_profile.email = self.user_info.user.email()
+            user_profile.nickname = convert.auto_nickname(self.user_info.user.nickname())
+            user_profile.artworks_count = 1
+            dao.add_user_profile(user_profile)
+        
         artwork_id = self.request.get('artwork_id')
         comment_text = self.request.get('comment_text').strip();
         ref_comment_id = self.request.get('ref_comment_id')
