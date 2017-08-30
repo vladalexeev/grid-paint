@@ -139,7 +139,14 @@ function commentToHtml(c) {
 			  			'</div>'+
 			  		{% endif %}				
 					'<h2><a href="/images/details/'+c['artwork_key']+'">'+c['artwork_name']+'</a></h2>'+
-					'<div>'+formatDate(new Date(Date.parse(c['date'])))+' <b>'+c['author']['nickname']+'</b></div>'+
+					'<div>'+
+						formatDate(new Date(Date.parse(c['date'])))+
+						' <b>'+
+							(c['author']['profile_id'] ?  
+								'<a href="/profiles/'+c['author']['profile_id']+'">'+c['author']['nickname']+'</a>':
+								c['author']['nickname'])+
+						'</b>'+
+					'</div>'+
 				'</div>';
 				
 	result+='<div class="comment-text" id="text_hidden" style="color:red;'+(c['hidden'] ? '' : 'display:none;')+'">Hidden by administrator</div>';
