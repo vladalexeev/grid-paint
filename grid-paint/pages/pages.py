@@ -96,10 +96,22 @@ class PageNewImage(BasicPageRequestHandler):
             self.redirect(self.user_info.login_url)
             return;
         
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
+        
         self.write_template('templates/new-image.html', {})
         
 class PagePainter(BasicPageRequestHandler):
     def get(self):
+        if not self.user_info.user:
+            self.redirect(self.user_info.login_url)
+            return;
+        
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
+                
         if self.request.get('id'):
             artwork_id=self.request.get('id')
             artwork=dao.get_artwork(artwork_id)

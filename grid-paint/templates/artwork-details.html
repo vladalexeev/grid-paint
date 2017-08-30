@@ -79,6 +79,7 @@
 		<div style="clear: both"></div>		
 	</div>
 	
+	{% if not user_info.read_only %}
 	<div class="image-details-actions">
 		{% if can_edit_artwork %}
 		<a href="/painter?id={{ artwork.key.id }}" class="btn btn-sm btn-success" title="Edit image"><i class="icon icon-pencil icon-white"></i> Edit</a>
@@ -94,6 +95,7 @@
 		<a href="/painter?copy_id={{ artwork.key.id }}" class="btn btn-sm btn-primary" title="Create a copy" style="float:right;"><i class="icon icon-copy icon-white"></i> Create a copy</a>
 		{% endif %}
 	</div>
+	{% endif %}
 	
 	
 	<div class="delimiter"></div>
@@ -143,6 +145,7 @@
 	</div>
 	
 	
+	{% if not user_info.read_only %}
 	<div class="image-details-comment-add">
 		<form name="f" role="form" method="POST" action="/save-comment" onsubmit="return onCommentSubmit();">
 			<input type="hidden" name="artwork_id" value="{{ artwork.key.id }}" />
@@ -159,6 +162,7 @@
 			</div>
 		</form>
 	</div>
+	{% endif %}
 </div>
 </div>
 
