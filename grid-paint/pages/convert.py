@@ -167,6 +167,7 @@ def convert_user_profile(user_profile):
             'profile_id': user_profile.key().id(),
             'join_date': user_profile.join_date,
             'artworks_count': user_profile.artworks_count,
-            'favorite_count': user_profile.favorite_count
+            'favorite_count': user_profile.favorite_count,
+            'read_only': hasattr(user_profile, 'read_only')
             }
 

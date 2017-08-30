@@ -698,4 +698,34 @@ class JSONComments(BasicRequestHandler):
         dict_comments = [convert.convert_comment_for_page_rich(c) for c in comments]
         
         self.response.out.write(json.dumps(dict_comments, default=json_serial))
+        
+class ActionAdminBlockUser(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        profile_id = int(self.request.get('profile_id'))
+        
+        user_profile = dao.get_user_profile_by_id(profile_id);
+        user_profile.read_only = True
+        dao.set_user_profile(user_profile)
+
+        self.redirect('/profiles/'+str(profile_id))
+        
+class ActionAdminUnblockUser(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        profile_id = int(self.request.get('profile_id'))
+        
+        user_profile = dao.get_user_profile_by_id(profile_id);
+        if hasattr(user_profile, 'read_only'):
+            del user_profile.read_only
+        dao.set_user_profile(user_profile)
+
+        self.redirect('/profiles/'+str(profile_id))
+
             

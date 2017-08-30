@@ -13,8 +13,18 @@
 		<div class="col-xs-6">
 			<div style="font-weight: bold; font-size: 16pt;">{{ profile.nickname }}</div>
 			<div style="color: gray;">joined {{ profile.join_date|date:"d M Y" }}</div>
+			{% if profile.read_only %}
+			<div style="font-weight: bold; font-size: 16pt; color:red;">Read only mode</div>
+			{% endif %}
 			{% if user_info.superadmin %}
-			<div>{{ profile.email }}</div>
+			<div>
+				{{ profile.email }}
+				{% if profile.read_only %}
+					<a href="/admin/unblock-user?profile_id={{ profile.profile_id }}" class="btn btn-default btn-small">Unblock user</a>
+				{% else %}
+					<a href="/admin/block-user?profile_id={{ profile.profile_id }}" class="btn btn-default btn-small">Block user</a>
+				{% endif %}
+			</div>
 			{% endif%}
 			<div>{{ profile.artworks_count }} artworks</div>
 			<div>
@@ -26,7 +36,6 @@
 			</div>
 			<div><a href="/profiles/{{ profile.profile_id }}/favorites">Favorites</a></div>
 		</div>
-	
 	</div>
 </div>
 

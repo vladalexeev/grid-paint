@@ -15,6 +15,8 @@ application = webapp.WSGIApplication([
                                       ('/admin/update-iterate-do', pages.actions.ActionUpdateIterate),
                                       ('/admin/hide-comment', pages.actions.ActionHideComment),
                                       ('/admin/show-comment', pages.actions.ActionShowComment),
+                                      ('/admin/block-user', pages.actions.ActionAdminBlockUser),
+                                      ('/admin/unblock-user', pages.actions.ActionAdminUnblockUser),
                                       ('/save-settings', pages.actions.ActionSaveSettings),
                                       ('/new-image', pages.pages.PageNewImage),
                                       ('/painter', pages.pages.PagePainter),

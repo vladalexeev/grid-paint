@@ -46,7 +46,7 @@ class Notification(db.Expando):
     comment = db.ReferenceProperty(reference_class=Comment, indexed=False)
     sender_email = db.StringProperty(indexed=False)
     
-class UserProfile(db.Model):
+class UserProfile(db.Expando):
     email = db.StringProperty()
     nickname = db.StringProperty()
     join_date = db.DateTimeProperty(auto_now_add=True)

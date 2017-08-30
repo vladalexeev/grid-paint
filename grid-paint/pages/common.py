@@ -31,6 +31,7 @@ class UserInfo:
                 self.user_name = user_profile.nickname
                 self.has_profile = True
                 self.profile_id = user_profile.key().id()
+                self.read_only = hasattr(user_profile, 'read_only')
             else:            
                 self.user_name = users.get_current_user().nickname()
                 self.has_profile = False

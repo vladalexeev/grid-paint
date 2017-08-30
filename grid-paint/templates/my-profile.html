@@ -4,7 +4,12 @@
 {% block content %}
 
 <div class="container single-container">
-<h2 class="text-center">My profile</h2>
+<h2 class="text-center">
+My profile
+{% if profile.read_only %}
+<span style="color:red;">[Read only mode]</span>
+{% endif %}
+</h2>
 	
 	
 	<div class="row">
