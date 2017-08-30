@@ -88,10 +88,10 @@ function loadComments(limit, offset) {
 function formatDate(date) {
 	var months=["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 	result="";
-	if (date.getDay()<10) {
-		result+="0"+date.getDay();
+	if (date.getDate()<10) {
+		result+="0"+date.getDate();
 	} else {
-		result+=gate.getDay();
+		result+=date.getDate();
 	}
 	
 	result+=" "+months[date.getMonth()]+" ";
