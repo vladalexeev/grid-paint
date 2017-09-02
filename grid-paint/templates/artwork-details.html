@@ -26,7 +26,7 @@
 			<div class="image-details-favorite star-favorite"></div>
 			{% endif %}
 		</div>
-		{% if not artwork.copyright_block or user_info.superadmin or artwork.author.email == user_info.user.email %}
+		{% if not artwork.copyright_block and not artwork.block or user_info.superadmin or artwork.author.email == user_info.user.email %}
 		<img src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 		{% endif %}
 		{% if artwork.copyright_block %}
@@ -36,6 +36,21 @@
 		<div style="font-size:2em; color:red;">
 			This image is blocked due to copyright infringement.
 		</div>
+		{% endif %}
+		{% if artwork.block %}
+		<div>
+		 	<img src="/img/block-image.png" />
+		</div>
+		<div style="font-size:2em; color:red;">
+			This image is blocked due to {{ artwork.block_reason }}.
+		</div>
+		{% endif %}
+		{% if artwork.copyright_block or artwork.block %}
+			{% if artwork.author.email == user_info.user.email %}
+				<div style="font-size:1.5em; color:red;">
+					Only you can see the image.
+				</div>
+			{% endif %}
 		{% endif %}
 	</div>
 	<div class="image-details-header">
@@ -338,6 +353,17 @@ function onCommentSubmit() {
     				<input name="admin_artwork_copyright_block" type="checkbox" {% if artwork.copyright_block %}checked{% endif %}/> Copyright block
     			</label>
     		</div>
+    		<div class="checkbox">
+    			<label>
+    				<input name="admin_artwork_block" type="checkbox" {% if artwork.block %}checked{% endif %}/> Block image
+    			</label>
+    		</div>
+    		<div class="form-group">
+    			<label>Block reason</label>
+    			<div>
+    				<input type="text" value="{{ artwork.block_reason }}" name="admin_artwork_block_reason" id="admin_artwork_block_reason"/>
+    			</div>
+    		</div>    		
         </form>
       </div>
       <div class="modal-footer">

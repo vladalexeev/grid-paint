@@ -95,6 +95,12 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
         
         if hasattr(artwork, 'copyright_block'):
             result['copyright_block'] = True
+            
+        if hasattr(artwork, 'block'):
+            result['block'] = True
+            
+        if hasattr(artwork, 'block_reason'):
+            result['block_reason'] = artwork.block_reason
     
         if artwork.small_image_width<thumbnail_width and artwork.small_image_height<thumbnail_height:
             thumbnail_size = calc_resize(
