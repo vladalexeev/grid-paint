@@ -148,6 +148,8 @@ def convert_comment_for_page_rich(comment):
     result['small_image_file'] = comment.artwork_ref.small_image_file_name
     result['small_image_width'] = int(comment.artwork_ref.small_image_width / 2)
     result['small_image_height'] = int(comment.artwork_ref.small_image_height / 2)
+    result['artwork_copyright_block'] = hasattr(comment.artwork_ref, 'copyright_block')
+    result['artwork_block'] = hasattr(comment.artwork_ref, 'block')
     return result
 
 
