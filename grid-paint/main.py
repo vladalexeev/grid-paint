@@ -17,6 +17,7 @@ application = webapp.WSGIApplication([
                                       ('/admin/show-comment', pages.actions.ActionShowComment),
                                       ('/admin/block-user', pages.actions.ActionAdminBlockUser),
                                       ('/admin/unblock-user', pages.actions.ActionAdminUnblockUser),
+                                      ('/admin/refresh-index-page', pages.actions.ActionAdminFlushMemcacheForIndexPage),
                                       ('/save-settings', pages.actions.ActionSaveSettings),
                                       ('/new-image', pages.pages.PageNewImage),
                                       ('/painter', pages.pages.PagePainter),

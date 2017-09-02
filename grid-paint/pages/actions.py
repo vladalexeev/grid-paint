@@ -766,5 +766,21 @@ class ActionAdminUnblockUser(BasicRequestHandler):
         dao.set_user_profile(user_profile)
 
         self.redirect('/profiles/'+str(profile_id))
+        
+class ActionAdminFlushMemcacheForIndexPage(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
+        cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+        cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
+        cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
+        cache.delete(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
+        cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
+        cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
+        
+        self.redirect('/')
 
             
