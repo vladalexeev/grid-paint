@@ -747,6 +747,20 @@ class JSONComments(BasicRequestHandler):
         
         self.response.out.write(json.dumps(dict_comments, default=json_serial))
         
+class JSONGetUserIdByNickname(BasicRequestHandler):
+    def post(self, *args):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+ 
+        nickname = self.request.get('nickname')      
+        profile = dao.get_user_profile_by_nickname(nickname)
+        if profile:
+            self.response.out.write(json.dumps({'id':profile.key().id()}))
+        else:
+            self.response.out.write(json.dumps({}))
+            
+        
 class ActionAdminBlockUser(BasicRequestHandler):
     def get(self):
         if not self.user_info.superadmin:

@@ -20,7 +20,7 @@ My profile
 		<div class="col-xs-6">
 			<div class="row">
 			<form name="f" role="form" class="form-horizontal" action="/save-profile" method="POST"
-				onsubmit="return checkform()">
+				onsubmit="return false">
 				<div class="form-group">
 					<label class="col-xs-4 control-label">E-mail [hidden]</label>
 					<div class="col-xs-8">
@@ -45,7 +45,7 @@ My profile
 				{% if not user_info.read_only %}
 				<div class="form-group">
 					<div class="col-xs-8 col-xs-offset-4">
-						<button type="submit" class="btn btn-primary">Save profile</button>
+						<button type="button" class="btn btn-primary" id="submit-button">Save profile</button>
 					</div>
 				</div>
 				{% endif %}
@@ -56,30 +56,69 @@ My profile
 	</div>
 </div>
 
-<div id="modal-empty-nickname" class="modal hide fade">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h3>Error</h3>
+<div id="modal-empty-nickname" class="modal fade">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Error</h4>
+	  </div>
+	  <div class="modal-body">
+	        <p>Nickname cannot be empty</p>
+	    	<p>Enter nickname and save your profile again.</p>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+	  </div>
+	</div>  		
   </div>
-  <div class="modal-body">
-    <p>Nickname cannot be empty</p>
-  </div>
-  <div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Close</a>
+</div>
+
+
+<div id="modal-duplicate-nickname" class="modal fade">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Error</h4>
+	  </div>
+	  <div class="modal-body">
+	    <p>Another user has this nickname.</p>
+	    <p>Change your nickname and try to save your profile again.</p>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+	  </div>
+	</div>  		
   </div>
 </div>
 
 
 <script>
-function checkform() {
-	var nickname=$("input[name=nickname]").val();
-	if (!nickname) {
-		$("#modal-empty-nickname").modal();
-		return false;
-	}
-	
-	return true;
-}
+$(function () {
+	$("#submit-button").click(
+		function() {
+			var nickname=$("input[name=nickname]").val();
+			if (!nickname) {
+				$("#modal-empty-nickname").modal();
+				return;
+			}
+			
+			$.post(
+  				'/json/get-user-id-by-nickname',
+  				{'nickname': nickname},
+				function(data) {
+					if (data.id) {
+						$("#modal-duplicate-nickname").modal();
+					} else {
+						$("form[name=f]")[0].submit();
+					}
+				},
+				"json"
+			);
+		}
+	);
+});
 </script>
 
   
