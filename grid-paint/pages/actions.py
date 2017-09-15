@@ -531,14 +531,23 @@ class ActionSaveProfile(BasicRequestHandler):
 
         user_profile = dao.get_user_profile(self.user_info.user.email())
         if user_profile:
-            user_profile.nickname = nickname
-            dao.set_user_profile(user_profile)
+            if user_profile.nickname != nickname:
+                if dao.get_user_profile_by_nickname(nickname):
+                    self.response.set_status(400)
+                    return
+                else:
+                    user_profile.nickname = nickname
+                    dao.set_user_profile(user_profile)
         else:
-            user_profile = db.UserProfile()
-            user_profile.email = self.user_info.user.email()
-            user_profile.nickname = nickname
-            user_profile.artworks_count = 0
-            dao.add_user_profile(user_profile)
+            if dao.get_user_profile_by_nickname(nickname):
+                self.response.set_status(400)
+                return
+            else:
+                user_profile = db.UserProfile()
+                user_profile.email = self.user_info.user.email()
+                user_profile.nickname = nickname
+                user_profile.artworks_count = 0
+                dao.add_user_profile(user_profile)
             
         self.redirect('/')        
                 

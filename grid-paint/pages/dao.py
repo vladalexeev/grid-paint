@@ -51,6 +51,9 @@ def get_user_profile(user_email):
         else:
             return None
         
+def get_user_profile_by_nickname(nickname):
+    return db.UserProfile.all().filter('nickname =', nickname).get()
+        
 def get_user_profile_by_id(profile_id):
     return db.UserProfile.get_by_id(profile_id)
     
