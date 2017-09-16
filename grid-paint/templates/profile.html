@@ -15,7 +15,10 @@
 			<div style="color: gray;">joined {{ profile.join_date|date:"d M Y" }}</div>
 			{% if profile.read_only %}
 			<div style="font-weight: bold; font-size: 16pt; color:red;">
-				User is in read only mode
+				User is blocked
+				{% if profile.block_reason %}
+				for {{ profile.block_reason }}
+				{% endif %}				
 				{% if profile.block_date %}
 				since {{ profile.block_date|date:"d M Y"}}
 				{% endif %}
@@ -27,7 +30,7 @@
 				{% if profile.read_only %}
 					<a href="/admin/unblock-user?profile_id={{ profile.profile_id }}" class="btn btn-default btn-small">Unblock user</a>
 				{% else %}
-					<a href="/admin/block-user?profile_id={{ profile.profile_id }}" class="btn btn-default btn-small">Block user</a>
+					<a href="#modal-block-user" class="btn btn-default btn-small" data-toggle="modal" data-target="#modal-block-user">Block user</a>
 				{% endif %}
 			</div>
 			{% endif%}
@@ -57,6 +60,8 @@
 </div>
 
 
+
+
 <script>
 $(function() {
 	$("#top-menu-gallery").addClass("active");
@@ -64,6 +69,31 @@ $(function() {
 </script>
 
 {% if user_info.superadmin %}
+<div id="modal-block-user" class="modal fade">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Block user</h4>
+	  </div>
+	  <div class="modal-body">
+	    <form name="blockForm" method="POST" action="/admin/block-user" role="form">
+        	<input type="hidden" name="profile_id" value="{{ profile.profile_id }}" />
+        	<div class="form-group">
+    			<label>Block reason</label>
+    			<input type="text" name="block_reason" id="admin_artwork_name" value="" class="form-control"/>
+    		</div>
+        </form>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+	    <button id="btn-block-user" type="button" class="btn btn-danger">Block user</button>
+	  </div>
+	</div>  		
+  </div>
+</div>
+
+
 <script>
 profile_id = '{{ profile.profile_id }}';
 
@@ -86,6 +116,14 @@ function updateUserFavorites() {
 		alert('Error updating favorites');
 	});
 }
+
+$(function() {
+	$('#btn-block-user').click(
+		function() {
+			$('form[name=blockForm]')[0].submit();
+		}
+	);
+});
 </script>
 {% endif %}
 

@@ -769,16 +769,18 @@ class JSONGetUserIdByNickname(BasicRequestHandler):
             
         
 class ActionAdminBlockUser(BasicRequestHandler):
-    def get(self):
+    def post(self):
         if not self.user_info.superadmin:
             self.response.set_status(403)
             return
         
         profile_id = int(self.request.get('profile_id'))
+        block_reason = self.request.get('block_reason')
         
         user_profile = dao.get_user_profile_by_id(profile_id);
         user_profile.read_only = True
         user_profile.block_date = datetime.datetime.now()
+        user_profile.block_reason = block_reason
         dao.set_user_profile(user_profile)
 
         self.redirect('/profiles/'+str(profile_id))
@@ -796,6 +798,8 @@ class ActionAdminUnblockUser(BasicRequestHandler):
             del user_profile.read_only
         if hasattr(user_profile, 'block_date'):
             del user_profile.block_date
+        if hasattr(user_profile, 'block_reason'):
+            del user_profile.block_reason
         dao.set_user_profile(user_profile)
 
         self.redirect('/profiles/'+str(profile_id))

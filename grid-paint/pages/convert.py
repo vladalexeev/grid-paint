@@ -182,5 +182,8 @@ def convert_user_profile(user_profile):
     if hasattr(user_profile, 'block_date'):
         result['block_date'] = user_profile.block_date
         
+    if hasattr(user_profile, 'block_reason'):
+        result['block_reason'] = user_profile.block_reason
+        
     return result
 

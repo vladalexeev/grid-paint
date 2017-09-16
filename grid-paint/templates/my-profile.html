@@ -7,7 +7,7 @@
 <h2 class="text-center">
 My profile
 {% if profile.read_only %}
-<span style="color:red;">[Read only mode{% if profile.block_date %} since {{ profile.block_date|date:"d M Y"}}{% endif %}]</span>
+<span style="color:red;">[Blocked{% if profile.block_reason %} fore {{ profile.block_reason }}{% endif %}{% if profile.block_date %} since {{ profile.block_date|date:"d M Y"}}{% endif %}]</span>
 {% endif %}
 </h2>
 	
