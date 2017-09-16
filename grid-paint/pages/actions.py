@@ -778,6 +778,7 @@ class ActionAdminBlockUser(BasicRequestHandler):
         
         user_profile = dao.get_user_profile_by_id(profile_id);
         user_profile.read_only = True
+        user_profile.block_date = datetime.datetime.now()
         dao.set_user_profile(user_profile)
 
         self.redirect('/profiles/'+str(profile_id))
@@ -793,6 +794,8 @@ class ActionAdminUnblockUser(BasicRequestHandler):
         user_profile = dao.get_user_profile_by_id(profile_id);
         if hasattr(user_profile, 'read_only'):
             del user_profile.read_only
+        if hasattr(user_profile, 'block_date'):
+            del user_profile.block_date
         dao.set_user_profile(user_profile)
 
         self.redirect('/profiles/'+str(profile_id))

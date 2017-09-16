@@ -169,7 +169,7 @@ def convert_user(user_email):
                 }
         
 def convert_user_profile(user_profile):
-    return {
+    result = {
             'email': user_profile.email,
             'nickname': user_profile.nickname,
             'profile_id': user_profile.key().id(),
@@ -178,4 +178,9 @@ def convert_user_profile(user_profile):
             'favorite_count': user_profile.favorite_count,
             'read_only': hasattr(user_profile, 'read_only')
             }
+    
+    if hasattr(user_profile, 'block_date'):
+        result['block_date'] = user_profile.block_date
+        
+    return result
 

@@ -14,7 +14,12 @@
 			<div style="font-weight: bold; font-size: 16pt;">{{ profile.nickname }}</div>
 			<div style="color: gray;">joined {{ profile.join_date|date:"d M Y" }}</div>
 			{% if profile.read_only %}
-			<div style="font-weight: bold; font-size: 16pt; color:red;">Read only mode</div>
+			<div style="font-weight: bold; font-size: 16pt; color:red;">
+				User is in read only mode
+				{% if profile.block_date %}
+				since {{ profile.block_date|date:"d M Y"}}
+				{% endif %}
+			</div>
 			{% endif %}
 			{% if user_info.superadmin %}
 			<div>
