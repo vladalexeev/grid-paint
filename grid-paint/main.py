@@ -42,6 +42,7 @@ application = webapp.WSGIApplication([
                                       ('/profiles/', pages.pages.PageProfiles),
                                       ('/profiles/by-artwork-count', pages.pages.PageUsersByArtworksCount),
                                       ('/profiles/by-stars-count', pages.pages.PageUsersByFavortiesCount),
+                                      ('/profiles/blocked', pages.pages.PageUsersBlocked),
                                       ('/profiles/(.*)/favorites', pages.pages.PageUserFavorites),
                                       ('/profiles/(.*)/comments', pages.pages.PageUserComments),
                                       ('/top-favorites', pages.pages.PageTopFavorites),

@@ -653,6 +653,26 @@ class PageUsersByFavortiesCount(BasicPageRequestHandler):
         model['list_title'] = 'Artists by stars count'
         
         self.write_template('templates/user-list-by-stars-count.html', model)
+
+class PageUsersBlocked(BasicPageRequestHandler):
+    def get(self):
+        def users_query_func():
+            all_users=db.UserProfile.all().filter('read_only =', True)
+            return all_users.order('-favorite_count')
+        
+        def href_create_func(offset):
+            return '/profiles/blocked?offset='+str(offset)
+            
+        def memcache_cursor_key_func(offset):
+            return cache.MC_USER_LIST+'blocked_count_'+str(offset)
+            
+        model = create_user_model(self.request.get('offset'), 
+                                  users_query_func, 
+                                  href_create_func,
+                                  memcache_cursor_key_func)
+        model['list_title'] = 'Blocked artists'
+        
+        self.write_template('templates/user-list-blocked.html', model)
         
 class PageProfiles(BasicPageRequestHandler):
     def get(self):

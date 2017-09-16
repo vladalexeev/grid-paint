@@ -62,3 +62,9 @@ indexes:
   - name: recipient_email
   - name: date
     direction: desc
+
+- kind: UserProfile
+  properties:
+  - name: read_only
+  - name: favorite_count
+    direction: desc
