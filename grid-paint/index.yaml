@@ -66,5 +66,4 @@ indexes:
 - kind: UserProfile
   properties:
   - name: read_only
-  - name: favorite_count
-    direction: desc
+  - name: nickname

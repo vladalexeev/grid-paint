@@ -658,7 +658,7 @@ class PageUsersBlocked(BasicPageRequestHandler):
     def get(self):
         def users_query_func():
             all_users=db.UserProfile.all().filter('read_only =', True)
-            return all_users.order('-favorite_count')
+            return all_users.order('nickname')
         
         def href_create_func(offset):
             return '/profiles/blocked?offset='+str(offset)
