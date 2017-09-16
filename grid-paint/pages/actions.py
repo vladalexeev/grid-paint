@@ -742,7 +742,14 @@ class JSONComments(BasicRequestHandler):
                 return serial
             raise TypeError ("Type not serializable {}", repr(obj))
         
-        comments = db.Comment.all().order('-date').run(limit=limit, offset=offset)
+        comments = db.Comment.all()
+        str_profile_id = self.request.get('profile_id')
+        if str_profile_id:
+            profile_id = int(str_profile_id)
+            user_profile = dao.get_user_profile_by_id(profile_id)
+            comments = comments.filter('author_email =', user_profile.email)
+        
+        comments = comments.order('-date').run(limit=limit, offset=offset)
         dict_comments = [convert.convert_comment_for_page_rich(c) for c in comments]
         
         self.response.out.write(json.dumps(dict_comments, default=json_serial))

@@ -5,7 +5,11 @@
 
 <div class="container">
 
+{% if profile_id %}
+<h2>Recent comments of {{ nickname }}</h2>
+{% else %}
 <h2>Recent comments</h2>
+{% endif %}
 
 
 <div class="image-details-comments">
@@ -25,6 +29,12 @@
 <script>
 var maxCount = 10;
 
+{% if profile_id %}
+var profile_id = {{ profile_id }}; 
+{% else %}
+var profile_id = 0;
+{% endif %}
+
 function getCurrentOffset() {
 	return parseInt($("#offset").val(), 10);
 }
@@ -40,7 +50,7 @@ function showCurrentOffset() {
 
 function loadComments(limit, offset) {
 	$.getJSON(
-		'/json/comments?limit='+limit+"&offset="+offset
+		'/json/comments?limit='+limit+"&offset="+offset+(profile_id > 0 ? '&profile_id='+profile_id : '')
 	).done(function(data) {
 		html='';
 		for (var i=0; i<data.length && i<maxCount; i++) {

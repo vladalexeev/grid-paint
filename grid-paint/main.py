@@ -43,6 +43,7 @@ application = webapp.WSGIApplication([
                                       ('/profiles/by-artwork-count', pages.pages.PageUsersByArtworksCount),
                                       ('/profiles/by-stars-count', pages.pages.PageUsersByFavortiesCount),
                                       ('/profiles/(.*)/favorites', pages.pages.PageUserFavorites),
+                                      ('/profiles/(.*)/comments', pages.pages.PageUserComments),
                                       ('/top-favorites', pages.pages.PageTopFavorites),
                                       ('/profiles/(.*)', pages.pages.PageProfile),
                                       ('/editor-choice', pages.pages.PageEditorChoice),

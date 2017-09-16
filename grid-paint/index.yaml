@@ -38,6 +38,12 @@ indexes:
   - name: artwork_ref
   - name: date
 
+- kind: Comment
+  properties:
+  - name: author_email
+  - name: date
+    direction: desc
+
 - kind: Favorite
   properties:
   - name: user_email
