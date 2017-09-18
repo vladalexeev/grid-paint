@@ -24,6 +24,7 @@ application = webapp.WSGIApplication([
                                       ('/my-images', pages.pages.PageMyImages),
                                       ('/my-favorites', pages.pages.PageMyFavorites),
                                       ('/privacy-policy', pages.pages.PagePrivacyPolicy),
+                                      ('/rules', pages.pages.PageRules),
                                       ('/history', pages.pages.PageHistory),
                                       ('/save-image', pages.actions.ActionSaveImage),
                                       ('/delete-image', pages.actions.ActionDeleteImage),

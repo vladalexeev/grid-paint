@@ -86,6 +86,10 @@ class PagePrivacyPolicy(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/privacy-policy.html',{})
 
+class PageRules(BasicPageRequestHandler):
+    def get(self):
+        self.write_template('templates/rules.html',{})
+
 class PageHistory(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/history.html',{})
