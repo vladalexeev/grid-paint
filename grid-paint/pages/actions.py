@@ -687,6 +687,30 @@ class ActionAdminUpdateUserFavoritesCount(BasicRequestHandler):
                                 'error': '{}'.format(e) 
                                 }))
             
+class ActionAdminUpdateArtworkFavoriteCount(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+        
+        try:
+            artwork_id = int(self.request.get('artwork_id'))
+            artwork = dao.get_artwork(artwork_id)
+            count = db.Favorite.all().filter('artwork', artwork).count()
+            
+            favorite_counter = db.FavoriteCounter.all().filter('artwork', artwork).get()
+            favorite_counter.count = count
+            favorite_counter.put()
+            
+            self.response.out.write(json.dumps({
+                                'count': count 
+                                }))
+        except Exception as e:
+            logging.exception('Error updating favorites count for artwork')
+            self.response.out.write(json.dumps({
+                                'error': '{}'.format(e) 
+                                }))
+            
             
 class ActionToggleFavorite(BasicRequestHandler):            
     def get(self):
