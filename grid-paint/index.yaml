@@ -18,11 +18,6 @@ indexes:
 
 - kind: Artwork
   properties:
-  - name: author_email=
-  - name: date
-
-- kind: Artwork
-  properties:
   - name: editor_choice
   - name: date
     direction: desc
