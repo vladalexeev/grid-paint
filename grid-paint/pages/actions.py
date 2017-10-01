@@ -33,6 +33,7 @@ import zlib
 from cloudstorage.errors import NotFoundError
 
 import logging
+import antispam
 
 grids={
        'square': GridSquare,
@@ -274,12 +275,16 @@ class ActionSaveComment(BasicRequestHandler):
             user_profile = db.UserProfile()
             user_profile.email = self.user_info.user.email()
             user_profile.nickname = convert.auto_nickname(self.user_info.user.nickname())
-            user_profile.artworks_count = 1
+            user_profile.artworks_count = 0
             dao.add_user_profile(user_profile)
         
         artwork_id = self.request.get('artwork_id')
         comment_text = self.request.get('comment_text').strip();
         ref_comment_id = self.request.get('ref_comment_id')
+        
+        if not antispam.check_comment(user_profile.email, artwork_id, comment_text):
+            self.redirect('/images/details/'+artwork_id)
+            return
         
         if not comment_text or len(comment_text)==0 or len(comment_text)>1000:
             self.redirect('/images/details/'+artwork_id)
