@@ -761,8 +761,17 @@ class ActionToggleFavorite(BasicRequestHandler):
                 
 class JSONComments(BasicRequestHandler):
     def get(self):
-        limit = int(self.request.get('limit'))
-        offset = int(self.request.get('offset'))
+        limit = 11
+        offset = 0
+        
+        if (self.request.get('limit')):        
+            limit = int(self.request.get('limit'))
+            
+        if (limit > 101):
+            limit = 101
+            
+        if (self.request.get('offset')):
+            offset = int(self.request.get('offset'))
         
         def json_serial(obj):
             if isinstance(obj, datetime.datetime):
