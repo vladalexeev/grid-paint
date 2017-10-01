@@ -204,6 +204,10 @@ class ActionDeleteImage(BasicRequestHandler):
     def get(self):
         artwork_id=self.request.get('id')
         artwork=dao.get_artwork(artwork_id)
+        if artwork is None:
+            self.response.set_status(404)
+            return
+        
         if self.user_info.superadmin or artwork.author_email==self.user_info.user_email:
             if self.user_info.read_only:
                 self.response.set_status(403)
