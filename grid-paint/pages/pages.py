@@ -120,6 +120,10 @@ class PagePainter(BasicPageRequestHandler):
             artwork_id=self.request.get('id')
             artwork=dao.get_artwork(artwork_id)
             
+            if artwork is None:
+                self.response.set_status(404)
+                return
+            
             if hasattr(artwork,'json'):            
                 if artwork.json_compressed:
                     artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))
