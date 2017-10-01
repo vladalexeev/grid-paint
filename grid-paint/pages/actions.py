@@ -748,12 +748,13 @@ class ActionToggleFavorite(BasicRequestHandler):
             else:
                 fav_count = dao.favorite_artwork(artwork, self.user_info.user)
                 
-                notification = db.Notification()
-                notification.recipient_email = artwork.author_email
-                notification.type = 'favorite'
-                notification.artwork = artwork
-                notification.sender_email = self.user_info.user.email()
-                dao.add_notification(notification)
+                if antispam.check_favorite(self.user_info.user.email(), artwork_id):
+                    notification = db.Notification()
+                    notification.recipient_email = artwork.author_email
+                    notification.type = 'favorite'
+                    notification.artwork = artwork
+                    notification.sender_email = self.user_info.user.email()
+                    dao.add_notification(notification)
         
                 self.response.out.write(json.dumps({
                         'favorite': True,
