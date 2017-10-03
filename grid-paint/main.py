@@ -30,6 +30,7 @@ application = webapp.WSGIApplication([
                                       ('/save-image', pages.actions.ActionSaveImage),
                                       ('/delete-image', pages.actions.ActionDeleteImage),
                                       ('/save-comment', pages.actions.ActionSaveComment),
+                                      ('/complain-comment', pages.actions.ActionComlainComment),
                                       ('/admin/delete-comment', pages.actions.ActionDeleteComment),
                                       ('/tag-typeahead', pages.actions.ActionTagTypeahead),
                                       ('/images/details/(.*)', pages.pages.PageImage),

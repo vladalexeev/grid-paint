@@ -260,7 +260,42 @@ class ActionDeleteNotification(BasicRequestHandler):
             else:
                 self.response.set_status(403)
                 
-
+class ActionComlainComment(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
+        
+        user_profile = dao.get_user_profile(self.user_info.user.email())
+        if not user_profile:
+            user_profile = db.UserProfile()
+            user_profile.email = self.user_info.user.email()
+            user_profile.nickname = convert.auto_nickname(self.user_info.user.nickname())
+            user_profile.artworks_count = 0
+            dao.add_user_profile(user_profile)
+            
+        settings = common.get_settings()
+        
+        artwork_id = self.request.get('artwork_id')
+        comment_id = self.request.get('comment_id')
+        
+        artwork = dao.get_artwork(int(artwork_id))
+        comment = db.Comment.get_by_id(long(comment_id), artwork.key())
+        logging.error('comment = {}'.format(comment))
+            
+        notification = db.Notification()
+        notification.recipient_email = settings.admin_email
+        notification.type = 'complain'
+        notification.artwork = artwork
+        notification.comment = comment
+        notification.sender_email = self.user_info.user.email()
+        dao.add_notification(notification)
+        
+        self.response.set_status(200)
         
             
 class ActionSaveComment(BasicRequestHandler):

@@ -16,8 +16,7 @@ def get_artwork(id_or_key):
             return db.Artwork.get(id_or_key)
         except:
             return None
-
-
+        
 def get_notification_count(user):
     cache_key = cache.MC_USER_NOTIFICATION_PREFIX + user.email()
     value = cache.get(cache_key)

@@ -25,7 +25,35 @@
 			  	{% if not n.artwork  or not n.comment %}
 			  	<div>Image or comment was deleted</div>
 		  		{% else %}	
-				<h2><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></h2>
+				<h2><a href="/images/details/{{ n.artwork.key.id }}#comment-{{ n.comment.key }}">{{ n.artwork.name }}</a></h2>
+				{% endif %}
+			</div>
+			{% if n.comment %}
+				{% if n.comment.hidden %}
+					<div class="comment-text" style="color:red;">Hidden by administrator</div>
+				{% else %}
+					{% for t in n.comment.text %}
+					  <div class="comment-text">{{t}}</div>
+					{% endfor %}
+				{% endif %}
+			{% endif %}
+		</div>
+	  {% endif %}
+	  {% if n.type == 'complain' %}
+	  	<div class="pull-left" id="icon-{{ n.key }}" style="margin-right: 10px; height:60px;">
+			<img src="/img/exclamation-circle-red-64.png" width="32" height="32" />
+		</div>							
+		<div class="comment" id="row-{{ n.key }}" style="margin-left:42px;">
+			<div class="comment-header">
+				<div class="pull-right">
+		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
+			  	</div>
+			  	<div>{{ n.date }}</div>
+			  	<div><b>{{n.comment.author.nickname}}</b> complained on comment</div>
+			  	{% if not n.artwork  or not n.comment %}
+			  	<div>Image or comment was deleted</div>
+		  		{% else %}	
+				<h2><a href="/images/details/{{ n.artwork.key.id }}#comment-{{ n.comment.key }}">{{ n.artwork.name }}</a></h2>
 				{% endif %}
 			</div>
 			{% if n.comment %}

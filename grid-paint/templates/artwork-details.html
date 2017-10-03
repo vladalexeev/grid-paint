@@ -118,6 +118,7 @@
 	
 	<div class="image-details-comments">
 		{% for comment in comments %}
+		  <a name="comment-{{ comment.key }}"></a>
 		  <div class="comment" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
 		  	<div class="comment-header">
 		  		<b>
@@ -132,20 +133,27 @@
 		  			<span class="reply_comment_button btn btn-small btn-default" title="Reply" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
 		  					{% if comment.hidden %}style="display:none;"{% endif%} >
 		  				<i class="glyphicon glyphicon-share-alt"></i> Reply
-		  			</span>		  			
-		  		{% if user_info.superadmin %}
-		  			<span class="hide_comment_button btn btn-small btn-default" title="Hide comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+		  			</span>
+		  			{% if not comment.hidden and user_info.user %}
+		  				<span class="complain_comment_button btn btn-small btn-default" title="Complain" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
 		  					{% if comment.hidden %}style="display:none;"{% endif%} >
-		  				<i class="glyphicon glyphicon-eye-close"></i>
-		  			</span>
-		  			<span class="show_comment_button btn btn-small btn-default" title="Show comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-		  					{% if not comment.hidden %}style="display:none"{% endif %} >
-		  				<i class="glyphicon glyphicon-eye-open"></i>
-		  			</span>
-		  			<span class="delete_comment_button btn btn-small btn-default" title="Delete comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
-		  				<i class="glyphicon glyphicon-trash"></i>
-		  			</span>
-		  		{% endif %}
+		  					<i class="glyphicon glyphicon-exclamation-sign"></i>
+		  				</span>
+		  			{% endif %}
+		  		  			
+			  		{% if user_info.superadmin %}
+			  			<span class="hide_comment_button btn btn-small btn-default" title="Hide comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+			  					{% if comment.hidden %}style="display:none;"{% endif%} >
+			  				<i class="glyphicon glyphicon-eye-close"></i>
+			  			</span>
+			  			<span class="show_comment_button btn btn-small btn-default" title="Show comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+			  					{% if not comment.hidden %}style="display:none"{% endif %} >
+			  				<i class="glyphicon glyphicon-eye-open"></i>
+			  			</span>
+			  			<span class="delete_comment_button btn btn-small btn-default" title="Delete comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
+			  				<i class="glyphicon glyphicon-trash"></i>
+			  			</span>
+			  		{% endif %}
 		  		</div>
 		  	</div>
 		  	{% if user_info.superadmin %}
@@ -282,7 +290,14 @@ $(function() {
 		$("textarea[name=comment_text]").text("Reply to "+commenter_name+":\n");
 		
 		$("textarea[name=comment_text]").focus();
-	});		
+	});
+	
+	$(".complain_comment_button").click(function(data) {
+		comment_id = $(this).attr("comment_id");
+		artwork_id = $(this).attr("parent_id");
+		$.getJSON("/complain-comment?comment_id="+comment_id+"&artwork_id="+artwork_id);
+		$('#comment-'+comment_id).slideUp();
+	});	
 });
 
 function showErrorDialog(message) {
