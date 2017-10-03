@@ -269,6 +269,14 @@ class ActionComlainComment(BasicRequestHandler):
         if self.user_info.read_only:
             self.response.set_status(403)
             return
+
+        artwork_id = self.request.get('artwork_id')
+        comment_id = self.request.get('comment_id')
+        
+        cache_key = 'comment-complain-'+comment_id
+        if cache.get(cache_key):
+            self.response.set_status(200)
+            return
         
         user_profile = dao.get_user_profile(self.user_info.user.email())
         if not user_profile:
@@ -279,9 +287,6 @@ class ActionComlainComment(BasicRequestHandler):
             dao.add_user_profile(user_profile)
             
         settings = common.get_settings()
-        
-        artwork_id = self.request.get('artwork_id')
-        comment_id = self.request.get('comment_id')
         
         artwork = dao.get_artwork(int(artwork_id))
         comment = db.Comment.get_by_id(long(comment_id), artwork.key())
@@ -294,6 +299,8 @@ class ActionComlainComment(BasicRequestHandler):
         notification.comment = comment
         notification.sender_email = self.user_info.user.email()
         dao.add_notification(notification)
+        
+        cache.add(cache_key, user_profile.email)
         
         self.response.set_status(200)
         
