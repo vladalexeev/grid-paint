@@ -57,6 +57,7 @@ class UserProfile(db.Expando):
 class Settings(db.Model):
     show_ads = db.BooleanProperty()
     show_analytics = db.BooleanProperty()
+    admin_email = db.StringProperty()
     
 class Favorite(db.Expando):
     user_email = db.StringProperty()

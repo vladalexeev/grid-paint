@@ -259,6 +259,9 @@ class ActionDeleteNotification(BasicRequestHandler):
                 dao.delete_notification(notification)
             else:
                 self.response.set_status(403)
+                
+
+        
             
 class ActionSaveComment(BasicRequestHandler):
     def post(self):
@@ -518,6 +521,8 @@ class ActionSaveSettings(BasicRequestHandler):
             settings.show_analytics=True
         else:
             settings.show_analytics=False
+            
+        settings.admin_email= self.request.get('admin_email')
             
         common.save_settings(settings)
         
