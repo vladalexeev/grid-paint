@@ -467,9 +467,11 @@ class PageNotifications(BasicPageRequestHandler):
             
         query = db.Notification.all().filter('recipient_email =', self.user_info.user.email()).order('-date').fetch(20,offset)
         
+        notifications = [convert.convert_notification(n) for n in query]
         self.write_template('templates/notifications.html', 
                             {
-                             'notifications': [convert.convert_notification(n) for n in query]
+                             'notifications': notifications,
+                             'notificationCount': len(notifications)
                              })
         
         

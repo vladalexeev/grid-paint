@@ -89,12 +89,18 @@
 	{% endfor %}
 </div>
 
+<div class="empty-page-message" style="display:none;">
+	There are no notifications for you
+</div>
+
 </div>
 
  
 </div>
 
 <script>
+var notificationCount={{ notificationCount }};
+
 $(function() {
 	$(".btn-delete-notification").click(
 		function() {
@@ -103,9 +109,18 @@ $(function() {
 				function() {
 					$("#row-"+notificationId).slideUp();	
 					$("#icon-"+notificationId).slideUp();
+					
+					notificationCount--;
+					if (notificationCount==0) {
+						$('.empty-page-message').fadeIn();
+					}
 				});
 		});
-})
+		
+	if (notificationCount==0) {
+		$('.empty-page-message').show();
+	}
+});
 </script>
 {% endblock content %}
 
