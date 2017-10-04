@@ -183,7 +183,7 @@
 			<input type="hidden" name="artwork_id" value="{{ artwork.key.id }}" />
 			<input type="hidden" name="ref_comment_id" value="" />
 			<div class="form-group col-xs-12" style="padding-left: 0; padding-right: 0;">
-				<textarea name="comment_text" class="form-control"></textarea>
+				<textarea name="comment_text" class="form-control" rows="3"></textarea>
 			</div>
 			<div class="form-group col-xs-12 text-right" style="padding-left: 0; padding-right: 0;">
 				{% if user_info.user %}
@@ -286,7 +286,7 @@ $(function() {
 		comment_id = $(this).attr("comment_id");
 		$("input[name=ref_comment_id]").val(comment_id);
 		
-		var commenter_name = $("#comment-"+comment_id).find("#commenter-name").text();
+		var commenter_name = $("#comment-"+comment_id).find("#commenter-name").text().trim();
 		$("textarea[name=comment_text]").text("Reply to "+commenter_name+":\n");
 		
 		$("textarea[name=comment_text]").focus();
