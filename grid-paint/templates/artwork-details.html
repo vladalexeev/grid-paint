@@ -130,11 +130,13 @@
 		  			</span>
 		  		</b> - {{ comment.date|date:"d M Y H:i" }}
 		  		<div class="pull-right">
-		  			<span class="reply_comment_button btn btn-small btn-default" title="Reply" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-		  					{% if comment.hidden %}style="display:none;"{% endif%} >
-		  				<i class="glyphicon glyphicon-share-alt"></i> Reply
-		  			</span>
-		  			{% if not comment.hidden and user_info.user %}
+		  			{% if not user_info.read_only %}
+			  			<span class="reply_comment_button btn btn-small btn-default" title="Reply" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+			  					{% if comment.hidden %}style="display:none;"{% endif%} >
+			  				<i class="glyphicon glyphicon-share-alt"></i> Reply
+			  			</span>
+		  			{% endif %}
+		  			{% if not comment.hidden and user_info.user and not user_info.read_only %}
 		  				<span class="complain_comment_button btn btn-small btn-default" title="Complain" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
 		  					{% if comment.hidden %}style="display:none;"{% endif%} >
 		  					<i class="glyphicon glyphicon-exclamation-sign"></i>
