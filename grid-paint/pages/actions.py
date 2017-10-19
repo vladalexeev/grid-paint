@@ -144,7 +144,9 @@ class ActionSaveImage(BasicRequestHandler):
         artwork.small_image_width = small_image_size[0]
         artwork.small_image_height = small_image_size[1]
         
-        artwork.date = datetime.datetime.now()
+        if self.user_info.user_email == artwork.author_email:
+            artwork.date = datetime.datetime.now()
+            
         saved_id = artwork.put()
         
         full_image_file_name = '/images/png/'+str(saved_id.id())+'.png'
