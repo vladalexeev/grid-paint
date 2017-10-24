@@ -25,6 +25,7 @@ class Artwork(db.Expando):
     small_image_width = db.IntegerProperty(indexed=False)
     small_image_height = db.IntegerProperty(indexed=False)
     editor_choice = db.BooleanProperty()
+    editor_choice_date = db.DateTimeProperty()
     
 class Tag(db.Model):
     url_name = db.StringProperty()

@@ -660,7 +660,19 @@ class ActionUpdateIterate(BasicRequestHandler):
                   'all_done': total_count<limit
                   }
         self.response.write(json.dumps(result))
+        
+class ActionUpdateEditorChoice(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
 
+        artworks = db.Artwork.all().filter('editor_choice =', True).order('-editor_choice_date')
+        for a in artworks:
+            a.editor_choice_date = a.date
+            a.put()
+            
+        self.response.write("OK")
 
                 
 class ActionAdminSetArtworkProperties(BasicRequestHandler):
@@ -683,8 +695,10 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork.description = artwork_description
         if artwork_editor_choice:
             artwork.editor_choice = True
+            artwork.editor_choice_date = datetime.datetime.now()
         else:
             artwork.editor_choice = False
+            artwork.editor_choice_date = None
         
         original_tags=artwork_tags.split(',')
         url_tags=[]

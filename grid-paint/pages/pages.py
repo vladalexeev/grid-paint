@@ -35,7 +35,7 @@ class PageIndex(BasicPageRequestHandler):
         editor_choice = cache.get(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
         if not editor_choice:
             choice_artworks = db.Artwork.all().filter('editor_choice =', True)
-            choice_artworks = choice_artworks.order('-date').fetch(3,0)
+            choice_artworks = choice_artworks.order('-editor_choice_date').fetch(3,0)
             editor_choice = [convert.convert_artwork_for_page(a,200,150) for a in choice_artworks]
             cache.add(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE, editor_choice)
             
@@ -385,7 +385,7 @@ class PageEditorChoice(BasicPageRequestHandler):
         
         def artworks_query_func():
             all_artworks=db.Artwork.all().filter('editor_choice =', True)
-            return all_artworks.order('-date')
+            return all_artworks.order('-editor_choice_date')
         
         def href_create_func(offset):
             return '/editor-choice?offset='+str(offset)
