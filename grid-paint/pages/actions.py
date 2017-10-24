@@ -667,7 +667,7 @@ class ActionUpdateEditorChoice(BasicRequestHandler):
             self.response.set_status(403)
             return
 
-        artworks = db.Artwork.all().filter('editor_choice =', True).order('-editor_choice_date')
+        artworks = db.Artwork.all().filter('editor_choice =', True).order('-date')
         for a in artworks:
             a.editor_choice_date = a.date
             a.put()
