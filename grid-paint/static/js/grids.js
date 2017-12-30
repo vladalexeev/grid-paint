@@ -114,10 +114,17 @@ function GridArtwork() {
     };
     
     this.doShiftLeft=function(grid) {
+    	var removedCells=[];
         var shift=grid.shiftLeft;
         for (var row=0; row<this.cells.length; row++) {
             for (var col=0; col<Math.min(-shift.cell_dx, this.cells[row].length); col++) {
                 if (this.cells[row][col]) {
+                	removedCells.push({
+                		col: col,
+                		row: row,
+                		color: this.cells[row][col].color,
+                		shapeName: this.cells[row][col].shapeName
+                	});
                     this.cells[row][col].element.remove();
                 }
             }
@@ -126,6 +133,7 @@ function GridArtwork() {
         }
         
         this._shiftAllElements(shift.dx, shift.dy);
+        return removedCells;
     };
     
     this.doShiftRight=function(grid) {
@@ -137,21 +145,30 @@ function GridArtwork() {
     	}
     	
     	this._shiftAllElements(shift.dx, shift.dy);
+    	return [];
  	};
  	
  	this.doShiftUp=function(grid) {
+ 		var removedCells=[];
  		var shift=grid.shiftUp;
  		for (var row=0; row<-shift.cell_dy; row++) {
  			for (var col=0; col<this.cells[row].length; col++) {
  				if (this.cells[row][col]) {
+ 					removedCells.push({
+ 						col: col,
+ 						row: row,
+ 						color: this.cells[row][col].color,
+ 						shapeName: this.cells[row][col].shapeName
+ 					});
+ 					
  					this.cells[row][col].element.remove();
  				}
  			}
  		}
  		
  		this.cells=this.cells.slice(-shift.cell_dy);
-
 		this._shiftAllElements(shift.dx, shift.dy);
+		return removedCells;
  	};
  	
  	this.doShiftDown=function(grid) {
@@ -357,18 +374,17 @@ function UndoStep() {
 	};
 	
 	this.setBackgroundChange=function(oldColor, newColor) {
-		this.backgroundChange= {
+		this.backgroundChange={
 			oldColor: oldColor,
 			newColor: newColor
 		};
 	};
 	
-	this.setShiftChange=function(shiftCol, shiftRow, cells) {
-		this.shiftChange({
-			shiftCol: shiftCol,
-			shiftRow: shiftRow,
-			cells: cells
-		});
+	this.setShiftChange=function(dir, removedCells) {
+		this.shiftChange={
+			dir: dir,
+			removedCells: removedCells
+		};
 	};
 }
 

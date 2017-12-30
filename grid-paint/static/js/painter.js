@@ -399,7 +399,26 @@ function updateUndoRedoButtons() {
 function doUndo() {
 	if (undoStack.length>0) {
 		var undoStep=undoStack.pop();
-		if (undoStep.backgroundChange) {
+		if (undoStep.shiftChange) {
+			var dir=undoStep.shiftChange.dir;
+			if (dir=='left') {
+				gridArtwork.doShiftRight(grid); 
+			} else if (dir=='right') {
+				gridArtwork.doShiftLeft(grid);
+			} else if (dir=='up') {
+				gridArtwork.doShiftDown(grid);
+			} else if (dir=='down') {
+				gridArtwork.doShiftUp(grid);
+			}
+			var removedCells=undoStep.shiftChange.removedCells;
+			for (var i=0; i<removedCells.length; i++) {
+				paintOnCanvas(
+					removedCells[i].col, 
+					removedCells[i].row, 
+					removedCells[i].shapeName, 
+					removedCells[i].color);
+			}
+		} else if (undoStep.backgroundChange) {
 			setBackgroundColor(undoStep.backgroundChange.oldColor);
 		} else {
 			for (var i=0; i<undoStep.cellChanges.length; i++) {
@@ -416,7 +435,18 @@ function doUndo() {
 function doRedo() {
 	if (redoStack.length>0) {
 		var redoStep=redoStack.pop();
-		if (redoStep.backgroundChange) {
+		if (redoStep.shiftChange) {
+			var dir=redoStep.shiftChange.dir;
+			if (dir=='left') {
+				gridArtwork.doShiftLeft(grid); 
+			} else if (dir=='right') {
+				gridArtwork.doShiftRight(grid);
+			} else if (dir=='up') {
+				gridArtwork.doShiftUp(grid);
+			} else if (dir=='down') {
+				gridArtwork.doShiftDown(grid);
+			}
+		} else if (redoStep.backgroundChange) {
 			setBackgroundColor(redoStep.backgroundChange.newColor);	
 		} else {
 			for (var i=0; i<redoStep.cellChanges.length; i++) {
@@ -564,6 +594,7 @@ $(function() {
 			undoStep=new UndoStep();
 			undoStep.setBackgroundChange(backgroundColor, selectedColor);
 			undoStack.push(undoStep);
+			redoStack=[];
 			updateUndoRedoButtons();
 			
 			setBackgroundColor(selectedColor);
@@ -661,26 +692,50 @@ $(function() {
 	
 	$("#btn-shift-left").click(
 		function() {
-			gridArtwork.doShiftLeft(grid);
+			removedCells=gridArtwork.doShiftLeft(grid);
 			changed=true;
+			
+			undoStep=new UndoStep();
+			undoStep.setShiftChange('left', removedCells);
+			undoStack.push(undoStep);
+			redoStack=[];
+			updateUndoRedoButtons();
 		});
 	
 	$("#btn-shift-right").click(
 		function() {
-			gridArtwork.doShiftRight(grid);
+			removedCells=gridArtwork.doShiftRight(grid);
 			changed=true;
+			
+			undoStep=new UndoStep();
+			undoStep.setShiftChange('right', removedCells);
+			undoStack.push(undoStep);
+			redoStack=[];
+			updateUndoRedoButtons();
 		});
 		
 	$("#btn-shift-up").click(
 		function() {
-			gridArtwork.doShiftUp(grid);
+			removedCells=gridArtwork.doShiftUp(grid);
 			changed=true;
+			
+			undoStep=new UndoStep();
+			undoStep.setShiftChange('up', removedCells);
+			undoStack.push(undoStep);
+			redoStack=[];
+			updateUndoRedoButtons();
 		});
 		
 	$("#btn-shift-down").click(
 		function() {
-			gridArtwork.doShiftDown(grid);
+			removedCells=gridArtwork.doShiftDown(grid);
 			changed=true;
+			
+			undoStep=new UndoStep();
+			undoStep.setShiftChange('down', removedCells);
+			undoStack.push(undoStep);
+			redoStack=[];
+			updateUndoRedoButtons();
 		});
 		
 	$("#btn-undo").click(
