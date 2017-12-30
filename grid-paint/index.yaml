@@ -19,13 +19,13 @@ indexes:
 - kind: Artwork
   properties:
   - name: editor_choice
-  - name: editor_choice_date
+  - name: date
     direction: desc
 
 - kind: Artwork
   properties:
   - name: editor_choice
-  - name: date
+  - name: editor_choice_date
     direction: desc
 
 - kind: Artwork
