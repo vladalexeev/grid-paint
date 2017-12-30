@@ -297,7 +297,7 @@ function trianglePath(col, row, sideLength) {
  */
 function isotrianglePath(col, row, sideLength) {
 	colWidth=sideLength*sin60;
-	y=row*sideLength/2;;
+	y=row*sideLength/2;
 	x=col*colWidth;
 	if (col % 2 == 0) {
 		if (row % 2 == 0) {
@@ -476,7 +476,7 @@ function GridSelection() {
 	
 	this.loadFromLocalStorage=function() {
 		if (this.grid.name==localStorage['gridSelectionType']) {
-			var s=JSON.parse(localStorage['gridSelection']);
+			var s=JSON.parse(localStorage['gridSelection'])
 			for (var i=0; i<s.selection.length; i++) {
 				var ss=s.selection[i];
 				this.cells.push({
@@ -517,6 +517,27 @@ function GridSelection() {
 		}
 		this.pasteCol=col;
 		this.pasteRow=row;
+	};
+	
+	this.getPasteCells=function() {
+		if (this.grid.specialPasteShift) {
+			return this.grid.specialPasteShift(this.cells, this.baseCol, this.baseRow, this.pasteCol, this.pasteRow);
+		} else {
+			var colShift=this.pasteCol-this.baseCol;
+			var rowShift=this.pasteRow-this.baseRow;
+			var result=[];
+			for (var i=0; i<this.cells.length; i++) {
+				var cc=selection.cells[i];
+				result.push({
+					col: cc.col+colShift,
+					row: cc.row+rowShift,
+					shapeName: cc.shapeName,
+					color: cc.color
+				});
+			}
+			
+			return result;
+		}
 	};
 }
 
