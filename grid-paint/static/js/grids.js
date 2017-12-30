@@ -476,7 +476,7 @@ function GridSelection() {
 	
 	this.loadFromLocalStorage=function() {
 		if (this.grid.name==localStorage['gridSelectionType']) {
-			var s=JSON.parse(localStorage['gridSelection'])
+			var s=JSON.parse(localStorage['gridSelection']);
 			for (var i=0; i<s.selection.length; i++) {
 				var ss=s.selection[i];
 				this.cells.push({
