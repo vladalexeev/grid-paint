@@ -84,10 +84,10 @@ function GridArtwork() {
             this.cells[row][col]= {
                 shapeName: shapeName,
                 color: color
-            }
+            };
             return this.cells[row][col];
         }        
-    }
+    };
     
     this.getCell=function(col, row) {
         if (this.cells.length<=row) {
@@ -99,7 +99,7 @@ function GridArtwork() {
         }
         
         return this.cells[row][col];
-    }
+    };
     
     this._shiftAllElements=function(dx, dy) {
     	for (var row=0; row<this.cells.length; row++) {
@@ -111,7 +111,7 @@ function GridArtwork() {
  				}
  			}
  		}
-    }
+    };
     
     this.doShiftLeft=function(grid) {
         var shift=grid.shiftLeft;
@@ -126,7 +126,7 @@ function GridArtwork() {
         }
         
         this._shiftAllElements(shift.dx, shift.dy);
-    }
+    };
     
     this.doShiftRight=function(grid) {
     	var shift=grid.shiftRight;
@@ -137,7 +137,7 @@ function GridArtwork() {
     	}
     	
     	this._shiftAllElements(shift.dx, shift.dy);
- 	}
+ 	};
  	
  	this.doShiftUp=function(grid) {
  		var shift=grid.shiftUp;
@@ -152,7 +152,7 @@ function GridArtwork() {
  		this.cells=this.cells.slice(-shift.cell_dy);
 
 		this._shiftAllElements(shift.dx, shift.dy);
- 	}
+ 	};
  	
  	this.doShiftDown=function(grid) {
  		var shift=grid.shiftDown;
@@ -161,7 +161,7 @@ function GridArtwork() {
  		}
 
 		this._shiftAllElements(shift.dx, shift.dy); 		
- 	}
+ 	};
 }
 
 /*
@@ -191,7 +191,7 @@ function pointToTriangleCoord(x,y,sideLength) {
     if (cellY % 2 == 0) {
         relativeY=y-cellY*rowHeight;
     } else {
-        relativeY=y-(cellY-1)*rowHeight
+        relativeY=y-(cellY-1)*rowHeight;
     }
 	    	    
     var A1=-tan60;
@@ -206,7 +206,7 @@ function pointToTriangleCoord(x,y,sideLength) {
     var dist2=Math.abs(A2*x+B2*relativeY+C2)/Math.sqrt(A2*A2+B2*B2);
     var d2=Math.floor(dist2/rowHeight)-1;
         
-    return {col:d1+d2, row:cellY}
+    return {col:d1+d2, row:cellY};
 }
 
 /**
@@ -236,7 +236,7 @@ function pointToIsoTriangleCoord(x,y,sideLength) {
     var dist2=Math.abs(A2*y+B2*relativeX+C2)/Math.sqrt(A2*A2+B2*B2);
     var d2=Math.floor(dist2/colWidth)-1;
         
-    return {col:cellX, row:d1+d2}
+    return {col:cellX, row:d1+d2};
 }
 
 /**
@@ -248,8 +248,8 @@ function pointToIsoTriangleCoord(x,y,sideLength) {
  * @return array of four points: points [0,1,2] - corners, point[3] - center point
  */
 function trianglePath(col, row, sideLength) {
-	rowHeight=sideLength*sin60
-	x=col*sideLength/2
+	rowHeight=sideLength*sin60;
+	x=col*sideLength/2;
 	y=row*rowHeight;
 	if (row % 2 == 0) {
 		if (col % 2 == 0) {
@@ -258,14 +258,14 @@ function trianglePath(col, row, sideLength) {
 				{x:x+sideLength/2, y:y},
 				{x:x+sideLength, y:y+rowHeight},
 				{x:x+sideLength/2, y:y+rowHeight*2/3}
-				]
+				];
 		} else {
 			return [
 				{x:x, y:y},
 				{x:x+sideLength, y:y},
 				{x:x+sideLength/2, y:y+rowHeight},
 				{x:x+sideLength/2, y:y+rowHeight/3}
-				]
+				];
 		}
 	} else {
 		if (col % 2 == 0) {
@@ -274,14 +274,14 @@ function trianglePath(col, row, sideLength) {
 				{x:x+sideLength, y:y},
 				{x:x+sideLength/2, y:y+rowHeight},
 				{x:x+sideLength/2, y:y+rowHeight/3}
-				]
+				];
 		} else {
 			return [
 				{x:x, y:y+rowHeight},
 				{x:x+sideLength/2, y:y},
 				{x:x+sideLength, y:y+rowHeight},
 				{x:x+sideLength/2, y:y+rowHeight*2/3}
-				]
+				];
 		}
 	}
 }
@@ -296,8 +296,8 @@ function trianglePath(col, row, sideLength) {
  * @return array of four points: points [0,1,2] - corners, point[3] - center point
  */
 function isotrianglePath(col, row, sideLength) {
-	colWidth=sideLength*sin60
-	y=row*sideLength/2
+	colWidth=sideLength*sin60;
+	y=row*sideLength/2;;
 	x=col*colWidth;
 	if (col % 2 == 0) {
 		if (row % 2 == 0) {
@@ -306,14 +306,14 @@ function isotrianglePath(col, row, sideLength) {
 				{y:y+sideLength/2, x:x},
 				{y:y+sideLength, x:x+colWidth},
 				{y:y+sideLength/2, x:x+colWidth*2/3}
-				]
+				];
 		} else {
 			return [
 				{y:y, x:x},
 				{y:y+sideLength, x:x},
 				{y:y+sideLength/2, x:x+colWidth},
 				{y:y+sideLength/2, x:x+colWidth/3}
-				]
+				];
 		}
 	} else {
 		if (row % 2 == 0) {
@@ -322,14 +322,14 @@ function isotrianglePath(col, row, sideLength) {
 				{y:y+sideLength, x:x},
 				{y:y+sideLength/2, x:x+colWidth},
 				{y:y+sideLength/2, x:x+colWidth/3}
-				]
+				];
 		} else {
 			return [
 				{y:y, x:x+colWidth},
 				{y:y+sideLength/2, x:x},
 				{y:y+sideLength, x:x+colWidth},
 				{y:y+sideLength/2, x:x+colWidth*2/3}
-				]
+				];
 		}
 	}
 }
@@ -354,14 +354,22 @@ function UndoStep() {
 			oldColor: oldColor,
 			newColor: newColor
 		});
-	}
+	};
 	
 	this.setBackgroundChange=function(oldColor, newColor) {
 		this.backgroundChange= {
 			oldColor: oldColor,
 			newColor: newColor
-		}
-	}
+		};
+	};
+	
+	this.setShiftChange=function(shiftCol, shiftRow, cells) {
+		this.shiftChange({
+			shiftCol: shiftCol,
+			shiftRow: shiftRow,
+			cells: cells
+		});
+	};
 }
 
 function GridSelection() {
@@ -389,7 +397,7 @@ function GridSelection() {
 		
 		this.cells.push(item);
 		return item;
-	}
+	};
 	
 	this.forgetCell=function(col, row) {
 		var index=-1;
@@ -408,11 +416,11 @@ function GridSelection() {
 			
 			this.cells.splice(index,1);
 		}
-	}
+	};
 	
 	this.isEmpty=function() {
 		return this.cells.length==0;
-	}
+	};
 	
 	this._deleteElements=function() {
 		for (var i=0; i<this.cells.length; i++) {
@@ -422,11 +430,11 @@ function GridSelection() {
 				delete cc.element;
 			}
 		}		
-	}
+	};
 	
 	this.copyPrepare=function() {
 		this.cells=[];
-	}
+	};
 	
 	this.copyFinished=function() {
 		this._deleteElements();
@@ -464,11 +472,11 @@ function GridSelection() {
 				row: this.baseRow
 			}
 		});
-	}
+	};
 	
 	this.loadFromLocalStorage=function() {
 		if (this.grid.name==localStorage['gridSelectionType']) {
-			var s=JSON.parse(localStorage['gridSelection'])
+			var s=JSON.parse(localStorage['gridSelection']);
 			for (var i=0; i<s.selection.length; i++) {
 				var ss=s.selection[i];
 				this.cells.push({
@@ -476,13 +484,13 @@ function GridSelection() {
 					row: ss[1],
 					shapeName: ss[2],
 					color: ss[3]
-				})
+				});
 			}
 			
 			this.baseCol=s.base.col;
 			this.baseRow=s.base.row;
 		}
-	}
+	};
 	
 	this.pastePrepare=function() {
 		for (var i=0; i<this.cells.length; i++) {
@@ -492,11 +500,11 @@ function GridSelection() {
 		
 		this.pasteCol=this.baseCol;
 		this.pasteRow=this.baseRow;
-	}
+	};
 	
 	this.pasteFinished=function() {
 		this._deleteElements();
-	}
+	};
 	
 	this.changePasteCell=function(col, row) {
 		var oldCellRect=this.grid.getCellRect(this.pasteCol, this.pasteRow);
@@ -509,27 +517,6 @@ function GridSelection() {
 		}
 		this.pasteCol=col;
 		this.pasteRow=row;
-	}
-	
-	this.getPasteCells=function() {
-		if (this.grid.specialPasteShift) {
-			return this.grid.specialPasteShift(this.cells, this.baseCol, this.baseRow, this.pasteCol, this.pasteRow);
-		} else {
-			var colShift=this.pasteCol-this.baseCol;
-			var rowShift=this.pasteRow-this.baseRow;
-			var result=[];
-			for (var i=0; i<this.cells.length; i++) {
-				var cc=selection.cells[i];
-				result.push({
-					col: cc.col+colShift,
-					row: cc.row+rowShift,
-					shapeName: cc.shapeName,
-					color: cc.color
-				});
-			}
-			
-			return result;
-		}
-	}
+	};
 }
 

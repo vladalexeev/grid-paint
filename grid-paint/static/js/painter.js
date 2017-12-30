@@ -62,7 +62,7 @@ function createShapesToolbar() {
 		function() {
 			selectShape($(this).attr("shape-name"));
 		}
-	)
+	);
 }
 
 function selectShape(shapeName) {
@@ -79,7 +79,7 @@ function selectShape(shapeName) {
 function paintOnCanvas(col, row, shapeName, color) {
 	var cell=gridArtwork.setCell(col, row, shapeName, color);
 	if (!cell.element && cell.shapeName!="empty") {
-		var element=grid.shapes[shapeName].paint(paper, col, row, color, 0, 0)
+		var element=grid.shapes[shapeName].paint(paper, col, row, color, 0, 0);
 		cell.element=element;
 	}
 }
@@ -99,7 +99,7 @@ function updateCellCoordiantesPanel(event) {
 }
 
 function storeUndoCell(col, row, newShapeName, newColor) {
-	var oldCell=gridArtwork.getCell(col, row)
+	var oldCell=gridArtwork.getCell(col, row);
 	var oldShapeName="empty";
 	var oldColor="#ffffff";
 	if (oldCell) {
@@ -136,7 +136,7 @@ function selectOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 	
 	if (paperMouseDown) {
-		var oldCell=gridArtwork.getCell(cell.col, cell.row)
+		var oldCell=gridArtwork.getCell(cell.col, cell.row);
 		
 		var cellShapeName="empty";
 		var cellColor="#ffffff";
@@ -204,7 +204,7 @@ function getArtworkEffectiveRect(grid, artwork) {
 		top: Math.floor(y1),
 		width: Math.round(x2-x1+1),
 		height: Math.round(y2-y1+1)
-	}
+	};
 }
 
 function setMode(m) {
@@ -251,7 +251,7 @@ function saveArtwork() {
 			rows:[]	
 		}],
 		recentColors: recentColors
-	}
+	};
 	
 	if (a.effectiveRect.width<0 || a.effectiveRect.height<0) {
 		var messageModal=$("#message-modal");
@@ -267,7 +267,7 @@ function saveArtwork() {
 	for (var row=0; row<gridArtwork.cells.length; row++) {
 		var rowElement={
 			row:row
-		}
+		};
 		var cellArray=[];
 		
 		for (var col=0; col<gridArtwork.cells[row].length; col++) {
@@ -276,12 +276,12 @@ function saveArtwork() {
 					col,
 					gridArtwork.cells[row][col].shapeName,
 					gridArtwork.cells[row][col].color	
-				])
+				]);
 			}
 		}
 		
 		rowElement.cells=cellArray;
-		a.layers[0].rows.push(rowElement)
+		a.layers[0].rows.push(rowElement);
 	}
 	
     $("input[name=artwork_json]").val(JSON.stringify(a));
@@ -450,7 +450,7 @@ $(function() {
 	$(window).resize(
 		function() {
 			adjustCanvasWrapper();
-		})
+		});
 			
 	backgroundColor=artwork.backgroundColor;
 	$("#canvas")
@@ -537,19 +537,19 @@ $(function() {
 				changePastePositionByMouseEvent(event);
 			}
 		}
-	)
+	);
 	
 	$.mask.definitions['k'] = "[A-Fa-f0-9]";
 	$("#color-picker-text").mask("#kkkkkk");
 	$("#color-picker-text").change(
 		function() {
-			selectColorFromText($(this).val())
+			selectColorFromText($(this).val());
 		}
 	).keyup(
 		function() {
-			selectColorFromText($(this).val())
+			selectColorFromText($(this).val());
 		}
-	)
+	);
 	
 	$("#color-picker").minicolors({
 		inline:true,
@@ -568,13 +568,13 @@ $(function() {
 			
 			setBackgroundColor(selectedColor);
 		}
-	)
+	);
 	
 	$("#btn-save").click(
 		function() {
 			showPropertiesDialog("save");
 		}
-	)
+	);
 	
 	$("#btn-properties-save").click(
 		function() {
@@ -601,14 +601,14 @@ $(function() {
 				saveArtwork();
 			}
 		}
-	)
+	);
 	
 	window.onbeforeunload=
 		function() {
 			if (changed) {
 				return "Your drawing was changed. Do you want to leave without saving?";
 			}
-		}
+		};
 		
 	var tags=$("#modal_artwork_tags");
 	tags.tagsinput();
@@ -634,7 +634,7 @@ $(function() {
 			$("#color-picker").minicolors("value",hexColor);
 			//selectColor(hexColor);
 		}
-	)
+	);
 	
 	//Fill color palette with recent colors
 	if (artwork.recentColors) {
@@ -832,4 +832,4 @@ $(function() {
 			}
 		});
 	
-})
+});
