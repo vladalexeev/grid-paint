@@ -355,6 +355,13 @@ function UndoStep() {
 			newColor: newColor
 		});
 	}
+	
+	this.setBackgroundChange=function(oldColor, newColor) {
+		this.backgroundChange= {
+			oldColor: oldColor,
+			newColor: newColor
+		}
+	}
 }
 
 function GridSelection() {

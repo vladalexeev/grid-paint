@@ -399,10 +399,15 @@ function updateUndoRedoButtons() {
 function doUndo() {
 	if (undoStack.length>0) {
 		var undoStep=undoStack.pop();
-		for (var i=0; i<undoStep.cellChanges.length; i++) {
-			cc=undoStep.cellChanges[i];
-			paintOnCanvas(cc.col, cc.row, cc.oldShapeName, cc.oldColor);
+		if (undoStep.backgroundChange) {
+			setBackgroundColor(undoStep.backgroundChange.oldColor);
+		} else {
+			for (var i=0; i<undoStep.cellChanges.length; i++) {
+				cc=undoStep.cellChanges[i];
+				paintOnCanvas(cc.col, cc.row, cc.oldShapeName, cc.oldColor);
+			}			
 		}
+		
 		redoStack.push(undoStep);
 		updateUndoRedoButtons();
 	}
@@ -411,10 +416,15 @@ function doUndo() {
 function doRedo() {
 	if (redoStack.length>0) {
 		var redoStep=redoStack.pop();
-		for (var i=0; i<redoStep.cellChanges.length; i++) {
-			cc=redoStep.cellChanges[i];
-			paintOnCanvas(cc.col, cc.row, cc.newShapeName, cc.newColor);
+		if (redoStep.backgroundChange) {
+			setBackgroundColor(redoStep.backgroundChange.newColor);	
+		} else {
+			for (var i=0; i<redoStep.cellChanges.length; i++) {
+				cc=redoStep.cellChanges[i];
+				paintOnCanvas(cc.col, cc.row, cc.newShapeName, cc.newColor);
+			}
 		}
+		
 		undoStack.push(redoStep);
 		updateUndoRedoButtons();
 	}	
@@ -428,6 +438,11 @@ function pasteSelection() {
 		paintOnCanvas(cc.col, cc.row, cc.shapeName, cc.color);
 	}
 	changed=true;
+}
+
+function setBackgroundColor(color) {
+	backgroundColor=color;
+	$("#canvas").css("background-color",backgroundColor);
 }
 
 $(function() {
@@ -546,8 +561,12 @@ $(function() {
 	
 	$("#btn-set-background-color").click(
 		function() {
-			backgroundColor=selectedColor;
-			$("#canvas").css("background-color",backgroundColor);
+			undoStep=new UndoStep();
+			undoStep.setBackgroundChange(backgroundColor, selectedColor);
+			undoStack.push(undoStep);
+			updateUndoRedoButtons();
+			
+			setBackgroundColor(selectedColor);
 		}
 	)
 	
