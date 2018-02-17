@@ -14,9 +14,6 @@ body {
 	min-height: 610px;
 }
 
-.container {
-	width: 960px;
-}
 
 .header-user {
 	white-space: nowrap;
@@ -358,13 +355,7 @@ body {
  * For place ads to the right
  */
 
-.sidebar-adv {
-    /*padding: 9px 0;*/
-    position:absolute;
-    right:0; 
-    /*margin-top:60px;*/
-    width: 180px;
-}
+
 
 /*
 .row-fluid > .sidebar-nav {
@@ -386,10 +377,6 @@ body {
 .fixed-fluid {
     margin-left: 180px;
 }*/
-.fluid-fixed {
-    margin-right: 180px;
-    margin-left:auto !important;
-}
 
 /*
 .fixed-fixed {
@@ -436,10 +423,6 @@ background: linear-gradient(to bottom, rgba(237,110,0,0.14) 0%,rgba(0,0,0,0) 100
 
 
 
-.index-page-thumbnail {
-	background-color: white;
-}
-
 .index-page-thumb-button {
 	border:0;
 	box-shadow: none;
@@ -465,4 +448,177 @@ background: linear-gradient(to bottom, rgba(237,110,0,0.14) 0%,rgba(0,0,0,0) 100
 	margin-left: 118px;
 }
 
+
+.dummy-banner {
+	background-color: #6B9CE7;
+	color: white;
+	font-size: 32px;
+	padding: 20px;
+	left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.thumbnail-wrapper {
+	width: 240px;
+	float: left;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.index-featured-artists-wrapper {
+	float: left;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+#search-form {
+	display: none;
+}
+
+#index-logo-image {
+	float: left;
+}
+
+@media (max-width: 510px) {
+	.dummy-banner {
+		width: 300px;
+		height: 60px;
+	}
+	
+	.sidebar-adv {
+		height: 80px;
+	}
+	
+	.content {
+		
+	}
+	
+	.container {
+		width: 100%;
+	}
+	
+	.index-featured-artists-wrapper {
+		width: 100%;
+	}
+	
+	.single-container {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	
+	.thumbnail-wrapper {
+		float: none;
+		display: inline-block;
+	}
+	
+	#index-logo-image {
+		float: none;
+		text-align: center;
+	}
+}
+
+
+@media (min-width:510px) and (max-width: 740px) {
+	.dummy-banner {
+		width: 468px;
+		height: 60px;
+	}
+	
+	.sidebar-adv {
+		height: 80px;
+	}
+	
+	.content {
+		
+	}
+	
+	.container {
+		width: 480px;
+	}
+	
+	.index-featured-artists-wrapper {
+		width: 100%;
+	}
+}
+
+@media (min-width: 740px) and (max-width: 920px) {
+	.dummy-banner {
+		width: 468px;
+		height: 60px;
+	}
+	
+	.sidebar-adv {
+		height: 80px;
+	}
+	
+	.content {
+		
+	}
+	
+	.container {
+		width: 720px;
+	}
+	
+	.index-featured-artists-wrapper {
+		width: 100%;
+	}
+}
+
+
+@media (min-width: 920px) and (max-width: 1150px) {
+	.dummy-banner {
+		width: 160px;
+		height: 600px;
+	}
+	
+	.sidebar-adv {
+	    position:absolute;
+	    right:0; 
+	    width: 180px;
+	}
+	
+	.content {
+	    margin-right: 180px;
+	    margin-left:auto !important;
+	}
+	
+	.container {
+		width: 720px;
+	}
+	
+	.index-featured-artists-wrapper {
+		width: 100%;
+	}
+}
+
+@media (min-width: 1150px) {
+	.dummy-banner {
+		width: 160px;
+		height: 600px;
+	}
+	
+	.sidebar-adv {
+	    position:absolute;
+	    right:0; 
+	    width: 180px;
+	}
+	
+	.content {
+	    margin-right: 180px;
+	    margin-left:auto !important;
+	}
+	
+	.container {
+		width: 960px;
+	}
+	
+	#search-form {
+		display: block;
+	}
+	
+	.index-featured-artists-wrapper {
+		width: 50%;
+	}
+}
 

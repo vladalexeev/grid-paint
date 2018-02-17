@@ -5,8 +5,8 @@
 <div class="single-container">
 
 <div class="container">
-<div class="pull-left">
-<img src="/img/logo-large.png" />
+<div id="index-logo-image">
+	<img src="/img/logo-large.png" />
 </div>
 <p>
 <b>Grid Paint</b> is an online drawing tool using various types of grids 
@@ -37,7 +37,7 @@ link at the top.
 	{% include "thumbnail.html" %}
 {% endfor %}
 
-	<div class="col-xs-3">
+	<div class="thumbnail-wrapper">
 	  <div class="thumbnail index-page-thumb-button" style="background-color: transparent;">
 		<a href="/editor-choice">
 		  <img src="/img/goto-gallery.png" border="0" />
@@ -56,7 +56,7 @@ link at the top.
 	{% include "thumbnail.html" %}
 {% endfor %}
 
-	<div class="col-xs-3">
+	<div class="thumbnail-wrapper">
 	  <div class="thumbnail index-page-thumb-button" style="background-color: transparent;">
 		<a href="/top-favorites">
 		  <img src="/img/goto-gallery.png" border="0" />
@@ -76,7 +76,7 @@ link at the top.
 	{% include "thumbnail.html" %}
 {% endfor %}
 
-	<div class="col-xs-3">
+	<div class="thumbnail-wrapper">
 	  <div class="thumbnail index-page-thumb-button" style="background-color: transparent;">
 		<a href="/favorites">
 		  <img src="/img/goto-gallery.png" border="0" />
@@ -95,7 +95,7 @@ link at the top.
 	{% include "thumbnail.html" %}
 {% endfor %}
 
-	<div class="col-xs-3">
+	<div class="thumbnail-wrapper">
 	  <div class="thumbnail index-page-thumb-button" style="background-color: transparent;">
 		<a href="/gallery">
 		  <img src="/img/goto-gallery.png" border="0" />
@@ -155,7 +155,7 @@ link at the top.
 
 <div class="image-details-comments">
 <div class="row">
-<div class="col-xs-6">
+<div class="index-featured-artists-wrapper">
 	<div class="text-center">
 	<h3>Most productive artists</h3>
 	</div>
@@ -182,7 +182,7 @@ link at the top.
 		<a href="/profiles/by-artwork-count" class="btn btn-default btn-small">More artists <i class="icon-arrow-right"></i></a>
 	</div>
 </div>
-<div class="col-xs-6">
+<div class="index-featured-artists-wrapper">
 	<div class="text-center">
 	<h3>Top rated artists</h3>
 	</div>
