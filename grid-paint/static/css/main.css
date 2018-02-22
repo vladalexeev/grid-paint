@@ -177,6 +177,11 @@ body {
 	text-align: center;
 }
 
+.image-details-image img {
+	max-width: 100%;
+	height: auto;
+}
+
 .image-details-header {
 	border: 1px solid #c0c0c0;
 	border-radius: 5px;
@@ -204,6 +209,10 @@ body {
 
 .image-details-actions {
 	margin:10px;
+}
+
+.image-details-actions .btn {
+	margin-bottom: 5px;
 }
 
 .image-details-comments {
