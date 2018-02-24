@@ -44,7 +44,7 @@ class UserInfo:
         else:
             self.user_email = None
             self.login_url = users.create_login_url(request_uri)
-            self.login_url_text = 'Login into Google account'
+            self.login_url_text = 'Login'
             
 def get_settings():
     settings=db.Settings.all().get()
