@@ -21,7 +21,25 @@
 		</div>
 		<div class="content fluid-fixed">
 {% block content %}
-{% endblock %}			
+{% endblock %}	
+
+<div class="container">
+	<div style="margin-top:10px; margin-bottom: 10px;">
+		{% if settings.show_ads and not user_info.superadmin %}
+		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-0036569436360210"
+		     data-ad-slot="8990769571"
+		     data-ad-format="auto"></ins>
+		<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+		</script>
+		{% else %}
+			<div class="dummy-banner dummy-banner-bottom">Banner</div>
+		{% endif %}
+	</div>
+</div>
 	
 		</div>		
 	</div>
