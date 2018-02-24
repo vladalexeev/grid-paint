@@ -528,7 +528,7 @@ background: linear-gradient(to bottom, rgba(237,110,0,0.14) 0%,rgba(0,0,0,0) 100
 	}
 	
 	.sidebar-adv {
-		height: 80px;
+		margin-bottom: 10px;
 	}
 	
 	.content {
@@ -584,7 +584,7 @@ background: linear-gradient(to bottom, rgba(237,110,0,0.14) 0%,rgba(0,0,0,0) 100
 	}
 	
 	.sidebar-adv {
-		height: 80px;
+		margin-bottom: 10px;
 	}
 	
 	.content {
@@ -607,7 +607,7 @@ background: linear-gradient(to bottom, rgba(237,110,0,0.14) 0%,rgba(0,0,0,0) 100
 	}
 	
 	.sidebar-adv {
-		height: 80px;
+		margin-bottom: 10px;
 	}
 	
 	.content {
