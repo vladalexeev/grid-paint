@@ -85,13 +85,8 @@
 		<div style="clear: both"></div>		
 	</div>
 	
-	<div class="image-details-actions">
-		<ul class="social-likes social-likes_horizontal">
-			<li class="facebook" title="Share link on Facebook">Facebook</li>
-			<li class="twitter" title="Share link on Twitter">Twitter</li>
-			<li class="plusone" title="Share link on Google+">Google+</li>
-			<li class="pinterest" title="Share image on Pinterest" data-media="">Pinterest</li>
-		</ul>
+	<div class="image-details-actions" style="overflow: hidden;">
+		<div class="fb-like" data-href="http://grid-paint.com/images/details/{{ artwork.key.id }}" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
 	</div>
 	
 	{% if not user_info.read_only %}
