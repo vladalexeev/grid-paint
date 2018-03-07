@@ -419,7 +419,8 @@ class PageImage(BasicPageRequestHandler):
         comments = [convert.convert_comment_for_page(c) for c in db_comments]
         
         converted_artwork = convert.convert_artwork_for_page(artwork, 600, 400)
-        converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']]) 
+        if 'tags' in converted_artwork:
+            converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']]) 
         
         self.write_template('templates/artwork-details.html', 
                             {

@@ -74,12 +74,16 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
     try:
         if hasattr(artwork, 'artwork'):
             artwork = artwork.artwork
+            
+        artwork_description = ''
+        if artwork.description:
+            artwork_description = artwork.description.split('\n')            
         
         result={
                 'key': artwork.key(),
                 'name': artwork.name,
                 'description': artwork.description,
-                'description_list': artwork.description.split('\n'),
+                'description_list': artwork_description,
                 'date': artwork.date,
                 'grid': artwork.grid,
                 'author': convert_user(artwork.author_email),
@@ -120,8 +124,8 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
         result['thumbnail_width'] = thumbnail_size[0]
         result['thumbnail_height'] = thumbnail_size[1]
         result['thumbnail_image_name'] = image_name
-    except Exception, e:
-        logging.error('Error', e)
+    except Exception:
+        logging.exception('Convert error')
         result = {
                   'key': artwork.key(),
                   'not_found': True
