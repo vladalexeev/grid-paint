@@ -140,6 +140,17 @@ body {
 	height:150px; 
 	text-align: center;
 	margin: auto;
+	position: relative;
+}
+
+.thumb-image img {
+	display: block;
+	position: absolute;
+	left:0;
+	right:0;
+	top: 0;
+	bottom: 0;
+	margin: auto;
 }
 
 
@@ -172,14 +183,19 @@ body {
  */
 
 .image-details-image {
-	/*margin:10px;*/
-	/*padding:10px;*/
-	text-align: center;
+	position: relative;
+	min-height: 400px;
 }
 
 .image-details-image img {
 	max-width: 100%;
 	height: auto;
+	position: absolute;
+	left:0;
+	right:0;
+	top:0;
+	bottom:0;
+	margin:auto;
 }
 
 .image-details-header {
