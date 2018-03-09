@@ -58,8 +58,6 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_name=self.request.get('artwork_name')
         artwork_description=self.request.get('artwork_description')
         artwork_tags=self.request.get('artwork_tags')
-        artwork_grid_visible=self.request.get('artwork_grid_visible')
-        artwork_pixel_art=self.request.get('artwork_pixel_art')
         
         
         if artwork_id:
@@ -104,12 +102,17 @@ class ActionSaveImage(BasicRequestHandler):
         grid=grids[layer['grid']]();
         grid.cell_size=layer['cellSize']
         
+        if json_obj['transparentBackground']:
+            background_color = (0, 0, 0, 0)
+        else:
+            background_color = json_obj['backgroundColor']
+        
         # Create normal image
         image_width=json_obj['effectiveRect']['width']
         image_height=json_obj['effectiveRect']['height']
-        image=Image.new('RGB', 
+        image=Image.new('RGBA', 
                         (image_width,image_height),
-                        json_obj['backgroundColor'])
+                        background_color)
         image_draw=ImageDraw.Draw(image)
         
         dx=-json_obj['effectiveRect']['left']
@@ -124,7 +127,7 @@ class ActionSaveImage(BasicRequestHandler):
                 for cell in row['cells']:
                     grid.paintShape2(image_draw, cell[0], row['row'], cell[1], cell[2],dx,dy)
                     
-        if artwork.grid=='square' and artwork_grid_visible:
+        if artwork.grid=='square' and json_obj['gridVisible']:
             grid.paintGrid(image_draw, '#000000', -dx, -dy, image_width, image_height, dx, dy)
         
         memory_file = StringIO.StringIO()
@@ -132,12 +135,12 @@ class ActionSaveImage(BasicRequestHandler):
         
         # Create pixel image
         pixel_memory_file = None
-        if artwork.grid=='square' and artwork_pixel_art=='1':
+        if artwork.grid=='square' and json_obj['additionalPixelImage']:
             pixel_image_width=json_obj['effectivePixelArtRect']['width']
             pixel_image_height=json_obj['effectivePixelArtRect']['height']
-            pixel_image=Image.new('RGB', 
+            pixel_image=Image.new('RGBA', 
                                   (pixel_image_width, pixel_image_height),
-                                  json_obj['backgroundColor'])
+                                  background_color)
             pixel_image_draw=ImageDraw.Draw(pixel_image)
                         
             p_dx=-json_obj['effectivePixelArtRect']['left']

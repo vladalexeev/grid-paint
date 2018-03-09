@@ -292,6 +292,10 @@ function saveArtwork() {
 		a['effectivePixelArtRect'] = getArtworkEffectivePixelArtRect(grid, gridArtwork);
 	}
 	
+	a['transparentBackground'] = $('#modal_transparent_background')[0].checked;
+	a['gridVisible'] = $('#modal_artwork_grid_visible')[0].checked;
+	a['additionalPixelImage'] = $('#modal_artwork_pixel_art')[0].checked;
+	
 	if (a.effectiveRect.width<0 || a.effectiveRect.height<0) {
 		var messageModal=$("#message-modal");
 		messageModal.find("#message-text").text("Cannot save empty image");
@@ -545,6 +549,10 @@ $(function() {
 	$("#toolbar-workspace-height").val(artwork.canvasSize.height);
 	$("#toolbar-cell-size").val(artwork.layers[0].cellSize);
 	
+	$('#modal_artwork_grid_visible')[0].checked = artwork['gridVisible'];
+	$('#modal_artwork_pixel_art')[0].checked = artwork['additionalPixelImage'];
+	$('#modal_transparent_background')[0].checked = artwork['transparentBackground'];
+	
 	
 	if (artwork.version.major==1) {
 		var layer=artwork.layers[0];
@@ -659,17 +667,7 @@ $(function() {
 			$("#artwork_name").val($("#modal_artwork_name").val());
 			$("#artwork_tags").val($("#modal_artwork_tags").val());
 			$("#artwork_description").val($("#modal_artwork_description").val());
-			if ($("#modal_artwork_grid_visible")[0].checked) {
-				$("#artwork_grid_visible").val('1');
-			} else {
-				$("#artwork_grid_visible").val('');
-			}
-			
-			if ($('#modal_artwork_pixel_art')[0].checked) {
-				$('#artwork_pixel_art').val('1');
-			} else {
-				$('#artwork_pixel_art').val('0');
-			}
+
 			$("#properties-modal").modal('hide');
 			
 			var modalAction=$("#modal_success_action").val();
@@ -678,20 +676,6 @@ $(function() {
 			}
 		}
 	);
-	
-	$("#modal_artwork_grid_visible").change(function() {
-		var checked=$("#modal_artwork_grid_visible")[0].checked;
-		if (checked) {
-			$("#modal_artwork_pixel_art")[0].checked=false;
-		}
-	});
-	
-	$("#modal_artwork_pixel_art").change(function() {
-		var checked=$("#modal_artwork_pixel_art")[0].checked;
-		if (checked) {
-			$("#modal_artwork_grid_visible")[0].checked=false;
-		}
-	});
 	
 	window.onbeforeunload=
 		function() {
