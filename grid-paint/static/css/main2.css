@@ -202,9 +202,17 @@ body {
 	position: absolute;
 	bottom: 0;
 	right: 0;
-	padding: 10px;
 	border: 1px solid #ccc;
 	border-radius: 4px;
+}
+
+.image-details-image .pixel-image img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
 }
 
 .image-details-header {
