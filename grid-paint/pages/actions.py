@@ -202,6 +202,7 @@ class ActionSaveImage(BasicRequestHandler):
                 del artwork.pixel_image_width
             if hasattr(artwork, 'pixel_image_height'):
                 del artwork.pixel_image_height
+            cs.delete_file(pixel_image_file_name)
         
         if hasattr(artwork, 'json'):
             delattr(artwork, 'json')
@@ -281,6 +282,9 @@ class ActionDeleteImage(BasicRequestHandler):
             cs.delete_file(artwork.small_image_file_name)
             if hasattr(artwork,'json_file_name'):
                 cs.delete_file(artwork.json_file_name)
+                
+            if hasattr(artwork, 'pixel_image_file_name'):
+                cs.delete_file(artwork.pixel_image_file_name)
                                 
             user_profile = dao.get_user_profile(artwork.author_email)
             user_profile.artworks_count = user_profile.artworks_count - 1
