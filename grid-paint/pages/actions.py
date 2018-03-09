@@ -196,9 +196,12 @@ class ActionSaveImage(BasicRequestHandler):
             artwork.pixel_image_width = pixel_image_width
             artwork.pixel_image_height = pixel_image_height
         else:
-            del artwork.pixel_image_file_name
-            del artwork.pixel_image_width
-            del artwork.pixel_image_height
+            if hasattr(artwork, 'pixel_image_file_name'):
+                del artwork.pixel_image_file_name
+            if hasattr(artwork, 'pixel_image_width'):
+                del artwork.pixel_image_width
+            if hasattr(artwork, 'pixel_image_height'):
+                del artwork.pixel_image_height
         
         if hasattr(artwork, 'json'):
             delattr(artwork, 'json')
@@ -218,6 +221,7 @@ class ActionSaveImage(BasicRequestHandler):
         cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
         cache.delete(cache.MC_IMAGE_PREFIX+full_image_file_name)
         cache.delete(cache.MC_IMAGE_PREFIX+small_image_file_name)
+        cache.delete(cache.MC_IMAGE_PREFIX+pixel_image_file_name)
         
         if artwork.editor_choice:
             cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
