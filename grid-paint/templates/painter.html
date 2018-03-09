@@ -136,18 +136,18 @@
     			<input type="text" name="modal_artwork_name" id="modal_artwork_name" value="{{ artwork_name }}" class="form-control"/>
     		</div>
     		<div class="form-group">
-    			<label>Artwork description</label>
-    			<textarea name="modal_artwork_description" id="modal_artwork_description" style="height:80px;" class="form-control">{{ artwork_description|default_if_none:"" }}</textarea>
+    			<label class="save-dialog-expandable-label" id="modal_description_label"><i class="icon icon-caret-right"></i> Artwork description</label>
+    			<textarea name="modal_artwork_description" id="modal_artwork_description" style="height:80px; display:none;" class="form-control">{{ artwork_description|default_if_none:"" }}</textarea>
     		</div>
     		<div class="form-group">
-    			<label>Tags</label>
-    			<div>
-    				<input type="text" value="{{ artwork_tags }}" name="modal_artwork_tags" id="modal_artwork_tags" autocomplete="off"/>
-    			</div>
+    			<label class="save-dialog-expandable-label" id="modal_tags_label"><i class="icon icon-caret-right"></i>  Tags</label>
+    			<div id="modal_artwork_tags_field" style="display:none;">
+   				<input type="text" value="{{ artwork_tags }}" name="modal_artwork_tags" id="modal_artwork_tags" autocomplete="off"/>
+   				</div>
     		</div>
     		<div  id="modal_square_grid_special_properties" class="form-group">
-    			<label>Image rendering properties</label>
-    			<div class="save-dialog-special-properties-frame">
+    			<label class="save-dialog-expandable-label" id="modal_square_grid_special_properties_label"><i class="icon icon-caret-right"></i> Image rendering properties</label>
+    			<div class="save-dialog-special-properties-frame" style="display:none;">
 					<div class="checkbox">
 		    			<label>
 		    				<input name="modal_artwork_grid_visible" id="modal_artwork_grid_visible" type="checkbox" /> Visible grid

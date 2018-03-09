@@ -22,6 +22,10 @@ var redoStack=[];
 
 var selection=new GridSelection();
 
+var modalDescriptionVisible = false;
+var modalTagsVisible = false;
+var modalSquareGridSpecialPropertiesVisible = false;
+
 // 
 function adjustCanvasWrapper() {
 	$("#canvas-wrapper").height($(window).height()-60);
@@ -929,5 +933,41 @@ $(function() {
 				localStorage['dontShowCopyPasteMessage']=true;
 			}
 		});
+		
+	$('#modal_description_label').click(function() {
+		if (modalDescriptionVisible) {
+			$('#modal_description_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
+			$('#modal_artwork_description').hide();
+			modalDescriptionVisible=false;			
+		} else {
+			$('#modal_description_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
+			$('#modal_artwork_description').show();
+			modalDescriptionVisible=true;
+		}
+	});
+	
+	$('#modal_tags_label').click(function() {
+		if (modalTagsVisible) {
+			$('#modal_tags_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
+			$('#modal_artwork_tags_field').hide();
+			modalTagsVisible=false;
+		} else {
+			$('#modal_tags_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
+			$('#modal_artwork_tags_field').show();
+			modalTagsVisible=true;			
+		}
+	});
+	
+	$('#modal_square_grid_special_properties_label').click(function() {
+		if (modalSquareGridSpecialPropertiesVisible) {
+			$('#modal_square_grid_special_properties_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
+			$('.save-dialog-special-properties-frame').hide();
+			modalSquareGridSpecialPropertiesVisible=false;
+		} else {
+			$('#modal_square_grid_special_properties_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
+			$('.save-dialog-special-properties-frame').show();
+			modalSquareGridSpecialPropertiesVisible=true;			
+		}
+	});
 	
 });
