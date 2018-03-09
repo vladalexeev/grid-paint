@@ -187,7 +187,7 @@ body {
 	min-height: 400px;
 }
 
-.image-details-image img {
+.image-details-image .main-image {
 	max-width: 100%;
 	height: auto;
 	position: absolute;
@@ -198,10 +198,19 @@ body {
 	margin:auto;
 }
 
+.image-details-image .pixel-image {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	padding: 10px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+}
+
 .image-details-header {
 	border: 1px solid #c0c0c0;
 	border-radius: 5px;
-	margin:10px;
+	margin: 10px 0 10px 0;
 	padding:10px;
 	background-color: #f0f0f0;
 	overflow: hidden;
@@ -225,7 +234,7 @@ body {
 }
 
 .image-details-actions {
-	margin:10px;
+	margin: 10px 0 10px 0;
 }
 
 .image-details-actions .btn {
@@ -233,7 +242,7 @@ body {
 }
 
 .image-details-comments {
-	margin:10px;
+	margin: 10px 0 10px 0;
 }
 
 .image-details-comments .comment {
@@ -274,7 +283,7 @@ body {
 }
 
 .image-details-comment-add {
-	margin:10px;
+	margin: 10px 0 10px 0;
 }
 
 
@@ -345,6 +354,12 @@ body {
 	text-shadow: #a0a0a0 1px 2px 2px;
 }
 
+.save-dialog-special-properties-frame {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	padding: 0 15px 0 15px;
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
 
 /*
  * Flat scrollbars 	

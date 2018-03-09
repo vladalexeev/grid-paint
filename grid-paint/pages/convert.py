@@ -97,6 +97,11 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
                 'editor_choice': artwork.editor_choice
                 }
         
+        if hasattr(artwork, 'pixel_image_file_name'):
+            result['pixel_image_file_name'] = artwork.pixel_image_file_name
+            result['pixel_image_width'] = artwork.pixel_image_width
+            result['pixel_image_height'] = artwork.pixel_image_height
+        
         if hasattr(artwork, 'copyright_block'):
             result['copyright_block'] = True
             

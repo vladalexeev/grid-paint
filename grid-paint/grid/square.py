@@ -152,6 +152,9 @@ class GridSquare(base.GridBase):
             
         for y in xrange(starty, top+height, self.cell_size):
             image.line([(left+dx, y+dy), (left+width+dx, y+dy)], fill=color, width=1)
+            
+    def paintPoint(self, image, col, row, color, dx, dy):
+        image.point((col+dx, row+dy), color)
         
 
     

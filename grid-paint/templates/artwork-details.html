@@ -27,7 +27,12 @@
 			{% endif %}
 		</div>
 		{% if not artwork.copyright_block and not artwork.block or user_info.superadmin or artwork.author.email == user_info.user.email %}
-		<img src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
+			<img class="main-image" src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
+			{% if artwork.pixel_image_file_name %}
+				<div class="pixel-image" style="width: calc({{ artwork.pixel_image_width }}px + 20px); height: calc({{ artwork.pixel_image_height }}px + 20px)">
+					<img src="{{ artwork.pixel_image_file_name }}" width="{{ artwork.pixel_image_width }}" height="{{ artwork.pixel_image_height }}">
+				</div>
+			{% endif %}
 		{% endif %}
 		{% if artwork.copyright_block %}
 		<div>

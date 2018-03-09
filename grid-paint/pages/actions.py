@@ -59,6 +59,7 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_description=self.request.get('artwork_description')
         artwork_tags=self.request.get('artwork_tags')
         artwork_grid_visible=self.request.get('artwork_grid_visible')
+        artwork_pixel_art=self.request.get('artwork_pixel_art')
         
         
         if artwork_id:
@@ -97,8 +98,13 @@ class ActionSaveImage(BasicRequestHandler):
         
         
         json_obj=json.loads(artwork_json)
-                
-        ###
+
+        layer=json_obj['layers'][0]
+        artwork.grid = layer['grid']
+        grid=grids[layer['grid']]();
+        grid.cell_size=layer['cellSize']
+        
+        # Create normal image
         image_width=json_obj['effectiveRect']['width']
         image_height=json_obj['effectiveRect']['height']
         image=Image.new('RGB', 
@@ -109,10 +115,6 @@ class ActionSaveImage(BasicRequestHandler):
         dx=-json_obj['effectiveRect']['left']
         dy=-json_obj['effectiveRect']['top']
         
-        layer=json_obj['layers'][0]
-        artwork.grid = layer['grid']
-        grid=grids[layer['grid']]();
-        grid.cell_size=layer['cellSize']
 
         if json_obj['version']['major']==1:
             for cell in layer['cells']:
@@ -128,7 +130,32 @@ class ActionSaveImage(BasicRequestHandler):
         memory_file = StringIO.StringIO()
         image.save(memory_file, 'png')
         
-        #artwork.full_image = memory_file.getvalue()
+        # Create pixel image
+        pixel_memory_file = None
+        if artwork.grid=='square' and artwork_pixel_art=='1':
+            pixel_image_width=json_obj['effectivePixelArtRect']['width']
+            pixel_image_height=json_obj['effectivePixelArtRect']['height']
+            pixel_image=Image.new('RGB', 
+                                  (pixel_image_width, pixel_image_height),
+                                  json_obj['backgroundColor'])
+            pixel_image_draw=ImageDraw.Draw(pixel_image)
+                        
+            p_dx=-json_obj['effectivePixelArtRect']['left']
+            p_dy=-json_obj['effectivePixelArtRect']['top']
+    
+            if json_obj['version']['major']==1:
+                for cell in layer['cells']:
+                    grid.paintPoint(pixel_image_draw, cell['col'], cell['row'], cell['color'], p_dx, p_dy)
+            elif json_obj['version']['major']==2:
+                for row in layer['rows']:
+                    for cell in row['cells']:
+                        grid.paintPoint(pixel_image_draw, cell[0], row['row'], cell[2], p_dx, p_dy)
+                        
+            pixel_memory_file = StringIO.StringIO()
+            pixel_image.save(pixel_memory_file, 'png')
+
+                        
+        # Create thumbnail image
         artwork.full_image_width = image_width
         artwork.full_image_height = image_height
         
@@ -152,14 +179,26 @@ class ActionSaveImage(BasicRequestHandler):
         full_image_file_name = '/images/png/'+str(saved_id.id())+'.png'
         small_image_file_name = '/images/png/'+str(saved_id.id())+'-small.png'
         json_image_file_name = '/images/json/'+str(saved_id.id())+'.json'
+        pixel_image_file_name = '/images/png/'+str(saved_id.id())+'-pixel.png'
         
         cs.create_file(full_image_file_name, 'image/png', memory_file.getvalue())
         cs.create_file(small_image_file_name, 'image/png', small_memory_file.getvalue())
         cs.create_file(json_image_file_name, 'application/octet-stream', json_file_content)
+        if pixel_memory_file:
+            cs.create_file(pixel_image_file_name, 'image/png', pixel_memory_file.getvalue())
         
         artwork.full_image_file_name = full_image_file_name
         artwork.small_image_file_name = small_image_file_name
         artwork.json_file_name = json_image_file_name
+        
+        if pixel_memory_file:
+            artwork.pixel_image_file_name = pixel_image_file_name
+            artwork.pixel_image_width = pixel_image_width
+            artwork.pixel_image_height = pixel_image_height
+        else:
+            del artwork.pixel_image_file_name
+            del artwork.pixel_image_width
+            del artwork.pixel_image_height
         
         if hasattr(artwork, 'json'):
             delattr(artwork, 'json')
@@ -187,6 +226,10 @@ class ActionSaveImage(BasicRequestHandler):
         del small_image
         memory_file.close()
         small_memory_file.close()
+        
+        if pixel_memory_file:
+            del pixel_image
+            pixel_memory_file.close()
         
         user_profile = dao.get_user_profile(self.user_info.user.email())
         if not user_profile:

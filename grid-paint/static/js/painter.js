@@ -207,6 +207,41 @@ function getArtworkEffectiveRect(grid, artwork) {
 	};
 }
 
+function getArtworkEffectivePixelArtRect(grid, artwork) {
+	var x1=100000;
+	var y1=100000;
+	var x2=0;
+	var y2=0;
+	for (var row=0; row<artwork.cells.length; row++) {
+		for (var col=0; col<artwork.cells[row].length; col++) {
+			if (artwork.cells[row][col] && artwork.cells[row][col].shapeName!='empty') {
+				if (row<y1) {
+					y1=row;
+				}
+				
+				if (row>y2) {
+					y2=row;
+				}
+				
+				if (col<x1) {
+					x1=col;
+				}
+				
+				if (col>x2) {
+					x2=col;
+				}
+			}
+		}
+	}
+	
+	return {
+		left: x1,
+		top: y1,
+		width: x2-x1+1,
+		height: y2-y1+1
+	};
+}
+
 function setMode(m) {
 	mode=m;
 	if (mode=="paint") {
@@ -253,6 +288,10 @@ function saveArtwork() {
 		recentColors: recentColors
 	};
 	
+	if (grid.name=='square') {
+		a['effectivePixelArtRect'] = getArtworkEffectivePixelArtRect(grid, gridArtwork);
+	}
+	
 	if (a.effectiveRect.width<0 || a.effectiveRect.height<0) {
 		var messageModal=$("#message-modal");
 		messageModal.find("#message-text").text("Cannot save empty image");
@@ -291,9 +330,9 @@ function saveArtwork() {
 
 function showPropertiesDialog(modalAction) {
 	if (artwork.layers[0].grid=='square') {
-		$("#modal_grid_visible_row").show();
+		$("#modal_square_grid_special_properties").show();
 	} else {
-		$("#modal_grid_visible_row").hide();
+		$("#modal_square_grid_special_properties").hide();
 	}
 	
 	$("#modal_success_action").val(modalAction);
@@ -625,6 +664,12 @@ $(function() {
 			} else {
 				$("#artwork_grid_visible").val('');
 			}
+			
+			if ($('#modal_artwork_pixel_art')[0].checked) {
+				$('#artwork_pixel_art').val('1');
+			} else {
+				$('#artwork_pixel_art').val('0');
+			}
 			$("#properties-modal").modal('hide');
 			
 			var modalAction=$("#modal_success_action").val();
@@ -633,6 +678,20 @@ $(function() {
 			}
 		}
 	);
+	
+	$("#modal_artwork_grid_visible").change(function() {
+		var checked=$("#modal_artwork_grid_visible")[0].checked;
+		if (checked) {
+			$("#modal_artwork_pixel_art")[0].checked=false;
+		}
+	});
+	
+	$("#modal_artwork_pixel_art").change(function() {
+		var checked=$("#modal_artwork_pixel_art")[0].checked;
+		if (checked) {
+			$("#modal_artwork_grid_visible")[0].checked=false;
+		}
+	});
 	
 	window.onbeforeunload=
 		function() {
