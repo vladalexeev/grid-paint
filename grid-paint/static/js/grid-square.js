@@ -11,20 +11,126 @@ function GridSquare_ShapeEmpty(parent) {
 	    var element=paper.rect(x,y,this.parent.cellSize,this.parent.cellSize);
 	    element.attr({"stroke":"#808080"});
 	    return element;
-	}   
+	};   
 }
 
-function GridSquare_ShapeFlat(parent) {
-	this.name="flat";
+function GridSquare_BasicShapeFlat(parent) {
 	this.parent=parent;
 	this.paint=function(paper, col, row, color, dx, dy) {
 		x=col*parent.cellSize+dx;
-		y=row*parent.cellSize+dy;		
-		var element=paper.rect(x,y,this.parent.cellSize,this.parent.cellSize);
-		element.attr({"fill":color, "stroke-width":0})
+		y=row*parent.cellSize+dy;
+		var cellSize=this.parent.cellSize;
+        var facet=this.getFacet();		
+		var element=paper.rect(
+			x+facet,
+			y+facet,
+			cellSize-facet*2,
+			cellSize-facet*2);
+		element.attr({"fill":color, "stroke-width":0});
 		return element;
-	}
+	};
 }
+
+function GridSquare_ShapeFlat(parent) {
+	this.super=GridSquare_BasicShapeFlat;
+	this.super(parent);
+	this.name='flat';
+	this.getFacet=function() {
+		return 0;
+	};
+}
+
+function GridSquare_ShapeFlat1(parent) {
+	this.super=GridSquare_BasicShapeFlat;
+	this.super(parent);
+	
+	this.name="flat1";
+	this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/6;	    
+	};
+}
+
+function GridSquare_ShapeFlat2(parent) {
+    this.super=GridSquare_BasicShapeFlat;
+    this.super(parent);
+    
+    this.name="flat2";
+    this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/4;      
+    };
+}
+
+function GridSquare_ShapeFlat3(parent) {
+    this.super=GridSquare_BasicShapeFlat;
+    this.super(parent);
+    
+    this.name="flat3";
+    this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/3;      
+    };
+}
+
+function GridSquare_BasicShapeCircle(parent) {
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		x=col*parent.cellSize+dx;
+		y=row*parent.cellSize+dy;
+		var cellSize=this.parent.cellSize;
+        var facet=this.getFacet();		
+		var element=paper.circle(
+			x+cellSize/2,
+			y+cellSize/2,
+			cellSize/2-facet);
+		element.attr({"fill":color, "stroke-width":0});
+		return element;
+	};
+}
+
+function GridSquare_ShapeCircle(parent) {
+	this.super=GridSquare_BasicShapeCircle;
+	this.super(parent);
+	this.name='circle';
+	this.getFacet=function() {
+		return 0;
+	};
+}
+
+function GridSquare_ShapeCircle1(parent) {
+	this.super=GridSquare_BasicShapeCircle;
+	this.super(parent);
+	
+	this.name="circle1";
+	this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/6;	    
+	};
+}
+
+function GridSquare_ShapeCircle2(parent) {
+    this.super=GridSquare_BasicShapeCircle;
+    this.super(parent);
+    
+    this.name="circle2";
+    this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/4;      
+    };
+}
+
+function GridSquare_ShapeCircle3(parent) {
+    this.super=GridSquare_BasicShapeCircle;
+    this.super(parent);
+    
+    this.name="circle3";
+    this.getFacet=function() {
+        var cellSize=this.parent.cellSize;
+        return cellSize/3;      
+    };
+}
+
 
 function GridSquare_ShapeSelected(parent) {
 	this.name="selected";
@@ -161,7 +267,7 @@ function GridSquare_ShapeJewel3(parent) {
     this.super=GridSquare_BasicShapeJewel;
     this.super(parent);
     
-    this.name="jewel2";
+    this.name="jewel3";
     this.getFacet=function() {
         var cellSize=this.parent.cellSize;
         return cellSize/3;      
@@ -215,11 +321,18 @@ function GridSquare() {
 	this.shapes={
 	    "empty": new GridSquare_ShapeEmpty(this),
 		"flat": new GridSquare_ShapeFlat(this),
+		"flat1": new GridSquare_ShapeFlat1(this),
+		"flat2": new GridSquare_ShapeFlat2(this),
+		"flat3": new GridSquare_ShapeFlat3(this),
+		'circle': new GridSquare_ShapeCircle(this),
+		'circle1': new GridSquare_ShapeCircle1(this),
+		'circle2': new GridSquare_ShapeCircle2(this),
+		'circle3': new GridSquare_ShapeCircle3(this),
 		"jewel": new GridSquare_ShapeJewel(this),
 		"jewel2": new GridSquare_ShapeJewel2(this),
 		"jewel3": new GridSquare_ShapeJewel3(this),
-		"diamond": new GridSquare_ShapeDiamond(this)
-	}
+		"diamond": new GridSquare_ShapeDiamond(this),
+	};
 	
 	this.internalShapes={
 	    "selected": new GridSquare_ShapeSelected(this)

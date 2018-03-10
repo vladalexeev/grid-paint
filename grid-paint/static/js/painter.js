@@ -48,11 +48,19 @@ function paintShapeToolButton(shapeName) {
 }
 
 function createShapesToolbar() {
+	var emptyShapeOnSingleRow = Object.keys(grid.shapes).length>=5;
+	
 	var shapeElements="";
 	for (var shapeName in grid.shapes) {
+		if (shapeName=='empty' && emptyShapeOnSingleRow) {
+			shapeElements+='<div>';	
+		}
 		shapeElements+='<span id="shape-'+shapeName+
 			'" class="grid-shape-button" shape-name="'+
 			shapeName+'"></span>';
+		if (shapeName=='empty' & emptyShapeOnSingleRow) {
+			shapeElements+='</div>';	
+		}			
 	}
 	
 	$("#shapes-toolbar").html(shapeElements);

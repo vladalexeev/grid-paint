@@ -16,20 +16,76 @@ import colorsys
 class BasicShape:
     def __init__(self, grid):
         self.grid=grid
-
-class ShapeFlat(BasicShape):
+        
+class BasicShapeFlat(BasicShape):
+    def __init__(self, grid):
+        BasicShape.__init__(self,grid)
+        self.facet=self.get_facet();
+        
+    def get_facet(self):
+        raise NotImplementedError("Should implement this method")
+    
     def paint(self, image, col, row, color, dx, dy):
         x=col*self.grid.cell_size+dx
         y=row*self.grid.cell_size+dy
-        image.polygon([(x,y),
-                       (x, y+self.grid.cell_size),
-                       (x+self.grid.cell_size, y+self.grid.cell_size),
-                       (x+self.grid.cell_size, y)],
+        facet = self.facet
+        image.polygon([(x+facet,y+facet),
+                       (x+facet, y+self.grid.cell_size-facet),
+                       (x+self.grid.cell_size-facet, y+self.grid.cell_size-facet),
+                       (x+self.grid.cell_size-facet, y+facet)],
                       fill=color)
+
+class ShapeFlat(BasicShapeFlat):
+    def get_facet(self):
+        return 0
+    
+class ShapeFlat1(BasicShapeFlat):
+    def get_facet(self):
+        return self.grid.cell_size/6
+    
+class ShapeFlat2(BasicShapeFlat):
+    def get_facet(self):
+        return self.grid.cell_size/4
+    
+class ShapeFlat3(BasicShapeFlat):
+    def get_facet(self):
+        return self.grid.cell_size/3
+
+
+
+class BasicShapeCircle(BasicShape):
+    def __init__(self, grid):
+        BasicShape.__init__(self,grid)
+        self.facet=self.get_facet();
         
-#        image.rectangle(
-#            [x, y, x+self.grid.cell_size-1, y+self.grid.cell_size-1],
-#            fill=color)
+    def get_facet(self):
+        raise NotImplementedError("Should implement this method")
+    
+    def paint(self, image, col, row, color, dx, dy):
+        x=col*self.grid.cell_size+dx
+        y=row*self.grid.cell_size+dy
+        facet = self.facet
+        image.ellipse([(x+facet,y+facet),
+                       (x+self.grid.cell_size-facet, y+self.grid.cell_size-facet)],
+                      fill=color)
+
+class ShapeCircle(BasicShapeCircle):
+    def get_facet(self):
+        return 0
+    
+class ShapeCircle1(BasicShapeCircle):
+    def get_facet(self):
+        return self.grid.cell_size/6
+    
+class ShapeCircle2(BasicShapeCircle):
+    def get_facet(self):
+        return self.grid.cell_size/4
+    
+class ShapeCircle3(BasicShapeCircle):
+    def get_facet(self):
+        return self.grid.cell_size/3
+
+        
         
 class ShapeDiamond(BasicShape):
     def paint(self, image, col, row, color, dx, dy):
@@ -137,6 +193,13 @@ class GridSquare(base.GridBase):
     def __init__(self):
         self.shapes={
                 "flat": ShapeFlat(self),
+                "flat1": ShapeFlat1(self),
+                "flat2": ShapeFlat2(self),
+                "flat3": ShapeFlat3(self),
+                "circle": ShapeCircle(self),
+                "circle1": ShapeCircle1(self),
+                "circle2": ShapeCircle2(self),
+                "circle3": ShapeCircle3(self),
                 "diamond": ShapeDiamond(self),
                 "jewel": ShapeJewel(self),
                 "jewel2": ShapeJewel2(self),
