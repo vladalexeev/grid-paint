@@ -16,16 +16,16 @@
 
 <div class="single-container">
 <div class="container">
+	<div class="image-details-favorite-wrapper">
+		<div class="image-details-favorite-count">{{ favorite_count }}</div>
+		{% if user_info.user %}
+		<div class="image-details-favorite {% if favorite %}star-favorite{% else %}star-not-favorite{% endif %}" id="favorite-star"></div>
+		<div class="image-details-favorite-hint" style="display:none;">{% if favorite %}Remove image from favorites{% else %}Add image to favorites{% endif %}</div>
+		{% else %}
+		<div class="image-details-favorite star-favorite"></div>
+		{% endif %}
+	</div>	
 	<div class="image-details-image">
-		<div class="image-details-favorite-wrapper">
-			<div class="image-details-favorite-count">{{ favorite_count }}</div>
-			{% if user_info.user %}
-			<div class="image-details-favorite {% if favorite %}star-favorite{% else %}star-not-favorite{% endif %}" id="favorite-star"></div>
-			<div class="image-details-favorite-hint" style="display:none;">{% if favorite %}Remove image from favorites{% else %}Add image to favorites{% endif %}</div>
-			{% else %}
-			<div class="image-details-favorite star-favorite"></div>
-			{% endif %}
-		</div>
 		{% if not artwork.copyright_block and not artwork.block or user_info.superadmin or artwork.author.email == user_info.user.email %}
 			<img class="main-image" src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 			{% if artwork.pixel_image_file_name %}
