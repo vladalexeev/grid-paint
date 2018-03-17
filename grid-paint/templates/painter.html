@@ -35,7 +35,12 @@
 				<button id="btn-undo" class="btn btn-sm" type="button" title="Undo (Ctrl-Z)"><i class="icon icon-reply"></i></button>
 				<button id="btn-redo" class="btn btn-sm" type="button" title="Redo"><i class="icon icon-share-alt"></i></button>
 			</div>
-			<button id="btn-pick-color" class="btn btn-sm" type="button" data-toggle="button" title="Pick color"><i class="icon icon-pencil"></i></button>
+			
+		</div>
+		<div  style="margin-bottom:10px;">
+			<button id="btn-pencil" class="btn btn-sm btn-default active" type="button" title="Paint"><i class="icon icon-user"></i></button>
+			<button id="btn-pick-color" class="btn btn-sm btn-default" type="button" title="Pick color"><i class="icon icon-pencil"></i></button>
+			<button id="btn-flood-fill" class="btn btn-sm btn-default" type="button" title="Flood fill" style="display:none;">Fill</button>
 		</div>
 		<div id="color-selection" >
 			<div id="color-picker"></div>
@@ -105,8 +110,8 @@
 			</div>
 			<div id="copy-paste-toolbar-content" style="display:none">
 				<div class="painter-toolbar-container text-center">
-					<button type="button" id="btn-copy-mode" class="btn btn-sm btn-success" data-toggle="button"><i class="icon icon-copy"></i> Mark area</button>
-					<button type="button" id="btn-paste-mode" class="btn btn-sm btn-primary" data-toggle="button"><i class="icon icon-paste"></i> Paste</button>
+					<button type="button" id="btn-copy-mode" class="btn btn-sm btn-success"><i class="icon icon-copy"></i> Mark area</button>
+					<button type="button" id="btn-paste-mode" class="btn btn-sm btn-primary"><i class="icon icon-paste"></i> Paste</button>
 				</div>
 			</div>
 		</div>		

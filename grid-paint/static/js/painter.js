@@ -254,29 +254,40 @@ function getArtworkEffectivePixelArtRect(grid, artwork) {
 	};
 }
 
+function riseUpButton(selector) {
+	if ($(selector).attr('aria-pressed')=='true') {
+		$(selector).button('toggle');
+	}
+}
+
 function setMode(m) {
+	if (mode=='copy') {
+		selection.copyFinished();
+	}
+	
+	$('#btn-pencil').removeClass('active').removeAttr("disabled");
+	$('#btn-pick-color').removeClass('active').removeAttr("disabled");
+	$('#btn-flood-fill').removeClass('active').removeAttr("disabled");
+	$("#btn-copy-mode").removeClass('active').removeAttr("disabled");
+	$("#btn-paste-mode").removeClass('active').removeAttr("disabled");
+	
+	
 	mode=m;
 	if (mode=="paint") {
 		$("#canvas-wrapper").css("cursor","crosshair");
-		$("#btn-pick-color").removeAttr("disabled");
-		$("#btn-copy-mode").removeAttr("disabled");
-		if (selection.isEmpty()) {
-			$("#btn-paste-mode").attr("disabled","disabled");
-		} else {
-			$("#btn-paste-mode").removeAttr("disabled");	
-		}
+		$('#btn-pencil').addClass('active');
 	} else if (mode=="pick-color") {
 		$("#canvas-wrapper").css("cursor","pointer");
-		$("#btn-copy-mode").attr("disabled","disabled");
-		$("#btn-paste-mode").attr("disabled","disabled");		
+		$('#btn-pick-color').addClass('active');
 	} else if (mode=="copy") {
 		$("#canvas-wrapper").css("cursor","crosshair"); // TODO change cursor
-		$("#btn-pick-color").attr("disabled","disabled");
-		$("#btn-paste-mode").attr("disabled","disabled");		
+		$('#btn-copy-mode').addClass('active');	
+		selection.copyPrepare();	
 	} else if (mode=="paste") {
 		$("#canvas-wrapper").css("cursor","crosshair"); // TODO change cursor
-		$("#btn-pick-color").attr("disabled","disabled");
-		$("#btn-copy-mode").attr("disabled","disabled");
+		$('#btn-paste-mode').addClass('active');
+	} else if (mode=='fill') {
+		$('#btn-flood-fill').addClass('active');
 	}
 }
 
@@ -390,6 +401,100 @@ function selectColorFromPicker(hexColor) {
 	if (colorInText.toUpperCase != hexColor.toUpperCase()) { 
 		$("#color-picker-text").val(hexColor);
 	}	
+}
+
+function calculateFillArea(cell) {
+	var gridCell=gridArtwork.getCell(cell.col, cell.row);
+	var sourceColor=null;
+	if (gridCell) {
+		sourceColor=gridCell.color;
+	}
+	
+	var colCount=workspaceWidth/grid.cellSize;
+	var rowCount=workspaceHeight/grid.cellSize;
+	
+	var currentCells=[{
+		row: cell.row,
+		col: cell.col	
+	}];
+	var result=[{
+		row: cell.row,
+		col: cell.col			
+	}];
+	
+	var testFill=function(col, row) {
+		var testCell=gridArtwork.getCell(col, row);
+		var testColor=null;
+		if (testCell) {
+			testColor=testCell.color;
+		}	
+		if (testColor!=sourceColor) {
+			return false;
+		}
+		for (var i=0; i<result.length; i++) {
+			if (result[i].col==col && result[i].row==row) {
+				return false;
+			}
+		}
+		return true;
+	};
+	
+	while (currentCells.length>0) {
+		var newCells=[];
+		for (var i=0; i<currentCells.length; i++) {
+			var currentCell=currentCells[i];
+			if (currentCell.col==0 || currentCell.row==0 || currentCell.col>=colCount-1 || currentCell.row>=rowCount-1) {
+				return [];
+			}
+			var leftCell={col: currentCell.col-1, row: currentCell.row};
+			if (testFill(leftCell.col, leftCell.row)) {
+				newCells.push(leftCell);
+				result.push(leftCell);
+			}
+			var rightCell={col: currentCell.col+1, row: currentCell.row};
+			if (testFill(rightCell.col, rightCell.row)) {
+				newCells.push(rightCell);
+				result.push(rightCell);
+			}
+			var topCell={col: currentCell.col, row: currentCell.row-1};
+			if (testFill(topCell.col, topCell.row)) {
+				newCells.push(topCell);
+				result.push(topCell);
+			}
+			var bottomCell={col: currentCell.col, row: currentCell.row+1};
+			if (testFill(bottomCell.col, bottomCell.row)) {
+				newCells.push(bottomCell);
+				result.push(bottomCell);
+			}
+		}
+		currentCells=newCells;
+	}
+	
+	return result;
+}
+
+function fillAreaOnCanvasByMouseEvent(event) {
+	var cell=getCellCoordByMouseEvent(event);
+			
+	if (paperMouseDown) {
+		newShapeName=selectedShapeName;
+		if (event.which==3) {
+			newShapeName="empty";
+		}
+		
+		var fillCells=calculateFillArea(cell);
+		for (var i=0; i<fillCells.length; i++) {
+			var currentCell=fillCells[i];
+			storeUndoCell(currentCell.col, currentCell.row, newShapeName, selectedColor);
+			paintOnCanvas(currentCell.col, currentCell.row, newShapeName, selectedColor);
+		}
+		
+		if (newShapeName!="empty") {
+			pushRecentColor(selectedColor);	
+		}
+		
+		changed=true;
+	}
 }
 
 function selectColorFromText(hexColor) {
@@ -603,6 +708,11 @@ $(function() {
 				updateUndoRedoButtons();
 				pasteSelection();
 				selection.pasteFinished();
+			} else if (mode=='fill') {
+				undoStack.push(new UndoStep());
+				redoStack=[];
+				updateUndoRedoButtons();
+				fillAreaOnCanvasByMouseEvent(event);
 			}
 		}
 	)
@@ -743,6 +853,14 @@ $(function() {
 		}
 	);
 	
+	$('#btn-pencil').click(
+		function() {
+			if (mode!='paint') {
+				setMode('paint');
+			}
+		}
+	);
+	
 	setMode("paint");
 	
 	$("#btn-shift-left").click(
@@ -802,6 +920,10 @@ $(function() {
 		function() {
 			doRedo();
 		});
+		
+	if (grid.name=='square') {
+		$('#btn-flood-fill').show();
+	}
 		
 	$("#shift-toolbar-header").click(
 		function() {
@@ -917,9 +1039,7 @@ $(function() {
 		function(event) {
 			if (mode=="paint") {
 				setMode("copy");
-				selection.copyPrepare();
 			} else if (mode=="copy") {
-				selection.copyFinished();
 				setMode("paint");
 			}
 		});
@@ -932,6 +1052,15 @@ $(function() {
 			} else if (mode=="paste") {
 				selection.pasteFinished();
 				setMode("paint");
+			}
+		});
+		
+	$("#btn-flood-fill").click(
+		function(event) {
+			if (mode=='fill') {
+				setMode('paint');
+			} else {
+				setMode('fill');
 			}
 		});
 		
