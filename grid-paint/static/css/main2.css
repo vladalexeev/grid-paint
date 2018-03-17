@@ -299,6 +299,9 @@ body {
 	margin: 10px 0 10px 0;
 }
 
+.image-details-favorite-wrapper {
+	z-index: 10000;
+}
 
 .image-details-favorite-count {
 	font-size: 30px;
