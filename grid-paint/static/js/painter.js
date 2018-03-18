@@ -483,6 +483,11 @@ function fillAreaOnCanvasByMouseEvent(event) {
 		}
 		
 		var fillCells=calculateFillArea(cell);
+		if (fillCells.length==0) {
+			showWarningMessage('You cannot fill entire workspace with flood fill tool. It is applicable for closed areas only. Use "Set background color" instead.');
+			return;
+		} 
+		
 		for (var i=0; i<fillCells.length; i++) {
 			var currentCell=fillCells[i];
 			storeUndoCell(currentCell.col, currentCell.row, newShapeName, selectedColor);
@@ -633,6 +638,12 @@ function pasteSelection() {
 function setBackgroundColor(color) {
 	backgroundColor=color;
 	$("#canvas").css("background-color",backgroundColor);
+}
+
+function showWarningMessage(message) {
+	var messageModal=$("#message-modal");
+	messageModal.find("#message-text").text(message);
+	messageModal.modal();
 }
 
 $(function() {
