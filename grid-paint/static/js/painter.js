@@ -287,6 +287,7 @@ function setMode(m) {
 		$("#canvas-wrapper").css("cursor","crosshair"); // TODO change cursor
 		$('#btn-paste-mode').addClass('active');
 	} else if (mode=='fill') {
+		$("#canvas-wrapper").css("cursor","crosshair");
 		$('#btn-flood-fill').addClass('active');
 	}
 }
