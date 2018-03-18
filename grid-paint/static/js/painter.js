@@ -265,6 +265,10 @@ function setMode(m) {
 		selection.copyFinished();
 	}
 	
+	if (mode=='paste') {
+		selection.pasteFinished();
+	}
+	
 	$('#btn-pencil').removeClass('active').removeAttr("disabled");
 	$('#btn-pick-color').removeClass('active').removeAttr("disabled");
 	$('#btn-flood-fill').removeClass('active').removeAttr("disabled");
@@ -277,7 +281,7 @@ function setMode(m) {
 		$("#canvas-wrapper").css("cursor","crosshair");
 		$('#btn-pencil').addClass('active');
 	} else if (mode=="pick-color") {
-		$("#canvas-wrapper").css("cursor","pointer");
+		$("#canvas-wrapper").css("cursor","url(/img/cursors/pick-color.png) 2 32, crosshair");
 		$('#btn-pick-color').addClass('active');
 	} else if (mode=="copy") {
 		$("#canvas-wrapper").css("cursor","crosshair"); // TODO change cursor
@@ -286,8 +290,9 @@ function setMode(m) {
 	} else if (mode=="paste") {
 		$("#canvas-wrapper").css("cursor","crosshair"); // TODO change cursor
 		$('#btn-paste-mode').addClass('active');
+		selection.pastePrepare();
 	} else if (mode=='fill') {
-		$("#canvas-wrapper").css("cursor","crosshair");
+		$("#canvas-wrapper").css("cursor","url(/img/cursors/flood-fill.png) 2 32, crosshair");
 		$('#btn-flood-fill').addClass('active');
 	}
 }
@@ -1050,22 +1055,20 @@ $(function() {
 		
 	$("#btn-copy-mode").click(
 		function(event) {
-			if (mode=="paint") {
-				setMode("copy");
-			} else if (mode=="copy") {
+			if (mode=="copy") {
 				setMode("paint");
-			}
+			} else {
+				setMode("copy");
+			} 
 		});
 	
 	$("#btn-paste-mode").click(
 		function(event) {
-			if (mode=="paint") {
-				setMode("paste");
-				selection.pastePrepare();
-			} else if (mode=="paste") {
-				selection.pasteFinished();
+			if (mode=="paste") {
 				setMode("paint");
-			}
+			} else {
+				setMode("paste");
+			} 
 		});
 		
 	$("#btn-flood-fill").click(
