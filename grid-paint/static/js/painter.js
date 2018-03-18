@@ -478,6 +478,7 @@ function fillAreaOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 			
 	if (paperMouseDown) {
+		paperMouseDown=false;
 		newShapeName=selectedShapeName;
 		if (event.which==3) {
 			newShapeName="empty";
