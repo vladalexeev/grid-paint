@@ -837,7 +837,7 @@ $(function() {
 	
 	//Create color palette
 	var paletteHtml="";
-	for (var i=0; i<16; i++) {
+	for (var i=0; i<22; i++) {
 		paletteHtml+="<div></div>";
 		recentColors.push("#FFFFFF");
 	}

@@ -179,7 +179,9 @@ class PagePainter(BasicPageRequestHandler):
                          'recentColors':['#4096EE', '#FFFFFF', '#000000', '#EEEEEE', 
                                          '#FFFF88', '#CDEB8B', '#6BBA70', '#006E2E', 
                                          '#C3D9FF', '#356AA0', '#FF0096', '#B02B2C',
-                                         '#FF7400', '#EF9090', '#0099FF', '#9933FF' 
+                                         '#FF7400', '#EF9090', '#0099FF', '#9933FF',
+                                         '#2E2EFF', '#8A725D', '#FF3838', '#4BC8D1',
+                                         '#CBD114', '#858585'
                                          ]
                          }
             artwork_json=json.dumps(new_artwork)
