@@ -342,7 +342,7 @@ class ActionComlainComment(BasicRequestHandler):
             user_profile.artworks_count = 0
             dao.add_user_profile(user_profile)
             
-        settings = common.get_settings()
+        settings = self.settings
         
         artwork = dao.get_artwork(int(artwork_id))
         comment = db.Comment.get_by_id(long(comment_id), artwork.key())
@@ -623,6 +623,7 @@ class ActionSaveSettings(BasicRequestHandler):
         settings.admin_email= self.request.get('admin_email')
             
         common.save_settings(settings)
+        cache.add(cache.MC_SETTINGS, settings)
         
         self.redirect('/admin')
         

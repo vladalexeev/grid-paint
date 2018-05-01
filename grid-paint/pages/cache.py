@@ -10,6 +10,8 @@ from google.appengine.api import memcache
 
 mm_cache = memcache.Client();
 
+MC_SETTINGS = 'settings'
+
 # memcache prefixes
 MC_MAIN_PAGE_RECENT_IMAGES_KEY = 'main_page_recent_images'
 MC_MAIN_PAGE_RECENT_COMMENTS = 'main_page_recent_comments'

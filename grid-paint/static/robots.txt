@@ -7,3 +7,12 @@ Disallow: /notifications
 Disallow: /delete-notification
 Disallow: /my-profile
 Disallow: /save-profile
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /

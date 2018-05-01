@@ -10,6 +10,7 @@ from google.appengine.ext.webapp import template
 
 import db
 import dao
+import cache
 
 
 class UserInfo:
@@ -64,7 +65,11 @@ class BasicRequestHandler(webapp.RequestHandler):
     def initialize(self, request, response):
         webapp.RequestHandler.initialize(self, request, response)
         self.user_info=UserInfo(self.request.uri)
-        self.settings=get_settings()
+        
+        self.settings = cache.get(cache.MC_SETTINGS)
+        if not self.settings:
+            self.settings=get_settings()
+            cache.add(cache.MC_SETTINGS, self.settings)
         
     def write_template(self,template_name,template_values):
         """Вывод шаблона в выходной поток"""
