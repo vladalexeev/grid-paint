@@ -63,6 +63,13 @@ def save_settings(settings):
 
 class BasicRequestHandler(webapp.RequestHandler):
     def initialize(self, request, response):
+        user_agent = request.headers.get('User-Agent')
+        if user_agent:
+            user_agent = user_agent.lower() 
+            if user_agent.find('ahrefs') >= 0 or user_agent.find('blexbot') >=0 or user_agent.find('semrush') >=0 or user_agent.find('dotbot') >=0:
+                raise Exception('Banned user agent')
+            
+        
         webapp.RequestHandler.initialize(self, request, response)
         self.user_info=UserInfo(self.request.uri)
         
