@@ -44,6 +44,11 @@ body {
 	position: fixed;
 	left:0;
 	width:220px;
+	overflow-y: auto;
+}
+
+.painter-toolbar-full::-webkit-scrollbar {
+	width: 8px;
 }
 
 .painter-toolbar {

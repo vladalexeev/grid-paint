@@ -29,6 +29,7 @@ var modalSquareGridSpecialPropertiesVisible = false;
 // 
 function adjustCanvasWrapper() {
 	$("#canvas-wrapper").height($(window).height()-60);
+	$(".painter-toolbar-full").height($(window).height()-60);
 }
 
 function paintShapeToolButton(shapeName) {
