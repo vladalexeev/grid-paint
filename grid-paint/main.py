@@ -56,6 +56,7 @@ application = webapp.WSGIApplication([
                                       ('/toggle-favorite', pages.actions.ActionToggleFavorite),
                                       ('/json/comments', pages.actions.JSONComments),
                                       ('/json/get-user-id-by-nickname', pages.actions.JSONGetUserIdByNickname),
+                                      ('/json/save-alternative-email', pages.actions.JSONSaveAlternativeEmail),
                                       ('/comments', pages.pages.PageComments)
                                       ], debug=True)
 

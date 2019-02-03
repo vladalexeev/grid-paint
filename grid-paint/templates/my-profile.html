@@ -21,6 +21,13 @@ My profile
 			<form name="f" role="form" class="form-horizontal" action="/save-profile" method="POST"
 				onsubmit="return false">
 				<div class="form-group">
+					<label class="col-xs-4 control-label">Joined</label>
+					<div class="col-xs-8">
+						<input type="text" class="form-control" disabled value="{{ profile.join_date|date:"d M Y" }}" />
+					</div>
+				</div>
+				
+				<div class="form-group">
 					<label class="col-xs-4 control-label">E-mail [hidden]</label>
 					<div class="col-xs-8">
 						<input type="text" class="form-control" disabled value="{{ profile.email }}" />
@@ -28,9 +35,9 @@ My profile
 				</div>
 
 				<div class="form-group">
-					<label class="col-xs-4 control-label">Joined</label>
+					<label class="col-xs-4 control-label">Alternative E-mail [hidden]</label>
 					<div class="col-xs-8">
-						<input type="text" class="form-control" disabled value="{{ profile.join_date|date:"d M Y" }}" />
+						<button class="btn btn-small btn-default" type="button" id="btn-add-alternative-email">Add</button>
 					</div>
 				</div>
 				
@@ -91,6 +98,44 @@ My profile
   </div>
 </div>
 
+<div id="modal-add-alternative-email" class="modal fade">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Add alternative E-mail</h4>
+	  </div>
+	  <div class="modal-body">
+	    <p>Enter alternative E-mail. You will able to log in with it.</p>
+	    <div>
+	    	<input type="text" name="alternative_email" class="form-control"/>
+	    </div>
+	  </div>
+	  <div class="modal-footer">
+	  	<button id="btn-save-alternative-email" class="btn btn-primary">Add</button>
+	    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+	  </div>
+	</div>  		
+  </div>
+</div>
+
+<div id="modal-error-alternative-email" class="modal fade">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Error</h4>
+	  </div>
+	  <div class="modal-body">
+	    <p>Error saving alternative E-mail.</p>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+	  </div>
+	</div>  		
+  </div>
+</div>
+
 
 <script>
 $(function () {
@@ -114,6 +159,33 @@ $(function () {
 				},
 				"json"
 			);
+		}
+	);
+	
+	$("#btn-add-alternative-email").click(
+		function() {
+			$("#modal-add-alternative-email").modal();
+		}
+	);
+	
+	$("#btn-save-alternative-email").click(
+		function() {
+			var alternative_email = $("input[name=alternative_email]").val();
+			$.post(
+  				'/json/save-alternative-email',
+  				{'alternative_email': alternative_email},
+				function(data) {
+					if (data.error) {
+						$("#modal-duplicate-nickname").modal();
+					}
+					
+					if (data.result) {
+						location.reload();
+					}
+				},
+				"json"
+			);
+				
 		}
 	);
 });

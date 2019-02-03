@@ -9,6 +9,7 @@ import db
 import json
 import datetime
 import StringIO
+import re
 
 from PIL import Image, ImageDraw
 
@@ -980,5 +981,38 @@ class ActionAdminFlushMemcacheForIndexPage(BasicRequestHandler):
         cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
         
         self.redirect('/')
+        
+
+class JSONSaveAlternativeEmail(BasicRequestHandler):
+    def post(self, *args):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+ 
+        alternative_email = self.request.get('alternative_email')
+        if not re.match("[^@]+@[^@]+\.[^@]+", alternative_email):
+            self.response.out.write(json.dumps({'error': 'invalid_email'}))
+            return
+        
+        user_profile = dao.get_user_profile(self.user_info.user.email())
+        if user_profile:
+            test_profile = dao.get_user_profile(alternative_email)
+            if test_profile:
+                self.response.out.write(json.dumps({'error': 'already_used'}))
+                return
+            
+            if hasattr(user_profile, 'alternative_emails'):
+                if alternative_email not in user_profile.alternative_emails:
+                    user_profile.alternative_emails.append(alternative_email)
+            else:
+                user_profile.alternative_emails = [alternative_email]
+            
+            dao.set_user_profile(user_profile)
+            self.response.out.write(json.dumps({'result': 'success'}))
+        else:
+            self.response.set_status(400)
+            return
+            
+
 
             
