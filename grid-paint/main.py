@@ -57,6 +57,7 @@ application = webapp.WSGIApplication([
                                       ('/json/comments', pages.actions.JSONComments),
                                       ('/json/get-user-id-by-nickname', pages.actions.JSONGetUserIdByNickname),
                                       ('/json/save-alternative-email', pages.actions.JSONSaveAlternativeEmail),
+                                      ('/json/delete-alternative-email', pages.actions.JsonDeleteAlternativeEmail),
                                       ('/comments', pages.pages.PageComments)
                                       ], debug=True)
 

@@ -1012,6 +1012,32 @@ class JSONSaveAlternativeEmail(BasicRequestHandler):
         else:
             self.response.set_status(400)
             return
+        
+        
+class JsonDeleteAlternativeEmail(BasicRequestHandler):
+    def post(self, *args):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+ 
+        alternative_email = self.request.get('alternative_email')
+        
+        user_profile = dao.get_user_profile(self.user_info.user.email())
+        if user_profile:
+            if alternative_email not in getattr(user_profile, 'alternative_emails', []):
+                self.response.out.write(json.dumps({'error': 'no_such_alternative_email'}))
+                return
+            
+            if self.user_info.user.email() == alternative_email:
+                self.response.out.write(json.dumps({'error': 'cannot_delete_yourself'}))
+                return
+            
+            user_profile.alternative_emails.remove(alternative_email)
+            dao.set_user_profile(user_profile)
+            self.response.out.write(json.dumps({'result': 'success'}))
+        else:
+            self.response.set_status(400)
+            return
             
 
 
