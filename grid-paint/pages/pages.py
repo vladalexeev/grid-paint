@@ -544,7 +544,7 @@ class PageUserFavorites(BasicPageRequestHandler):
                                      memcache_cursor_key_func)
         model['profile'] = user_profile
     
-        if self.user_info.user and self.user_info.has_profile and self.user_info.profile_id==profile_id:
+        if self.user_info.user and self.user_info.profile_id==profile_id:
             model['this_user_profile']=True
         
         self.write_template('templates/user-favorites.html', model)
