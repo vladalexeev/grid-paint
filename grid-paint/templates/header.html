@@ -19,7 +19,12 @@
 		    </a>
 		    <ul class="dropdown-menu">
 		    {% if user_info.has_profile %}
-		  	  	<li><a href="/my-profile">My profile</a></li>
+		  	  	<li>
+		  	  		<a href="/my-profile">
+		  	  			<div class="my-profile-menu-text">My profile</div>
+		  	  			<div class="my-profile-menu-email">{{user_info.user.email}}</div>
+		  	  		</a>
+		  	  	</li>
 		  	  	{% if user_info.superadmin %}
 		  	  		<li><a href="/admin">Administration</a></li>
 		  	  	{% endif %}
