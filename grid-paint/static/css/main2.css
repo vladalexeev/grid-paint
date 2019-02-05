@@ -24,6 +24,17 @@ body {
 	vertical-align: bottom;
 }
 
+.header-new-image-link {
+	color: #337ab7 !important;
+	font-weight: 600;
+}
+
+.header-new-image-link:hover {
+	color: #23527c !important;
+	font-weight: 600;
+}
+
+
 .grid-selector-wrapper {
 	display:inline-block;
 	border: solid 1px #CCC;
