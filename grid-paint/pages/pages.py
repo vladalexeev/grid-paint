@@ -204,13 +204,13 @@ class PageMyImages(BasicPageRequestHandler):
             return;
         
         def artworks_query_func():
-            return db.Artwork.all().filter('author_email =', self.user_info.user.email()).order('-date')
+            return db.Artwork.all().filter('author_email =', self.user_info.user_email).order('-date')
         
         def href_create_func(offset):
             return '/my-images?offset='+str(offset)
         
         def memcache_cursor_key_func(offset):
-            return cache.MC_ARTWORK_LIST+'my_images_'+self.user_info.user_name+'_'+str(offset)
+            return cache.MC_ARTWORK_LIST+'my_images_'+self.user_info.user_email+'_'+str(offset)
         
         model = create_gallery_model(self.request.get('offset'), 
                                      artworks_query_func, 
@@ -415,7 +415,7 @@ class PageImage(BasicPageRequestHandler):
             return
         
         favorite_count = dao.get_artwork_favorite_count(artwork)
-        favorite = dao.is_artwork_favorite_by_user(artwork, self.user_info.user)
+        favorite = dao.is_artwork_favorite_by_user(artwork, self.user_info.user_email)
         
         db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('date')
         comments = [convert.convert_comment_for_page(c) for c in db_comments]
@@ -468,7 +468,7 @@ class PageNotifications(BasicPageRequestHandler):
         else:
             offset = 0
             
-        query = db.Notification.all().filter('recipient_email =', self.user_info.user.email()).order('-date').fetch(20,offset)
+        query = db.Notification.all().filter('recipient_email =', self.user_info.user_email).order('-date').fetch(20,offset)
         
         notifications = [convert.convert_notification(n) for n in query]
         self.write_template('templates/notifications.html', 
@@ -484,7 +484,7 @@ class PageMyProfile(BasicPageRequestHandler):
             self.response.set_status(403)
             return;
         
-        user_profile = dao.get_user_profile(self.user_info.user.email())
+        user_profile = dao.get_user_profile(self.user_info.user_email)
         
         self.write_template('templates/my-profile.html', 
                             {
@@ -556,7 +556,7 @@ class PageMyFavorites(BasicPageRequestHandler):
             self.response.set_status(403)
             return
         
-        email = self.user_info.user.email()
+        email = self.user_info.user_email
         
         def artworks_query_func():
             all_artworks=db.Favorite.all()

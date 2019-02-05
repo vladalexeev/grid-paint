@@ -235,6 +235,7 @@ $(function () {
   				{'alternative_email': alternative_email},
 				function(data) {
 					if (data.error) {
+						$("#modal-confirm-delete-alternative-email").modal('hide');
 						showErrorMessage(data.error);
 						return;
 					}

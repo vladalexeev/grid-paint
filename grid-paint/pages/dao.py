@@ -17,14 +17,14 @@ def get_artwork(id_or_key):
         except:
             return None
         
-def get_notification_count(user):
-    cache_key = cache.MC_USER_NOTIFICATION_PREFIX + user.email()
+def get_notification_count(user_email):
+    cache_key = cache.MC_USER_NOTIFICATION_PREFIX + user_email
     value = cache.get(cache_key)
     
     if value<>None:
         return value
     else:
-        count = db.Notification.all().filter('recipient_email =', user.email()).filter('read =',False).count()
+        count = db.Notification.all().filter('recipient_email =', user_email).filter('read =',False).count()
         cache.add(cache_key, count)
         return count
     
@@ -48,7 +48,12 @@ def get_user_profile(user_email):
             cache.add(cache.MC_USER_PROFILE+user_email, user_profile)
             return user_profile
         else:
-            return None
+            user_profile = db.UserProfile.all().filter('alternative_emails =', user_email).get()
+            if user_profile:
+                cache.add(cache.MC_USER_PROFILE+user_email, user_profile)
+                return user_profile
+            else:
+                return None
         
 def get_user_profile_by_nickname(nickname):
     return db.UserProfile.all().filter('nickname =', nickname).get()
@@ -59,7 +64,7 @@ def get_user_profile_by_id(profile_id):
         
 def add_user_profile(profile):
     if get_user_profile(profile.email):
-        raise Exception('User profile already exists '+profile.user.email())
+        raise Exception('User profile already exists '+profile.email)
     
     result = profile.put()
     cache.add(cache.MC_USER_PROFILE+profile.email, profile)
@@ -70,6 +75,9 @@ def add_user_profile(profile):
 def set_user_profile(profile):
     profile.put()
     cache.add(cache.MC_USER_PROFILE+profile.email, profile)
+    for email in getattr(profile, 'alternative_email', []):
+        cache.add(cache.MC_USER_PROFILE+email, profile)
+        
     cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
     cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
     
@@ -87,16 +95,16 @@ def get_artwork_favorite_count(artwork):
         cache.add(memcache_key, result)
         return result
     
-def is_artwork_favorite_by_user(artwork, user):
-    if not user:
+def is_artwork_favorite_by_user(artwork, user_email):
+    if not user_email:
         return False
     
-    memcache_key = cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email()
+    memcache_key = cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user_email
     result = cache.get(memcache_key)
     if result==True or result==False:
         return result
     else:
-        fav_user = db.Favorite.all().filter('artwork =', artwork).filter('user_email =', user.email()).get()
+        fav_user = db.Favorite.all().filter('artwork =', artwork).filter('user_email =', user_email).get()
         if fav_user:
             cache.add(memcache_key, True)
             return True
@@ -105,13 +113,13 @@ def is_artwork_favorite_by_user(artwork, user):
             return False
 
 
-def favorite_artwork(artwork, user):
-    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email())
+def favorite_artwork(artwork, user_email):
+    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user_email)
     cache.delete(cache.MC_FAVORITE_COUNT+str(artwork.key().id()))
 
     fav = db.Favorite()
     fav.artwork = artwork
-    fav.user_email = user.email()
+    fav.user_email = user_email
     fav.save()
     
     fav_count = db.FavoriteCounter.all().filter('artwork =', artwork).get()
@@ -131,15 +139,15 @@ def favorite_artwork(artwork, user):
     
     return fav_count.count
 
-def unfavorite_artwork(artwork, user):
-    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email())
+def unfavorite_artwork(artwork, user_email):
+    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user_email)
     cache.delete(cache.MC_FAVORITE_COUNT+str(artwork.key().id()))
 
-    fav = db.Favorite.all().filter('artwork =', artwork).filter('user_email =', user.email()).get()
+    fav = db.Favorite.all().filter('artwork =', artwork).filter('user_email =', user_email).get()
     if fav:
         fav.delete()
         
-    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user.email())
+    cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user_email)
         
     fav_count = db.FavoriteCounter.all().filter('artwork =', artwork).get()
     result = 0

@@ -63,13 +63,13 @@ class ActionSaveImage(BasicRequestHandler):
         
         if artwork_id:
             artwork=dao.get_artwork(artwork_id)
-            if not self.user_info.superadmin and artwork.author_email <> self.user_info.user.email():
+            if not self.user_info.superadmin and artwork.author_email <> self.user_info.user_email:
                 # should be the same user or superadmin
                 self.response.set_status(403)
                 return
         else:
             artwork=db.Artwork();
-            artwork.author_email = self.user_info.user.email()
+            artwork.author_email = self.user_info.user_email
             
         if artwork_name:
             artwork.name=artwork_name
@@ -240,10 +240,10 @@ class ActionSaveImage(BasicRequestHandler):
             del pixel_image
             pixel_memory_file.close()
         
-        user_profile = dao.get_user_profile(self.user_info.user.email())
+        user_profile = dao.get_user_profile(self.user_info.user_email)
         if not user_profile:
             user_profile = db.UserProfile()
-            user_profile.email = self.user_info.user.email()
+            user_profile.email = self.user_info.user_email
             user_profile.nickname = convert.auto_nickname(self.user_info.user.nickname())
             user_profile.artworks_count = 1
             dao.add_user_profile(user_profile)
@@ -335,10 +335,10 @@ class ActionComlainComment(BasicRequestHandler):
             self.response.set_status(200)
             return
         
-        user_profile = dao.get_user_profile(self.user_info.user.email())
+        user_profile = dao.get_user_profile(self.user_info.user_email)
         if not user_profile:
             user_profile = db.UserProfile()
-            user_profile.email = self.user_info.user.email()
+            user_profile.email = self.user_info.user_email
             user_profile.nickname = convert.auto_nickname(self.user_info.user.nickname())
             user_profile.artworks_count = 0
             dao.add_user_profile(user_profile)
@@ -354,7 +354,7 @@ class ActionComlainComment(BasicRequestHandler):
         notification.type = 'complain'
         notification.artwork = artwork
         notification.comment = comment
-        notification.sender_email = self.user_info.user.email()
+        notification.sender_email = self.user_info.user_email
         dao.add_notification(notification)
         
         cache.add(cache_key, user_profile.email)
@@ -372,10 +372,10 @@ class ActionSaveComment(BasicRequestHandler):
             self.response.set_status(403)
             return
         
-        user_profile = dao.get_user_profile(self.user_info.user.email())
+        user_profile = dao.get_user_profile(self.user_info.user_email)
         if not user_profile:
             user_profile = db.UserProfile()
-            user_profile.email = self.user_info.user.email()
+            user_profile.email = self.user_info.user_email
             user_profile.nickname = convert.auto_nickname(self.user_info.user.nickname())
             user_profile.artworks_count = 0
             dao.add_user_profile(user_profile)
@@ -398,29 +398,29 @@ class ActionSaveComment(BasicRequestHandler):
             return
         
         comment=db.Comment(parent=artwork)
-        comment.author_email = self.user_info.user.email() 
+        comment.author_email = self.user_info.user_email
         comment.artwork_ref = artwork
         comment.text = comment_text
         comment.put()
         
-        if artwork.author_email and artwork.author_email<>self.user_info.user.email():
+        if artwork.author_email and artwork.author_email<>self.user_info.user_email:
             notification = db.Notification()
             notification.recipient_email = artwork.author_email
             notification.type = 'comment'
             notification.artwork = artwork
             notification.comment = comment
-            notification.sender_email = self.user_info.user.email()
+            notification.sender_email = self.user_info.user_email
             dao.add_notification(notification)
             
         if ref_comment_id:
             ref_comment = db.Comment.get_by_id(int(ref_comment_id), artwork)
-            if ref_comment and ref_comment.author_email <> artwork.author_email and ref_comment.author_email <> self.user_info.user.email():
+            if ref_comment and ref_comment.author_email <> artwork.author_email and ref_comment.author_email <> self.user_info.user_email:
                 ref_notification = db.Notification()
                 ref_notification.recipient_email = ref_comment.author_email
                 ref_notification.type = 'comment'
                 ref_notification.artwork = artwork
                 ref_notification.comment = comment
-                ref_notification.sender_email = self.user_info.user.email()
+                ref_notification.sender_email = self.user_info.user_email
                 dao.add_notification(ref_notification)
                 
             
@@ -643,7 +643,7 @@ class ActionSaveProfile(BasicRequestHandler):
             self.response.set_status(400)
             return
 
-        user_profile = dao.get_user_profile(self.user_info.user.email())
+        user_profile = dao.get_user_profile(self.user_info.user_email)
         if user_profile:
             if user_profile.nickname != nickname:
                 if dao.get_user_profile_by_nickname(nickname):
@@ -858,21 +858,21 @@ class ActionToggleFavorite(BasicRequestHandler):
             return
         else:
             cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
-            if dao.is_artwork_favorite_by_user(artwork, self.user_info.user):
-                fav_count = dao.unfavorite_artwork(artwork, self.user_info.user)
+            if dao.is_artwork_favorite_by_user(artwork, self.user_info.user_email):
+                fav_count = dao.unfavorite_artwork(artwork, self.user_info.user_email)
                 self.response.out.write(json.dumps({
                         'favorite': False,
                         'favorite_count': fav_count 
                         }))
             else:
-                fav_count = dao.favorite_artwork(artwork, self.user_info.user)
+                fav_count = dao.favorite_artwork(artwork, self.user_info.user_email)
                 
-                if antispam.check_favorite(self.user_info.user.email(), artwork_id):
+                if antispam.check_favorite(self.user_info.user_email, artwork_id):
                     notification = db.Notification()
                     notification.recipient_email = artwork.author_email
                     notification.type = 'favorite'
                     notification.artwork = artwork
-                    notification.sender_email = self.user_info.user.email()
+                    notification.sender_email = self.user_info.user_email
                     dao.add_notification(notification)
         
                 self.response.out.write(json.dumps({
@@ -994,7 +994,7 @@ class JSONSaveAlternativeEmail(BasicRequestHandler):
             self.response.out.write(json.dumps({'error': 'invalid_email'}))
             return
         
-        user_profile = dao.get_user_profile(self.user_info.user.email())
+        user_profile = dao.get_user_profile(self.user_info.user_email)
         if user_profile:
             test_profile = dao.get_user_profile(alternative_email)
             if test_profile:
@@ -1022,7 +1022,7 @@ class JsonDeleteAlternativeEmail(BasicRequestHandler):
  
         alternative_email = self.request.get('alternative_email')
         
-        user_profile = dao.get_user_profile(self.user_info.user.email())
+        user_profile = dao.get_user_profile(self.user_info.user_email)
         if user_profile:
             if alternative_email not in getattr(user_profile, 'alternative_emails', []):
                 self.response.out.write(json.dumps({'error': 'no_such_alternative_email'}))
