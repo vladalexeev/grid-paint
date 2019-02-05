@@ -11,6 +11,7 @@ from google.appengine.ext.webapp import template
 import db
 import dao
 import cache
+import convert
 
 
 class UserInfo:
@@ -27,16 +28,20 @@ class UserInfo:
         self.user=users.get_current_user()
         if users.get_current_user():
             user_profile = dao.get_user_profile(self.user.email())
+            if not user_profile:
+                user_profile = db.UserProfile()
+                user_profile.email = self.user.email()
+                user_profile.nickname = convert.auto_nickname(self.user.nickname())
+                user_profile.artworks_count = 0                
+                dao.add_user_profile(user_profile)
+                user_profile = dao.get_user_profile(self.user.email())
+                
             self.user_email = user_profile.email
-            if user_profile:
-                self.user_name = user_profile.nickname
-                self.has_profile = True
-                self.profile_id = user_profile.key().id()
-                self.read_only = hasattr(user_profile, 'read_only')
-            else:            
-                self.user_name = users.get_current_user().nickname()
-                self.has_profile = False
-                self.read_only = False
+            self.user_name = user_profile.nickname
+            self.has_profile = True
+            self.profile_id = user_profile.key().id()
+            self.read_only = hasattr(user_profile, 'read_only')
+                
             self.superadmin = users.is_current_user_admin()            
             self.login_url = users.create_logout_url('/')
             self.login_url_text = 'Logout'
