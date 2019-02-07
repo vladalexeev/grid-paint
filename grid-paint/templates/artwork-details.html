@@ -24,36 +24,37 @@
 		{% else %}
 		<div class="image-details-favorite star-favorite"></div>
 		{% endif %}
-	</div>	
+	</div>
+		{% if artwork.copyright_block %}
+		<div style="text-align: center;">
+		 	<img src="/img/copyright-image.png" />
+		</div>
+		<div style="font-size:2em; color:red; text-align: center">
+			This image is blocked due to copyright infringement.
+		</div>
+		{% endif %}
+		{% if artwork.block %}
+		<div style="text-align: center;">
+		 	<img src="/img/block-image.png" />
+		</div>
+		<div style="font-size:2em; color:red; text-align: center;">
+			This image is blocked due to {{ artwork.block_reason }}.
+		</div>
+		{% endif %}
+		{% if artwork.copyright_block or artwork.block %}
+			{% if artwork.author.email == user_info.user.email %}
+				<div style="font-size:1.5em; color:red; text-align: center;">
+					Only you can see the image.
+				</div>
+			{% endif %}
+		{% endif %}
+		
 	<div class="image-details-image">
 		{% if not artwork.copyright_block and not artwork.block or user_info.superadmin or artwork.author.email == user_info.user.email %}
 			<img class="main-image" src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
 			{% if artwork.pixel_image_file_name %}
 				<div class="pixel-image" style="width: calc({{ artwork.pixel_image_width }}px + 20px); height: calc({{ artwork.pixel_image_height }}px + 20px)">
 					<img src="{{ artwork.pixel_image_file_name }}" width="{{ artwork.pixel_image_width }}" height="{{ artwork.pixel_image_height }}">
-				</div>
-			{% endif %}
-		{% endif %}
-		{% if artwork.copyright_block %}
-		<div>
-		 	<img src="/img/copyright-image.png" />
-		</div>
-		<div style="font-size:2em; color:red;">
-			This image is blocked due to copyright infringement.
-		</div>
-		{% endif %}
-		{% if artwork.block %}
-		<div>
-		 	<img src="/img/block-image.png" />
-		</div>
-		<div style="font-size:2em; color:red;">
-			This image is blocked due to {{ artwork.block_reason }}.
-		</div>
-		{% endif %}
-		{% if artwork.copyright_block or artwork.block %}
-			{% if artwork.author.email == user_info.user.email %}
-				<div style="font-size:1.5em; color:red;">
-					Only you can see the image.
 				</div>
 			{% endif %}
 		{% endif %}
