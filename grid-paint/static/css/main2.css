@@ -320,7 +320,7 @@ body {
 }
 
 .image-details-favorite-wrapper {
-	/*z-index: 2000;*/
+	z-index: 1000;
 }
 
 .image-details-favorite-count {
