@@ -33,6 +33,11 @@
 					<a href="#modal-block-user" class="btn btn-default btn-small" data-toggle="modal" data-target="#modal-block-user">Block user</a>
 				{% endif %}
 			</div>
+			<div>
+				{% for email in profile.alternative_emails %}
+					<div>{{ email }}</div>
+				{% endfor %}
+			</div>
 			{% endif%}
 			<div>{{ profile.artworks_count }} artworks</div>
 			<div>
