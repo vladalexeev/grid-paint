@@ -167,6 +167,7 @@ My profile
 
 
 <script>
+var profile_id='{{ profile.key.id }}';
 $(function () {
 	$("#submit-button").click(
 		function() {
@@ -180,7 +181,7 @@ $(function () {
   				'/json/get-user-id-by-nickname',
   				{'nickname': nickname},
 				function(data) {
-					if (data.id) {
+					if (data.id && data.id != profile_id) {
 						$("#modal-duplicate-nickname").modal();
 					} else {
 						$("form[name=f]")[0].submit();
