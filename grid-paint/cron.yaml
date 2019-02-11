@@ -1,0 +1,4 @@
+cron:
+- description: "Delete old notifications"
+  url: /cron/clean-notifications
+  schedule: every 12 hours

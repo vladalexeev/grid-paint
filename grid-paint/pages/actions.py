@@ -35,6 +35,7 @@ from cloudstorage.errors import NotFoundError
 
 import logging
 import antispam
+from db import Notification
 
 grids={
        'square': GridSquare,
@@ -1038,6 +1039,19 @@ class JsonDeleteAlternativeEmail(BasicRequestHandler):
         else:
             self.response.set_status(400)
             return
+        
+        
+class CronCleanNotifications(BasicRequestHandler):
+    def get(self, *args):
+        date = datetime.datetime.now() - datetime.timedelta(days=90)
+        notifications = Notification.all().filter('date <', date).fetch(200)
+        for n in notifications:
+            cache.delete(cache.MC_USER_NOTIFICATION_PREFIX + n.recipient_email)
+            n.delete()
+            
+        self.response.set_status(200)
+        return
+            
             
 
 
