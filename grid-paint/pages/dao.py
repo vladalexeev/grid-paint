@@ -63,8 +63,9 @@ def get_user_profile_by_id(profile_id):
     
         
 def add_user_profile(profile):
-    if get_user_profile(profile.email):
-        raise Exception('User profile already exists '+profile.email)
+    profile_exist = get_user_profile(profile.email)
+    if profile_exist:
+        return profile_exist
     
     result = profile.put()
     cache.add(cache.MC_USER_PROFILE+profile.email, profile)
