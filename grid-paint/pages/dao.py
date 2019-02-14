@@ -135,7 +135,13 @@ def favorite_artwork(artwork, user_email):
     
     user_profile = db.UserProfile.all().filter('email =', artwork.author_email).get()
     if hasattr(user_profile, 'favorite_count'):
-        user_profile.favorite_count = user_profile.favorite_count + 1
+        if user_profile.favorite_count is None:
+            user_profile.favorite_count = 1
+        else:
+            user_profile.favorite_count = user_profile.favorite_count + 1
+        user_profile.put()
+    else:
+        user_profile.favorite_count = 1
         user_profile.put()
     
     return fav_count.count
