@@ -168,12 +168,12 @@ class PagePainter(BasicPageRequestHandler):
                                      },
                          'backgroundColor': '#ffffff',
                          'canvasSize':{
-                                       'width': int(self.request.get('artwork_width')),
-                                       'height': int(self.request.get('artwork_height')),                                       
+                                       'width': int(float(self.request.get('artwork_width'))),
+                                       'height': int(float(self.request.get('artwork_height'))),                                       
                                        },
                          'layers': [{
                                      'grid': self.request.get('artwork_grid'),
-                                     'cellSize': int(self.request.get('cell_size')),                     
+                                     'cellSize': int(float(self.request.get('cell_size'))),                     
                                      'rows':[]
                                      }],
                          'recentColors':['#4096EE', '#FFFFFF', '#000000', '#EEEEEE', 
