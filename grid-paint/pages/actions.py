@@ -317,6 +317,17 @@ class ActionDeleteNotification(BasicRequestHandler):
                 dao.delete_notification(notification)
             else:
                 self.response.set_status(403)
+
+                
+class ActionDeleteAllNotifications(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+
+        user_email = self.user_info.user_email
+        dao.delete_all_notifications(user_email)
+
                 
 class ActionComlainComment(BasicRequestHandler):
     def get(self):
@@ -916,6 +927,40 @@ class JSONComments(BasicRequestHandler):
         dict_comments = [convert.convert_comment_for_page_rich(c) for c in comments]
         
         self.response.out.write(json.dumps(dict_comments, default=json_serial))
+        
+class JSONNotifications(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        req_limit = self.request.get('limit')
+        req_offset = self.request.get('offset')
+        
+        if req_offset:
+            offset = int(req_offset)
+        else:
+            offset = 0
+            
+        if req_limit:
+            limit = int(req_limit)
+        else:
+            limit = 21
+            
+        if limit > 101:
+            limit = 101
+            
+        query = db.Notification.all().filter('recipient_email =', self.user_info.user_email).order('-date').fetch(limit,offset)
+        
+        def json_serial(obj):
+            if isinstance(obj, datetime.datetime):
+                serial = obj.isoformat()
+                return serial
+            raise TypeError ("Type not serializable {}", repr(obj))
+        
+        notifications = [convert.convert_notification_json(n) for n in query]
+        self.response.out.write(json.dumps(notifications, default=json_serial))
+
         
 class JSONGetUserIdByNickname(BasicRequestHandler):
     def post(self, *args):

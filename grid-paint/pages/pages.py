@@ -461,21 +461,7 @@ class PageNotifications(BasicPageRequestHandler):
             self.response.set_status(403)
             return
         
-        req_offset = self.request.get('offset')
-        
-        if req_offset:
-            offset = int(req_offset)
-        else:
-            offset = 0
-            
-        query = db.Notification.all().filter('recipient_email =', self.user_info.user_email).order('-date').fetch(20,offset)
-        
-        notifications = [convert.convert_notification(n) for n in query]
-        self.write_template('templates/notifications.html', 
-                            {
-                             'notifications': notifications,
-                             'notificationCount': len(notifications)
-                             })
+        self.write_template('templates/notifications.html', {})
         
         
 class PageMyProfile(BasicPageRequestHandler):

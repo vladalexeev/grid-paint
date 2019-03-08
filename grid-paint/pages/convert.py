@@ -69,6 +69,47 @@ def convert_notification(notification):
         pass
     
     return result;
+
+
+def convert_notification_json(notification):
+    n = convert_notification(notification)
+    result = {
+        'id': n['key'].id(),
+        'date': n['date'],
+        'type': n['type']
+        }
+    
+    if 'artwork' in n:
+        result['artwork'] = {
+            'id': n['artwork']['key'].id(),
+            'name': n['artwork']['name'],
+            'date': n['artwork']['date'],
+            'author': {
+                'nickname': n['artwork'].get('author',{}).get('nickname')
+                }
+            }
+        
+    if 'comment' in n:
+        result['comment'] = {
+              'id': n['comment']['key'],
+              'text': n['comment']['text'],
+              'author': {
+                  'nickname': n['comment']['author']['nickname']
+                  },
+              'date': n['comment']['date'],
+              'artwork_id': n['comment']['artwork_key'],
+              'artwork_name': n['comment']['artwork_name'],
+            }
+        if 'hidden' in n['comment']:
+            result['comment']['hidden'] = n['comment']['hidden']
+            
+    if 'sender' in n:
+        result['sender'] = {
+            'nickname': n['sender']['nickname']
+            }
+        
+    return result
+        
     
 def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
     try:

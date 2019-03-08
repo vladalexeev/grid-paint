@@ -6,91 +6,23 @@
 
 <div class="container">
 
-<h2>Notifications</h2>
-
-
-<div class="image-details-comments">
-	{% for n in notifications %}
-	  {% if n.type == 'comment' %}
-	  	<div class="pull-left" id="icon-{{ n.key }}" style="margin-right: 10px; height:60px;">
-			<img src="/img/comment-icon.png" />
-		</div>							
-		<div class="comment" id="row-{{ n.key }}" style="margin-left:42px;">
-			<div class="comment-header">
-				<div class="pull-right">
-		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
-			  	</div>
-			  	<div>{{ n.date }}</div>
-			  	<div><b>{{n.comment.author.nickname}}</b> left a comment</div>
-			  	{% if not n.artwork  or not n.comment %}
-			  	<div>Image or comment was deleted</div>
-		  		{% else %}	
-				<h2><a href="/images/details/{{ n.artwork.key.id }}#comment-{{ n.comment.key }}">{{ n.artwork.name }}</a></h2>
-				{% endif %}
-			</div>
-			{% if n.comment %}
-				{% if n.comment.hidden %}
-					<div class="comment-text" style="color:red;">Hidden by administrator</div>
-				{% else %}
-					{% for t in n.comment.text %}
-					  <div class="comment-text">{{t}}</div>
-					{% endfor %}
-				{% endif %}
-			{% endif %}
-		</div>
-	  {% endif %}
-	  {% if n.type == 'complain' %}
-	  	<div class="pull-left" id="icon-{{ n.key }}" style="margin-right: 10px; height:60px;">
-			<img src="/img/exclamation-circle-red-64.png" width="32" height="32" />
-		</div>							
-		<div class="comment" id="row-{{ n.key }}" style="margin-left:42px;">
-			<div class="comment-header">
-				<div class="pull-right">
-		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
-			  	</div>
-			  	<div>{{ n.date }}</div>
-			  	<div><b>{{n.comment.author.nickname}}</b> complained on comment</div>
-			  	{% if not n.artwork  or not n.comment %}
-			  	<div>Image or comment was deleted</div>
-		  		{% else %}	
-				<h2><a href="/images/details/{{ n.artwork.key.id }}#comment-{{ n.comment.key }}">{{ n.artwork.name }}</a></h2>
-				{% endif %}
-			</div>
-			{% if n.comment %}
-				{% if n.comment.hidden %}
-					<div class="comment-text" style="color:red;">Hidden by administrator</div>
-				{% else %}
-					{% for t in n.comment.text %}
-					  <div class="comment-text">{{t}}</div>
-					{% endfor %}
-				{% endif %}
-			{% endif %}
-		</div>
-	  {% endif %}
-	  {% if n.type == 'favorite' %}
-		<div class="pull-left" id="icon-{{ n.key }}" style="margin-right: 10px; height:60px;">
-			<img src="/img/stars/star4.png" />
-		</div>
-		<div class="comment" id="row-{{ n.key }}" style="margin-left:42px;">
-			<div class="comment-header">
-				<div class="pull-right">
-		  			<a href="#" notification_id="{{ n.key }}" class="btn-delete-notification" title="Delete notification"><i class="icon icon-remove"></i></a>
-			  	</div>
-			  	<div>{{ n.date }}</div>
-			  	<div><b>{{n.sender.nickname}}</b> favorited your artwork</div>
-			  	{% if not n.artwork %}
-			  	<div>Image or comment was deleted</div>
-		  		{% else %}	
-				<h2><a href="/images/details/{{ n.artwork.key.id }}">{{ n.artwork.name }}</a></h2>
-				{% endif %}
-			</div>
-		</div>
-	  {% endif %}
-	{% endfor %}
+<div style="position:relative;">
+	<div style="position: absolute; right:0; bottom:0;">
+		<button id="button_delete_all" type="button" class="btn btn-small btn-default" style="display: none;">Delete all</button>
+	</div>
+	<h2>Notifications</h2>
 </div>
 
-<div class="empty-page-message" style="display:none;">
-	There are no notifications for you
+
+<div class="image-details-comments" id="notifications-container">
+</div>
+
+<div id="nav_buttons" style="display:none; margin:10px;" class="text-center">
+	<form name="a" class="form-inline">
+		<button id="button_prev" type="button" class="btn btn-small btn-desfault">Prev</button>
+		<input type="text" id="offset" class="form-control" size="4" />
+		<button id="button_next" type="button" class="btn btn-small btn-desfault">Next</button>
+	</form>
 </div>
 
 </div>
@@ -98,28 +30,204 @@
  
 </div>
 
+<div id="modal-confirm-delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <p>Delete all notifications?</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a href="#" id="button_confirm_delete" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <script>
-var notificationCount={{ notificationCount }};
+var maxCount=10;
+
+function getCurrentOffset() {
+	return parseInt($("#offset").val(), 10);
+}
+
+function setCurrentOffset(offset) {
+	$("#offset").val(offset);
+	showCurrentOffset();
+}
+
+function showCurrentOffset() {
+	loadNotifications(maxCount, getCurrentOffset());
+}
+</script>
+
+<script>
+var spinner='<div class="spinner-wrapper"><div class="spinner"></div></div>';
+var emptyPage='<div class="empty-page-message">There are no notifications for you</div>';
+
+function commentToHtml(comment) {
+	var result='';
+	if (comment.hidden) {
+		result = `<div class="comment-text" style="color:red;">Comment hidden by administrator</div>`;
+	} else {
+		for (var i=0; i<comment.text.length; i++) {
+			result += `<div class="comment-text">${comment.text[i]}</div>`
+		}
+	}
+	return result;
+}
+
+function constructNotificationComponent(n) {
+	var validNotification=true;
+	var iconName='icon-bell-alt';
+	var headerText='notified'
+	var hyperlink='';
+	var content='';
+	if (n.type=='comment') {
+		iconName='icon-comment';
+		headerText='left comment';
+		if (n.artwork && n.comment) {
+			hyperlink=`/images/details/${n.artwork.id}#comment-${n.comment.id}`;
+			content=commentToHtml(n.comment);
+		} else {
+			validNotification=false;
+		}
+	} else if (n.type=='favorite') {
+		iconName='icon-star';
+		headerText='favorited artwork'
+		if (n.artwork) {
+			hyperlink=`/images/details/${n.artwork.id}`;
+		} else {
+			validNotification=false;
+		}
+	} else if (n.type=='complain') {
+		iconName='icon-warning-sign';
+		headerText='complained on comment'
+		if (n.artwork && n.comment) {
+			hyperlink=`/images/details/${n.artwork.id}#comment-${n.comment.id}`;
+			content=commentToHtml(n.comment);
+		} else {
+			validNotification=false;
+		}
+	} 
+	
+	var result='';
+	
+	if (validNotification) {
+		result=`<div id="notification-${n.id}" class="notification-container">\
+			<div class="notification-icon"><i class="${iconName}"></i></div>\
+			<div class="comment">\
+				<div class="comment-header">\
+					<div>${n.date}</div>\
+					<div><b>${n.sender.nickname}</b> ${headerText}</div>\
+					<h2><a href="${hyperlink}">${n.artwork.name}</a></h2>\
+				</div>\
+				${content}\
+			</div>\
+		</div>`;
+	} else {
+		result=`<div id="notification-${n.id}" class="notification-container">\
+			<div class="notification-icon"><i class="${iconName}"></i></div>\
+			<div class="comment">\
+				<div class="comment-header">\
+					<div>${n.date}</div>\
+					<div><b>${n.sender.nickname}</b> ${headerText}</div>\
+					<div>Artwork or comment was deleted</div>\
+				</div>\
+			</div>\
+		</div>`;
+	}
+	return result;
+};
+
+function loadNotifications(limit, offset) {
+	$("#nav_buttons").hide();
+	$("#button_delete_all").hide();
+	$('#notifications-container').html(spinner);
+	$.get('/json/notifications?limit='+(limit+1)+'&offset='+offset,
+		function(data) {
+			var notifications=JSON.parse(data);
+			var html='';
+			for (var i=0; i<notifications.length && i<limit; i++) {
+				html+=constructNotificationComponent(notifications[i]);
+			}
+			if (!html) {
+				html=emptyPage;
+			}
+			$('#notifications-container').html(html);
+			
+			if (offset>0 || notifications.length>limit) {
+				$("#nav_buttons").show();	
+			} else {
+				$("#nav_buttons").hide();
+			}
+			
+			if (offset==0) {
+				$('#button_prev').attr('disabled', 'disabled');
+			} else {
+				$('#button_prev').removeAttr('disabled');
+			}
+			
+			if (notifications.length <= limit) {
+				$('#button_next').attr('disabled', 'disabled');
+			} else {
+				$('#button_next').removeAttr('disabled');
+			}
+			
+			if (notifications.length > 0 || offset > 0) {
+				$("#button_delete_all").show();
+			}
+		}
+	);
+};
 
 $(function() {
-	$(".btn-delete-notification").click(
-		function() {
-			var notificationId=$(this).attr("notification_id");
-			$.get("/delete-notification?id="+notificationId,
-				function() {
-					$("#row-"+notificationId).slideUp();	
-					$("#icon-"+notificationId).slideUp();
-					
-					notificationCount--;
-					if (notificationCount==0) {
-						$('.empty-page-message').fadeIn();
-					}
-				});
-		});
+	$("#button_prev").click(function() {
+		var offset = getCurrentOffset() - maxCount;
+		if (offset<0) {
+			offset=0;
+		}
+		setCurrentOffset(offset);
+		window.scrollTo(0,0);
+	});
+	
+	$("#button_next").click(function() {
+		var offset = getCurrentOffset() + maxCount;
+		setCurrentOffset(offset);
+		window.scrollTo(0,0);
+	});
+	
+	$("#offset").keypress(function(event) {
+		if (event.which==13) {
+			showCurrentOffset();
+			window.scrollTo(0,0);
+			event.preventDefault();
+		}
+	});
+	
+	$("#button_delete_all").click(function() {
+		$("#modal-confirm-delete").modal("show");
+	});
+	
+	$("#button_confirm_delete").click(function() {
+		$("#nav_buttons").hide();
+		$("#button_delete_all").hide();
+		$('#notifications-container').html(spinner);
+		$("#modal-confirm-delete").modal("hide");
 		
-	if (notificationCount==0) {
-		$('.empty-page-message').show();
-	}
+		$.get("/delete-all-notifications",
+			function() {
+				$('#header-notifications').hide();
+				$('#notifications-container').html(emptyPage);
+			});
+	});
+	
+	setCurrentOffset(0);
 });
 </script>
 {% endblock content %}

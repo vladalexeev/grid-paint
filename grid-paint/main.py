@@ -40,6 +40,7 @@ application = webapp.WSGIApplication([
                                       ('/images/json/(.*).json', pages.actions.JSONImageRequest),
                                       ('/notifications', pages.pages.PageNotifications),
                                       ('/delete-notification', pages.actions.ActionDeleteNotification),
+                                      ('/delete-all-notifications', pages.actions.ActionDeleteAllNotifications),
                                       ('/my-profile', pages.pages.PageMyProfile),
                                       ('/save-profile', pages.actions.ActionSaveProfile),
                                       ('/profiles', pages.pages.PageProfiles),
@@ -58,6 +59,7 @@ application = webapp.WSGIApplication([
                                       ('/json/get-user-id-by-nickname', pages.actions.JSONGetUserIdByNickname),
                                       ('/json/save-alternative-email', pages.actions.JSONSaveAlternativeEmail),
                                       ('/json/delete-alternative-email', pages.actions.JsonDeleteAlternativeEmail),
+                                      ('/json/notifications', pages.actions.JSONNotifications),
                                       ('/comments', pages.pages.PageComments),
                                       ('/cron/clean-notifications', pages.actions.CronCleanNotifications),
                                       ], debug=True)

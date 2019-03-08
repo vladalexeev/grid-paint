@@ -33,6 +33,13 @@ def delete_notification(notification):
     cache.delete(cache_key)
     notification.delete()
     
+def delete_all_notifications(user_email):
+    notifications = db.Notification.all().filter('recipient_email =', user_email)
+    for n in notifications:
+        n.delete()
+    cache_key = cache.MC_USER_NOTIFICATION_PREFIX + user_email
+    cache.add(cache_key, 0)        
+    
 def add_notification(notification):
     cache_key = cache.MC_USER_NOTIFICATION_PREFIX + notification.recipient_email
     cache.delete(cache_key)

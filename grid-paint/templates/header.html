@@ -2,7 +2,7 @@
     <ul class="nav navbar-nav navbar-right nocollapse header-user-panel" style="font-size: 20px; float:right;">
       {% if user_info.user_name%}
         {% if user_info.has_notifications %}
-	        <li>
+	        <li id="header-notifications">
     	    	<a href="/notifications">
 	    	    	<span class="blink" style="color:#c00000;">
 		    	    	<span class="header-item-wide" style="color:#c00000;">{{ user_info.notifications_count }}</span>
