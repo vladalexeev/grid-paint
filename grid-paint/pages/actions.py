@@ -869,6 +869,16 @@ class ActionToggleFavorite(BasicRequestHandler):
             self.response.set_status(404)
             return
         else:
+            antispam_key = cache.MC_FAVORITE_USER_ARTWORK + self.user_info.user_email + '_' + str(artwork_id)
+            last_fav_time = cache.get(antispam_key)
+            if last_fav_time and datetime.datetime.now() - last_fav_time < datetime.timedelta(seconds=60):
+                self.response.out.write(json.dumps({
+                    'not_changed': True
+                    }))
+                return
+            else:
+                cache.add(antispam_key, datetime.datetime.now())
+            
             cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
             if dao.is_artwork_favorite_by_user(artwork, self.user_info.user_email):
                 fav_count = dao.unfavorite_artwork(artwork, self.user_info.user_email)

@@ -31,6 +31,9 @@ MC_FAVORITE_BY_USER = 'img_fav_user_'
 
 MC_IMAGE_PREFIX = 'img:'
 
+# This key is used for protection against spam clicks on Star
+MC_FAVORITE_USER_ARTWORK='fav_user_art_'
+
 
 def get(key):
     return mm_cache.get(key)

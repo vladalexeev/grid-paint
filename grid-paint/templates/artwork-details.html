@@ -239,7 +239,6 @@
 </div>
 
 
-
 <script>
 artworkId='{{ artwork.key.id }}';
 favorite={% if favorite %}true{% else %}false{% endif %};
@@ -272,6 +271,10 @@ $(function() {
 			
 			$.getJSON('/toggle-favorite?id='+artworkId,
 				function(data) {
+					if (data.not_changed) {
+						showWarningDialog("You can click on star not more often than once per minute.");
+						return;
+					}
 					favorite=data.favorite;
 					favorite_count=data.favorite_count;
 					$('.image-details-favorite-count').text(favorite_count);
