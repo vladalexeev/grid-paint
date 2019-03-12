@@ -61,6 +61,8 @@ application = webapp.WSGIApplication([
                                       ('/json/delete-alternative-email', pages.actions.JsonDeleteAlternativeEmail),
                                       ('/json/notifications', pages.actions.JSONNotifications),
                                       ('/comments', pages.pages.PageComments),
+                                      ('/follow', pages.actions.ActionFollow),
+                                      ('/unfollow', pages.actions.ActionUnfollow),
                                       ('/cron/clean-notifications', pages.actions.CronCleanNotifications),
                                       ], debug=True)
 

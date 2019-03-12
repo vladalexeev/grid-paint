@@ -180,3 +180,50 @@ def unfavorite_artwork(artwork, user_email):
     
     return result
 
+
+def is_follower(leader_email, follower_email):
+    memcache_key = cache.MC_FAVORITE_BY_USER+leader_email+'_'+follower_email
+    result = cache.get(memcache_key)
+    
+    if result==True or result==False:
+        return result
+    else:
+        follow = db.Follow.all().filter('leader_email =', leader_email).filter('follower_email =', follower_email).get()
+        if follow:
+            cache.add(memcache_key, True)
+            return True
+        else:
+            cache.add(memcache_key, False)
+            return False
+        
+        
+def follow(leader_email, follower_email):
+    memcache_key = cache.MC_FAVORITE_BY_USER+leader_email+'_'+follower_email
+    cache.delete(memcache_key)
+    
+    follow = db.Follow.all().filter('leader_email =', leader_email).filter('follower_email =', follower_email).get()
+    if not follow:
+        follow = db.Follow()
+        follow.leader_email = leader_email
+        follow.follower_email = follower_email
+        follow.put()
+        
+        
+def unfollow(leader_email, follower_email):
+    memcache_key = cache.MC_FAVORITE_BY_USER+leader_email+'_'+follower_email
+    cache.delete(memcache_key)
+    
+    follow = db.Follow.all().filter('leader_email =', leader_email).filter('follower_email =', follower_email).get()
+    if follow:
+        follow.delete()
+        
+        
+def get_followers(leader_email, limit, offset):
+    followers = db.Follow.all().filter('leader_email =', leader_email).order('since_date').fetch(limit,offset)
+    return [get_user_profile(f.follower_email) for f in followers]
+
+
+def get_leaders(follower_email, limit, offset):
+    leaders = db.Follow.all().filter('follower_email =', follower_email).order('since_date').fetch(limit, offset)
+    return [get_user_profile(f.leader_email) for f in leaders]
+    

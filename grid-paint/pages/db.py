@@ -69,3 +69,8 @@ class FavoriteCounter(db.Expando):
     artwork = db.ReferenceProperty(reference_class=Artwork)
     count = db.IntegerProperty()
     date = db.DateTimeProperty(auto_now_add=True)
+    
+class Follow(db.Expando):
+    leader_email = db.StringProperty()
+    follower_email = db.StringProperty()
+    since_date = db.DateTimeProperty(auto_now_add=True)

@@ -1109,6 +1109,34 @@ class CronCleanNotifications(BasicRequestHandler):
         return
             
             
+class ActionFollow(BasicRequestHandler):            
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
+        
+        user_id = int(self.request.get('user_id'))
+        user = dao.get_user_profile_by_id(user_id)
+        dao.follow(user.email, self.user_info.user_email)
+        self.response.out.write(json.dumps('OK'))
 
 
+class ActionUnfollow(BasicRequestHandler):            
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
+        
+        user_id = int(self.request.get('user_id'))
+        user = dao.get_user_profile_by_id(user_id)
+        dao.unfollow(user.email, self.user_info.user_email)
+        self.response.out.write(json.dumps('OK'))
             

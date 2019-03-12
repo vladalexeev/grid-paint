@@ -29,6 +29,8 @@ MC_USER_LIST = 'user_list_'
 MC_FAVORITE_COUNT = 'img_fav_count_'
 MC_FAVORITE_BY_USER = 'img_fav_user_'
 
+MC_FOLLOW = 'follow_'
+
 MC_IMAGE_PREFIX = 'img:'
 
 # This key is used for protection against spam clicks on Star

@@ -71,6 +71,10 @@
 			<span class="artist">
 				{% if artwork.author %}
 				<a href="/profiles/{{ artwork.author.profile_id }}">{{ artwork.author.nickname }}</a>
+					{% if user_info.user %}
+						<button id="button_follow" class="btn btn-small btn-primary" {% if follow %}style="display:none;"{% endif %}>Follow</button>
+						<button id="button_unfollow" class="btn btn-small btn-default" {% if not follow %}style="display:none;"{% endif %}>Unfollow</button>
+					{% endif %}
 				{% else %}
 				{{ artwork.author.nickname }}
 				{% endif %}
@@ -240,7 +244,8 @@
 
 
 <script>
-artworkId='{{ artwork.key.id }}';
+var artworkId='{{ artwork.key.id }}';
+var authorId ='{{ artwork.author.profile_id }}';
 favorite={% if favorite %}true{% else %}false{% endif %};
 favorite_count={{ favorite_count }};
 authorsArtwork={% if artwork.author.email == user_info.user.email %}true{% else %}false{% endif %};
@@ -340,6 +345,31 @@ function onCommentSubmit() {
 	
 	return true;
 }
+</script>
+
+<script>
+$(function() {
+	$("#button_follow").click(function() {
+		$.getJSON('/follow?user_id='+authorId)
+			.done(function(data) {
+				if (data=="OK") {
+					$("#button_follow").hide();
+					$("#button_unfollow").show();
+				} 
+			});	
+
+	});
+	
+	$("#button_unfollow").click(function() {
+		$.getJSON('/unfollow?user_id='+authorId)
+			.done(function(data) {
+				if (data=="OK") {
+					$("#button_follow").show();
+					$("#button_unfollow").hide();
+				}
+			});			
+	});
+});
 </script>
 
 
@@ -451,7 +481,7 @@ $(function() {
 				favorite_count=data.count;
 				$('.image-details-favorite-count').text(favorite_count);
 			});
-	});
+	});	
 });
 
 function deleteComment(id, parent_id) {

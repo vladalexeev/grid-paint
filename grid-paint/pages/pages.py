@@ -422,7 +422,12 @@ class PageImage(BasicPageRequestHandler):
         
         converted_artwork = convert.convert_artwork_for_page(artwork, 600, 400)
         if 'tags' in converted_artwork:
-            converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']]) 
+            converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']])
+            
+        if self.user_info.user:
+            following = dao.is_follower(artwork.author_email, self.user_info.user_email)
+        else:
+            following = None 
         
         self.write_template('templates/artwork-details.html', 
                             {
@@ -430,7 +435,8 @@ class PageImage(BasicPageRequestHandler):
                              'can_edit_artwork': self.user_info.superadmin or artwork.author_email==self.user_info.user_email,
                              'comments': comments,
                              'favorite_count': favorite_count,
-                             'favorite': favorite
+                             'favorite': favorite,
+                             'following': following
                             })
         
         
