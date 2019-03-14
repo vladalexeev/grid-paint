@@ -34,7 +34,7 @@ MC_FOLLOW = 'follow_'
 MC_IMAGE_PREFIX = 'img:'
 
 # This key is used for protection against spam clicks on Star
-MC_FAVORITE_USER_ARTWORK='fav_user_art_'
+MC_ANTISPAM_FAVORITE_USER_ARTWORK='antispam_fav_user_art_'
 
 
 def get(key):

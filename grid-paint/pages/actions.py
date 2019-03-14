@@ -869,7 +869,7 @@ class ActionToggleFavorite(BasicRequestHandler):
             self.response.set_status(404)
             return
         else:
-            antispam_key = cache.MC_FAVORITE_USER_ARTWORK + self.user_info.user_email + '_' + str(artwork_id)
+            antispam_key = cache.MC_ANTISPAM_FAVORITE_USER_ARTWORK + self.user_info.user_email + '_' + str(artwork_id)
             last_fav_time = cache.get(antispam_key)
             if last_fav_time and datetime.datetime.now() - last_fav_time < datetime.timedelta(seconds=60):
                 self.response.out.write(json.dumps({
