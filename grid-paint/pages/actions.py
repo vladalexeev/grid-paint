@@ -1131,6 +1131,14 @@ class ActionFollow(BasicRequestHandler):
             cache.add(antispam_key, datetime.datetime.now())
         
         dao.follow(user.email, self.user_info.user_email)
+        
+        user.followers_count = getattr(user, 'followers_count', 0) + 1;
+        user.put()
+        
+        current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
+        current_user.leaders_count = getattr(current_user, 'leaders_count', 0) + 1
+        current_user.put()
+        
         self.response.out.write(json.dumps('OK'))
 
 
@@ -1156,5 +1164,13 @@ class ActionUnfollow(BasicRequestHandler):
             cache.add(antispam_key, datetime.datetime.now())
         
         dao.unfollow(user.email, self.user_info.user_email)
+        
+        user.followers_count = getattr(user, 'followers_count', 0) - 1;
+        user.put()
+        
+        current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
+        current_user.leaders_count = getattr(current_user, 'leaders_count', 0) - 1
+        current_user.put()
+        
         self.response.out.write(json.dumps('OK'))
             
