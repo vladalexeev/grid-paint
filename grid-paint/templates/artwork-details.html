@@ -355,7 +355,9 @@ $(function() {
 				if (data=="OK") {
 					$("#button_follow").hide();
 					$("#button_unfollow").show();
-				} 
+				} else if (data=="not_changed") {
+					showErrorDialog("You can follow or unfollow the same person once per minute.");
+				}
 			});	
 
 	});
@@ -366,6 +368,8 @@ $(function() {
 				if (data=="OK") {
 					$("#button_follow").show();
 					$("#button_unfollow").hide();
+				} else if (data=="not_changed") {
+					showErrorDialog("You can follow or unfollow the same person once per minute.");
 				}
 			});			
 	});
