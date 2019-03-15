@@ -226,6 +226,7 @@ def convert_user_profile(user_profile):
             'join_date': user_profile.join_date,
             'artworks_count': user_profile.artworks_count,
             'favorite_count': user_profile.favorite_count,
+            'followers_count': getattr(user_profile, 'followers_count', 0),
             'read_only': hasattr(user_profile, 'read_only'),
             'alternative_emails': getattr(user_profile, 'alternative_emails', [])
             }
