@@ -510,6 +510,8 @@ class PageProfile(BasicRequestHandler):
                                      href_create_func,
                                      memcache_cursor_key_func)
         model['profile'] = convert.convert_user_profile(user_profile)
+        if self.user_info.user:
+            model['following'] = dao.is_follower(model['profile']['email'], self.user_info.user_email)
         
         self.write_template('templates/profile.html', model)
 

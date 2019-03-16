@@ -1122,6 +1122,10 @@ class ActionFollow(BasicRequestHandler):
         user_id = int(self.request.get('user_id'))
         user = dao.get_user_profile_by_id(user_id)
         
+        if user.email == self.user_info.user_email:
+            self.response.out.write(json.dumps('cannot_follow_yourself'))
+            return        
+        
         antispam_key = cache.MC_ANTISPAM_FOLLOW + user.email + '_' + self.user_info.user_email
         last_follow_time = cache.get(antispam_key)
         if last_follow_time and datetime.datetime.now() - last_follow_time < datetime.timedelta(seconds=60):
@@ -1129,7 +1133,7 @@ class ActionFollow(BasicRequestHandler):
             return
         else:
             cache.add(antispam_key, datetime.datetime.now())
-        
+            
         dao.follow(user.email, self.user_info.user_email)
         
         user.followers_count = getattr(user, 'followers_count', 0) + 1;
@@ -1155,6 +1159,10 @@ class ActionUnfollow(BasicRequestHandler):
         user_id = int(self.request.get('user_id'))
         user = dao.get_user_profile_by_id(user_id)
         
+        if user.email == self.user_info.user_email:
+            self.response.out.write(json.dumps('cannot_follow_yourself'))
+            return        
+        
         antispam_key = cache.MC_ANTISPAM_FOLLOW + user.email + '_' + self.user_info.user_email
         last_follow_time = cache.get(antispam_key)
         if last_follow_time and datetime.datetime.now() - last_follow_time < datetime.timedelta(seconds=60):
@@ -1162,7 +1170,7 @@ class ActionUnfollow(BasicRequestHandler):
             return
         else:
             cache.add(antispam_key, datetime.datetime.now())
-        
+                    
         dao.unfollow(user.email, self.user_info.user_email)
         
         user.followers_count = getattr(user, 'followers_count', 0) - 1;
