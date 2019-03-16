@@ -71,7 +71,7 @@
 			<span class="artist">
 				{% if artwork.author %}
 				<a href="/profiles/{{ artwork.author.profile_id }}">{{ artwork.author.nickname }}</a>
-					{% if user_info.user %}
+					{% if user_info.user and user_info.profile_id != artwork.author.profile_id %}
 						<button id="button_follow" class="btn btn-primary btn-tiny" {% if following %}style="display:none;"{% endif %}>Follow</button>
 						<button id="button_unfollow" class="btn btn-default btn-tiny" {% if not following %}style="display:none;"{% endif %}>Unfollow</button>
 					{% endif %}
