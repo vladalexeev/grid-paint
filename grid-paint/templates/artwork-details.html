@@ -72,8 +72,8 @@
 				{% if artwork.author %}
 				<a href="/profiles/{{ artwork.author.profile_id }}">{{ artwork.author.nickname }}</a>
 					{% if user_info.user %}
-						<button id="button_follow" class="btn btn-small btn-primary" {% if following %}style="display:none;"{% endif %}>Follow</button>
-						<button id="button_unfollow" class="btn btn-small btn-default" {% if not following %}style="display:none;"{% endif %}>Unfollow</button>
+						<button id="button_follow" class="btn btn-primary btn-tiny" {% if following %}style="display:none;"{% endif %}>Follow</button>
+						<button id="button_unfollow" class="btn btn-default btn-tiny" {% if not following %}style="display:none;"{% endif %}>Unfollow</button>
 					{% endif %}
 				{% else %}
 				{{ artwork.author.nickname }}
