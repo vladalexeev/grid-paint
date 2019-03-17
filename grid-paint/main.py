@@ -26,6 +26,7 @@ application = webapp.WSGIApplication([
                                       ('/painter', pages.pages.PagePainter),
                                       ('/my-images', pages.pages.PageMyImages),
                                       ('/my-favorites', pages.pages.PageMyFavorites),
+                                      ('/my-followers', pages.pages.PageMyFollowers),
                                       ('/privacy-policy', pages.pages.PagePrivacyPolicy),
                                       ('/rules', pages.pages.PageRules),
                                       ('/history', pages.pages.PageHistory),

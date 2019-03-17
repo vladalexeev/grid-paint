@@ -1,0 +1,144 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}
+
+<div class="single-container">
+	<div class="container">
+	
+	{% if profile_id %}
+	<h2>Followers of {{ nickname }}</h2>
+	{% else %}
+	<h2>My followers</h2>
+	{% endif %}
+	
+	
+	<table class="table table-striped">
+		<tbody id="table-content">
+			
+		</tbody>
+	</table>
+	
+	
+	<div id="nav_buttons" style="display:none; margin:10px;" class="text-center">
+		<form name="a" class="form-inline">
+			<button id="button_prev" type="button" class="btn btn-small btn-desfault">Prev</button>
+			<input type="text" id="offset" class="form-control" size="4" />
+			<button id="button_next" type="button" class="btn btn-small btn-desfault">Next</button>
+		</form>
+	</div>
+	
+	
+	</div>
+	
+	<div class="empty-page-message" style="display:none;">
+	</div>
+
+</div>
+
+<script>
+var maxCount = 20;
+
+{% if profile_id %}
+var profile_id = {{ profile_id }}; 
+{% else %}
+var profile_id = {{ user_info.profile_id }};
+{% endif %}
+
+function getCurrentOffset() {
+	return parseInt($("#offset").val(), 10);
+}
+
+function setCurrentOffset(offset) {
+	$("#offset").val(offset);
+	showCurrentOffset();
+}
+
+function showCurrentOffset() {
+	loadFollowers(maxCount+1, getCurrentOffset());
+}
+
+function loadFollowers(limit, offset) {
+	$.getJSON(
+		'/json/followers?limit='+limit+"&offset="+offset+(profile_id > 0 ? '&profile_id='+profile_id : '')
+	).done(function(data) {
+		html='';
+		for (var i=0; i<data.length && i<maxCount; i++) {
+			html+=itemToHtml(data[i]);
+		}
+		$("#table-content").html(html);
+				
+		if (offset>0 || data.length>maxCount) {
+			$("#nav_buttons").show();
+			if (offset>0) {
+				$("#button_prev").removeAttr("disabled");
+			} else {
+				$("#button_prev").attr("disabled","disabled");
+			}
+			
+			if (data.length>maxCount) {
+				$("#button_next").removeAttr("disabled");
+			} else {
+				$("#button_next").attr("disabled","disabled");
+			}
+		}
+		
+		if (data.length == 0) {
+			if (offset == 0) {
+				$(".empty-page-message").text('No followers yet');
+			} else {
+				$(".empty-page-message").text('No more followers');
+			}
+			$(".empty-page-message").show();
+		} else {
+			$(".empty-page-message").hide();
+		}
+	});
+}
+
+function itemToHtml(item) {
+	result=
+		'<tr>'+
+		'<td><a href="/profiles/' + item.profile_id + '">' + item.nickname + '</a></td>' +
+		'</tr>';
+		
+	return result;
+}
+
+function escapeDiamond(str) {
+	return str.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+$(function() {
+	$("#button_prev").click(function() {
+		var offset = getCurrentOffset() - maxCount;
+		if (offset<0) {
+			offset=0;
+		}
+		setCurrentOffset(offset);
+		window.scrollTo(0,0);
+	});
+	
+	$("#button_next").click(function() {
+		var offset = getCurrentOffset() + maxCount;
+		setCurrentOffset(offset);
+		window.scrollTo(0,0);
+	});
+	
+	$("#offset").keypress(function(event) {
+		if (event.which==13) {
+			showCurrentOffset();
+			window.scrollTo(0,0);
+			event.preventDefault();
+		}
+	});
+	
+	setCurrentOffset(0);
+});
+
+</script>
+
+  
+{% endblock content %}
+
+

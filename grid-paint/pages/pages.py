@@ -713,3 +713,14 @@ class PageUserFollowers(BasicPageRequestHandler):
             }
         
         self.write_template('templates/user-followers.html', model)
+        
+        
+class PageMyFollowers(BasicPageRequestHandler):
+    def get(self, *arg):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        self.write_template('templates/user-followers.html', {})
+        
+    
