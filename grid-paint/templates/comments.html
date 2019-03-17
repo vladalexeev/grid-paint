@@ -7,7 +7,11 @@
 <div class="container">
 
 {% if profile_id %}
-<h2>Recent comments of {{ nickname }}</h2>
+	{% if profile_id == user_info.profile_id %}
+		<h2>My comments</h2>
+	{% else %}
+		<h2>Recent comments of {{ nickname }}</h2>
+	{% endif %}
 {% else %}
 <h2>Recent comments</h2>
 {% endif %}
@@ -26,6 +30,10 @@
 
 
 </div>
+
+<div class="empty-page-message" style="display:none;">
+</div>
+
 </div>
 
 <script>
@@ -93,6 +101,17 @@ function loadComments(limit, offset) {
 			} else {
 				$("#button_next").attr("disabled","disabled");
 			}
+		}
+		
+		if (data.length == 0) {
+			if (offset == 0) {
+				$(".empty-page-message").text('No comments yet');
+			} else {
+				$(".empty-page-message").text('No more comments');
+			}
+			$(".empty-page-message").show();
+		} else {
+			$(".empty-page-message").hide();
 		}
 	});
 }
