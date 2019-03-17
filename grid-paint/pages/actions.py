@@ -1218,3 +1218,40 @@ class JSONFollowers(BasicRequestHandler):
                 result.append(convert.convert_user_profile_for_json(follower_profile)) 
                 
         self.response.out.write(json.dumps(result))
+
+
+class JSONLeaders(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        req_limit = self.request.get('limit')
+        req_offset = self.request.get('offset')
+        
+        if req_offset:
+            offset = int(req_offset)
+        else:
+            offset = 0
+            
+        if req_limit:
+            limit = int(req_limit)
+        else:
+            limit = 21
+            
+        if limit > 101:
+            limit = 101
+            
+        req_profile_id = int(self.request.get('profile_id'))
+
+        result = []        
+        
+        user = dao.get_user_profile_by_id(req_profile_id)
+        if user:
+            query = db.Follow.all().filter('follower_email =', user.email).order('leader_email').fetch(limit,offset)
+            
+            for f in query:
+                leader_profile = dao.get_user_profile(f.leader_email)
+                result.append(convert.convert_user_profile_for_json(leader_profile)) 
+                
+        self.response.out.write(json.dumps(result))

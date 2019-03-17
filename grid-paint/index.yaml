@@ -60,6 +60,11 @@ indexes:
 
 - kind: Follow
   properties:
+  - name: follower_email
+  - name: leader_email
+
+- kind: Follow
+  properties:
   - name: leader_email
   - name: follower_email
 

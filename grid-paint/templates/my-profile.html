@@ -82,6 +82,7 @@ My profile
   					<div><a href="/my-favorites">My favorites</a></div>
   					<div><a href="/profiles/{{ profile.key.id }}/comments">My comments</a></div>
     				<div><a href="/my-followers">My followers {% if profile.followers_count %}({{ profile.followers_count }}){% endif %}</a></div>
+    				<div><a href="/my-leaders">I follow {% if profile.leaders_count %}({{ profile.leaders_count }}){% endif %}</a></div>
   				</div>
 			</div>
 		</div>
