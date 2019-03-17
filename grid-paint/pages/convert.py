@@ -239,3 +239,11 @@ def convert_user_profile(user_profile):
         
     return result
 
+
+def convert_user_profile_for_json(user_profile):
+    result = {
+            'nickname': user_profile.nickname,
+            'profile_id': user_profile.key().id(),
+        }
+    return result
+

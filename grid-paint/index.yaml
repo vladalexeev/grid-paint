@@ -58,6 +58,11 @@ indexes:
   - name: date
     direction: desc
 
+- kind: Follow
+  properties:
+  - name: leader_email
+  - name: follower_email
+
 - kind: Notification
   properties:
   - name: recipient_email

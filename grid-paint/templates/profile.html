@@ -58,7 +58,7 @@
 			<div><a href="/profiles/{{ profile.profile_id }}/favorites">Favorites</a></div>
 			<div><a href="/profiles/{{ profile.profile_id }}/comments">Comments</a></div>
 			{% if profile.followers_count %}
-			<div>Followers (<span id="followers-count">{{ profile.followers_count }}</span>)</div>
+			<div><a href="/profiles/{{ profile.profile_id }}/followers" >Followers (<span id="followers-count">{{ profile.followers_count }}</span>)</a></div>
 			{% endif %}
 		</div>
 	</div>

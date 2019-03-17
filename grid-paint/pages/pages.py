@@ -700,3 +700,16 @@ class PageUserComments(BasicPageRequestHandler):
             }
         
         self.write_template('templates/comments.html', model)
+        
+
+class PageUserFollowers(BasicPageRequestHandler):
+    def get(self, *arg):
+        profile_id = int(arg[0])
+        user_profile = dao.get_user_profile_by_id(profile_id)
+        
+        model = {
+            'profile_id': user_profile.key().id(),
+            'nickname': user_profile.nickname
+            }
+        
+        self.write_template('templates/user-followers.html', model)
