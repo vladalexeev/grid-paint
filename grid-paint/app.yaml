@@ -11,11 +11,12 @@ automatic_scaling:
   
 libraries:
 - name: django
-  version: "1.5"
+  version: "1.4"
   
 - name: PIL
   version: "1.1.7"
-
+  
+  
 handlers:
 - url: /bootstrap
   static_dir: static/bootstrap
@@ -67,7 +68,10 @@ handlers:
   static_files: static/google5c784bef2ace5509.html
   upload: static/google5c784bef2ace5509.html
   secure: always
-
+  
+- url: /cron/.*
+  script: main.application
+  login: admin  
 
 - url: /.*
   script: main.application
