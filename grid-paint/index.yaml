@@ -68,6 +68,12 @@ indexes:
   - name: leader_email
   - name: follower_email
 
+- kind: NewsFeed
+  properties:
+  - name: user_email
+  - name: date
+    direction: desc
+
 - kind: Notification
   properties:
   - name: recipient_email

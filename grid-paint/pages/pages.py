@@ -403,8 +403,7 @@ class PageEditorChoice(BasicPageRequestHandler):
         model['search_query'] = query
         
         self.write_template('templates/editor-choice.html', model)
-        
-        
+                
         
 class PageImage(BasicPageRequestHandler):
     def get(self, *arg):
@@ -620,6 +619,33 @@ class PageRecentFavorites(BasicPageRequestHandler):
                                      addition_values_func)
         
         self.write_template('templates/recent-favorites.html', model)
+
+
+class PageNewsFeed(BasicPageRequestHandler):
+    def get(self):
+        user_email = self.user_info.user_email
+        
+        def artworks_query_func():
+            all_artworks=db.NewsFeed.all()
+            return all_artworks.filter('user_email =', user_email).order('-date')
+        
+        def href_create_func(offset):
+            return '/newsfeed?offset='+str(offset)
+            
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST+'newsfeed_' + user_email+ '_'  + str(offset)
+        
+        def addition_values_func(obj, values):
+            pass
+        
+        model = create_gallery_model(self.request.get('offset'), 
+                                     artworks_query_func, 
+                                     href_create_func,
+                                     memcache_cursor_key_func,
+                                     addition_values_func)
+        
+        self.write_template('templates/newsfeed.html', model)
+
         
 class PageUsersByArtworksCount(BasicPageRequestHandler):
     def get(self):
