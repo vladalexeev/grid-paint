@@ -32,6 +32,7 @@ import cs
 import zlib
 
 from cloudstorage.errors import NotFoundError
+from google.appengine.api import taskqueue
 
 import logging
 import antispam
@@ -63,12 +64,14 @@ class ActionSaveImage(BasicRequestHandler):
         
         
         if artwork_id:
+            news_type = 'change-artwork'
             artwork=dao.get_artwork(artwork_id)
             if not self.user_info.superadmin and artwork.author_email <> self.user_info.user_email:
                 # should be the same user or superadmin
                 self.response.set_status(403)
                 return
         else:
+            news_type = 'new-artwork'
             artwork=db.Artwork();
             artwork.author_email = self.user_info.user_email
             
@@ -252,7 +255,13 @@ class ActionSaveImage(BasicRequestHandler):
             if not artwork_id:
                 user_profile.artworks_count = user_profile.artworks_count+1
                 dao.set_user_profile(user_profile)
-        
+                
+        taskqueue.add(
+            url='/tasks/add-artwork-to-news',
+            params={
+                'artwork_id': saved_id.id(),
+                'type': news_type
+            })
         
         self.redirect('/images/details/'+str(saved_id.id()))
         

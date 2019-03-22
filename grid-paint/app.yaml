@@ -73,6 +73,10 @@ handlers:
   script: main.application
   login: admin  
 
+- url: /tasks/.*
+  script: main.application
+  login: admin  
+
 - url: /.*
   script: main.application
   secure: always

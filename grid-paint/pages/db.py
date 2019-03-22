@@ -74,3 +74,11 @@ class Follow(db.Expando):
     leader_email = db.StringProperty()
     follower_email = db.StringProperty()
     since_date = db.DateTimeProperty(auto_now_add=True)
+    
+
+class NewsFeed(db.Expando):
+    user_email = db.StringProperty()
+    date = db.DateTimeProperty(auto_now_add=True)
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    type = db.StringProperty()
+    

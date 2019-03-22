@@ -3,6 +3,7 @@ from google.appengine.ext import webapp
 
 import pages.pages
 import pages.actions
+import pages.tasks
 
 
 application = webapp.WSGIApplication([
@@ -69,6 +70,7 @@ application = webapp.WSGIApplication([
                                       ('/follow', pages.actions.ActionFollow),
                                       ('/unfollow', pages.actions.ActionUnfollow),
                                       ('/cron/clean-notifications', pages.actions.CronCleanNotifications),
+                                      ('/tasks/add-artwork-to-news', pages.tasks.TaskAddArtworkToNews),
                                       ], debug=True)
 
 
