@@ -85,7 +85,8 @@ def convert_notification_json(notification):
             'name': n['artwork']['name'],
             'date': n['artwork']['date'],
             'author': {
-                'nickname': n['artwork'].get('author',{}).get('nickname')
+                'nickname': n['artwork'].get('author',{}).get('nickname'),
+                'profile_id': n['artwork'].get('author, {}').get('profile_id')
                 }
             }
         
@@ -94,7 +95,8 @@ def convert_notification_json(notification):
               'id': n['comment']['key'],
               'text': n['comment']['text'],
               'author': {
-                  'nickname': n['comment']['author']['nickname']
+                  'nickname': n['comment'].get('author', {}).get('nickname'),
+                  'profile_id': n['comment'].get('author, {}').get('profile_id')
                   },
               'date': n['comment']['date'],
               'artwork_id': n['comment']['artwork_key'],
@@ -105,7 +107,8 @@ def convert_notification_json(notification):
             
     if 'sender' in n:
         result['sender'] = {
-            'nickname': n['sender']['nickname']
+            'nickname': n['sender'].get('nickname'),
+            'profile_id': n['sender'].get('profile_id')
             }
         
     return result

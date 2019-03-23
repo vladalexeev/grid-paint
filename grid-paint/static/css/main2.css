@@ -636,6 +636,10 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	color: #ff7d3d;
 }
 
+.notification-container .notification-icon .icon-user {
+	color: #67da69;
+}
+
 .notification-container .comment {
 	margin-left: 40px;
 }

@@ -1152,6 +1152,12 @@ class ActionFollow(BasicRequestHandler):
         current_user.leaders_count = getattr(current_user, 'leaders_count', 0) + 1
         current_user.put()
         
+        notification = db.Notification()
+        notification.recipient_email = user.email
+        notification.type = 'follow'
+        notification.sender_email = self.user_info.user_email
+        dao.add_notification(notification)
+        
         self.response.out.write(json.dumps('OK'))
 
 
