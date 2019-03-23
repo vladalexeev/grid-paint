@@ -86,7 +86,7 @@ def convert_notification_json(notification):
             'date': n['artwork']['date'],
             'author': {
                 'nickname': n['artwork'].get('author',{}).get('nickname'),
-                'profile_id': n['artwork'].get('author, {}').get('profile_id')
+                'profile_id': n['artwork'].get('author', {}).get('profile_id')
                 }
             }
         
@@ -96,7 +96,7 @@ def convert_notification_json(notification):
               'text': n['comment']['text'],
               'author': {
                   'nickname': n['comment'].get('author', {}).get('nickname'),
-                  'profile_id': n['comment'].get('author, {}').get('profile_id')
+                  'profile_id': n['comment'].get('author', {}).get('profile_id')
                   },
               'date': n['comment']['date'],
               'artwork_id': n['comment']['artwork_key'],
