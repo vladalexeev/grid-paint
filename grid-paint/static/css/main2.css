@@ -499,6 +499,9 @@ background: linear-gradient(to bottom, rgba(237,180,0,0.2) 0%,rgba(0,0,0,0) 100%
 background: linear-gradient(to bottom, rgba(237,110,0,0.14) 0%,rgba(0,0,0,0) 100%); /* W3C */
 }
 
+.index-page-section#newsfeed {
+background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0) 100%); /* W3C */
+}
 
 
 .index-page-thumb-button {

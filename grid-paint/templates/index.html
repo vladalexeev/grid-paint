@@ -29,6 +29,26 @@ link at the top.
 </div>
 
 
+{% if newsfeed %}
+<div class="container text-center index-page-section" id="newsfeed">
+<h3><img src="/img/editor_choice.png" /> Personal news feed</h3>
+	
+<div class="row">
+{% for a in newsfeed %}
+	{% include "thumbnail.html" %}
+{% endfor %}
+
+	<div class="thumbnail-wrapper">
+	  <div class="thumbnail index-page-thumb-button" style="background-color: transparent;">
+		<a href="/newsfeed">
+		  <img src="/img/goto-gallery.png" border="0" />
+		</a>
+	  </div>
+	</div>
+</div>
+</div>
+{% endif %}
+
 <div class="container text-center index-page-section" id="editor_choice">
 <h3><img src="/img/editor_choice.png" /> Editor's choice</h3>
 	

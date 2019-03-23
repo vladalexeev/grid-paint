@@ -25,6 +25,15 @@ users_page_size=50
 
 class PageIndex(BasicPageRequestHandler):
     def get(self):
+        newsfeed = None
+        if self.user_info.user:
+            newsfeed_artworks = db.NewsFeed.all().filter('user_email =', self.user_info.user_email).order('-date').fetch(7)
+            newsfeed = [convert.convert_artwork_for_page(a, 200, 150) for a in newsfeed_artworks]
+            if len(newsfeed) < 3:
+                newsfeed = None
+            elif len(newsfeed) < 7:
+                newsfeed = newsfeed[0:3]
+        
         recent_artworks = cache.get(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)        
         if not recent_artworks:                    
             all_artworks=db.Artwork.all()
@@ -79,7 +88,8 @@ class PageIndex(BasicPageRequestHandler):
                              'recent_favorites': recent_favorites,
                              'comments': recent_comments,
                              'productive_artists': productive_artists,
-                             'top_rated_artists': top_rated_artists
+                             'top_rated_artists': top_rated_artists,
+                             'newsfeed': newsfeed,
                              })
         
 class PagePrivacyPolicy(BasicPageRequestHandler):
