@@ -229,7 +229,7 @@ def get_leaders(follower_email, limit, offset):
     leaders = db.Follow.all().filter('follower_email =', follower_email).order('since_date').fetch(limit, offset)
     return [get_user_profile(f.leader_email) for f in leaders]
 
-def add_to_news_feed(user_email, artwork, news_type):
+def add_to_news_feed(user_email, artwork, news_type, date=None):
     news_feed_item = db.NewsFeed.all().filter('artwork =', artwork).filter('user_email =', user_email).get()
     if news_feed_item:
         news_feed_item.date = datetime.now()
@@ -240,5 +240,7 @@ def add_to_news_feed(user_email, artwork, news_type):
         news_feed_item.user_email = user_email
         news_feed_item.artwork = artwork
         news_feed_item.type = news_type
+        if date:
+            news_feed_item.date = date
         news_feed_item.put()
     

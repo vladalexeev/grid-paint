@@ -293,6 +293,10 @@ class ActionDeleteImage(BasicRequestHandler):
             for f in favorites:
                 f.delete()
                 
+            news_items = db.NewsFeed.all().filter('artwork =', artwork)
+            for ni in news_items:
+                ni.delete()
+                
             cs.delete_file(artwork.full_image_file_name)
             cs.delete_file(artwork.small_image_file_name)
             if hasattr(artwork,'json_file_name'):
@@ -1155,7 +1159,7 @@ class ActionFollow(BasicRequestHandler):
         
         artworks = db.Artwork.all().filter('author_email =', user.email).order('-date').fetch(3)
         for a in artworks:
-            dao.add_to_news_feed(self.user_info.user_email, a, NEWS_TYPE_NEW_ARTWORK)
+            dao.add_to_news_feed(self.user_info.user_email, a, NEWS_TYPE_NEW_ARTWORK, a.date)
         
         notification = db.Notification()
         notification.recipient_email = user.email
