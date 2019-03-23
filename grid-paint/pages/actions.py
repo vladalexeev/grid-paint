@@ -37,6 +37,7 @@ from google.appengine.api import taskqueue
 import logging
 import antispam
 from db import Notification
+from const import NEWS_TYPE_CHANGE_ARTWORK, NEWS_TYPE_NEW_ARTWORK
 
 grids={
        'square': GridSquare,
@@ -64,14 +65,14 @@ class ActionSaveImage(BasicRequestHandler):
         
         
         if artwork_id:
-            news_type = 'change-artwork'
+            news_type = NEWS_TYPE_CHANGE_ARTWORK
             artwork=dao.get_artwork(artwork_id)
             if not self.user_info.superadmin and artwork.author_email <> self.user_info.user_email:
                 # should be the same user or superadmin
                 self.response.set_status(403)
                 return
         else:
-            news_type = 'new-artwork'
+            news_type = NEWS_TYPE_NEW_ARTWORK
             artwork=db.Artwork();
             artwork.author_email = self.user_info.user_email
             
@@ -1151,6 +1152,10 @@ class ActionFollow(BasicRequestHandler):
         current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
         current_user.leaders_count = getattr(current_user, 'leaders_count', 0) + 1
         current_user.put()
+        
+        artworks = db.Artwork.all().filter('author_email =', user.email).order('-date').fetch(3)
+        for a in artworks:
+            dao.add_to_news_feed(self.user_info.user_email, a, NEWS_TYPE_NEW_ARTWORK)
         
         notification = db.Notification()
         notification.recipient_email = user.email
