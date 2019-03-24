@@ -119,8 +119,8 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
         if hasattr(artwork, 'artwork'):
             artwork = artwork.artwork
             
-        artwork_description = ''
-        if artwork.description:
+        artwork_description = []
+        if hasattr(artwork, 'description'):
             artwork_description = artwork.description.split('\n')            
         
         result={
