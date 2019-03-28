@@ -633,6 +633,10 @@ class PageRecentFavorites(BasicPageRequestHandler):
 
 class PageNewsFeed(BasicPageRequestHandler):
     def get(self):
+        if not self.user_info.user:
+            self.redirect('/')
+            return
+        
         user_email = self.user_info.user_email
         
         def artworks_query_func():
