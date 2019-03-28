@@ -79,7 +79,7 @@ def convert_notification_json(notification):
         'type': n['type']
         }
     
-    if 'artwork' in n:
+    if n.get('artwork'):
         result['artwork'] = {
             'id': n['artwork']['key'].id(),
             'name': n['artwork']['name'],
@@ -116,8 +116,14 @@ def convert_notification_json(notification):
     
 def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
     try:
+        if artwork is None:
+            return None
+        
         if hasattr(artwork, 'artwork'):
             artwork = artwork.artwork
+            
+        if artwork is None:
+            return None
             
         artwork_description = []
         if hasattr(artwork, 'description'):
