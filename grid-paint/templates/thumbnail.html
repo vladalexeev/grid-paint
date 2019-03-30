@@ -1,45 +1,35 @@
 {% if a.not_found %}
   <div class="col-xs-6 col-md-3">  
+  	<a href="/images/details/{{ a.key.id }}">
     <div class="thumbnail index-page-thumbnail" style="background-color: #f8f8f8;">
     	{% if template_plugin %}
     		{% include template_plugin %}
     	{% endif %}
-  		<div class="thumb-image">
-  			<a href="/images/details/{{ a.key.id }}">
-  				<img src="/img/no-image.png" width="200" height="150">
-  			</a>
+  		<div class="thumb-image" style="background-image: url(/img/no-image.png);">
 		</div>
-		<div>
+		<div class="thumb-details">
 			<div class="thumb-title">&nbsp;</div>
 			<div class="thumb-author">&nbsp;</div>
 			<div class="thumb-date">&nbsp;</div>
 		</div>
 	</div>
+	</a>
   </div>
 {% else %}
   <div class="thumbnail-wrapper">  
+  	<a href="/images/details/{{ a.key.id }}">
     <div class="thumbnail index-page-thumbnail">
     	{% if template_plugin %}
     		{% include template_plugin %}
     	{% endif %}
-  		<div class="thumb-image">
-  			<a href="/images/details/{{ a.key.id }}">
-  			  {% if a.copyright_block %}
-  			  <img src="/img/copyright-thumb.png" width="200" height="150">
-  			  {% endif %}
-  			  {% if a.block %}
-  			  <img src="/img/block-thumb.png" width="200" height="150">
-  			  {% endif %}  			  
-  			  {% if not a.copyright_block and not a.block %}
-			  <img src="{{ a.thumbnail_image_name }}" width="{{ a.thumbnail_width }}" height="{{ a.thumbnail_height }}">
-			  {% endif %}
-			</a>
+  		<div class="thumb-image" style="background-image: url({% if a.copyright_block %}/img/copyright-thumb.png{% endif %}{% if a.block %}/img/block-thumb.png{% endif %}{% if not a.copyright_block and not a.block %}{{ a.thumbnail_image_name }}{% endif %});">
 		</div>
-		<div>
+		<div class="thumb-details">
 			<div class="thumb-title">{{ a.name }}</div>
 			<div class="thumb-author">{{ a.author.nickname }}</div>
 			<div class="thumb-date">{{ a.date|date:"d M Y H:i" }}</div>
 		</div>
 	</div>
+	</a>
   </div>
 {% endif%}
