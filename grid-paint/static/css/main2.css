@@ -161,7 +161,6 @@ body {
 	background-size: contain;
 	background-position: center;
     background-repeat: no-repeat;
-    color: black;
 }
 
 .thumb-image img {
@@ -184,6 +183,7 @@ body {
 	font-weight: bold;
 	text-align: center;
 	height: 14pt;
+	color: black;
 }
 
 .thumb-author {
