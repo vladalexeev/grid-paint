@@ -152,13 +152,6 @@ body {
 	box-shadow: none;
 }
 
-.thumb-button .thumb-button-image {
-	width:200px; 
-	height:150px; 
-	text-align: center;
-	margin: auto;	
-}
-
 .thumb-image {
 	width:200px; 
 	height:150px; 
@@ -516,7 +509,35 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 .index-page-thumb-button {
 	border:0;
 	box-shadow: none;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	background-color: transparent;
 }
+
+#recent_images .index-page-thumb-button {
+	background-image: url(/img/svg-buttons/more-recent-images.svg);
+}
+
+#recent_favorites .index-page-thumb-button {
+	background-image: url(/img/svg-buttons/more-recent-favorites.svg);
+}
+
+#top_favorites .index-page-thumb-button {
+	background-image: url(/img/svg-buttons/more-top-favorites.svg);
+}
+
+#editor_choice .index-page-thumb-button {
+	background-image: url(/img/svg-buttons/more-editor-choice.svg);
+}
+
+#newsfeed .index-page-thumb-button {
+	background-image: url(/img/svg-buttons/more-newsfeed.svg);
+}
+
+
+
+
 
 .rich-comment {
 	clear: both;
@@ -696,11 +717,6 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 		padding-right: 10px;
 	}
 	
-	.thumbnail-wrapper {
-		float: none;
-		display: inline-block;
-	}
-	
 	#index-logo-image {
 		float: none;
 		text-align: center;
@@ -718,6 +734,21 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	.rich-comment .comment {
 		margin-left: 0;
 	}
+
+	.thumbnail-wrapper {
+		float: none;
+		display: inline-block;
+		width: 140px;
+	}
+	
+	.thumb-details {
+		display: none;
+	}
+	
+	.thumb-image {
+		width: 100px;
+		height: 75px;
+	}			
 }
 
 
@@ -742,6 +773,25 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	.index-featured-artists-wrapper {
 		width: 100%;
 	}
+	
+	.row {
+		text-align: center;
+	}
+	
+	.thumbnail-wrapper {
+		float: none;
+		display: inline-block;
+		width: 140px;
+	}
+	
+	.thumb-details {
+		display: none;
+	}
+	
+	.thumb-image {
+		width: 100px;
+		height: 75px;
+	}		
 }
 
 @media (min-width: 740px) and (max-width: 920px) {
