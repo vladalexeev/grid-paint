@@ -1,4 +1,6 @@
 eclipse.preferences.version=1
+encoding//bad_language/obscene_words_filter/conf.py=utf-8
+encoding//bad_language/obscene_words_filter/words_filter.py=utf-8
 encoding//graphics/color.py=utf-8
 encoding//grid/square.py=utf-8
 encoding//pages/actions.py=utf-8
