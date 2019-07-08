@@ -476,7 +476,11 @@ class PageNotifications(BasicPageRequestHandler):
             self.response.set_status(403)
             return
         
-        self.write_template('templates/notifications.html', {})
+        self.write_template(
+            'templates/notifications.html', 
+            {
+                'hide_ads': True
+            })
         
         
 class PageMyProfile(BasicPageRequestHandler):

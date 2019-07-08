@@ -17,7 +17,8 @@
 <div class="container-fluid" style="padding-left:0; padding-right:0;">
 	<div class="row-fluid">
 		<div class="sidebar-adv text-center">
-			{% if settings.show_ads and not user_info.superadmin %}
+			{% if settings.show_ads and not user_info.superadmin%}
+				{% if not hide_ads %}
 <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 <ins class="adsbygoogle"
      style="display:block"
@@ -27,6 +28,7 @@
 <script>
 (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
+				{% endif %}
 			{% else %}
 				<div class="dummy-banner">Banner</div>
 			{% endif %}
@@ -37,16 +39,18 @@
 
 <div class="container">
 	<div style="margin-top:10px; margin-bottom: 10px;">
-		{% if settings.show_ads and not user_info.superadmin %}
-		<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-		<ins class="adsbygoogle"
-		     style="display:block"
-		     data-ad-client="ca-pub-0036569436360210"
-		     data-ad-slot="8990769571"
-		     data-ad-format="auto"></ins>
-		<script>
-		(adsbygoogle = window.adsbygoogle || []).push({});
-		</script>
+		{% if settings.show_ads and not user_info.superadmin%}
+			{% if not hide_ads %}
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-0036569436360210"
+     data-ad-slot="8990769571"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+			{% endif %}
 		{% else %}
 			<div class="dummy-banner dummy-banner-bottom">Banner</div>
 		{% endif %}
