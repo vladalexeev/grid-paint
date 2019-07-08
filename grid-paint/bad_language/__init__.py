@@ -1,0 +1,1 @@
+from .hide_bad_language import hide_bad_language

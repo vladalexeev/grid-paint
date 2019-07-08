@@ -39,6 +39,8 @@ import antispam
 from db import Notification
 from const import NEWS_TYPE_CHANGE_ARTWORK, NEWS_TYPE_NEW_ARTWORK
 
+from bad_language import hide_bad_language
+
 grids={
        'square': GridSquare,
        'triangle': GridTriangle,
@@ -77,14 +79,14 @@ class ActionSaveImage(BasicRequestHandler):
             artwork.author_email = self.user_info.user_email
             
         if artwork_name:
-            artwork.name=artwork_name
+            artwork.name=hide_bad_language(artwork_name)
         else:
             artwork.name='Untitled'
             
         
             
         if artwork_description:
-            artwork.description=artwork_description
+            artwork.description=hide_bad_language(artwork_description)
         else:
             artwork.description=''
             
@@ -426,7 +428,7 @@ class ActionSaveComment(BasicRequestHandler):
         comment=db.Comment(parent=artwork)
         comment.author_email = self.user_info.user_email
         comment.artwork_ref = artwork
-        comment.text = comment_text
+        comment.text = hide_bad_language(comment_text)
         comment.put()
         
         if artwork.author_email and artwork.author_email<>self.user_info.user_email:
@@ -668,6 +670,8 @@ class ActionSaveProfile(BasicRequestHandler):
         if not nickname:
             self.response.set_status(400)
             return
+        
+        nickname = hide_bad_language(nickname)
 
         user_profile = dao.get_user_profile(self.user_info.user_email)
         if user_profile:
@@ -992,7 +996,8 @@ class JSONGetUserIdByNickname(BasicRequestHandler):
             self.response.set_status(403)
             return
  
-        nickname = self.request.get('nickname')      
+        nickname = self.request.get('nickname')
+        nickname = hide_bad_language(nickname)      
         profile = dao.get_user_profile_by_nickname(nickname)
         if profile:
             self.response.out.write(json.dumps({'id':profile.key().id()}))
