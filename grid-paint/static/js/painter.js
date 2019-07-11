@@ -410,6 +410,65 @@ function selectColorFromPicker(hexColor) {
 	}	
 }
 
+function calculateFillArea(cell) {
+	var gridCell=gridArtwork.getCell(cell.col, cell.row);
+	var sourceColor=null;
+	if (gridCell) {
+		sourceColor=gridCell.color;
+	}
+	
+	var colCount=workspaceWidth/grid.cellSize;
+	var rowCount=workspaceHeight/grid.cellSize;
+	
+	var currentCells=[{
+		row: cell.row,
+		col: cell.col	
+	}];
+	var result=[{
+		row: cell.row,
+		col: cell.col			
+	}];
+	
+	var testFill=function(col, row) {
+		var testCell=gridArtwork.getCell(col, row);
+		var testColor=null;
+		if (testCell) {
+			testColor=testCell.color;
+		}	
+		if (testColor!=sourceColor) {
+			return false;
+		}
+		for (var i=0; i<result.length; i++) {
+			if (result[i].col==col && result[i].row==row) {
+				return false;
+			}
+		}
+		return true;
+	};
+	
+	while (currentCells.length>0) {
+		var newCells=[];
+		for (var i=0; i<currentCells.length; i++) {
+			var currentCell=currentCells[i];
+			var adjacentCells=grid.getAdjacentCells(currentCell.col, currentCell.row)
+			for (var j=0; j<adjacentCells.length; j++) {
+				var testCell=adjacentCells[j]
+				if (!grid.isCellInsideWorkspace(testCell.col, testCell.row)) {
+					return [];
+				}
+				
+				if (testFill(testCell.col, testCell.row)) {
+					newCells.push(testCell);
+					result.push(testCell);
+				}
+			}
+		}
+		currentCells=newCells;
+	}
+	
+	return result;
+}
+
 function fillAreaOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 			
@@ -420,7 +479,7 @@ function fillAreaOnCanvasByMouseEvent(event) {
 			newShapeName="empty";
 		}
 		
-		var fillCells=grid.calculateFillArea(gridArtwork, cell);
+		var fillCells=calculateFillArea(cell);
 		if (fillCells.length==0) {
 			showWarningMessage('You cannot fill entire workspace with flood fill tool. It is applicable for closed areas only. Use "Set background color" instead.');
 			return;
@@ -870,7 +929,7 @@ $(function() {
 			doRedo();
 		});
 		
-	if (grid.calculateFillArea) {
+	if (grid.getAdjacentCells && grid.isCellInsideWorkspace) {
 		$('#btn-flood-fill').show();
 	}
 		
