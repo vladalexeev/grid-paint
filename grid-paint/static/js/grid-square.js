@@ -274,6 +274,76 @@ function GridSquare_ShapeJewel3(parent) {
     }
 }
 
+function GridSquare_CalculateFillArea(gridArtwork, seedCell) {
+	var gridCell=gridArtwork.getCell(seedCell.col, seedCell.row);
+	var sourceColor=null;
+	if (gridCell) {
+		sourceColor=gridCell.color;
+	}
+	
+	var colCount=this.workspaceWidth/this.cellSize;
+	var rowCount=this.workspaceHeight/this.cellSize;
+	
+	var currentCells=[{
+		row: seedCell.row,
+		col: seedCell.col	
+	}];
+	var result=[{
+		row: seedCell.row,
+		col: seedCell.col			
+	}];
+	
+	var testFill=function(col, row) {
+		var testCell=gridArtwork.getCell(col, row);
+		var testColor=null;
+		if (testCell) {
+			testColor=testCell.color;
+		}	
+		if (testColor!=sourceColor) {
+			return false;
+		}
+		for (var i=0; i<result.length; i++) {
+			if (result[i].col==col && result[i].row==row) {
+				return false;
+			}
+		}
+		return true;
+	};
+	
+	while (currentCells.length>0) {
+		var newCells=[];
+		for (var i=0; i<currentCells.length; i++) {
+			var currentCell=currentCells[i];
+			if (currentCell.col==0 || currentCell.row==0 || currentCell.col>=colCount-1 || currentCell.row>=rowCount-1) {
+				return [];
+			}
+			var leftCell={col: currentCell.col-1, row: currentCell.row};
+			if (testFill(leftCell.col, leftCell.row)) {
+				newCells.push(leftCell);
+				result.push(leftCell);
+			}
+			var rightCell={col: currentCell.col+1, row: currentCell.row};
+			if (testFill(rightCell.col, rightCell.row)) {
+				newCells.push(rightCell);
+				result.push(rightCell);
+			}
+			var topCell={col: currentCell.col, row: currentCell.row-1};
+			if (testFill(topCell.col, topCell.row)) {
+				newCells.push(topCell);
+				result.push(topCell);
+			}
+			var bottomCell={col: currentCell.col, row: currentCell.row+1};
+			if (testFill(bottomCell.col, bottomCell.row)) {
+				newCells.push(bottomCell);
+				result.push(bottomCell);
+			}
+		}
+		currentCells=newCells;
+	}
+	
+	return result;
+}
+
 
 function GridSquare() {
 	this.cellSize=24;
@@ -317,6 +387,8 @@ function GridSquare() {
 			row: nearRow
 		};
 	}
+	
+	this.calculateFillArea = GridSquare_CalculateFillArea;
 		
 	this.shapes={
 	    "empty": new GridSquare_ShapeEmpty(this),
