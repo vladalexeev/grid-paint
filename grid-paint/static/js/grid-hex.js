@@ -375,6 +375,35 @@ function GridHex() {
 		};
 	}
 	
+	this.getAdjacentCells = function(col, row) {
+		if (col % 2 == 0) {
+			return [
+				{col: col - 1, row: row - 1},
+				{col: col, row: row - 1},
+				{col: col + 1, row: row - 1},
+				{col: col - 1, row: row},
+				{col: col + 1, row: row},
+				{col: col, row: row + 1}
+			]
+		} else {
+			return [
+				{col: col - 1, row: row + 1},
+				{col: col, row: row + 1},
+				{col: col + 1, row: row + 1},
+				{col: col - 1, row: row},
+				{col: col + 1, row: row},
+				{col: col, row: row - 1}
+			]
+		}
+	}
+	
+	this.isCellInsideWorkspace = function(col, row) {
+		var rowHeight=this.cellSize*sin60;
+		var colCount=(this.workspaceWidth-this.cellSize)/(this.cellSize/2 + this.cellSize/2*cos60);
+		var rowCount=this.workspaceHeight/rowHeight;
+		return col>=0 && col<colCount && row>=0 && row<rowCount;
+	}
+	
 	this.specialPasteShift=function(cells, baseCol, baseRow, pasteCol, pasteRow) {
 		var shiftCol=pasteCol-baseCol;
 		var shiftRow=pasteRow-baseRow;
