@@ -187,6 +187,62 @@ function GridIsoTriangle() {
 		}
 	}
 	
+	this.nearestSameCell=function(col, row, nearCol, nearRow) {
+		var sum1=col+row;
+		var sum2=nearCol+nearRow;
+		
+		if ((sum1 % 2)!=(sum2 % 2)) {
+			return {
+				col: nearCol,
+				row: nearRow+1
+			}
+		} else {
+			return {
+				col: nearCol,
+				row: nearRow
+			}
+		}
+	}
+	
+	this.getAdjacentCells = function(col, row) {
+		if (col % 2 == 0) {
+			if (row % 2 == 0) {
+				return [
+					{row: row-1, col: col},
+					{row: row+1, col: col},
+					{row: row, col: col+1}
+				]
+			} else {
+				return [
+					{row: row-1, col: col},
+					{row: row+1, col: col},
+					{row: row, col: col-1}
+				]
+			}
+		} else {
+			if (row % 2 == 0) {
+				return [
+					{row: row-1, col: col},
+					{row: row+1, col: col},
+					{row: row, col: col-1}
+				]
+			} else {
+				return [
+					{row: row-1, col: col},
+					{row: row+1, col: col},
+					{row: row, col: col+1}
+				]
+			}
+		}
+	}
+	
+	this.isCellInsideWorkspace = function(col, row) {
+		var colWidth=this.cellSize*sin60;
+		var rowCount=(this.workspaceHeight-this.cellSize/2)/this.cellSize*2;
+		var colCount=this.workspaceWidth/colWidth;
+		return col>=0 && col<colCount && row>=0 && row<rowCount;
+	}
+	
 	this.shapes={
 		"empty": new GridIsoTriangle_ShapeEmpty(this),
 		"flat": new GridIsoTriangle_ShapeFlat(this),
