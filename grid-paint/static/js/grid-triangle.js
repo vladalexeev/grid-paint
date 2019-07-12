@@ -195,6 +195,45 @@ function GridTriangle () {
 		}
 	}
 	
+	this.getAdjacentCells = function(col, row) {
+		if (row % 2 == 0) {
+			if (col % 2 == 0) {
+				return [
+					{col: col-1, row: row},
+					{col: col+1, row: row},
+					{col: col, row: row+1}
+				]
+			} else {
+				return [
+					{col: col-1, row: row},
+					{col: col+1, row: row},
+					{col: col, row: row-1}
+				]
+			}
+		} else {
+			if (col % 2 == 0) {
+				return [
+					{col: col-1, row: row},
+					{col: col+1, row: row},
+					{col: col, row: row-1}
+				]
+			} else {
+				return [
+					{col: col-1, row: row},
+					{col: col+1, row: row},
+					{col: col, row: row+1}
+				]
+			}
+		}
+	}
+	
+	this.isCellInsideWorkspace = function(col, row) {
+		var rowHeight=this.cellSize*sin60;
+		var colCount=(this.workspaceWidth-this.cellSize/2)/this.cellSize*2;
+		var rowCount=this.workspaceHeight/rowHeight;
+		return col>=0 && col<colCount && row>=0 && row<rowCount;
+	}
+	
 	this.shapes={
 		"empty": new GridTriangle_ShapeEmpty(this),
 		"flat": new GridTriangle_ShapeFlat(this),
