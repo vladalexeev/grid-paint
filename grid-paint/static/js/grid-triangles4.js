@@ -138,6 +138,41 @@ function GridTriangles4() {
 			row: nearRow
 		};
 	}
+
+	this.getAdjacentCells = function(col, row) {
+	    var cellType = col % 4;
+	    if (cellType==0) {
+	        return [
+	            {col: col+3, row: row-1},
+	            {col: col+1, row: row},
+	            {col: col+2, row: row}
+	        ]
+	    } else if (cellType==1) {
+            return [
+            	{col: col-3, row: row},
+	            {col: col-1, row: row},
+	            {col: col+2, row: row}
+            ]
+	    } else if (cellType==2) {
+            return [
+            	{col: col+3, row: row},
+	            {col: col-2, row: row},
+	            {col: col+1, row: row}
+            ]
+	    } else if (cellType==3) {
+            return [
+            	{col: col-3, row: row+1},
+	            {col: col-2, row: row},
+	            {col: col-1, row: row}
+            ]
+	    }
+	}
+
+	this.isCellInsideWorkspace = function(col, row) {
+		var colCount=this.workspaceWidth/this.cellSize*4;
+		var rowCount=this.workspaceHeight/this.cellSize;
+		return col>=0 && col<colCount && row>=0 && row<rowCount;
+	}
 		
 	this.shapes={
 	    "empty": new GridTriangles4_ShapeEmpty(this),
