@@ -1,18 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{% block title %}Grid Paint{% endblock %}</title>
-{% block description %}{% endblock %}
-{% block include_css %}
- <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
- <link href="/typeahead/typeahead.css" rel="stylesheet">
- <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet">
- <link href="/css/main2.css?2019-03-31" rel="stylesheet">
-{% endblock %}
-{% block rss %}
-{% endblock %} 
-</head> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Grid Paint{% endblock %}</title>
+    {% block description %}{% endblock %}
+    {% block include_css %}
+    <link href="/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="/typeahead/typeahead.css" rel="stylesheet">
+    <link href="/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/main2.css?2019-03-31" rel="stylesheet">
+    {% endblock %}
+    {% block open_graph %}
+        {% if og_title %}
+            <meta property="og:title" content="{{ og_title }}" />
+        {% endif %}
+        {% if og_description %}
+            <meta property="og:description" content="{{ og_description }}" />
+        {% endif %}
+        {% if og_image %}
+            <meta property="og:image" content="{{ og_image }}" />
+        {% endif %}
+        {% if og_url %}
+            <meta property="og:url" content="{{ og_url }}" />
+        {% endif %}
+    {% endblock %}
+    {% block rss %}
+    {% endblock %}
+</head>
 
 
 <body>
@@ -29,7 +43,7 @@
 
 
 {% block content_full %}
-{% endblock %}	
+{% endblock %}
 
 {% if settings.show_analytics and not user_info.superadmin %}
 <script>

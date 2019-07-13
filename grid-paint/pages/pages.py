@@ -81,16 +81,20 @@ class PageIndex(BasicPageRequestHandler):
             cache.add(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS, top_rated_artists)
         
         self.write_template('templates/index.html', 
-                            {
-                             'artworks': recent_artworks,
-                             'editor_choice': editor_choice,
-                             'top_favorites': top_favorites,
-                             'recent_favorites': recent_favorites,
-                             'comments': recent_comments,
-                             'productive_artists': productive_artists,
-                             'top_rated_artists': top_rated_artists,
-                             'newsfeed': newsfeed,
-                             })
+            {
+                'artworks': recent_artworks,
+                'editor_choice': editor_choice,
+                'top_favorites': top_favorites,
+                'recent_favorites': recent_favorites,
+                'comments': recent_comments,
+                'productive_artists': productive_artists,
+                'top_rated_artists': top_rated_artists,
+                'newsfeed': newsfeed,
+                'og_title': 'Grid Paint',
+                'og_description': 'An online tool for pixel drawing with different shapes of pixels.',
+                'og_url': 'https://grid-paint.com',
+                'og_image': 'https://grid-paint.com/img/logo-large.png'
+            })
         
 class PagePrivacyPolicy(BasicPageRequestHandler):
     def get(self):
@@ -439,14 +443,17 @@ class PageImage(BasicPageRequestHandler):
             following = None 
         
         self.write_template('templates/artwork-details.html', 
-                            {
-                             'artwork': converted_artwork,
-                             'can_edit_artwork': self.user_info.superadmin or artwork.author_email==self.user_info.user_email,
-                             'comments': comments,
-                             'favorite_count': favorite_count,
-                             'favorite': favorite,
-                             'following': following
-                            })
+            {
+                'artwork': converted_artwork,
+                'can_edit_artwork': self.user_info.superadmin or artwork.author_email==self.user_info.user_email,
+                'comments': comments,
+                'favorite_count': favorite_count,
+                'favorite': favorite,
+                'following': following,
+                'og_title': artwork.name,
+                'og_image': 'https://grid-paint.com/images/png/' + artwork_id,
+                'og_url': 'https://grid-paint.com/image/details/' + artwork_id,
+            })
         
         
 class PageAdmin(BasicPageRequestHandler):
