@@ -450,9 +450,12 @@ class PageImage(BasicPageRequestHandler):
                 'favorite_count': favorite_count,
                 'favorite': favorite,
                 'following': following,
-                'og_title': artwork.name,
+                'og_title': converted_artwork['name'],
                 'og_image': 'https://grid-paint.com/images/png/' + artwork_id,
+                'og_image_width': converted_artwork['full_image_width'],
+                'og_image_height': converted_artwork['full_image_height'],
                 'og_url': 'https://grid-paint.com/image/details/' + artwork_id,
+                'og_description': 'Created by {} in Grid Paint'.format(converted_artwork['author']['nickname'])
             })
         
         
