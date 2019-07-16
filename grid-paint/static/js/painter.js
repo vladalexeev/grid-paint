@@ -412,9 +412,11 @@ function selectColorFromPicker(hexColor) {
 
 function calculateFillArea(cell) {
 	var gridCell=gridArtwork.getCell(cell.col, cell.row);
-	var sourceColor=null;
+	var sourceColorShape='empty';
 	if (gridCell) {
-		sourceColor=gridCell.color;
+		if (gridCell.shapeName !== 'empty') {
+			sourceColorShape = gridCell.shapeName + '-' + gridCell.color;
+		}
 	}
 	
 	var colCount=workspaceWidth/grid.cellSize;
@@ -431,11 +433,13 @@ function calculateFillArea(cell) {
 	
 	var testFill=function(col, row) {
 		var testCell=gridArtwork.getCell(col, row);
-		var testColor=null;
+		var testColorShape='empty';
 		if (testCell) {
-			testColor=testCell.color;
+			if (testCell.shapeName !== 'empty') {
+				testColorShape = testCell.shapeName + '-' + testCell.color;
+			}
 		}	
-		if (testColor!=sourceColor) {
+		if (testColorShape!=sourceColorShape) {
 			return false;
 		}
 		for (var i=0; i<result.length; i++) {
