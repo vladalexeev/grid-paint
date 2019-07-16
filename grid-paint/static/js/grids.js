@@ -177,7 +177,8 @@ function GridArtwork() {
  			this.cells.unshift([]);
  		}
 
-		this._shiftAllElements(shift.dx, shift.dy); 		
+		this._shiftAllElements(shift.dx, shift.dy); 	
+		return [];	
  	};
 }
 
