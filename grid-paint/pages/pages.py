@@ -451,7 +451,7 @@ class PageImage(BasicPageRequestHandler):
                 'favorite': favorite,
                 'following': following,
                 'og_title': converted_artwork['name'],
-                'og_image': 'https://grid-paint.com/images/png/' + artwork_id,
+                'og_image': 'https://grid-paint.com/images/png/' + artwork_id + '.png',
                 'og_image_width': converted_artwork['full_image_width'],
                 'og_image_height': converted_artwork['full_image_height'],
                 'og_url': 'https://grid-paint.com/images/details/' + artwork_id,
