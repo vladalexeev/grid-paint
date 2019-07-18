@@ -14,7 +14,11 @@ My profile
 	
 	<div class="row">
 		<div class="col-xs-4 col-md-2 col-md-offset-2">
-			<img src="/img/empty-profile.png" />
+			<img src="/img/empty-profile.png" id="avatar" />
+				<form name="f" action="/upload-avatar" method="POST" enctype="multipart/form-data">
+					<input type="file" name="file"><input type="button" name="button" id="btn-submit-avatar" value="Submit">
+				</form>
+			
 		</div>
 		
 		<div class="col-xs-8 col-md-6">
@@ -266,6 +270,24 @@ $(function () {
 			);
 		}
 	);
+	
+	$("#btn-submit-avatar").click(function() {
+		const files = document.querySelector('[type=file]').files
+		const formData = new FormData()
+	
+		for (let i = 0; i < files.length; i++) {
+			let file = files[i]
+		    formData.append('file', file)
+		}
+	
+		fetch("/upload-avatar", {
+	    	method: 'POST',
+	    	body: formData,
+	  	}).then(response => {
+	  		$("#avatar").attr("src", "/images/avatar/"+profile_id+".jpg");
+	    	console.log(response)
+	  	})
+	});
 });
 
 var errorMessages = {

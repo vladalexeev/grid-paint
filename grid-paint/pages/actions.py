@@ -1284,3 +1284,74 @@ class JSONLeaders(BasicRequestHandler):
                 result.append(convert.convert_user_profile_for_json(leader_profile)) 
                 
         self.response.out.write(json.dumps(result))
+
+        
+class ActionUploadUserAvatar(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+        
+        user_profile = dao.get_user_profile(self.user_info.user_email)
+
+        filename = self.request.POST['file'].filename
+        content_type = self.request.POST['file'].type
+        
+        logging.error(self.request.POST['file'].filename);
+        logging.error(self.request.POST['file'].type);
+        
+        file_content = self.request.get('file')
+        logging.error('file_length = ' + str(len(file_content)))
+        
+        image = Image.open(StringIO.StringIO(file_content))
+        max_avatar_size = 150
+        if image.width > image.height:
+            new_image_width = int(image.width * max_avatar_size / image.height)
+            new_image_height = max_avatar_size
+        else:
+            new_image_width = max_avatar_size
+            new_image_height = int(image.height * max_avatar_size / image.width)
+            
+        resized_image = image.resize((new_image_width, new_image_height))
+        cropped_image = resized_image.crop((
+                int((new_image_width - max_avatar_size) / 2),
+                int((new_image_height - max_avatar_size) / 2),
+                int((new_image_width - max_avatar_size) / 2) + max_avatar_size,
+                int((new_image_height - max_avatar_size) / 2) + max_avatar_size
+            ))
+        
+        avatar_memory_file = StringIO.StringIO()
+        cropped_image.save(avatar_memory_file, 'jpeg')
+        
+        filename = '/images/avatars/' + str(self.user_info.profile_id) + '.jpg'
+        cs.create_file(filename, 'image/jpeg', avatar_memory_file.getvalue())
+        
+        user_profile.avatar = filename
+        dao.set_user_profile(user_profile)
+        
+        self.response.set_status(200)
+        
+        
+class AvatarImageRequest(BasicRequestHandler):
+    def get(self, *ar):
+        profile_id = ar[0]
+        user_profile = dao.get_user_profile_by_id(int(profile_id))
+        if user_profile.avatar:
+            file_name = user_profile.avatar
+            cache_key = cache.MC_IMAGE_PREFIX+file_name
+            
+            file_content = cache.get(cache_key)
+            if not file_content:
+                try:
+                    file_content = cs.read_file(file_name)
+                except NotFoundError:
+                    self.response.set_status(404)
+                    return
+                    
+                if len(file_content)<50000:
+                    cache.add(cache_key, file_content)
+            
+            self.response.headers['Content-Type']='image/jpeg'     
+            self.response.out.write(file_content)        
+        else:
+            self.response.set_status(404)
