@@ -53,7 +53,7 @@ class UserProfile(db.Expando):
     join_date = db.DateTimeProperty(auto_now_add=True)
     artworks_count = db.IntegerProperty(default=0)
     favorite_count = db.IntegerProperty(default=0)
-    avatar = db.StringProperty()
+    avatar_file = db.StringProperty()
     
     
 class Settings(db.Model):

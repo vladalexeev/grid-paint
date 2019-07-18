@@ -1297,20 +1297,23 @@ class ActionUploadUserAvatar(BasicRequestHandler):
         filename = self.request.POST['file'].filename
         content_type = self.request.POST['file'].type
         
-        logging.error(self.request.POST['file'].filename);
-        logging.error(self.request.POST['file'].type);
+        logging.error(self.request.POST['file'].filename)
+        logging.error(self.request.POST['file'].type)
         
         file_content = self.request.get('file')
         logging.error('file_length = ' + str(len(file_content)))
         
         image = Image.open(StringIO.StringIO(file_content))
+        logging.error(str(image))
+        logging.error(str(image.__dict__))
+        image_width, image_height = image.size
         max_avatar_size = 150
-        if image.width > image.height:
-            new_image_width = int(image.width * max_avatar_size / image.height)
+        if image_width > image_height:
+            new_image_width = int(image_width * max_avatar_size / image_height)
             new_image_height = max_avatar_size
         else:
             new_image_width = max_avatar_size
-            new_image_height = int(image.height * max_avatar_size / image.width)
+            new_image_height = int(image_height * max_avatar_size / image_width)
             
         resized_image = image.resize((new_image_width, new_image_height))
         cropped_image = resized_image.crop((
@@ -1323,11 +1326,14 @@ class ActionUploadUserAvatar(BasicRequestHandler):
         avatar_memory_file = StringIO.StringIO()
         cropped_image.save(avatar_memory_file, 'jpeg')
         
-        filename = '/images/avatars/' + str(self.user_info.profile_id) + '.jpg'
-        cs.create_file(filename, 'image/jpeg', avatar_memory_file.getvalue())
+        file_name = '/images/avatar/' + str(self.user_info.profile_id) + '.jpg'
+        cs.create_file(file_name, 'image/jpeg', avatar_memory_file.getvalue())
         
-        user_profile.avatar = filename
+        user_profile.avatar_file = file_name
         dao.set_user_profile(user_profile)
+
+        cache_key = cache.MC_IMAGE_PREFIX + file_name
+        cache.delete(cache_key)
         
         self.response.set_status(200)
         
@@ -1336,8 +1342,8 @@ class AvatarImageRequest(BasicRequestHandler):
     def get(self, *ar):
         profile_id = ar[0]
         user_profile = dao.get_user_profile_by_id(int(profile_id))
-        if user_profile.avatar:
-            file_name = user_profile.avatar
+        if user_profile.avatar_file:
+            file_name = user_profile.avatar_file
             cache_key = cache.MC_IMAGE_PREFIX+file_name
             
             file_content = cache.get(cache_key)

@@ -226,7 +226,8 @@ def convert_user(user_email):
                 'email': user_email,
                 'nickname': auto_nickname(user_email)
                 }
-        
+
+
 def convert_user_profile(user_profile):
     result = {
             'email': user_profile.email,
@@ -237,7 +238,8 @@ def convert_user_profile(user_profile):
             'favorite_count': user_profile.favorite_count,
             'followers_count': getattr(user_profile, 'followers_count', 0),
             'read_only': hasattr(user_profile, 'read_only'),
-            'alternative_emails': getattr(user_profile, 'alternative_emails', [])
+            'alternative_emails': getattr(user_profile, 'alternative_emails', []),
+            'avatar_file': getattr(user_profile, 'avatar_file'),
             }
     
     if hasattr(user_profile, 'block_date'):
