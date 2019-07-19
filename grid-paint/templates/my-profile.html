@@ -13,7 +13,7 @@ My profile
 	
 	
 	<div class="row">
-		<div class="col-xs-4 col-md-2 col-md-offset-2">
+		<div class="col-12 col-sm-4 col-md-2 col-md-offset-2 col-lg-2 col-lg-offset-2" style="text-align: center;">
 			<div class="user-profile-avatar user-profile-avatar-edit" style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.key.id }}.jpg{% else %}/img/empty-profile.png{% endif %})" id="avatar"></div>
 				<form name="f" action="/upload-avatar" method="POST" enctype="multipart/form-data" style="display:none;">
 					<input type="file" name="file" id="avatar-file">
@@ -21,7 +21,7 @@ My profile
 			
 		</div>
 		
-		<div class="col-xs-8 col-md-6">
+		<div class="col-12 col-sm-8 col-md-6 col-lg-6">
 			<form name="f" role="form" class="form-horizontal" action="/save-profile" method="POST"
 				onsubmit="return false">
 				<div class="form-group">
@@ -76,7 +76,7 @@ My profile
 	</div>
 	
 	<div class="row">
-		<div class="col-xs-4 col-md-8 col-md-offset-2">
+		<div class="col-12 col-sm-12 col-md-8 col-md-offset-2">
 			<div class="panel panel-default">
   				<div class="panel-heading">
     				<h3 class="panel-title">My resources</h3>
