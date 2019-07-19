@@ -719,10 +719,6 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
     right: 0;
 }
 
-.user-profile-avatar-edit {
-    cursor: pointer;
-}
-
 .user-profile-avatar-change-mask {
 	cursor: pointer;
     width: 150px;
@@ -735,8 +731,9 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
     right: 0;
     background-image: url('/img/white-plus.svg');
     background-size: cover;
-    opacity: 0.3;
-    display: none;
+    opacity: 0;
+    cursor: pointer;
+    transition-duration: 0.3s;
 }
 
 @media (max-width: 320px) {

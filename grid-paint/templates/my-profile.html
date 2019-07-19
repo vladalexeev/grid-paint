@@ -278,7 +278,7 @@ $(function () {
 	})
 
 	$("#avatar-file").change(function() {
-		$("#avatar-mask").hide();
+		$(".user-profile-avatar-change-mask").css('opacity', 0);
 	
 		const files = document.querySelector('[type=file]').files
 		const formData = new FormData()
@@ -297,12 +297,12 @@ $(function () {
 	  	})
 	})
 	
-	$(".user-profile-avatar").mouseenter(function() {
-		$(".user-profile-avatar-change-mask").show();
+	$(".user-profile-avatar-change-mask").mouseenter(function() {
+		$(".user-profile-avatar-change-mask").css('opacity', 0.3);
 	});
 	
 	$(".user-profile-avatar-change-mask").mouseleave(function() {
-		$(".user-profile-avatar-change-mask").hide();
+		$(".user-profile-avatar-change-mask").css('opacity', 0);
 	});
 });
 
