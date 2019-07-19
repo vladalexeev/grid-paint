@@ -702,13 +702,21 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	padding-right: 5px;
 }
 
+.user-profile-avatar-container {
+	min-height: 170px;
+	position: relative;
+}
+
 .user-profile-avatar {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     background-size: cover;
-    border-radius: 50px;
+    border-radius: 75px;
     border: 1px solid #e0e0e0;
-    display: inline-block;
+    position: absolute;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
 }
 
 .user-profile-avatar-edit {
@@ -879,7 +887,7 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	}
 	
 	.container {
-		width: 720px;
+		/*width: 720px;*/
 	}
 	
 	.index-featured-artists-wrapper {
