@@ -6,9 +6,12 @@
 	
 <div class="container">
 	<div class="row">
-		<div class="col-xs-4 col-md-2 col-md-offset-2">
-			<div style="text-align: center;">
-				<img src="/img/empty-profile.png" />
+		<div class="col-12 col-sm-4 col-md-2 col-md-offset-2 col-lg-2 col-lg-offset-2">
+			<div class="user-profile-avatar-container-wrapper">
+				<div class="user-profile-avatar-container">
+					<div class="user-profile-avatar user-profile-avatar-edit"
+						 style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.profile_id }}.jpg{% else %}/img/empty-profile.png{% endif %})" id="avatar"></div>
+				</div>
 			</div>
 			{% if user_info.user and user_info.profile_id != profile.profile_id %}
 				<div style="margin-top: 5px; text-align: center;">
@@ -18,7 +21,7 @@
 			{% endif %}
 		</div>
 		
-		<div class="col-xs-8 col-md-6">
+		<div class="col-12 col-sm-8 col-md-6 col-lg-6">
 			<div style="font-weight: bold; font-size: 16pt;">{{ profile.nickname }}</div>
 			<div style="color: gray;">joined {{ profile.join_date|date:"d M Y" }}</div>
 			{% if profile.read_only %}
