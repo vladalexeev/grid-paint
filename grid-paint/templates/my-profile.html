@@ -16,9 +16,12 @@ My profile
 		<div class="col-12 col-sm-4 col-md-2 col-md-offset-2 col-lg-2 col-lg-offset-2">
 			<div class="user-profile-avatar-container-wrapper">
 				<div class="user-profile-avatar-container">
-					<div class="user-profile-avatar user-profile-avatar-edit" style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.key.id }}.jpg{% else %}/img/empty-profile.png{% endif %})" id="avatar"></div>
+					<div class="delete-avatar-button" id="delete-avatar-button" style="display: {% if profile.avatar_file %}auto{% else %}none{% endif %}"></div>
+					<div class="user-profile-avatar" style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.key.id }}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})" id="avatar">
+					</div>
 					<div class="user-profile-avatar-change-mask" id="avatar-mask"></div>
 					<div class="spinner" style="display:none;" id="avatar-change-spinner"></div>
+
 					<form name="f" action="/upload-avatar" method="POST" enctype="multipart/form-data" style="display:none;">
 						<input type="file" name="file" id="avatar-file">
 					</form>
@@ -97,6 +100,25 @@ My profile
 		</div>
 	</div>
 </div>
+
+<div id="modal-delete-avatar" class="modal fade">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Warning</h4>
+	  </div>
+	  <div class="modal-body">
+	        <p>Do you really want delete your avatar?</p>
+	  </div>
+	  <div class="modal-footer">
+  	    <a href="#" class="btn btn-danger" id="delete-avatar-confirmed">Yes</a>
+	    <a href="#" class="btn btn-primary" data-dismiss="modal">No</a>
+	  </div>
+	</div>
+  </div>
+</div>
+
 
 <div id="modal-empty-nickname" class="modal fade">
   <div class="modal-dialog">
@@ -266,7 +288,7 @@ $(function () {
 						showErrorMessage(data.error);
 						return;
 					}
-					
+
 					if (data.result) {
 						location.reload();
 					}
@@ -280,7 +302,7 @@ $(function () {
 		$("#avatar-file").trigger('click');
 	})
 
-	$("#avatar-file").change(function() {
+	$("#avatar-file").change(function(event) {
 		$(".user-profile-avatar-change-mask").css('opacity', 0);
 		$("#avatar-change-spinner").show();
 	
@@ -298,17 +320,39 @@ $(function () {
 	  	}).then(response => {
 	  		$("#avatar-change-spinner").hide();
 	  		$("#avatar")[0].style.backgroundImage=("url(/images/avatar/"+profile_id+".jpg?"+(new Date().getTime()) +")");
+	  		$("#delete-avatar-button").show();
 	    	//console.log(response)
 	  	})
 	})
 	
-	$(".user-profile-avatar-change-mask").mouseenter(function() {
+	$("#avatar-mask").mouseenter(function(event) {
 		$(".user-profile-avatar-change-mask").css('opacity', 0.3);
 	});
 	
-	$(".user-profile-avatar-change-mask").mouseleave(function() {
+	$("#avatar-mask").mouseleave(function() {
 		$(".user-profile-avatar-change-mask").css('opacity', 0);
 	});
+
+	$("#delete-avatar-button").click(function(event) {
+		event.preventDefault();
+		event.stopPropagation();
+		$("#modal-delete-avatar").modal();
+	});
+
+	$("#delete-avatar-confirmed").click(function() {
+		$("#modal-delete-avatar").modal('hide');
+		$.post(
+			'/json/delete-avatar',
+			{'profile_id': profile_id},
+			function(data) {
+				if (data.result) {
+					$("#delete-avatar-button").hide();
+					$("#avatar").css("background-image", "url(/img/svg-buttons/empty-avatar.svg)");
+				}
+			},
+			"json"
+		);
+	})
 });
 
 var errorMessages = {

@@ -1294,18 +1294,15 @@ class ActionUploadUserAvatar(BasicRequestHandler):
         
         user_profile = dao.get_user_profile(self.user_info.user_email)
 
-        filename = self.request.POST['file'].filename
-        content_type = self.request.POST['file'].type
-        
-        logging.error(self.request.POST['file'].filename)
-        logging.error(self.request.POST['file'].type)
+        # filename = self.request.POST['file'].filename
+        # content_type = self.request.POST['file'].type
+        # logging.error(self.request.POST['file'].filename)
+        # logging.error(self.request.POST['file'].type)
         
         file_content = self.request.get('file')
-        logging.error('file_length = ' + str(len(file_content)))
+        #logging.error('file_length = ' + str(len(file_content)))
         
         image = Image.open(StringIO.StringIO(file_content))
-        logging.error(str(image))
-        logging.error(str(image.__dict__))
         image_width, image_height = image.size
         max_avatar_size = 150
         if image_width > image_height:
@@ -1336,7 +1333,31 @@ class ActionUploadUserAvatar(BasicRequestHandler):
         cache.delete(cache_key)
         
         self.response.set_status(200)
-        
+
+
+class JSONDeleteUserAvatar(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+
+        profile_id = int(self.request.get('profile_id'))
+        if self.user_info.superadmin and self.user_info.profile_id != profile_id:
+            self.response.set_status(403)
+            return
+
+        user_profile = dao.get_user_profile_by_id(profile_id)
+        if user_profile.avatar_file:
+            cache_key = cache.MC_IMAGE_PREFIX + user_profile.avatar_file
+            cache.delete(cache_key)
+
+            cs.delete_file(user_profile.avatar_file)
+            user_profile.avatar_file = ''
+            dao.set_user_profile(user_profile)
+            pass
+
+        self.response.out.write(json.dumps({'result': 'ok'}))
+
         
 class AvatarImageRequest(BasicRequestHandler):
     def get(self, *ar):

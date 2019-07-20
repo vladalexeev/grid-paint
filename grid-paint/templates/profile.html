@@ -10,7 +10,7 @@
 			<div class="user-profile-avatar-container-wrapper">
 				<div class="user-profile-avatar-container">
 					<div class="user-profile-avatar user-profile-avatar-edit"
-						 style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.profile_id }}.jpg{% else %}/img/empty-profile.png{% endif %})" id="avatar"></div>
+						 style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.profile_id }}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})" id="avatar"></div>
 				</div>
 			</div>
 			{% if user_info.user and user_info.profile_id != profile.profile_id %}

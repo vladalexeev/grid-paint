@@ -69,6 +69,7 @@ application = webapp.WSGIApplication([
                                       ('/json/notifications', pages.actions.JSONNotifications),
                                       ('/json/followers', pages.actions.JSONFollowers),
                                       ('/json/leaders', pages.actions.JSONLeaders),
+                                      ('/json/delete-avatar', pages.actions.JSONDeleteUserAvatar),
                                       ('/comments', pages.pages.PageComments),
                                       ('/follow', pages.actions.ActionFollow),
                                       ('/unfollow', pages.actions.ActionUnfollow),
