@@ -14,14 +14,31 @@ body {
 	min-height: 610px;
 }
 
+a.dropdown-toggle.header-avatar-dropdown-toggle {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.header-user-wrapper {
+    padding: 2px;
+    border: solid 2px red;
+    display: inline-block;
+    border-radius: 20px;
+    border: solid 2px transparent;
+}
 
 .header-user {
 	white-space: nowrap;
 	overflow: hidden; 
 	text-overflow: ellipsis;
-	max-width: 200px;
+	/*max-width: 200px;*/
 	display: inline-block;
 	vertical-align: bottom;
+    width: 32px;
+    height: 32px;
+    background-size: contain;
+    border-radius: 16px;
+    display: inline-block;
 }
 
 .header-new-image-link {
