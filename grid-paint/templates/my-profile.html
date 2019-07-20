@@ -319,7 +319,11 @@ $(function () {
 	    	body: formData,
 	  	}).then(response => {
 	  		$("#avatar-change-spinner").hide();
-	  		$("#avatar")[0].style.backgroundImage=("url(/images/avatar/"+profile_id+".jpg?"+(new Date().getTime()) +")");
+
+	  		var filename = "/images/avatar/"+profile_id+".jpg?"+(new Date().getTime())
+	  		var imageUrl = "url(" + filename + ")"
+	  		$("#avatar").css('background-image', imageUrl);
+	  		$(".header-user").css('background-image', imageUrl);
 	  		$("#delete-avatar-button").show();
 	    	//console.log(response)
 	  	})
@@ -347,7 +351,9 @@ $(function () {
 			function(data) {
 				if (data.result) {
 					$("#delete-avatar-button").hide();
-					$("#avatar").css("background-image", "url(/img/svg-buttons/empty-avatar.svg)");
+					var imageUrl = "url(/img/svg-buttons/empty-avatar.svg)"
+					$("#avatar").css("background-image", imageUrl);
+					$(".header-user").css('background-image', imageUrl);
 				}
 			},
 			"json"
