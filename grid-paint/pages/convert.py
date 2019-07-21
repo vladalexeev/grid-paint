@@ -255,6 +255,7 @@ def convert_user_profile_for_json(user_profile):
     result = {
             'nickname': user_profile.nickname,
             'profile_id': user_profile.key().id(),
+            'has_avatar': hasattr(user_profile, 'avatar_file')
         }
     return result
 
