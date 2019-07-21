@@ -1350,11 +1350,12 @@ class JSONDeleteUserAvatar(BasicRequestHandler):
         if user_profile.avatar_file:
             cache_key = cache.MC_IMAGE_PREFIX + user_profile.avatar_file
             cache.delete(cache_key)
+            cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
+            cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
 
             cs.delete_file(user_profile.avatar_file)
             user_profile.avatar_file = ''
             dao.set_user_profile(user_profile)
-            pass
 
         self.response.out.write(json.dumps({'result': 'ok'}))
 
