@@ -1331,7 +1331,9 @@ class ActionUploadUserAvatar(BasicRequestHandler):
 
         cache_key = cache.MC_IMAGE_PREFIX + file_name
         cache.delete(cache_key)
-        
+        cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
+        cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
+
         self.response.set_status(200)
 
 

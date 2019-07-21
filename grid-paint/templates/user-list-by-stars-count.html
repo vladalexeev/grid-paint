@@ -41,7 +41,10 @@
 {% for u in users %}
 <tr>
 	<td>
-		<a href="/profiles/{{ u.profile_id }}">{{ u.nickname }}</a>
+		<a href="/profiles/{{ u.profile_id }}">
+			<div class="user-avatar-in-list" style="background-image: url({% if u.avatar_file %}/images/avatar/{{u.profile_id}}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})"></div>
+			{{ u.nickname }}
+		</a>
 	</td>
 	<td>
 		{{ u.favorite_count }}
