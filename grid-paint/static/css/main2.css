@@ -276,6 +276,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
     border-radius: 22px;
     background-size: cover;
     margin-right: 10px;
+    border: solid 1px #e0e0e0;
 }
 
 .image-details-header h3 {
@@ -782,6 +783,16 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 
 .delete-avatar-button:hover {
     filter: brightness(1.5);
+}
+
+.user-avatar-in-list {
+        height: 20px;
+    width: 20px;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    background-size: cover;
+    float: left;
+    margin-right: 10px;
 }
 
 @media (max-width: 320px) {
