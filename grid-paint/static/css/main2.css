@@ -269,6 +269,15 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	overflow: hidden;
 }
 
+.image-details-header-avatar {
+    float: left;
+    width: 44px;
+    height: 44px;
+    border-radius: 22px;
+    background-size: cover;
+    margin-right: 10px;
+}
+
 .image-details-header h3 {
 	margin-top:0;
 	margin-bottom:0;

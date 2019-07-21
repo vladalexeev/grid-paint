@@ -56,7 +56,8 @@
 			{% endif %}
 		{% endif %}
 	</div>
-	<div class="image-details-header">				
+	<div class="image-details-header">
+		<div class="image-details-header-avatar" style="background-image:url({% if artwork.author.avatar_file%}/images/avatar/{{artwork.author.profile_id}}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})"></div>
 		<h3 id="artwork-name">
 			{% if artwork.editor_choice %}
 				<img src="/img/editor_choice.png" title="Editor's choice" />
