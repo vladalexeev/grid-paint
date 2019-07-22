@@ -14,7 +14,7 @@
         <li class="dropdown">
 		    <a href="#" class="dropdown-toggle header-avatar-dropdown-toggle" data-toggle="dropdown">
               <div class="header-user-wrapper" style="border-color:{% if user_info.read_only %}#ff7f7f{% else %}{% if user_info.superadmin %}#83c6ff{% else %}transparent{% endif %}{% endif%}">
-		        <div class="header-user" style="background-image: url({% if user_info.user_avatar%}/images/avatar/{{user_info.profile_id}}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})"></div>
+		        <div class="header-user" style="background-image: url({{ user_info.avatar_url }})"></div>
               </div>
 		    </a>
 		    <ul class="dropdown-menu">

@@ -163,6 +163,7 @@ link at the top.
 		</div>
 		<div class="comment">
 			<div class="comment-header">
+				<div class="user-avatar-in-comment" style="background-image:url({{ c.author.avatar_url }})" ></div>
 				<h2><a href="/images/details/{{ c.artwork_key }}">{{ c.artwork_name }}</a></h2>
 				<div>{{ c.date|date:"d M Y H:i" }} <b>{{c.author.nickname}}</b></div>
 			</div>
@@ -203,7 +204,7 @@ link at the top.
 		<tr>
 			<td>
 				<a href="/profiles/{{ u.profile_id }}">
-					<div class="user-avatar-in-list" style="background-image: url({% if u.avatar_file %}/images/avatar/{{u.profile_id}}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})"></div>
+					<div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
 					{{ u.nickname }}
 				</a>
 			</td>
@@ -233,7 +234,7 @@ link at the top.
 		<tr>
 			<td>
 				<a href="/profiles/{{ u.profile_id }}">
-					<div class="user-avatar-in-list" style="background-image: url({% if u.avatar_file %}/images/avatar/{{u.profile_id}}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})"></div>
+					<div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
 					{{ u.nickname }}
 				</a>
 			</td>

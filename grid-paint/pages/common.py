@@ -38,7 +38,7 @@ class UserInfo:
                 
             self.user_email = user_profile.email
             self.user_name = user_profile.nickname
-            self.user_avatar = getattr(user_profile, 'avatar_file')
+            self.avatar_url = convert.make_avatar_url(user_profile.key().id()) if getattr(user_profile, 'avatar_file') else convert.DEFAULT_AVATAR_URL
             self.profile_id = user_profile.key().id()
             self.read_only = hasattr(user_profile, 'read_only')
                 

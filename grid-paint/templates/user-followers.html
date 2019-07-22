@@ -97,15 +97,11 @@ function loadFollowers(limit, offset) {
 }
 
 function itemToHtml(item) {
-	var avatarUrl = '/img/svg-buttons/empty-avatar.svg';
-	if (item.has_avatar) {
-		avatarUrl = '/images/avatar/' + item.profile_id + '.jpg';
-	}
 	result=
 		'<tr>'+
 		'<td>'+
 		'<a href="/profiles/' + item.profile_id + '">' +
-		'<div class="user-avatar-in-list" style="background-image: url(' + avatarUrl + ')"></div>'+
+		'<div class="user-avatar-in-list" style="background-image: url(' + item.avatar_url + ')"></div>'+
 		item.nickname +
 		'</a>'+
 		'</td>' +

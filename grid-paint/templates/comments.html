@@ -173,6 +173,7 @@ function commentToHtml(c) {
 			  			'</span>'+
 			  			'</div>'+
 			  		{% endif %}				
+			  		'<div class="user-avatar-in-comment" style="background-image:url(' + c['author']['avatar_url'] + ')"></div>' +
 					'<h2><a href="/images/details/'+c['artwork_key']+'">'+c['artwork_name']+'</a></h2>'+
 					'<div>'+
 						formatDate(new Date(Date.parse(c['date'])))+

@@ -9,6 +9,8 @@ import tags
 import dao
 import logging
 
+DEFAULT_AVATAR_URL = '/img/svg-buttons/empty-avatar.svg'
+
 def calc_resize(image_width, image_height, max_width, max_height):
     '''
     Calculates resized image dimensions and return tuple (width,height)
@@ -228,7 +230,16 @@ def convert_user(user_email):
                 }
 
 
+def make_avatar_url(profile_id):
+    return '/images/avatar/' + str(profile_id) + '.jpg'
+
+
 def convert_user_profile(user_profile):
+    if getattr(user_profile, 'avatar_file'):
+        avatar_url = make_avatar_url(user_profile.key().id())
+    else:
+        avatar_url = DEFAULT_AVATAR_URL
+        
     result = {
             'email': user_profile.email,
             'nickname': user_profile.nickname,
@@ -239,7 +250,7 @@ def convert_user_profile(user_profile):
             'followers_count': getattr(user_profile, 'followers_count', 0),
             'read_only': hasattr(user_profile, 'read_only'),
             'alternative_emails': getattr(user_profile, 'alternative_emails', []),
-            'avatar_file': getattr(user_profile, 'avatar_file'),
+            'avatar_url': avatar_url,
             }
     
     if hasattr(user_profile, 'block_date'):
@@ -252,10 +263,15 @@ def convert_user_profile(user_profile):
 
 
 def convert_user_profile_for_json(user_profile):
+    if hasattr(user_profile, 'avatar_file'):
+        avatar_url = make_avatar_url(user_profile.key().id())
+    else:
+        avatar_url = DEFAULT_AVATAR_URL
+
     result = {
             'nickname': user_profile.nickname,
             'profile_id': user_profile.key().id(),
-            'has_avatar': hasattr(user_profile, 'avatar_file')
+            'avatar_url': avatar_url
         }
     return result
 
