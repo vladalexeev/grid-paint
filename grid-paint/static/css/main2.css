@@ -41,6 +41,32 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
     display: inline-block;
 }
 
+.header-notifications {
+    width: 40px;
+    height: 40px;
+    background-image: url(/img/svg-buttons/notifications.svg);
+    background-size: cover;
+    position: relative;
+}
+
+.header-notifications-count {
+    position: absolute;
+    height: 20px;
+    background-color: #c00000;
+    color: white;
+    right: 0;
+    top: 0;
+    font-size: 10px;
+    padding: 0px 4px 0px 4px;
+    border-radius: 10px;
+    min-width: 20px;
+    max-width: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    border: solid 1px white;
+}
+
 .header-new-image-link {
 	color: #337ab7 !important;
 	font-weight: 600;
@@ -49,6 +75,12 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 .header-new-image-link:hover {
 	color: #23527c !important;
 	font-weight: 600;
+}
+
+.header-right-margin {
+    width:20px;
+    height: 10px;
+    float: right;
 }
 
 
@@ -640,11 +672,12 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 }
 
 
+
 .nocollapse {
 	margin:0;
 }
 .nocollapse > li {
-	float:none;
+	float:right;
     display:inline-block;
 }
 .nocollapse > li > a {
@@ -660,6 +693,8 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
           box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
 }
+
+
 
 .alternative-emails .alert-info:last-child {
 	margin-bottom: 0;
@@ -850,6 +885,10 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 		padding-left: 5px;
 		padding-right: 5px;
 	}
+
+    .header-right-margin {
+        width:0;
+    }
 	
 	.rich-comment .rich-comment-image {
 		display: none;
