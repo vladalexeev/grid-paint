@@ -124,6 +124,7 @@
 		  <a name="comment-{{ comment.key }}"></a>
 		  <div class="comment" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
 		  	<div class="comment-header">
+		  		<div class="user-avatar-in-comment" style="background-image:url({% if comment.author.avatar_file %}/images/avatar/{{ comment.author.profile_id }}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})" ></div>
 		  		<b>
 		  			<span id="commenter-name">
 		  			{% if comment.author.profile_id %}<a href="/profiles/{{ comment.author.profile_id}}">{{ comment.author.nickname }}</a>
