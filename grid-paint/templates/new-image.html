@@ -34,44 +34,14 @@
 </div>
 
 
-<div id="init-properties-modal" id="modal-confirm-delete" class="modal fade" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Initial artwork properties</h4>
-      </div>
-      <div class="modal-body">
-        <form id="init-form" action="/painter" method="GET">
-    		<table>
-	    		<tr>
-    				<td>
-				    	<label>Width (px)</label>
-    					<input type="number" name="artwork_width" id="artwork_width" value="2000" style="width:200px;" class="form-control"/>
-    				</td>
-	    			<td width="10">
-    				</td>
-    				<td>
-				    	<label>Height (px)</label>
-    					<input type="number" name="artwork_height" id="artwork_height" value="2000" style="width:200px;" class="form-control"/>
-    				</td>
-    			</tr>
-    		</table>
-    		<div style="height:15px;"></div>
-    		<div class="form-group">
-    			<label>Cell size (px)</label>
-    			<input type="number" name="cell_size" id="cell_size" value="24" style="width:200px;" class="form-control"/>
-    			<input type="hidden" name="artwork_grid" id="artwork_grid" value=""/>
-    		</div>
-    	</form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn" data-dismiss="modal">Cancel</button>
-    	<button id="btn-create" type="button" class="btn btn-primary">Create new artwork</button>
-      </div>
-    </div>
-  </div>
-</div>
+
+<form id="init-form" action="/painter" method="GET" style="display: none;">
+<input type="number" name="artwork_width" id="artwork_width" value="2000"/>
+<input type="number" name="artwork_height" id="artwork_height" value="2000"/>
+<input type="number" name="cell_size" id="cell_size" value="24" style="width:200px;"/>
+<input type="hidden" name="artwork_grid" id="artwork_grid" value=""/>
+</form>
+
 
 
 
@@ -98,32 +68,8 @@ $(function() {
 	$(".grid-selector-element").click(
 		function() {
 			$("#artwork_grid").val($(this).attr("id"));
-			$("#init-properties-modal").modal();
-			//document.location="/painter?grid="+$(this).attr("id");
-		});
-		
-	$("#btn-create").click(
-		function() {
-			var width=$("#artwork_width").val();
-			var height=$("#artwork_height").val();
-			var cellSize=$("#cell_size").val();
-			
-			if (width<200 || width>4000) {
-				alert("Artwork width should by between 200 and 4000 pixels.");
-				return;
-			}
-			
-			if (height<200 || height>4000) {
-				alert("Artwork height should be between 200 and 4000 pixels");
-				return;
-			}
-			
-			if (cellSize<10 || cellSize>32) {
-				alert("Cell size should be between 10 and 32 pixels");
-				return;
-			}
-			
 			$("#init-form")[0].submit();
+			//document.location="/painter?grid="+$(this).attr("id");
 		});
 });
 </script>

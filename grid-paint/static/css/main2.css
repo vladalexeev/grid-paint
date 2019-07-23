@@ -91,6 +91,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	margin: 15px;
 	height:120px;
 	width:190px;
+	cursor: pointer;
 }
 
 
