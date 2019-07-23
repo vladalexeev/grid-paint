@@ -661,13 +661,26 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	margin-right: 10px;
 }
 
-.index-main-announce {
+.container.index-main-news-container {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.index-main-news {
     padding-top: 10px;
     padding-bottom: 10px;
     border: 1px solid #e0e0e0;
     border-radius: 10px;
+    min-height: 150px;
 }
 
+.index-main-news .image {
+    text-align: center;
+}
+
+.index-main-news .text {
+    text-align: center;
+}
 
 
 .nocollapse {
@@ -997,7 +1010,7 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	}
 	
 	.container {
-		/*width: 720px;*/
+		width: 720px;
 	}
 	
 	.index-featured-artists-wrapper {
