@@ -656,7 +656,7 @@ class ActionSaveSettings(BasicRequestHandler):
         
         self.redirect('/admin')
         
-class ActionSaveProfile(BasicRequestHandler):
+class JSONSaveProfile(BasicRequestHandler):
     def post(self):
         if not self.user_info.user:
             self.response.set_status(403)
@@ -692,8 +692,11 @@ class ActionSaveProfile(BasicRequestHandler):
                 user_profile.nickname = nickname
                 user_profile.artworks_count = 0
                 dao.add_user_profile(user_profile)
+
+        cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
+        cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
             
-        self.redirect('/')        
+        self.response.out.write(json.dumps({'result': 'ok'}))
                 
 
 class ActionUpdateIterate(BasicRequestHandler):

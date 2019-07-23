@@ -67,11 +67,11 @@ My profile
 				<div class="form-group">
 					<label class="col-xs-4 control-label">Display name</label>
 					<div class="col-xs-8">
-                        <div class="input-group">
+                        <div class="input-group" style="width: 100%">
 						    <input type="text" class="form-control" name="nickname" value="{{ profile.nickname }}" />
               				{% if not user_info.read_only %}
                                 <div class="input-group-btn">
-                                    <button type="button" class="btn btn-primary" id="submit-button">
+                                    <button type="button" class="btn btn-primary" id="save-nickname-button" style="display: none;">
                                         <i class="glyphicon glyphicon-arrow-right"></i>
                                     </button>
                                 </div>
@@ -218,8 +218,34 @@ My profile
 
 <script>
 var profile_id='{{ profile.key.id }}';
+
+function doSaveNickName() {
+    var nickname=$("input[name=nickname]").val();
+    $.post(
+        "json/save-profile",
+        {'nickname': nickname},
+        function(data) {
+            if (data.result === 'ok') {
+                $("#save-nickname-button").hide();
+            }
+        },
+        "json")
+}
+
+$("input[name=nickname]").change(
+    function() {
+        $("#save-nickname-button").show();
+    }
+);
+
+$("input[name=nickname]").keydown(
+    function() {
+        $("#save-nickname-button").show();
+    }
+);
+
 $(function () {
-	$("#submit-button").click(
+	$("#save-nickname-button").click(
 		function() {
 			var nickname=$("input[name=nickname]").val();
 			if (!nickname) {
@@ -234,7 +260,7 @@ $(function () {
 					if (data.id && data.id != profile_id) {
 						$("#modal-duplicate-nickname").modal();
 					} else {
-						$("form[name=form-profile]")[0].submit();
+					    doSaveNickName();
 					}
 				},
 				"json"
