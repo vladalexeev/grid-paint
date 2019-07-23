@@ -241,7 +241,7 @@ def convert_user_profile(user_profile):
         avatar_url = DEFAULT_AVATAR_URL
         
     result = {
-            'email': user_profile.email,
+            # 'email': user_profile.email,
             'nickname': user_profile.nickname,
             'profile_id': user_profile.key().id(),
             'join_date': user_profile.join_date,
@@ -249,7 +249,7 @@ def convert_user_profile(user_profile):
             'favorite_count': user_profile.favorite_count,
             'followers_count': getattr(user_profile, 'followers_count', 0),
             'read_only': hasattr(user_profile, 'read_only'),
-            'alternative_emails': getattr(user_profile, 'alternative_emails', []),
+            # 'alternative_emails': getattr(user_profile, 'alternative_emails', []),
             'avatar_url': avatar_url,
             }
     

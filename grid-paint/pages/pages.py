@@ -512,12 +512,12 @@ class PageProfile(BasicRequestHandler):
             profile_id = int(arg[0])
         except ValueError:
             self.response.set_status(404)
-            return;
+            return
             
         user_profile = dao.get_user_profile_by_id(profile_id)
         if not user_profile:
             self.response.set_status(404)
-            return;
+            return
         
         def artworks_query_func():
             return db.Artwork.all().filter('author_email =',user_profile.email).order('-date')
@@ -534,7 +534,11 @@ class PageProfile(BasicRequestHandler):
                                      memcache_cursor_key_func)
         model['profile'] = convert.convert_user_profile(user_profile)
         if self.user_info.user:
-            model['following'] = dao.is_follower(model['profile']['email'], self.user_info.user_email)
+            model['following'] = dao.is_follower(user_profile.email, self.user_info.user_email)
+
+        if self.user_info.superadmin:
+            model['profile']['email'] = user_profile.email
+            model['profile']['alternative_emails'] = getattr(user_profile, 'alternative_emails', [])
         
         self.write_template('templates/profile.html', model)
 
