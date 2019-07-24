@@ -661,15 +661,12 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	margin-right: 10px;
 }
 
-.container.index-main-news-container {
-    padding-left: 0;
-    padding-right: 0;
+.index-main-news-container {
+    margin: 0 -30px;
 }
 
 .index-main-news {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border: 1px solid #e0e0e0;
+    padding: 10px;
     border-radius: 10px;
     min-height: 150px;
 }
