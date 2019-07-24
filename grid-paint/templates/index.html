@@ -45,7 +45,11 @@ link at the top.
                     <img src="/img/news/2019-07-23-avatar.png" height="120"/>
                 </div>
                 <div class="text">
-                    Upload image for your avatar
+					{% if user_info.profile_id %}
+					Upload image for your avatar in <a href="/my-profile">your profile</a>.
+					{% else %}
+					Upload image for your avatar in your profile.
+					{% endif %}
                 </div>
             </div>
         </div>
