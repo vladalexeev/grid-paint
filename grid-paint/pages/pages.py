@@ -455,7 +455,7 @@ class PageImage(BasicPageRequestHandler):
                 'og_image_width': converted_artwork['full_image_width'],
                 'og_image_height': converted_artwork['full_image_height'],
                 'og_url': 'https://grid-paint.com/images/details/' + artwork_id,
-                'og_description': 'Created by {} in Grid Paint'.format(converted_artwork['author']['nickname'])
+                'og_description': u'Created by {} in Grid Paint'.format(converted_artwork['author']['nickname'])
             })
         
         
