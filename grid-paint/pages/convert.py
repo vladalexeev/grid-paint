@@ -263,7 +263,7 @@ def convert_user_profile(user_profile):
 
 
 def convert_user_profile_for_json(user_profile):
-    if hasattr(user_profile, 'avatar_file'):
+    if getattr(user_profile, 'avatar_file'):
         avatar_url = make_avatar_url(user_profile.key().id())
     else:
         avatar_url = DEFAULT_AVATAR_URL
