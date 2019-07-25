@@ -782,7 +782,9 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 .user-profile-avatar-container {
 	min-height: 150px;
 	min-width: 150px;
+	max-width: 150px;
 	position: relative;
+	margin: auto;
 }
 
 .user-profile-avatar {
@@ -1012,7 +1014,7 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	}
 	
 	.container {
-		width: 720px;
+		width: 750px;
 	}
 	
 	.index-featured-artists-wrapper {
