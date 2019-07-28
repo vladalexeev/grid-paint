@@ -1314,8 +1314,9 @@ class ActionUploadUserAvatar(BasicRequestHandler):
         else:
             new_image_width = max_avatar_size
             new_image_height = int(image_height * max_avatar_size / image_width)
-            
-        resized_image = image.resize((new_image_width, new_image_height))
+
+        rgb_image = image.convert('RGB')
+        resized_image = rgb_image.resize((new_image_width, new_image_height))
         cropped_image = resized_image.crop((
                 int((new_image_width - max_avatar_size) / 2),
                 int((new_image_height - max_avatar_size) / 2),
