@@ -91,3 +91,14 @@ class NewsFeed(db.Expando):
     artwork = db.ReferenceProperty(reference_class=Artwork)
     type = db.StringProperty()
 
+
+class TaskLog(db.Expando):
+    date = db.DateTimeProperty(auto_now_add=True)
+    task_name = db.StringProperty()
+    data = db.StringProperty()
+
+
+class TaskStatus(db.Expando):
+    task_name = db.StringProperty()
+    last_date = db.DateTimeProperty()
+    data = db.StringProperty()
