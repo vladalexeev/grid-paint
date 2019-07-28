@@ -36,7 +36,6 @@ from google.appengine.api import taskqueue
 
 import logging
 import antispam
-from db import Notification
 from const import NEWS_TYPE_CHANGE_ARTWORK, NEWS_TYPE_NEW_ARTWORK
 
 from bad_language import hide_bad_language
@@ -1114,19 +1113,7 @@ class JsonDeleteAlternativeEmail(BasicRequestHandler):
             return
         
         
-class CronCleanNotifications(BasicRequestHandler):
-    def get(self, *args):
-        date = datetime.datetime.now() - datetime.timedelta(days=90)
-        notifications = Notification.all().filter('date <', date).fetch(200)
-        for n in notifications:
-            if n.recipient_email:
-                cache.delete(cache.MC_USER_NOTIFICATION_PREFIX + n.recipient_email)
-            n.delete()
-            
-        self.response.set_status(200)
-        return
-            
-            
+
 class ActionFollow(BasicRequestHandler):            
     def get(self):
         if not self.user_info.user:

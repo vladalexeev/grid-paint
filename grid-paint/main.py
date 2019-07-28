@@ -4,6 +4,7 @@ from google.appengine.ext import webapp
 import pages.pages
 import pages.actions
 import pages.tasks
+import pages.cron
 
 
 application = webapp.WSGIApplication([
@@ -73,7 +74,7 @@ application = webapp.WSGIApplication([
                                       ('/comments', pages.pages.PageComments),
                                       ('/follow', pages.actions.ActionFollow),
                                       ('/unfollow', pages.actions.ActionUnfollow),
-                                      ('/cron/clean-notifications', pages.actions.CronCleanNotifications),
+                                      ('/cron/clean-notifications', pages.cron.CronCleanNotifications),
                                       ('/tasks/add-artwork-to-news', pages.tasks.TaskAddArtworkToNews),
                                       ], debug=True)
 

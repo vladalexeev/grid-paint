@@ -10,6 +10,7 @@ from google.appengine.ext import db
 artwork_small_image_width=200
 artwork_small_image_height=150
 
+
 class Artwork(db.Expando):
     name = db.TextProperty()
     description = db.TextProperty()
@@ -26,18 +27,21 @@ class Artwork(db.Expando):
     small_image_height = db.IntegerProperty(indexed=False)
     editor_choice = db.BooleanProperty()
     editor_choice_date = db.DateTimeProperty()
-    
+
+
 class Tag(db.Model):
     url_name = db.StringProperty()
     title = db.StringProperty()
     title_lower = db.StringProperty()
-    
+
+
 class Comment(db.Expando):
     artwork_ref = db.ReferenceProperty(reference_class=Artwork)
     author_email = db.StringProperty()
     text = db.TextProperty()
     date = db.DateTimeProperty(auto_now_add=True)
-    
+
+
 class Notification(db.Expando):
     date = db.DateTimeProperty(auto_now_add=True)
     recipient_email = db.StringProperty()
@@ -46,7 +50,8 @@ class Notification(db.Expando):
     artwork = db.ReferenceProperty(reference_class=Artwork, indexed=False)
     comment = db.ReferenceProperty(reference_class=Comment, indexed=False)
     sender_email = db.StringProperty(indexed=False)
-    
+
+
 class UserProfile(db.Expando):
     email = db.StringProperty()
     nickname = db.StringProperty()
@@ -60,17 +65,20 @@ class Settings(db.Model):
     show_ads = db.BooleanProperty()
     show_analytics = db.BooleanProperty()
     admin_email = db.StringProperty()
-    
+
+
 class Favorite(db.Expando):
     user_email = db.StringProperty()
     artwork = db.ReferenceProperty(reference_class=Artwork)
     date = db.DateTimeProperty(auto_now_add=True)
-    
+
+
 class FavoriteCounter(db.Expando):
     artwork = db.ReferenceProperty(reference_class=Artwork)
     count = db.IntegerProperty()
     date = db.DateTimeProperty(auto_now_add=True)
-    
+
+
 class Follow(db.Expando):
     leader_email = db.StringProperty()
     follower_email = db.StringProperty()
@@ -82,4 +90,4 @@ class NewsFeed(db.Expando):
     date = db.DateTimeProperty(auto_now_add=True)
     artwork = db.ReferenceProperty(reference_class=Artwork)
     type = db.StringProperty()
-    
+
