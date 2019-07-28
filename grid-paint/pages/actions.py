@@ -49,6 +49,7 @@ grids={
        'triangles4': GridTriangles4
        }
 
+
 class ActionSaveImage(BasicRequestHandler):
     def post(self):
         if not self.user_info.user:
@@ -75,16 +76,14 @@ class ActionSaveImage(BasicRequestHandler):
                 return
         else:
             news_type = NEWS_TYPE_NEW_ARTWORK
-            artwork=db.Artwork();
+            artwork=db.Artwork()
             artwork.author_email = self.user_info.user_email
             
         if artwork_name:
             artwork.name=hide_bad_language(artwork_name)
         else:
             artwork.name='Untitled'
-            
-        
-            
+
         if artwork_description:
             artwork.description=hide_bad_language(artwork_description)
         else:
@@ -94,20 +93,19 @@ class ActionSaveImage(BasicRequestHandler):
         #artwork.json_compressed = True 
         
         original_tags=artwork_tags.split(',')
-        url_tags=[]
+        url_tags = []
         for tag_title in original_tags:
-            if len(tag_title)>0:
-                db_tag=tags.create_tag_by_title(tag_title);
+            db_tag = tags.create_tag_by_title(tag_title)
+            if db_tag:
                 url_tags.append(db_tag.url_name)
         
         artwork.tags=url_tags
-        
         
         json_obj=json.loads(artwork_json)
 
         layer=json_obj['layers'][0]
         artwork.grid = layer['grid']
-        grid=grids[layer['grid']]();
+        grid=grids[layer['grid']]()
         grid.cell_size=layer['cellSize']
         
         if json_obj['transparentBackground']:
@@ -125,7 +123,6 @@ class ActionSaveImage(BasicRequestHandler):
         
         dx=-json_obj['effectiveRect']['left']
         dy=-json_obj['effectiveRect']['top']
-        
 
         if json_obj['version']['major']==1:
             for cell in layer['cells']:
@@ -165,7 +162,6 @@ class ActionSaveImage(BasicRequestHandler):
             pixel_memory_file = StringIO.StringIO()
             pixel_image.save(pixel_memory_file, 'png')
 
-                        
         # Create thumbnail image
         artwork.full_image_width = image_width
         artwork.full_image_height = image_height

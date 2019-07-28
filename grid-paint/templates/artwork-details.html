@@ -85,7 +85,7 @@
 		<div>
 			<i class="icon icon-tag"></i>
 			{% for tag in artwork.tags %}
-			  <a href="/gallery?q={{ tag.title }}">{{ tag.title }}</a>
+			  <a href="/gallery?q={{ tag.url_name }}">{{ tag.title }}</a>
 			{% endfor %}
 		</div>
 		{% endif %}		
