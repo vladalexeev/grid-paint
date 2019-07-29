@@ -464,11 +464,36 @@ class PageAdmin(BasicPageRequestHandler):
         if not self.user_info.superadmin:
             self.response.set_status(403)
             return
+
+        task_statuses = db.TaskStatus.all()
         
-        self.write_template('templates/admin.html', 
-                            {
-                            })
-        
+        self.write_template(
+            'templates/admin.html',
+            {
+                'task_statuses': task_statuses
+            }
+        )
+
+
+class PageAdminTaskStatus(BasicPageRequestHandler):
+    def get(self, *args):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        task_name = args[0]
+        task_status = db.TaskStatus.all().filter('task_name =', task_name).get()
+        task_log = db.TaskLog.all().filter('task_name =', task_name).order('date')
+
+        self.write_template(
+            'templates/admin-task-status.html',
+            {
+                'task_status': task_status,
+                'task_log': task_log
+            }
+        )
+
+
 class PageAdminUpdateIterate(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.superadmin:

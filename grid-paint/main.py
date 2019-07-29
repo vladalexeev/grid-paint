@@ -21,6 +21,7 @@ application = webapp.WSGIApplication([
     ('/admin/unblock-user', pages.actions.ActionAdminUnblockUser),
     ('/admin/refresh-index-page', pages.actions.ActionAdminFlushMemcacheForIndexPage),
     ('/admin/update-editor-choice', pages.actions.ActionUpdateEditorChoice),
+    ('/admin/tasks/(.*)', pages.pages.PageAdminTaskStatus),
     ('/save-settings', pages.actions.ActionSaveSettings),
     ('/new-image', pages.pages.PageNewImage),
     ('/painter', pages.pages.PagePainter),

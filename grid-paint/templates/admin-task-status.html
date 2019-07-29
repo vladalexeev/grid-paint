@@ -1,0 +1,43 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}
+<div class="container single-container">
+    <h2 class="text-center">{{ task_status.task_name }}</h2>
+    <p>Last time: {{ task_status.last_date }}</p>
+    {% if task_status.finished %}<p>Finished</p>{% endif %}
+    <p>{{ task_status.data }}</p>
+
+	<div class="row">
+		<div class="col-xs-8 col-xs-offset-2">
+		
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Data
+                    </th>
+                </tr>
+
+                {% for t in task_log %}
+                <tr>
+                    <td>
+                        {{ t.date }}
+                    </td>
+                    <td>
+                        {{ t.data }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+		</div>
+	</div>
+</div>
+
+
+  
+{% endblock content %}
+
+

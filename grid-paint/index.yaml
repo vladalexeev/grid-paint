@@ -31,6 +31,10 @@ indexes:
   properties:
   - name: "artwork_ref"
   - name: "date"
+- kind: "TaskLog"
+  properties:
+  - name: "task_name"
+  - name: "date"
 - kind: "Artwork"
   properties:
   - name: "author_email"

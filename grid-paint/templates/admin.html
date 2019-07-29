@@ -60,7 +60,26 @@
 			<a href="/admin/update-iterate">Update by dates</a>
 		</p>
 	</div>
-	
+
+	<div class="col-xs-offset-2 col-xs-8 well">
+        <table class="table table-striped">
+            <tr>
+                <th>Name</th>
+                <th>Last time</th>
+                <th>Properties</th>
+            </tr>
+            {% for t in task_statuses %}
+                <tr>
+                    <td><a href="/admin/tasks/{{ t.task_name }}">{{ t.task_name }}</a></td>
+                    <td>{{ t.last_date }}</td>
+                    <td>
+                        {% if t.finished %}<div>Finished</div>{% else %}Not finished{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+	</div>
+
 </div>
 </div>
 
