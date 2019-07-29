@@ -102,3 +102,4 @@ class TaskStatus(db.Expando):
     task_name = db.StringProperty()
     last_date = db.DateTimeProperty()
     data = db.StringProperty()
+    finished = db.BooleanProperty()
