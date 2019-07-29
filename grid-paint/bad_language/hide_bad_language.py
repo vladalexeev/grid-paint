@@ -2,10 +2,14 @@
 from profanity_filter import Filter
 from bad_language.obscene_words_filter import get_default_filter
 
+
 def hide_bad_language(s):
     """
     Replaces bad words in phrase by '*'
     """
+    if not s:
+        return s
+
     filter_1 = Filter(s)
     result = filter_1.clean()
     
