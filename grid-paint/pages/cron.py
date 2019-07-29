@@ -83,7 +83,6 @@ class CronUpdateArtworks(BasicRequestHandler):
         task_data['iteration'] = task_data['iteration'] + 1
 
         task_status.data = json.dumps(task_data)
-        task_status.last_date = datetime.datetime.now()
         task_status.finished = (task_log_data['total'] == 0)
         task_status.put()
 
