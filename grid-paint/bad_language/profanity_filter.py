@@ -39,7 +39,7 @@ default_bad_words = [
     'poop', 'porn', 'pr0n', 'pr1c', 'pr1ck', 'pr1k', 'preteen', 'pula', 'pule', 'pusse', 'pussee',
     'pussy', 'puta', 'puto', 'puuke', 'puuker', 'qahbeh', 'queef', 'queer', 'queers', 'queerz',
     'qweers', 'qweerz', 'qweir', 'rautenberg', 'recktum', 'rectum', 'retard', 's.o.b.', 'sadist',
-    'scank', 'schaffer', 'scheiss', 'schlampe', 'schlong', 'schmuck', 'screw', 'screwing', 'scrotum',
+    'scank', 'schaffer', 'scheiss', 'schlampe', 'schlong', 'schmuck', 'screwing', 'scrotum',
     'semen', 'sex', 'sexx', 'sexxx', 'sexy', 'sh1t', 'sh1ter', 'sh1ts', 'sh1tter', 'sh1tz', 'sharmuta',
     'sharmute', 'shemale', 'shi+', 'shipal', 'shit', 'shits', 'shitt', 'shitter', 'shitz', 'shiz',
     'skanck', 'skank', 'skankee', 'skankey', 'skanks', 'skrib', 'slut', 'sluts', 'slutz', 'smut',
