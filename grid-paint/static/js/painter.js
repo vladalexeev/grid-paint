@@ -1017,6 +1017,7 @@ $(function() {
 			paper=new Raphael("canvas",newWidth,newHeight);
 			grid.paintGrid(paper);
 			createShapesToolbar();
+			selection.paper=paper;
 			
 			var oldGridArtwork=gridArtwork;
 			gridArtwork=new GridArtwork();
