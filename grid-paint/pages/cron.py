@@ -44,7 +44,7 @@ class CronUpdateArtworks(BasicRequestHandler):
         task_log_data = {
             'bad_language': 0,
             'tags': 0,
-            'total': 0
+            'total': 0,
         }
 
         artworks = db.Artwork.all().filter('date >', task_status.last_date).order('date').fetch(200)
@@ -55,10 +55,10 @@ class CronUpdateArtworks(BasicRequestHandler):
             new_name = hide_bad_language(a.name)
             new_description = hide_bad_language(a.description)
             if new_name != a.name or new_description != a.description:
-                changed = True
-                a.name = new_name
-                a.description = new_description
                 task_log_data['bad_language'] = task_log_data['bad_language'] + 1
+                if 'bad_images' not in task_log_data:
+                    task_log_data['bad_images'] = []
+                task_log_data['bad_images'].append(a.key().id())
 
             if a.tags:
                 new_tags = [tag_url_name(t) for t in a.tags]
