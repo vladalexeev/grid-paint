@@ -2,9 +2,9 @@ import re
 
 default_bad_words = [
     'AssMonkey', 'Assface', 'Biatch', 'BlowJob', 'CarpetMuncher', 'Clit', 'Cock',
-    'CockSucker', 'Ekrem', 'Ekto', 'Felcher', 'Flikker', 'Fotze', 'Fu', 'FudgePacker',
+    'CockSucker', 'Ekrem', 'Ekto', 'Felcher', 'Flikker', 'Fotze', 'FudgePacker',
     'Fukah', 'Fuken', 'Fukin', 'Fukk', 'Fukkah', 'Fukken', 'Fukker', 'Fukkin', 'Goddamned',
-    'Huevon', 'Kurac', 'Lesbian', 'Lezzian', 'Lipshits', 'Lipshitz', 'MothaFucker',
+    'Huevon', 'Kurac', 'Lezzian', 'Lipshits', 'Lipshitz', 'MothaFucker',
     'MothaFuker', 'MothaFukkah', 'MothaFukker', 'MotherFucker', 'MotherFukah', 'MotherFuker',
     'MotherFukkah', 'MotherFukker', 'MuthaFucker', 'MuthaFukah', 'MuthaFuker', 'MuthaFukkah',
     'MuthaFukker', 'Phuc', 'Phuck', 'Phuk', 'Phuker', 'Phukker', 'Poonani', 'Shitty', 'Shity',
@@ -22,12 +22,12 @@ default_bad_words = [
     'faggit', 'faggot', 'fagit', 'fags', 'fagz', 'faig', 'faigs', 'fanculo', 'fanny', 'fart',
     'fatass', 'fcuk', 'feces', 'feg', 'ficken', 'fitt', 'flipping', 'foreskin', 'fuchah', 'fuck',
     'fucka', 'fucker', 'fuckin', 'fucking', 'fucks', 'fuk', 'fukah', 'fuker', 'fukka', 'fukkah',
-    'fukker', 'futkretzn', 'fux0r', 'g00k', 'gay', 'gaybor', 'gayboy', 'gaygirl', 'gays', 'gayz',
-    'gook', 'guiena', 'h00r', 'h0ar', 'h0r', 'h0re', 'h4x0r', 'hells', 'helvete', 'hoar',
+    'fukker', 'futkretzn', 'fux0r', 'g00k', 'gaybor', 'gayboy', 'gaygirl',
+    'gook', 'guiena', 'h00r', 'h0ar', 'h0r', 'h0re', 'h4x0r', 'helvete', 'hoar',
     'hoer', 'honkey', 'hoor', 'hoore', 'hore', 'hui', 'injun', 'jackoff', 'jap', 'japs', 'jerkoff',
     'jisim', 'jism', 'jiss', 'jizm', 'jizz', 'kanker', 'kawk', 'kike', 'klootzak', 'knob', 'knobs',
     'knobz', 'knulle', 'kraut', 'kuk', 'kuksuger', 'kunt', 'kunts', 'kuntz', 'kurwa', 'kusi', 'kyrpa',
-    'l3i+ch', 'l3itch', 'lesbian', 'lesbo', 'mamhoon', 'masochist', 'masokist', 'massterbait',
+    'l3i+ch', 'l3itch', 'mamhoon', 'masochist', 'masokist', 'massterbait',
     'masstrbait', 'masstrbate', 'masterbaiter', 'masterbat', 'masterbat3', 'masterbate', 'masterbates',
     'masturbat', 'masturbate', 'merd', 'mibun', 'mofo', 'monkleigh', 'motha', 'motherfucker',
     'mouliewop', 'muie', 'mulkku', 'muschi', 'mutha', 'n1gr', 'nastt', 'nazi', 'nazis',
@@ -37,15 +37,15 @@ default_bad_words = [
     'peinus', 'pen1s', 'penas', 'penis', 'penisbreath', 'penus', 'penuus', 'perse', 'phuck', 'picka',
     'pierdol', 'pillu', 'pimmel', 'pimpis', 'piss', 'pizda', 'polac', 'polack', 'polak', 'poontsee',
     'porn', 'pr0n', 'pr1c', 'pr1ck', 'pr1k', 'preteen', 'pula', 'pule', 'pusse', 'pussee',
-    'pussy', 'puta', 'puto', 'puuke', 'puuker', 'qahbeh', 'queef', 'queer', 'queers', 'queerz',
-    'qweers', 'qweerz', 'qweir', 'rautenberg', 'recktum', 'rectum', 'retard', 's.o.b.', 'sadist',
+    'pussy', 'puta', 'puto', 'puuke', 'puuker', 'qahbeh', 'queef',
+    'rautenberg', 'recktum', 'rectum', 'retard',
     'scank', 'schaffer', 'scheiss', 'schlampe', 'schlong', 'schmuck', 'screwing', 'scrotum',
     'semen', 'sex', 'sexx', 'sexxx', 'sexy', 'sh1t', 'sh1ter', 'sh1ts', 'sh1tter', 'sh1tz', 'sharmuta',
     'sharmute', 'shemale', 'shi+', 'shipal', 'shit', 'shits', 'shitt', 'shitter', 'shitz', 'shiz',
     'skanck', 'skank', 'skankee', 'skankey', 'skanks', 'skrib', 'slut', 'sluts', 'slutz', 'smut',
     'sonofabitch', 'sx', 'teets', 'teez', 'testical', 'testicle', 'tit', 'tits', 'titt', 'turd',
     'va1jina', 'vag1na', 'vagiina', 'vagina', 'vaj1na', 'vajina', 'vullva', 'vulva', 'w00se', 'w0p',
-    'wank', 'wh00r', 'wh0re', 'whoar', 'whore', 'xrated', 'xxx']
+    'wank', 'wh00r', 'wh0re', 'whoar', 'whore', 'xrated']
 
 
 class ProfanityFilter:

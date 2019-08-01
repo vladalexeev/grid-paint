@@ -6,7 +6,8 @@ Created on 04.11.2013
 
 import unittest
 
-from pages.common import auto_nickname
+from pages.convert import auto_nickname
+
 
 class Test (unittest.TestCase):
     def test_auto_nickname(self):
