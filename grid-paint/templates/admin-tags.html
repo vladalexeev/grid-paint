@@ -31,7 +31,7 @@
 
                 {% for t in tags %}
                 <tr>
-                    <td>{{ t.title }}</td>
+                    <td><a href="/gallery?q={{ t.url_name }}" target="_blank">{{ t.title }}</a></td>
                     <td>{{ t.url_name }}</td>
                     <td></td>
                 </tr>
