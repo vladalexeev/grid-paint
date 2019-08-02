@@ -13,12 +13,14 @@ from bad_language import hide_bad_language
 
 
 def tag_url_name(title):
-    return unidecode.unidecode(title.lower()).\
+    return unidecode.unidecode(title.lower().strip()).\
         replace(' ', '-').\
         replace('/', '-').\
         replace('\\', '-').\
         replace(':', '-').\
-        replace('#', '-')
+        replace('#', '-').\
+        replace('&', '-').\
+        replace('=', '-')
 
 
 def get_tag_by_title(title):
@@ -35,6 +37,11 @@ def get_tag_by_title(title):
 def create_tag_by_title(title):
     if not title:
         return None
+
+    title = title.strip()
+    if not title:
+        return None
+
     if hide_bad_language(title) != title:
         return None
 
