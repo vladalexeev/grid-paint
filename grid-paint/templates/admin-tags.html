@@ -1,0 +1,63 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}
+<div class="container single-container">
+    <h2 class="text-center">Tags moderation</h2>
+
+    <div style="text-align: center;">
+        {% if offset == 0 %}
+            &lt;&lt; Back
+        {% else %}
+            <a href="/admin/tags?limit={{ limit }}&offset={{ prev_offset }}">&lt;&lt; Back</a>
+        {% endif %}
+
+        {% if next_offset > 0 %}
+            <a href="/admin/tags?limit={{ limit }}&offset={{ next_offset }}">Next &gt;&gt;</a>
+        {% else %}
+            Next &gt;&gt;
+        {% endif %}
+    </div>
+
+	<div class="row">
+		<div class="col-xs-8 col-xs-offset-2">
+		
+            <table class="table table-striped">
+                <tr>
+                    <th>Title</th>
+                    <th>URL_name</th>
+                    <th>Action</th>
+                </tr>
+
+                {% for t in tags %}
+                <tr>
+                    <td>{{ t.title }}</td>
+                    <td>{{ t.url_name }}</td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </table>
+		</div>
+	</div>
+
+    <div style="text-align: center;">
+        {% if offset == 0 %}
+            &lt;&lt; Back
+        {% else %}
+            <a href="/admin/tags?limit={{ limit }}&offset={{ prev_offset }}">&lt;&lt; Back</a>
+        {% endif %}
+
+        {% if next_offset > 0 %}
+            <a href="/admin/tags?limit={{ limit }}&offset={{ next_offset }}">Next &gt;&gt;</a>
+        {% else %}
+            Next &gt;&gt;
+        {% endif %}
+    </div>
+
+</div>
+
+
+  
+{% endblock content %}
+
+

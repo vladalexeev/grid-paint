@@ -814,4 +814,37 @@ class PageMyLeaders(BasicPageRequestHandler):
             return
         
         self.write_template('templates/user-leaders.html', {})
-    
+
+
+class PageAdminTags(BasicPageRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        limit = int(self.request.get('limit'))
+        offset = int(self.request.get('offset'))
+
+        fetched_tags = db.Tag.all().order('url_name').fetch(limit + 1, offset)
+        query_tags = [t for t in fetched_tags]
+
+        prev_offset = offset - limit
+        if prev_offset < 0:
+            prev_offset = 0
+
+        if len(query_tags) > limit:
+            query_tags = query_tags[:-1]
+            next_offset = offset + limit
+        else:
+            next_offset = -1
+
+        self.write_template(
+            'templates/admin-tags.html',
+            {
+                'tags': query_tags,
+                'limit': limit,
+                'offset': offset,
+                'next_offset': next_offset,
+                'prev_offset': prev_offset
+            }
+        )
