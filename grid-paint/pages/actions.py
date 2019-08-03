@@ -1372,3 +1372,90 @@ class AvatarImageRequest(BasicRequestHandler):
             self.response.out.write(file_content)        
         else:
             self.response.set_status(404)
+
+
+class JSONAdminDeleteTag(BasicRequestHandler):
+    def post(self):
+        tag_id = int(self.request.get('tag_id'))
+        tag = db.Tag.get_by_id(tag_id)
+        if tag:
+            max_count = 200
+            artworks = db.Artwork.all().filter('tags =', tags.tag_url_name(tag.url_name)).fetch(max_count + 1)
+            count = 0
+            has_more = False
+            for a in artworks:
+                if count < max_count:
+                    count = count + 1
+                    a.tags.remove(tag.url_name)
+                    a.put()
+                else:
+                    has_more = True
+            if not has_more:
+                cache.delete(cache.MC_TAG + tag.url_name)
+                tag.delete()
+
+            self.response.out.write(json.dumps({
+                'result': 'ok',
+                'count': count,
+                'has_more': has_more
+            }))
+        else:
+            self.response.out.write(json.dumps({
+                'error': 'not_found',
+            }))
+
+
+class JSONAdminRenameTag(BasicRequestHandler):
+    def post(self):
+        tag_id = int(self.request.get('tag_id'))
+        new_title = self.request.get('title').strip()
+        new_url_name = tags.tag_url_name(new_title)
+        tag_by_id = db.Tag.get_by_id(tag_id)
+        if tag_by_id:
+            if tag_by_id.url_name == new_url_name:
+                cache.delete(cache.MC_TAG + tag_by_id.url_name)
+                tag_by_id.title = new_title
+                tag_by_id.title_lower = new_title.lower()
+                tag_by_id.put()
+                self.response.out.write(json.dumps({
+                    'result': 'renamed',
+                }))
+            else:
+                tag_by_url_name = db.Tag.all().filter('url_name =', new_url_name).get()
+                if not tag_by_url_name:
+                    new_tag = db.Tag()
+                    new_tag.title = new_title
+                    new_tag.title_lower = new_title.lower()
+                    new_tag.url_name = new_url_name
+                    new_tag.put()
+
+                max_count = 200
+                artworks = db.Artwork.all().filter('tags =', tags.tag_url_name(tag_by_id.url_name)).fetch(max_count + 1)
+                count = 0
+                has_more = False
+                for a in artworks:
+                    if count < max_count:
+                        count = count + 1
+                        a.tags.remove(tag_by_id.url_name)
+                        if new_url_name not in a.tags:
+                            a.tags.append(new_url_name)
+                        a.put()
+                    else:
+                        has_more = True
+                if not has_more:
+                    cache.delete(cache.MC_TAG + tag_by_id.url_name)
+                    tag_by_id.delete()
+                self.response.out.write(json.dumps({
+                    'result': 'ok',
+                    'count': count,
+                    'has_more': has_more
+                }))
+        else:
+            self.response.out.write(json.dumps({
+                'error': 'not_found',
+            }))
+
+
+
+
+

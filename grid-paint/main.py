@@ -71,6 +71,8 @@ application = webapp.WSGIApplication([
     ('/json/leaders', pages.actions.JSONLeaders),
     ('/json/delete-avatar', pages.actions.JSONDeleteUserAvatar),
     ('/json/save-profile', pages.actions.JSONSaveProfile),
+    ('/json/delete-tag', pages.actions.JSONAdminDeleteTag),
+    ('/json/rename-tag', pages.actions.JSONAdminRenameTag),
     ('/comments', pages.pages.PageComments),
     ('/follow', pages.actions.ActionFollow),
     ('/unfollow', pages.actions.ActionUnfollow),

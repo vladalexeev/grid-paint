@@ -3,7 +3,7 @@ cron:
   url: /cron/clean-notifications
   schedule: every 12 hours
 
-- description: "Update artworks"
-  url: /cron/update-artworks
-  schedule: every 10 minutes
+#- description: "Update artworks"
+#  url: /cron/update-artworks
+#  schedule: every 10 minutes
 
