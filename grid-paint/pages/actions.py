@@ -1386,7 +1386,12 @@ class JSONAdminDeleteTag(BasicRequestHandler):
             for a in artworks:
                 if count < max_count:
                     count = count + 1
-                    a.tags.remove(tag.url_name)
+                    if tag.url_name in a.tags:
+                        a.tags.remove(tag.url_name)
+                    if tags.tag_url_name(tag.title) in a.tags:
+                        a.tags.remove(tags.tag_url_name(tag.title))
+                    if tags.tag_url_name(tag.url_name) in a.tags:
+                        a.tags.remove(tags.tag_url_name(tag.url_name))
                     a.put()
                 else:
                     has_more = True
@@ -1436,7 +1441,12 @@ class JSONAdminRenameTag(BasicRequestHandler):
                 for a in artworks:
                     if count < max_count:
                         count = count + 1
-                        a.tags.remove(tag_by_id.url_name)
+                        if tag_by_id.url_name in a.tags:
+                            a.tags.remove(tag_by_id.url_name)
+                        if tags.tag_url_name(tag_by_id.title) in a.tags:
+                            a.tags.remove(tags.tag_url_name(tag_by_id.title))
+                        if tags.tag_url_name(tag_by_id.url_name) in a.tags:
+                            a.tags.remove(tags.tag_url_name(tag_by_id.url_name))
                         if new_url_name not in a.tags:
                             a.tags.append(new_url_name)
                         a.put()
