@@ -1430,6 +1430,11 @@ class JSONAdminRenameTag(BasicRequestHandler):
                 tag_by_id.title = new_title
                 tag_by_id.title_lower = new_title.lower()
                 tag_by_id.put()
+
+                same_tags = db.Tag.all().filter('url_name =', new_url_name)
+                for t in same_tags:
+                    if t.key().id() != tag_id:
+                        t.delete()
                 self.response.out.write(json.dumps({
                     'result': 'renamed',
                 }))
@@ -1463,6 +1468,7 @@ class JSONAdminRenameTag(BasicRequestHandler):
                 if not has_more:
                     cache.delete(cache.MC_TAG + tag_by_id.url_name)
                     tag_by_id.delete()
+
                 self.response.out.write(json.dumps({
                     'result': 'ok',
                     'count': count,
