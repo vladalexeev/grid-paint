@@ -1376,6 +1376,10 @@ class AvatarImageRequest(BasicRequestHandler):
 
 class JSONAdminDeleteTag(BasicRequestHandler):
     def post(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
         tag_id = int(self.request.get('tag_id'))
         tag = db.Tag.get_by_id(tag_id)
         if tag:
@@ -1412,6 +1416,10 @@ class JSONAdminDeleteTag(BasicRequestHandler):
 
 class JSONAdminRenameTag(BasicRequestHandler):
     def post(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
         tag_id = int(self.request.get('tag_id'))
         new_title = self.request.get('title').strip()
         new_url_name = tags.tag_url_name(new_title)

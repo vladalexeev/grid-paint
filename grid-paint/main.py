@@ -4,6 +4,7 @@ import pages.pages
 import pages.actions
 import pages.tasks
 import pages.cron
+import pages.update
 
 application = webapp.WSGIApplication([
     ('/', pages.pages.PageIndex),
@@ -15,6 +16,7 @@ application = webapp.WSGIApplication([
     ('/admin/updateArtworkFavorites', pages.actions.ActionAdminUpdateArtworkFavoriteCount),
     ('/admin/update-iterate', pages.pages.PageAdminUpdateIterate),
     ('/admin/update-iterate-do', pages.actions.ActionUpdateIterate),
+    ('/admin/update-tags', pages.update.ActionUpdateTags),
     ('/admin/hide-comment', pages.actions.ActionHideComment),
     ('/admin/show-comment', pages.actions.ActionShowComment),
     ('/admin/block-user', pages.actions.ActionAdminBlockUser),
