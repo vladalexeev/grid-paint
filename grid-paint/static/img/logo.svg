@@ -7,45 +7,145 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="744.09448819"
-   height="1052.3622047"
-   id="svg2"
+   width="180"
+   height="180"
+   viewBox="0 0 47.624999 47.625001"
    version="1.1"
-   inkscape:version="0.48.0 r9654"
-   sodipodi:docname="grid-paint-logo.svg">
+   id="svg8"
+   inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
+   sodipodi:docname="logo.svg">
   <defs
-     id="defs4" />
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4667">
+      <stop
+         style="stop-color:#fef5ad;stop-opacity:1"
+         offset="0"
+         id="stop4663" />
+      <stop
+         style="stop-color:#ffe942;stop-opacity:1"
+         offset="1"
+         id="stop4665" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4637">
+      <stop
+         style="stop-color:#ace0ab;stop-opacity:1"
+         offset="0"
+         id="stop4633" />
+      <stop
+         style="stop-color:#3db839;stop-opacity:1"
+         offset="1"
+         id="stop4635" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient4607"
+       inkscape:collect="always">
+      <stop
+         id="stop4603"
+         offset="0"
+         style="stop-color:#febec0;stop-opacity:1" />
+      <stop
+         id="stop4605"
+         offset="1"
+         style="stop-color:#ff696e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient4575">
+      <stop
+         style="stop-color:#aec1fb;stop-opacity:1"
+         offset="0"
+         id="stop4571" />
+      <stop
+         style="stop-color:#4572f7;stop-opacity:1"
+         offset="1"
+         id="stop4573" />
+    </linearGradient>
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4575"
+       id="radialGradient4577"
+       cx="17.320509"
+       cy="263.89191"
+       fx="17.320509"
+       fy="263.89191"
+       r="5"
+       gradientTransform="matrix(1.6283854,0,0,1.4102225,-4.3919643,-105.40512)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4607"
+       id="radialGradient4577-5"
+       cx="17.320509"
+       cy="263.89191"
+       fx="17.320509"
+       fy="263.89191"
+       r="5"
+       gradientTransform="matrix(1.6283854,0,0,1.4102225,-12.533891,-91.302934)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4637"
+       id="radialGradient4577-5-0"
+       cx="17.320509"
+       cy="263.89191"
+       fx="17.320509"
+       fy="263.89191"
+       r="5"
+       gradientTransform="matrix(1.6283854,0,0,1.4102225,3.749963,-91.302939)"
+       gradientUnits="userSpaceOnUse" />
+    <radialGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4667"
+       id="radialGradient4577-5-1"
+       cx="17.320509"
+       cy="263.89191"
+       fx="17.320509"
+       fy="263.89191"
+       r="5"
+       gradientTransform="matrix(1.6283854,0,0,-1.4102225,-4.3919644,649.54297)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
   <sodipodi:namedview
      id="base"
-     pagecolor="#ffffff"
+     pagecolor="#f8f8f8"
      bordercolor="#666666"
      borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="241.14552"
-     inkscape:cy="757.43799"
-     inkscape:document-units="px"
+     inkscape:zoom="2.8"
+     inkscape:cx="89.445496"
+     inkscape:cy="76.319309"
+     inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:window-width="1440"
-     inkscape:window-height="850"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     units="px"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="true"
+     inkscape:bbox-nodes="true"
+     inkscape:snap-bbox-edge-midpoints="true"
+     inkscape:snap-bbox-midpoints="true"
+     inkscape:snap-page="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="1911"
+     inkscape:window-y="-9"
      inkscape:window-maximized="1">
     <inkscape:grid
        type="axonomgrid"
-       id="grid2985"
+       id="grid815"
        units="mm"
        empspacing="5"
-       visible="true"
-       enabled="true"
-       snapvisiblegridlinesonly="true" />
+       enabled="false" />
   </sodipodi:namedview>
   <metadata
-     id="metadata7">
+     id="metadata5">
     <rdf:RDF>
       <cc:Work
          rdf:about="">
@@ -59,110 +159,27 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(0,-249.37498)">
     <path
-       style="fill:#666666;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 444.94612,263.97636 -15.34297,-8.85827 15.34297,-8.85827 0,-17.71654 15.34297,8.85827 15.34297,-8.85827 0,17.71654 30.68594,17.71654 15.34297,-8.85827 0,17.71653 15.34297,8.85827 -15.34297,8.85827 0,17.71653 -15.34297,-8.85826 -30.68594,17.71653 0,17.71654 -15.34297,-8.85827 -15.34297,8.85827 0,-17.71654 -15.34297,-8.85827 15.34297,-8.85826 z"
-       id="path2989"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
+       style="opacity:1;fill:url(#radialGradient4577);fill-opacity:1;stroke:none;stroke-width:0.40709636;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 23.8125,257.9667 8.141927,14.10222 H 15.670573 Z"
+       id="path4533"
+       inkscape:connector-curvature="0" />
     <path
-       style="fill:#666666;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 475.63206,317.12596 0,-70.86614"
-       id="path2991"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
+       style="opacity:1;fill:url(#radialGradient4577-5);fill-opacity:1;stroke:none;stroke-width:0.40709636;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 15.670573,272.06892 23.8125,286.17115 H 7.5286456 Z"
+       id="path4533-43"
+       inkscape:connector-curvature="0" />
     <path
-       style="fill:#666666;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="M 444.94612,299.40943 506.318,263.97636"
-       id="path2993"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
+       style="opacity:1;fill:url(#radialGradient4577-5-0);fill-opacity:1;stroke:none;stroke-width:0.40709636;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 31.954427,272.06892 8.141927,14.10223 H 23.8125 Z"
+       id="path4533-43-9"
+       inkscape:connector-curvature="0" />
     <path
-       style="fill:#666666;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="M 506.318,299.40943 444.94612,263.97636"
-       id="path2995"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
-    <path
-       style="fill:#666666;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 444.94612,246.25982 15.34297,-8.85827"
-       id="path2997"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
-    <path
-       style="fill:#666666;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 460.28909,325.98423 -15.34297,-8.85827"
-       id="path2999"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
-    <path
-       style="fill:#666666;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 521.66097,272.83462 0,17.71654"
-       id="path3001"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
-    <path
-       style="fill:#b3b3b3;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 475.63206,281.69289 -46.02891,-26.5748 46.02891,-26.57481 0,53.14961 46.02891,-26.5748 0,53.1496 -46.02891,-26.5748"
-       id="path3003"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
-    <path
-       style="fill:#b3b3b3;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 429.60315,308.26769 46.02891,-26.5748 0,53.14961 -46.02891,-26.57481"
-       id="path3005"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
-    <path
-       style="fill:#e6e6e6;fill-opacity:0.73515984000000001;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 444.94612,263.97636 30.68594,-17.71654 30.68594,17.71654 0,35.43307 -30.68594,17.71653 -30.68594,-17.71653 z"
-       id="path3007"
-       inkscape:connector-curvature="0"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png" />
-    <path
-       style="fill:#e6e6e6;fill-opacity:0.73515984;stroke:none"
-       d="m 444.94612,299.40943 30.68594,-17.71654 0,35.43307 -30.68594,-17.71653"
-       id="path3777"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
-    <path
-       style="fill:#e6e6e6;fill-opacity:0.73515984;stroke:none"
-       d="m 475.63206,281.69289 -30.68594,-17.71653 30.68594,-17.71654 z"
-       id="path3779"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
-    <path
-       style="fill:#e6e6e6;fill-opacity:0.73515984;stroke:none"
-       d="M 506.318,299.40943 475.63206,281.69289 506.318,263.97636 z"
-       id="path3781"
-       inkscape:connector-curvature="0"
-       inkscape:export-filename="D:\vlad\workspace-appengine\grid-paint\static\img\logo.png"
-       inkscape:export-xdpi="26.815453"
-       inkscape:export-ydpi="26.815453" />
+       style="opacity:1;fill:url(#radialGradient4577-5-1);fill-opacity:1;stroke:none;stroke-width:0.40709636;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 23.8125,286.17115 8.141927,-14.10223 H 15.670573 Z"
+       id="path4533-43-8"
+       inkscape:connector-curvature="0" />
   </g>
 </svg>
