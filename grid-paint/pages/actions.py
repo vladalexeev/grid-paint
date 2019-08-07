@@ -894,7 +894,14 @@ class ActionToggleFavorite(BasicRequestHandler):
                 return
             else:
                 cache.add(antispam_key, datetime.datetime.now())
-            
+
+            if artwork.author_email == self.user_info.user_email:
+                # Do not allow to favorite artworks by author himself
+                self.response.out.write(json.dumps({
+                    'not_allowed_for_author': True
+                    }))
+                return
+
             cache.delete(cache.MC_MAIN_PAGE_TOP_FAVORITES)
             if dao.is_artwork_favorite_by_user(artwork, self.user_info.user_email):
                 fav_count = dao.unfavorite_artwork(artwork, self.user_info.user_email)

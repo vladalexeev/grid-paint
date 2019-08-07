@@ -23,14 +23,19 @@ indexes:
     direction: desc
   - name: "date"
     direction: desc
-- kind: "Comment"
-  properties:
-  - name: "artwork_ref"
-  - name: "date"
 - kind: "Follow"
   properties:
   - name: "leader_email"
   - name: "follower_email"
+- kind: "Comment"
+  properties:
+  - name: "artwork_ref"
+  - name: "date"
+- kind: "Notification"
+  properties:
+  - name: "recipient_email"
+  - name: "date"
+    direction: desc
 - kind: "Artwork"
   properties:
   - name: "tags"
@@ -55,11 +60,6 @@ indexes:
   properties:
   - name: "follower_email"
   - name: "leader_email"
-- kind: "Notification"
-  properties:
-  - name: "recipient_email"
-  - name: "date"
-    direction: desc
 - kind: "TaskLog"
   properties:
   - name: "task_name"

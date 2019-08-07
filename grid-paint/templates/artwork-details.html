@@ -279,9 +279,13 @@ $(function() {
 			$.getJSON('/toggle-favorite?id='+artworkId,
 				function(data) {
 					if (data.not_changed) {
-						showWarningDialog("You can click on star not more often than once per minute.");
+						showWarningDialog("You can click on the same star not more often than once per minute.");
 						return;
 					}
+					if (data.not_allowed_for_author) {
+					    showWarningDialog("You cannot favorite your own artwork.");
+						return;
+                    }
 					favorite=data.favorite;
 					favorite_count=data.favorite_count;
 					$('.image-details-favorite-count').text(favorite_count);
