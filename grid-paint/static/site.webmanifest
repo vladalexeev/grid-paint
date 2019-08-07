@@ -1,6 +1,6 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Grid Paint",
+    "short_name": "Grid Paint",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
