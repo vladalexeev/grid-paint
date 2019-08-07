@@ -15,19 +15,22 @@
    version="1.1"
    id="svg4688"
    inkscape:version="0.92.4 (5da689c313, 2019-01-14)"
-   sodipodi:docname="logo2.svg">
+   sodipodi:docname="logo2.svg"
+   inkscape:export-filename="C:\Temp\grid-paint-new-icon-2.png"
+   inkscape:export-xdpi="138.66667"
+   inkscape:export-ydpi="138.66667">
   <defs
      id="defs4682" />
   <sodipodi:namedview
      id="base"
-     pagecolor="#f8f8f8"
+     pagecolor="#be4927"
      bordercolor="#666666"
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.959798"
-     inkscape:cx="127.27117"
-     inkscape:cy="103.79985"
+     inkscape:zoom="1.4"
+     inkscape:cx="80.032927"
+     inkscape:cy="120.90552"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -64,6 +67,11 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(0,-249.37498)">
+    <path
+       style="opacity:1;fill:#fdaf80;fill-opacity:1;stroke:none;stroke-width:0.06855027;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 16.556722,253.86627 -7.2553714,12.56719 7.2553714,12.56719 7.255887,-12.56719 7.255889,12.56719 7.255369,-12.56719 -7.255369,-12.56719 z m 14.511776,25.13438 H 16.556722 v 14.51126 l 7.255887,-7.25538 7.255889,7.25538 z"
+       id="path821"
+       inkscape:connector-curvature="0" />
     <path
        style="opacity:1;fill:#fede8e;fill-opacity:1;stroke:none;stroke-width:0.06855027;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 16.556861,279.00057 7.255644,-12.56715 H 9.3012112 Z"
