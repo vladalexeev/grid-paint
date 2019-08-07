@@ -33,6 +33,7 @@ class Tag(db.Model):
     url_name = db.StringProperty()
     title = db.StringProperty()
     title_lower = db.StringProperty()
+    date = db.DateTimeProperty(auto_now_add=True)
 
 
 class Comment(db.Expando):
