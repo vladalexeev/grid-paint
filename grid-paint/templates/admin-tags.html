@@ -5,15 +5,29 @@
 <div class="container single-container">
     <h2 class="text-center">Tags moderation</h2>
 
+    <div class="text-center">
+        {% if order == 'url_name' %}
+            <b>url_name</b>
+        {% else %}
+            <a href="/admin/tags?limit={{ limit }}&offset={{ offset }}&order=url_name">url_name</a>
+        {% endif %}
+
+        {% if order == '-date' %}
+            <b>date</b>
+        {% else %}
+            <a href="/admin/tags?limit={{ limit }}&offset={{ offset }}&order=-date">date</a>
+        {% endif %}
+    </div>
+
     <div style="text-align: center;">
         {% if offset == 0 %}
             &lt;&lt; Back
         {% else %}
-            <a href="/admin/tags?limit={{ limit }}&offset={{ prev_offset }}">&lt;&lt; Back</a>
+            <a href="/admin/tags?limit={{ limit }}&offset={{ prev_offset }}&order={{ order_field }}&dir={{ order_dir }}">&lt;&lt; Back</a>
         {% endif %}
 
         {% if next_offset > 0 %}
-            <a href="/admin/tags?limit={{ limit }}&offset={{ next_offset }}">Next &gt;&gt;</a>
+            <a href="/admin/tags?limit={{ limit }}&offset={{ next_offset }}&order={{ order_field }}&dir={{ order_dir }}">Next &gt;&gt;</a>
         {% else %}
             Next &gt;&gt;
         {% endif %}
@@ -26,15 +40,19 @@
                 <tr>
                     <th>Title</th>
                     <th>URL_name</th>
+                    <th>date</th>
                     <th>Action</th>
                 </tr>
 
                 {% for t in tags %}
                 <tr id="tag-{{ t.key.id }}">
-                    <td id="tag-title-{{ t.key.id }}"><a href="/gallery?q={{ t.url_name }}" target="_blank">{{ t.title }}</a></td>
+                    <td id="tag-title-{{ t.key.id }}">
+                        <a href="/gallery?q={{ t.url_name }}" target="_blank">{{ t.title }}</a>
+                    </td>
                     <td>{{ t.url_name }}</td>
+                    <td>{{ t.date|date:"d M Y H:i" }}</td>
                     <td>
-                        <a href="#" onclick="deleteTag({{ t.key.id }})">Delete</a>
+                        <a href="#" onclick="deleteTag({{ t.key.id }})">Delete</a><br>
                         <a href="#" onclick="renameTag({{ t.key.id }})">Rename</a>
                     </td>
                 </tr>

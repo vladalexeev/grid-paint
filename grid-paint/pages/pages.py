@@ -824,8 +824,12 @@ class PageAdminTags(BasicPageRequestHandler):
 
         limit = int(self.request.get('limit'))
         offset = int(self.request.get('offset'))
+        order = self.request.get('order')
 
-        fetched_tags = db.Tag.all().order('url_name').fetch(limit + 1, offset)
+        if not order:
+            order = 'url_name'
+
+        fetched_tags = db.Tag.all().order(order).fetch(limit + 1, offset)
         query_tags = [t for t in fetched_tags]
 
         prev_offset = offset - limit
@@ -845,6 +849,7 @@ class PageAdminTags(BasicPageRequestHandler):
                 'limit': limit,
                 'offset': offset,
                 'next_offset': next_offset,
-                'prev_offset': prev_offset
+                'prev_offset': prev_offset,
+                'order': order,
             }
         )
