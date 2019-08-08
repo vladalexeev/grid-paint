@@ -40,7 +40,9 @@ def create_tag_by_title(title):
         return None
 
     title = title.strip()
-    if not title:
+    if title and title[0] == '#':
+        title = title[1:]
+    if len(title) <= 1:
         return None
 
     if hide_bad_language(title) != title:
