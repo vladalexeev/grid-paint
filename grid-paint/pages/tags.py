@@ -5,6 +5,7 @@ Created on 13 ���. 2013 �.
 @author: Vlad
 '''
 
+from datetime import datetime
 import db
 import unidecode
 
@@ -56,6 +57,7 @@ def create_tag_by_title(title):
             tag.title = title
             tag.title_lower = title.lower()
             tag.url_name = url_name
+            tag.date = datetime.now()
             tag.put()
         
         cache.add(cache.MC_TAG + url_name, tag)
