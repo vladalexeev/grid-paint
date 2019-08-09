@@ -1162,6 +1162,7 @@ $(function() {
 		if (modalTagsVisible) {
 			$('#modal_tags_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
 			$('#modal_artwork_tags_field').hide();
+			$('#modal-tags-hint').hide();
 			propertiesDialog_updateTagsLabelPreview();
 			$('#modal_tags_label').find('.save-dialog-expandable-content-preview').show();
 			modalTagsVisible=false;
