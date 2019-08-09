@@ -359,7 +359,24 @@ function saveArtwork() {
 	
     $("input[name=artwork_json]").val(JSON.stringify(a));
     changed=false;
-    $("form[name=f]")[0].submit();
+    showCircleLoader();
+    $.ajax({
+		type: 'post',
+		url: '/save-image',
+		data: $("form[name=f]").serialize(),
+		dataType: "json",
+		success: function(data) {
+			if (data.result) {
+				document.location = '/images/details/' + data.result
+			} else {
+				hideCircleLoader();
+			}
+		},
+		error: function() {
+			hideCircleLoader();
+			showWarningMessage("Something went wrong. Try again.")
+		}
+	});
 }
 
 function showPropertiesDialog(modalAction) {
@@ -645,6 +662,16 @@ function showWarningMessage(message) {
 	var messageModal=$("#message-modal");
 	messageModal.find("#message-text").text(message);
 	messageModal.modal();
+}
+
+function showCircleLoader() {
+	$('body').append(
+		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner"></div></div>'
+	)
+}
+
+function hideCircleLoader() {
+	$('#spinner-fullscreen').remove();
 }
 
 $(function() {

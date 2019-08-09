@@ -260,9 +260,12 @@ class ActionSaveImage(BasicRequestHandler):
                 'artwork_id': saved_id.id(),
                 'type': news_type
             })
-        
-        self.redirect('/images/details/'+str(saved_id.id()))
-        
+
+        self.response.out.write(json.dumps({
+            'result': saved_id.id(),
+        }))
+
+
 class ActionDeleteImage(BasicRequestHandler):
     def get(self):
         artwork_id=self.request.get('id')
