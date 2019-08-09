@@ -379,13 +379,36 @@ function saveArtwork() {
 	});
 }
 
+function propertiesDialog_updateDescriptionLabelPreview() {
+	var description = $('#modal_artwork_description').val();
+	$('#modal_description_label').find('.save-dialog-expandable-content-preview').text(description);
+}
+
+function propertiesDialog_updateTagsLabelPreview() {
+	var tags = $('#modal_artwork_tags').val();
+	var text = '';
+	if (tags) {
+	    var tagsList = tags.split(',');
+	    for (var i = 0; i < tagsList.length; i++) {
+	        if (i > 0) {
+	            text += ' ';
+	        }
+	        text += '#' + tagsList[i];
+	    }
+	}
+	$('#modal_tags_label').find('.save-dialog-expandable-content-preview').text(text);
+}
+
 function showPropertiesDialog(modalAction) {
 	if (artwork.layers[0].grid=='square') {
 		$("#modal_square_grid_special_properties").show();
 	} else {
 		$("#modal_square_grid_special_properties").hide();
 	}
-	
+
+    propertiesDialog_updateDescriptionLabelPreview();
+    propertiesDialog_updateTagsLabelPreview();
+
 	$("#modal_success_action").val(modalAction);
 	$("#properties-modal").modal('show');
 }
@@ -1124,10 +1147,13 @@ $(function() {
 		if (modalDescriptionVisible) {
 			$('#modal_description_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
 			$('#modal_artwork_description').hide();
+			propertiesDialog_updateDescriptionLabelPreview();
+			$('#modal_description_label').find('.save-dialog-expandable-content-preview').show();
 			modalDescriptionVisible=false;			
 		} else {
 			$('#modal_description_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
 			$('#modal_artwork_description').show();
+			$('#modal_description_label').find('.save-dialog-expandable-content-preview').hide();
 			modalDescriptionVisible=true;
 		}
 	});
@@ -1136,10 +1162,13 @@ $(function() {
 		if (modalTagsVisible) {
 			$('#modal_tags_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
 			$('#modal_artwork_tags_field').hide();
+			propertiesDialog_updateTagsLabelPreview();
+			$('#modal_tags_label').find('.save-dialog-expandable-content-preview').show();
 			modalTagsVisible=false;
 		} else {
 			$('#modal_tags_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
 			$('#modal_artwork_tags_field').show();
+			$('#modal_tags_label').find('.save-dialog-expandable-content-preview').hide();
 			modalTagsVisible=true;			
 		}
 	});

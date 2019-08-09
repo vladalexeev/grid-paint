@@ -141,11 +141,17 @@
     			<input type="text" name="modal_artwork_name" id="modal_artwork_name" value="{{ artwork_name }}" class="form-control"/>
     		</div>
     		<div class="form-group">
-    			<label class="save-dialog-expandable-label" id="modal_description_label"><i class="icon icon-caret-right"></i> Artwork description</label>
+    			<label class="save-dialog-expandable-label" id="modal_description_label">
+					<div class="save-dialog-expandable-label-gradient"></div>
+					<i class="icon icon-caret-right"></i> Artwork description <span class="save-dialog-expandable-content-preview"></span>
+				</label>
     			<textarea name="modal_artwork_description" id="modal_artwork_description" style="height:80px; display:none;" class="form-control">{{ artwork_description|default_if_none:"" }}</textarea>
     		</div>
     		<div class="form-group">
-    			<label class="save-dialog-expandable-label" id="modal_tags_label"><i class="icon icon-caret-right"></i>  Tags</label>
+    			<label class="save-dialog-expandable-label" id="modal_tags_label">
+					<div class="save-dialog-expandable-label-gradient"></div>
+					<i class="icon icon-caret-right"></i> Tags <span class="save-dialog-expandable-content-preview"></span>
+				</label>
     			<div id="modal_artwork_tags_field" style="display:none;">
    				<input type="text" value="{{ artwork_tags }}" name="modal_artwork_tags" id="modal_artwork_tags" autocomplete="off"/>
    				</div>
