@@ -689,7 +689,7 @@ function showWarningMessage(message) {
 
 function showCircleLoader() {
 	$('body').append(
-		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner"></div></div>'
+		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
 	)
 }
 

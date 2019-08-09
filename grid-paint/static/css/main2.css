@@ -1123,6 +1123,11 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
     pointer-events: none;
 }
 
+.spinner.wide {
+    border-width: 6px;
+    border-top-width: 7px;
+}
+
 @keyframes spin {
     from{
         transform: rotate(0deg);
