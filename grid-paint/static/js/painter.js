@@ -854,6 +854,17 @@ $(function() {
       tags.tagsinput('add', datum.value);
       tags.tagsinput('input').typeahead('setQuery', '');
     }, $('input')));
+	tags.on(
+		'beforeItemAdd',
+		function(event) {
+			if (event.item.length <= 1 || event.item.length > 64) {
+				$("#modal-tags-hint").show();
+				event.cancel = true
+			} else {
+				$("#modal-tags-hint").hide();
+			}
+		}
+	);
 		
 	
 	//Create color palette

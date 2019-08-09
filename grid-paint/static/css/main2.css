@@ -775,6 +775,11 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	padding-right: 5px;
 }
 
+.form-field-hint {
+	color: red;
+	font-size: 0.9em;
+}
+
 .user-profile-avatar-container-wrapper {
     margin-bottom: 20px;
 }
