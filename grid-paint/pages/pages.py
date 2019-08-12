@@ -211,28 +211,16 @@ class PagePainter(BasicPageRequestHandler):
                                  'artwork_json': artwork_json
                                  })
 
+
 class PageMyImages(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:
             self.redirect(self.user_info.login_url)
-            return;
+            return
+
+        self.redirect('/profiles/' + str(self.user_info.profile_id))
         
-        def artworks_query_func():
-            return db.Artwork.all().filter('author_email =', self.user_info.user_email).order('-date')
-        
-        def href_create_func(offset):
-            return '/my-images?offset='+str(offset)
-        
-        def memcache_cursor_key_func(offset):
-            return cache.MC_ARTWORK_LIST+'my_images_'+self.user_info.user_email+'_'+str(offset)
-        
-        model = create_gallery_model(self.request.get('offset'), 
-                                     artworks_query_func, 
-                                     href_create_func,
-                                     memcache_cursor_key_func)
-        
-        self.write_template('templates/my-artworks.html', model)
-        
+
 def create_user_model(offset_param, user_query_func, href_create_func, memcache_cursor_key_func):
     if offset_param:
         offset=int(offset_param)
@@ -564,6 +552,9 @@ class PageProfile(BasicRequestHandler):
         if self.user_info.superadmin:
             model['profile']['email'] = user_profile.email
             model['profile']['alternative_emails'] = getattr(user_profile, 'alternative_emails', [])
+
+        if self.user_info.user and profile_id == self.user_info.profile_id:
+            model['this_user_profile'] = True
         
         self.write_template('templates/profile.html', model)
 

@@ -118,8 +118,6 @@ function setFollowersCount(count) {
 }
 
 $(function() {
-	$("#top-menu-gallery").addClass("active");
-	
 	$("#button_follow").click(function() {
 		$.getJSON('/follow?user_id='+profile_id)
 			.done(function(data) {
@@ -205,6 +203,19 @@ $(function() {
 });
 </script>
 {% endif %}
+
+
+<script>
+$(function() {
+    {% if this_user_profile %}
+	$("#top-menu-my-images").addClass("active");
+    {% else %}
+    $("#top-menu-gallery").addClass("active");
+    {% endif %}
+})
+</script>
+
+
 
 
 {% endblock content %}
