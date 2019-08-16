@@ -1297,8 +1297,15 @@ class ActionUploadUserAvatar(BasicRequestHandler):
         
         file_content = self.request.get('file')
         #logging.error('file_length = ' + str(len(file_content)))
-        
-        image = Image.open(StringIO.StringIO(file_content))
+
+        try:
+            image = Image.open(StringIO.StringIO(file_content))
+        except IOError:
+            self.response.out.write(json.dumps({
+                'error': 'invalid_image_format'
+            }))
+            return
+
         image_width, image_height = image.size
         max_avatar_size = 150
         if image_width > image_height:
@@ -1331,7 +1338,9 @@ class ActionUploadUserAvatar(BasicRequestHandler):
         cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
         cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
 
-        self.response.set_status(200)
+        self.response.out.write(json.dumps({
+            'result': 'ok'
+        }))
 
 
 class JSONDeleteUserAvatar(BasicRequestHandler):

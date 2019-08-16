@@ -334,11 +334,11 @@ $(function () {
 		$(".user-profile-avatar-change-mask").css('opacity', 0);
 		$("#avatar-change-spinner").show();
 	
-		const files = document.querySelector('[type=file]').files
-		const formData = new FormData()
+		const files = document.querySelector('[type=file]').files;
+		const formData = new FormData();
 
 		for (let i = 0; i < files.length; i++) {
-			let file = files[i]
+			let file = files[i];
 		    formData.append('file', file)
 		}
 
@@ -347,15 +347,28 @@ $(function () {
 	    	body: formData,
 	  	}).then(response => {
 	  		$("#avatar-change-spinner").hide();
-
-	  		var filename = "/images/avatar/"+profile_id+".jpg?"+(new Date().getTime())
-	  		var imageUrl = "url(" + filename + ")"
-	  		$("#avatar").css('background-image', imageUrl);
-	  		$(".header-user").css('background-image', imageUrl);
-	  		$("#delete-avatar-button").show();
-	    	//console.log(response)
+	  		if (response.status == 200) {
+	  		    response.json().then(json => {
+	  		        if (json.result) {
+                        var filename = "/images/avatar/"+profile_id+".jpg?"+(new Date().getTime());
+                        var imageUrl = "url(" + filename + ")";
+                        $("#avatar").css('background-image', imageUrl);
+                        $(".header-user").css('background-image', imageUrl);
+                        $("#delete-avatar-button").show();
+                    }
+	  		        if (json.error) {
+	  		            if (json.error == 'invalid_image_format') {
+	  		                showErrorMessage('Invalid image format');
+                        } else {
+	  		                showErrorMessage(json.error);
+                        }
+                    }
+                });
+            } else {
+                showErrorMessage('Something went wrong. Please try again');
+            }
 	  	})
-	})
+	});
 	
 	$("#avatar-mask").mouseenter(function(event) {
 		$(".user-profile-avatar-change-mask").css('opacity', 0.3);
