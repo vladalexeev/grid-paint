@@ -93,7 +93,7 @@ class PageIndex(BasicPageRequestHandler):
                 'og_title': 'Grid Paint',
                 'og_description': 'An online tool for pixel drawing with different shapes of pixels.',
                 'og_url': 'https://grid-paint.com',
-                'og_image': 'https://grid-paint.com/img/logo-large.png'
+                'og_image': 'https://grid-paint.com/img/grid-paint-poster.png'
             })
         
 class PagePrivacyPolicy(BasicPageRequestHandler):
