@@ -34,6 +34,16 @@ class Tag(db.Model):
     title = db.StringProperty()
     title_lower = db.StringProperty()
     date = db.DateTimeProperty()
+    count = db.IntegerProperty()
+
+
+class UserTag(db.Model):
+    user_email = db.StringProperty()
+    url_name = db.StringProperty()
+    title = db.StringProperty()
+    title_lower = db.StringProperty()
+    date = db.DateTimeProperty()
+    count = db.IntegerProperty()
 
 
 class Comment(db.Expando):

@@ -90,13 +90,26 @@ class ActionSaveImage(BasicRequestHandler):
             
         json_file_content = zlib.compress(artwork_json)
         #artwork.json_compressed = True 
-        
-        original_tags=artwork_tags.split(',')
+
+        artwork_url_tags = getattr(artwork, 'tags', [])
+
+        request_tags=artwork_tags.split(',')
+        request_url_tags = [tags.tag_url_name(t) for t in request_tags]
+
+        tags_to_add = set(request_url_tags) - set(artwork_url_tags)
+        tags_to_delete = set(artwork_url_tags) - set(artwork_url_tags)
+
         url_tags = []
-        for tag_title in original_tags:
-            db_tag = tags.create_tag_by_title(tag_title)
-            if db_tag:
-                url_tags.append(db_tag.url_name)
+        for tag_title in request_tags:
+            url_name = tags.tag_url_name(tag_title)
+            if url_name in tags_to_add:
+                db_tag = tags.create_tag_by_title(tag_title)
+                if db_tag:
+                    url_tags.append(db_tag.url_name)
+            elif url_name in tags_to_delete:
+                pass
+            else:
+                url_tags.append(url_name)
         
         artwork.tags=url_tags
         
