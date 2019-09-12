@@ -59,41 +59,39 @@ class ActionSaveImage(BasicRequestHandler):
             self.response.set_status(403)
             return
         
-        artwork_json=self.request.get('artwork_json')
-        artwork_id=self.request.get('artwork_id')
-        artwork_name=self.request.get('artwork_name')
-        artwork_description=self.request.get('artwork_description')
-        artwork_tags=self.request.get('artwork_tags')
-        
+        artwork_json = self.request.get('artwork_json')
+        artwork_id = self.request.get('artwork_id')
+        artwork_name = self.request.get('artwork_name')
+        artwork_description = self.request.get('artwork_description')
+        artwork_tags = self.request.get('artwork_tags')
         
         if artwork_id:
             news_type = NEWS_TYPE_CHANGE_ARTWORK
-            artwork=dao.get_artwork(artwork_id)
-            if not self.user_info.superadmin and artwork.author_email <> self.user_info.user_email:
+            artwork = dao.get_artwork(artwork_id)
+            if not self.user_info.superadmin and artwork.author_email != self.user_info.user_email:
                 # should be the same user or superadmin
                 self.response.set_status(403)
                 return
         else:
             news_type = NEWS_TYPE_NEW_ARTWORK
-            artwork=db.Artwork()
+            artwork = db.Artwork()
             artwork.author_email = self.user_info.user_email
             
         if artwork_name:
-            artwork.name=hide_bad_language(artwork_name)
+            artwork.name = hide_bad_language(artwork_name)
         else:
-            artwork.name='Untitled'
+            artwork.name = 'Untitled'
 
         if artwork_description:
-            artwork.description=hide_bad_language(artwork_description)
+            artwork.description = hide_bad_language(artwork_description)
         else:
-            artwork.description=''
+            artwork.description = ''
             
         json_file_content = zlib.compress(artwork_json)
-        #artwork.json_compressed = True 
 
         artwork_url_tags = getattr(artwork, 'tags', [])
 
-        request_tags=artwork_tags.split(',')
+        request_tags = artwork_tags.split(',')
         request_url_tags = [tags.tag_url_name(t) for t in request_tags]
 
         tags_to_add = set(request_url_tags) - set(artwork_url_tags)
@@ -111,14 +109,14 @@ class ActionSaveImage(BasicRequestHandler):
             else:
                 url_tags.append(url_name)
         
-        artwork.tags=url_tags
+        artwork.tags = url_tags
         
-        json_obj=json.loads(artwork_json)
+        json_obj = json.loads(artwork_json)
 
-        layer=json_obj['layers'][0]
+        layer = json_obj['layers'][0]
         artwork.grid = layer['grid']
-        grid=grids[layer['grid']]()
-        grid.cell_size=layer['cellSize']
+        grid = grids[layer['grid']]()
+        grid.cell_size = layer['cellSize']
         
         if json_obj['transparentBackground']:
             background_color = (0, 0, 0, 0)
@@ -126,25 +124,25 @@ class ActionSaveImage(BasicRequestHandler):
             background_color = json_obj['backgroundColor']
         
         # Create normal image
-        image_width=json_obj['effectiveRect']['width']
-        image_height=json_obj['effectiveRect']['height']
-        image=Image.new('RGBA', 
-                        (image_width,image_height),
-                        background_color)
-        image_draw=ImageDraw.Draw(image)
+        image_width = json_obj['effectiveRect']['width']
+        image_height = json_obj['effectiveRect']['height']
+        image = Image.new('RGBA',
+                          (image_width,image_height),
+                          background_color)
+        image_draw = ImageDraw.Draw(image)
         
-        dx=-json_obj['effectiveRect']['left']
-        dy=-json_obj['effectiveRect']['top']
+        dx = -json_obj['effectiveRect']['left']
+        dy = -json_obj['effectiveRect']['top']
 
-        if json_obj['version']['major']==1:
+        if json_obj['version']['major'] == 1:
             for cell in layer['cells']:
                 grid.paintShape(image_draw, cell, dx, dy)
-        elif json_obj['version']['major']==2:
+        elif json_obj['version']['major'] == 2:
             for row in layer['rows']:
                 for cell in row['cells']:
                     grid.paintShape2(image_draw, cell[0], row['row'], cell[1], cell[2],dx,dy)
                     
-        if artwork.grid=='square' and json_obj['gridVisible']:
+        if artwork.grid == 'square' and json_obj['gridVisible']:
             grid.paintGrid(image_draw, '#000000', -dx, -dy, image_width, image_height, dx, dy)
         
         memory_file = StringIO.StringIO()
@@ -152,21 +150,21 @@ class ActionSaveImage(BasicRequestHandler):
         
         # Create pixel image
         pixel_memory_file = None
-        if artwork.grid=='square' and json_obj['additionalPixelImage']:
-            pixel_image_width=json_obj['effectivePixelArtRect']['width']
-            pixel_image_height=json_obj['effectivePixelArtRect']['height']
-            pixel_image=Image.new('RGBA', 
-                                  (pixel_image_width, pixel_image_height),
-                                  background_color)
-            pixel_image_draw=ImageDraw.Draw(pixel_image)
+        if artwork.grid == 'square' and json_obj['additionalPixelImage']:
+            pixel_image_width = json_obj['effectivePixelArtRect']['width']
+            pixel_image_height = json_obj['effectivePixelArtRect']['height']
+            pixel_image = Image.new('RGBA',
+                                    (pixel_image_width, pixel_image_height),
+                                    background_color)
+            pixel_image_draw = ImageDraw.Draw(pixel_image)
                         
-            p_dx=-json_obj['effectivePixelArtRect']['left']
-            p_dy=-json_obj['effectivePixelArtRect']['top']
+            p_dx = -json_obj['effectivePixelArtRect']['left']
+            p_dy = -json_obj['effectivePixelArtRect']['top']
     
-            if json_obj['version']['major']==1:
+            if json_obj['version']['major'] == 1:
                 for cell in layer['cells']:
                     grid.paintPoint(pixel_image_draw, cell['col'], cell['row'], cell['color'], p_dx, p_dy)
-            elif json_obj['version']['major']==2:
+            elif json_obj['version']['major'] == 2:
                 for row in layer['rows']:
                     for cell in row['cells']:
                         grid.paintPoint(pixel_image_draw, cell[0], row['row'], cell[2], p_dx, p_dy)
@@ -179,14 +177,13 @@ class ActionSaveImage(BasicRequestHandler):
         artwork.full_image_height = image_height
         
         small_image_size = convert.calc_resize(image_width, 
-                                              image_height, 
-                                              db.artwork_small_image_width, 
-                                              db.artwork_small_image_height)
+                                               image_height,
+                                               db.artwork_small_image_width,
+                                               db.artwork_small_image_height)
         small_image = image.resize(small_image_size, Image.ANTIALIAS)
         small_memory_file = StringIO.StringIO()
         small_image.save(small_memory_file, 'png')
         
-        #artwork.small_image = small_memory_file.getvalue()
         artwork.small_image_width = small_image_size[0]
         artwork.small_image_height = small_image_size[1]
         
