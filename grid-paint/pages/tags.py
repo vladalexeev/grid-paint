@@ -13,7 +13,7 @@ def tag_url_name(title):
     if title and title[0] == '#':
         title = title[1:]
 
-    return unidecode.unidecode(title).\
+    result = unidecode.unidecode(title).\
         replace(' ', '-').\
         replace('/', '-').\
         replace('\\', '-').\
@@ -21,6 +21,8 @@ def tag_url_name(title):
         replace('#', '-').\
         replace('&', '-').\
         replace('=', '-')
+
+    return unicode(result, 'utf-8')
 
 
 def get_tag_by_title(title):
@@ -34,7 +36,7 @@ def get_tag_by_title(title):
         return tag
 
 
-def create_tag_by_title(title):
+def tag_added(title, user_id):
     if not title:
         return None
 
@@ -46,9 +48,11 @@ def create_tag_by_title(title):
     if hide_bad_language(title) != title:
         return None
 
-    cache_tag = cache.get(cache.MC_TAG + url_name)
-    if cache_tag:
-        return cache_tag
+    global_tag = db.Tag.all().filter('url_name =', url_name).get()
+    if global_tag:
+        if hasattr(global_tag, 'count'):
+            global_tag.count = global_tag.count + 1
+            global_tag.put()
     else:
         tag = db.Tag.all().filter('url_name =', url_name).get()
         if not tag:
@@ -57,11 +61,44 @@ def create_tag_by_title(title):
             tag.title_lower = title.lower()
             tag.url_name = url_name
             tag.date = datetime.now()
+            tag.count = 1
             tag.put()
         
-        cache.add(cache.MC_TAG + url_name, tag)
-        return tag
+    user_tag = db.UserTag.all().filter('user_id =', user_id).filter('url_name', url_name).get()
+    if user_tag:
+        user_tag.count = user_tag.count + 1
+        user_tag.put()
+    else:
+        user_tag = db.UserTag()
+        user_tag.user_id = user_id
+        user_tag.url_name = url_name
+        user_tag.title = title
+        user_tag.title_lower = title.lower()
+        user_tag.date = datetime.now()
+        user_tag.count = 1
+        user_tag.put()
 
+    cache.delete(cache.MC_TAG + url_name)
+    return url_name
+
+
+def tag_deleted(title, user_id):
+    if not title:
+        return
+
+    title = title.strip()
+    url_name = tag_url_name(title)
+
+    global_tag = db.Tag.all().filter('url_name =', url_name).get()
+    if global_tag:
+        if hasattr(global_tag, 'count'):
+            global_tag.count = global_tag.count - 1
+            global_tag.put()
+
+    user_tag = db.UserTag.all().filter('user_id =', user_id).filter('url_name', url_name).get()
+    if user_tag:
+        user_tag.count = user_tag.count - 1
+        user_tag.put()
 
 def tag_by_url_name(url_name):
     cache_tag = cache.get(cache.MC_TAG + url_name)

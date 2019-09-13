@@ -93,22 +93,24 @@ class ActionSaveImage(BasicRequestHandler):
 
         request_tags = artwork_tags.split(',')
         request_url_tags = [tags.tag_url_name(t) for t in request_tags]
+        request_url_tags = [t for t in request_url_tags if t]
 
         tags_to_add = set(request_url_tags) - set(artwork_url_tags)
-        tags_to_delete = set(artwork_url_tags) - set(artwork_url_tags)
+        tags_to_delete = set(artwork_url_tags) - set(request_url_tags)
 
         url_tags = []
         for tag_title in request_tags:
             url_name = tags.tag_url_name(tag_title)
             if url_name in tags_to_add:
-                db_tag = tags.create_tag_by_title(tag_title)
-                if db_tag:
-                    url_tags.append(db_tag.url_name)
-            elif url_name in tags_to_delete:
-                pass
+                db_tag_url_name = tags.tag_added(tag_title, self.user_info.profile_id)
+                if db_tag_url_name:
+                    url_tags.append(db_tag_url_name)
             else:
                 url_tags.append(url_name)
-        
+
+        for tag_url_name in tags_to_delete:
+            tags.tag_deleted(tag_url_name, self.user_info.profile_id)
+
         artwork.tags = url_tags
         
         json_obj = json.loads(artwork_json)
@@ -796,13 +798,29 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         else:
             artwork.editor_choice = False
             artwork.editor_choice_date = None
-        
-        original_tags=artwork_tags.split(',')
-        url_tags=[]
-        for tag_title in original_tags:
-            if len(tag_title)>0:
-                db_tag=tags.create_tag_by_title(tag_title);
-                url_tags.append(db_tag.url_name)
+
+        author_profile = dao.get_user_profile(artwork.author_email)
+
+        artwork_url_tags = getattr(artwork, 'tags', [])
+        request_tags = artwork_tags.split(',')
+        request_url_tags = [tags.tag_url_name(t) for t in request_tags]
+        request_url_tags = [t for t in request_url_tags if t]
+
+        tags_to_add = set(request_url_tags) - set(artwork_url_tags)
+        tags_to_delete = set(artwork_url_tags) - set(request_url_tags)
+
+        url_tags = []
+        for tag_title in request_tags:
+            url_name = tags.tag_url_name(tag_title)
+            if url_name in tags_to_add:
+                db_tag_url_name = tags.tag_added(tag_title, author_profile.key().id())
+                if db_tag_url_name:
+                    url_tags.append(db_tag_url_name)
+            else:
+                url_tags.append(url_name)
+
+        for tag_url_name in tags_to_delete:
+            tags.tag_deleted(tag_url_name, author_profile.key().id())
         
         artwork.tags=url_tags
         

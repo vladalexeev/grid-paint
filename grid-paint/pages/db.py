@@ -38,7 +38,7 @@ class Tag(db.Model):
 
 
 class UserTag(db.Model):
-    user_email = db.StringProperty()
+    user_id = db.IntegerProperty()
     url_name = db.StringProperty()
     title = db.StringProperty()
     title_lower = db.StringProperty()
