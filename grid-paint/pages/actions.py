@@ -49,7 +49,7 @@ grids={
        }
 
 
-class ActionSaveImage(BasicRequestHandler):
+class JSONActionSaveImage(BasicRequestHandler):
     def post(self):
         if not self.user_info.user:
             self.response.set_status(403)
@@ -63,8 +63,7 @@ class ActionSaveImage(BasicRequestHandler):
         artwork_id = self.request.get('artwork_id')
         artwork_name = self.request.get('artwork_name')
         artwork_description = self.request.get('artwork_description')
-        artwork_tags = self.request.get('artwork_tags')
-        
+
         if artwork_id:
             news_type = NEWS_TYPE_CHANGE_ARTWORK
             artwork = dao.get_artwork(artwork_id)
@@ -88,31 +87,6 @@ class ActionSaveImage(BasicRequestHandler):
             artwork.description = ''
             
         json_file_content = zlib.compress(artwork_json)
-
-        artwork_url_tags = getattr(artwork, 'tags', [])
-
-        request_tags = artwork_tags.split(',')
-        request_url_tags = [tags.tag_url_name(t) for t in request_tags]
-        request_url_tags = [t for t in request_url_tags if t]
-
-        tags_to_add = set(request_url_tags) - set(artwork_url_tags)
-        tags_to_delete = set(artwork_url_tags) - set(request_url_tags)
-
-        url_tags = []
-        for tag_title in request_tags:
-            url_name = tags.tag_url_name(tag_title)
-            if url_name in tags_to_add:
-                db_tag_url_name = tags.tag_added(tag_title, self.user_info.profile_id)
-                if db_tag_url_name:
-                    url_tags.append(db_tag_url_name)
-            else:
-                url_tags.append(url_name)
-
-        for tag_url_name in tags_to_delete:
-            tags.tag_deleted(tag_url_name, self.user_info.profile_id)
-
-        artwork.tags = url_tags
-        
         json_obj = json.loads(artwork_json)
 
         layer = json_obj['layers'][0]
@@ -333,7 +307,64 @@ class ActionDeleteImage(BasicRequestHandler):
             self.redirect("/my-images")
         else:
             self.response.set_status(403)
-            
+
+
+class JSONActionSaveImageTags(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+
+        if self.user_info.read_only:
+            self.response.set_status(403)
+            return
+
+        artwork_id = self.request.get('artwork_id')
+        artwork_tags = self.request.get('artwork_tags')
+
+        if not artwork_id:
+            self.response.set_status(400)
+            return
+
+        artwork = dao.get_artwork(artwork_id)
+        if not self.user_info.superadmin and artwork.author_email != self.user_info.user_email:
+            # should be the same user or superadmin
+            self.response.set_status(403)
+            return
+
+        author_profile = dao.get_user_profile(artwork.author_email)
+
+        artwork_url_tags = getattr(artwork, 'tags', [])
+
+        request_tags = artwork_tags.split(',')
+        request_url_tags = [tags.tag_url_name(t) for t in request_tags]
+        request_url_tags = [t for t in request_url_tags if t]
+
+        tags_to_add = set(request_url_tags) - set(artwork_url_tags)
+        tags_to_delete = set(artwork_url_tags) - set(request_url_tags)
+
+        url_tags = []
+        for tag_title in request_tags:
+            url_name = tags.tag_url_name(tag_title)
+            if url_name in tags_to_add:
+                db_tag_url_name = tags.tag_added(tag_title, author_profile.key().id())
+                if db_tag_url_name:
+                    url_tags.append(db_tag_url_name)
+            else:
+                url_tags.append(url_name)
+
+        for tag_url_name in tags_to_delete:
+            tags.tag_deleted(tag_url_name, author_profile.key().id())
+
+        artwork.tags = url_tags
+        artwork.put()
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
+
+
+
 class ActionDeleteNotification(BasicRequestHandler):
     def get(self):
         notification_id = self.request.get('id')
@@ -774,7 +805,7 @@ class ActionUpdateEditorChoice(BasicRequestHandler):
         self.response.write("OK")
 
                 
-class ActionAdminSetArtworkProperties(BasicRequestHandler):
+class JSONActionAdminSetArtworkProperties(BasicRequestHandler):
     def post(self):
         if not self.user_info.superadmin:
             self.response.set_status(403)
@@ -783,7 +814,6 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork_id = int(self.request.get('admin_artwork_id'))
         artwork_name = self.request.get('admin_artwork_name')
         artwork_description = self.request.get('admin_artwork_description')
-        artwork_tags = self.request.get('admin_artwork_tags')
         artwork_editor_choice = self.request.get('admin_artwork_editor_choice')
         artwork_copyright_block = self.request.get('admin_artwork_copyright_block')
         artwork_block = self.request.get('admin_artwork_block')
@@ -799,31 +829,6 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
             artwork.editor_choice = False
             artwork.editor_choice_date = None
 
-        author_profile = dao.get_user_profile(artwork.author_email)
-
-        artwork_url_tags = getattr(artwork, 'tags', [])
-        request_tags = artwork_tags.split(',')
-        request_url_tags = [tags.tag_url_name(t) for t in request_tags]
-        request_url_tags = [t for t in request_url_tags if t]
-
-        tags_to_add = set(request_url_tags) - set(artwork_url_tags)
-        tags_to_delete = set(artwork_url_tags) - set(request_url_tags)
-
-        url_tags = []
-        for tag_title in request_tags:
-            url_name = tags.tag_url_name(tag_title)
-            if url_name in tags_to_add:
-                db_tag_url_name = tags.tag_added(tag_title, author_profile.key().id())
-                if db_tag_url_name:
-                    url_tags.append(db_tag_url_name)
-            else:
-                url_tags.append(url_name)
-
-        for tag_url_name in tags_to_delete:
-            tags.tag_deleted(tag_url_name, author_profile.key().id())
-        
-        artwork.tags=url_tags
-        
         if artwork_copyright_block:
             artwork.copyright_block = True
         else:
@@ -843,9 +848,12 @@ class ActionAdminSetArtworkProperties(BasicRequestHandler):
         
         cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
         cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
-        
-        self.redirect('/images/details/'+str(artwork_id))
-        
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
+
+
 class ActionAdminUpdateUserFavoritesCount(BasicRequestHandler):
     def get(self):
         if not self.user_info.superadmin:

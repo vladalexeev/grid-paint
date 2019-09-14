@@ -481,7 +481,41 @@ $(function() {
 		
 	$("#btn-admin-artwork-properties-save").click(
 		function() {
-			$("form[name=adminForm]")[0].submit();	
+			//$("form[name=adminForm]")[0].submit();
+
+			showCircleLoader();
+			$.ajax({
+				type: 'post',
+				url: '/json/admin/save-image-properties',
+				data: $("form[name=adminForm]").serialize(),
+				dataType: "json",
+				success: function(data) {
+					if (data.result) {
+						$.ajax({
+							type: 'post',
+							url: '/json/save-image-tags',
+							data: {
+								artwork_id: artworkId,
+								artwork_tags: $('input[name=admin_artwork_tags]').val()
+							},
+							dataType: 'json',
+							success: function(data) {
+								document.location = '/images/details/' + artworkId;
+							},
+							error: function() {
+								hideCircleLoader();
+								showWarningMessage("Something went wrong. Try again.");
+							}
+						})
+					} else {
+						hideCircleLoader();
+					}
+				},
+				error: function() {
+					hideCircleLoader();
+					showWarningMessage("Something went wrong. Try again.")
+				}
+			});
 		});
 		
 	$(".delete_comment_button").click(function(data) {
@@ -553,6 +587,16 @@ function showComment(id, parent_id) {
 				$("#comment-"+id).find(".hide_comment_button").show();
 			}
 		});	
+}
+
+function showCircleLoader() {
+	$('body').append(
+		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
+	)
+}
+
+function hideCircleLoader() {
+	$('#spinner-fullscreen').remove();
 }
 </script>
 

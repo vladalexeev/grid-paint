@@ -362,12 +362,28 @@ function saveArtwork() {
     showCircleLoader();
     $.ajax({
 		type: 'post',
-		url: '/save-image',
+		url: '/json/save-image',
 		data: $("form[name=f]").serialize(),
 		dataType: "json",
 		success: function(data) {
-			if (data.result) {
-				document.location = '/images/details/' + data.result
+		    if (data.result) {
+    		    var artwork_id = data.result;
+                $.ajax({
+                    type: 'post',
+                    url: '/json/save-image-tags',
+                    data: {
+                        artwork_id: artwork_id,
+                        artwork_tags: $('input[name=artwork_tags]').val()
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        document.location = '/images/details/' + artwork_id
+                    },
+                    error: function() {
+                        hideCircleLoader();
+                        showWarningMessage("Something went wrong. Try again.")
+                    }
+                })
 			} else {
 				hideCircleLoader();
 			}
