@@ -381,6 +381,41 @@ $(function() {
 });
 </script>
 
+<script>
+var smiles_array = [
+'1f642',
+'1f643',
+'1f600',
+'1f609',
+'1f923',
+'1f60d',
+'1f929',
+'1f61c',
+'1f910',
+'1f611',
+'1f922',
+'1f60e',
+'1f641',
+'1f632',
+'1f631',
+];
+
+$(function() {
+	smiles_html = '';
+	for (var i=0; i<smiles_array.length; i++) {
+		smiles_html += '<li><a href="javascript:void()">&#x' + smiles_array[i]+';</a></li>';
+	}
+	$('.smiles-dropdown').html(smiles_html);
+
+	$('.smiles-dropdown>li>a').click(function(event) {
+		var smile = $(this).text();
+		var text = $('textarea[name=comment_text]').val();
+		$('textarea[name=comment_text]').val(text + smile);
+		event.stopPropagation();
+	});
+})
+</script>
+
 
 
 {% if user_info.superadmin %}
@@ -444,24 +479,6 @@ $(function() {
 </div>
 
 <script>
-var smiles_array = [
-'1f642',
-'1f643',
-'1f600',
-'1f609',
-'1f923',
-'1f60d',
-'1f929',
-'1f61c',
-'1f910',
-'1f611',
-'1f922',
-'1f60e',
-'1f641',
-'1f632',
-'1f631',
-]
-
 $(function() {
 	var tags=$("#admin_artwork_tags");
 	tags.tagsinput();
@@ -542,19 +559,6 @@ $(function() {
 				favorite_count=data.count;
 				$('.image-details-favorite-count').text(favorite_count);
 			});
-	});	
-	
-	smiles_html = '';
-	for (var i=0; i<smiles_array.length; i++) {
-		smiles_html += '<li><a href="javascript:void()">&#x' + smiles_array[i]+';</a></li>';
-	}
-	$('.smiles-dropdown').html(smiles_html);
-	
-	$('.smiles-dropdown>li>a').click(function(event) {
-		var smile = $(this).text();
-		var text = $('textarea[name=comment_text]').val();
-		$('textarea[name=comment_text]').val(text + smile);
-		event.stopPropagation();
 	});
 });
 
