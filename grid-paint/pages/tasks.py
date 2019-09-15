@@ -9,7 +9,12 @@ class TaskAddArtworkToNews(BasicRequestHandler):
     def post(self):
         news_type = self.request.get('type')
         artwork_id = int(self.request.get('artwork_id'))
+
         artwork = dao.get_artwork(artwork_id)
+        if not artwork:
+            self.response.out.write(json.dumps('OK'))
+            return
+
         author_email = artwork.author_email
         limit = 200
         offset = 0
