@@ -25,6 +25,7 @@ var selection=new GridSelection();
 var modalDescriptionVisible = false;
 var modalTagsVisible = false;
 var modalSquareGridSpecialPropertiesVisible = false;
+var initialTagsValue = null;
 
 // 
 function adjustCanvasWrapper() {
@@ -368,22 +369,27 @@ function saveArtwork() {
 		success: function(data) {
 		    if (data.result) {
     		    var artwork_id = data.result;
-                $.ajax({
-                    type: 'post',
-                    url: '/json/save-image-tags',
-                    data: {
-                        artwork_id: artwork_id,
-                        artwork_tags: $('input[name=artwork_tags]').val()
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        document.location = '/images/details/' + artwork_id
-                    },
-                    error: function() {
-                        hideCircleLoader();
-                        showWarningMessage("Something went wrong. Try again.")
-                    }
-                })
+    		    var artwork_tags = $('input[name=artwork_tags]').val()
+    		    if (initialTagsValue == artwork_tags) {
+    		        document.location = '/images/details/' + artwork_id;
+    		    } else {
+                    $.ajax({
+                        type: 'post',
+                        url: '/json/save-image-tags',
+                        data: {
+                            artwork_id: artwork_id,
+                            artwork_tags: artwork_tags
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            document.location = '/images/details/' + artwork_id
+                        },
+                        error: function() {
+                            hideCircleLoader();
+                            showWarningMessage("Something went wrong. Try again.")
+                        }
+                    })
+    		    }
 			} else {
 				hideCircleLoader();
 			}
@@ -714,6 +720,8 @@ function hideCircleLoader() {
 }
 
 $(function() {
+    initialTagsValue = $('input[name=modal_artwork_tags]').val();
+
 	adjustCanvasWrapper();
 	$(window).resize(
 		function() {
