@@ -826,3 +826,38 @@ class PageAdminTags(BasicPageRequestHandler):
                 'order': order,
             }
         )
+
+
+class PageGlobalTags(BasicPageRequestHandler):
+    def get(self):
+        if self.request.get('offset'):
+            offset = int(self.request.get('offset'))
+        else:
+            offset = 0
+
+        limit = 11 if offset == 0 else 10
+
+        fetched_tags = db.Tag.all().order('-last_date').fetch(limit, offset)
+        query_tags = [t for t in fetched_tags]
+
+        prev_offset = offset - limit
+        if prev_offset < 0:
+            prev_offset = 0
+
+        if len(query_tags) > limit:
+            query_tags = query_tags[:-1]
+            next_offset = offset + limit
+        else:
+            next_offset = -1
+
+        self.write_template(
+            'templates/global-tags.html',
+            {
+                'tags': query_tags,
+                'limit': limit,
+                'offset': offset,
+                'next_offset': next_offset,
+                'prev_offset': prev_offset,
+            }
+        )
+

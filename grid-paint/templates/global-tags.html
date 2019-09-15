@@ -1,0 +1,154 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}
+<div class="container single-container">
+    <h2 class="text-center">Tags</h2>
+
+
+    <div style="text-align: center;">
+        {% if offset == 0 %}
+            &lt;&lt; Back
+        {% else %}
+            <a href="/tags?limit={{ limit }}&offset={{ prev_offset }}">&lt;&lt; Back</a>
+        {% endif %}
+
+        {% if next_offset > 0 %}
+            <a href="/tags?limit={{ limit }}&offset={{ next_offset }}">Next &gt;&gt;</a>
+        {% else %}
+            Next &gt;&gt;
+        {% endif %}
+    </div>
+
+	<div class="row">
+		<div class="col-xs-8 col-xs-offset-2">
+		
+            <table class="table table-striped">
+                <tr>
+                    <th>Title</th>
+                </tr>
+
+                {% for t in tags %}
+                <tr id="tag-{{ t.key.id }}">
+                    <td id="tag-title-{{ t.key.id }}">
+                        <a href="/tags/{{ t.url_name }}/images">{{ t.title }}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+		</div>
+	</div>
+
+</div>
+
+<div id="modal-confirm-delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+          <input type="hidden" id="modal-confirm-delete-tag-id" />
+        <p id="modal-confirm-delete-text">One fine body</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a href="#" id="btn-confirm-delete" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-rename" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="modal-rename-title">Rename tag</h4>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="modal-rename-tag-id" />
+        <div class="form-group">
+            <label>New title</label>
+            <input type="text" name="new_tag_title" id="new-tag-title" value="" class="form-control"/>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    	<button id="btn-confirm-rename" type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function deleteTag(tag_id) {
+    $("#modal-confirm-delete-tag-id").val(tag_id);
+    $("#modal-confirm-delete-text").text("Delete tag " + $("#tag-title-" + tag_id).text());
+    $("#modal-confirm-delete").modal();
+}
+
+function renameTag(tag_id) {
+    $("#modal-rename-tag-id").val(tag_id);
+    $("#modal-rename-title").text("Rename tag " + $("#tag-title-" + tag_id).text())
+    $("#modal-rename").modal();
+}
+
+$(function() {
+    $("#btn-confirm-delete").click(function() {
+        $("#modal-confirm-delete").modal("hide");
+        var tag_id = $("#modal-confirm-delete-tag-id").val();
+        $.post(
+            '/json/delete-tag',
+            {
+                'tag_id': tag_id
+            },
+            function(data) {
+                if (data.result) {
+                    if (data.has_more) {
+                        alert('Not all tags were removed from artworks')
+                    } else {
+                        $("#tag-"+tag_id).hide();
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            },
+            "json"
+        );
+    });
+
+    $("#btn-confirm-rename").click(function() {
+        $("#modal-rename").modal("hide");
+        var tag_id = $("#modal-rename-tag-id").val()
+        $.post(
+            '/json/rename-tag',
+            {
+                'tag_id': tag_id,
+                'title': $("#new-tag-title").val()
+            },
+            function(data) {
+                if (data.result) {
+                    if (data.has_more) {
+                        alert('Not all tags were changed in artworks')
+                    } else {
+                        $("#tag-"+tag_id).hide();
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            },
+            "json"
+        );
+    });
+})
+
+
+</script>
+
+  
+{% endblock content %}
+
+
