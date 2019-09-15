@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-'''
-Created on 23.07.2013
-
-@author: Vlad
-'''
 
 from google.appengine.ext import db
 
@@ -35,6 +30,7 @@ class Tag(db.Model):
     title_lower = db.StringProperty()
     date = db.DateTimeProperty()
     count = db.IntegerProperty()
+    last_date = db.DateTimeProperty()
 
 
 class UserTag(db.Model):
@@ -44,6 +40,7 @@ class UserTag(db.Model):
     title_lower = db.StringProperty()
     date = db.DateTimeProperty()
     count = db.IntegerProperty()
+    last_date = db.DateTimeProperty()
 
 
 class Comment(db.Expando):

@@ -52,6 +52,7 @@ def tag_added(title, user_id):
     if global_tag:
         if hasattr(global_tag, 'count'):
             global_tag.count = global_tag.count + 1
+            global_tag.last_date = datetime.now()
             global_tag.put()
     else:
         tag = db.Tag.all().filter('url_name =', url_name).get()
@@ -61,12 +62,14 @@ def tag_added(title, user_id):
             tag.title_lower = title.lower()
             tag.url_name = url_name
             tag.date = datetime.now()
+            tag.last_date = datetime.now()
             tag.count = 1
             tag.put()
         
     user_tag = db.UserTag.all().filter('user_id =', user_id).filter('url_name', url_name).get()
     if user_tag:
         user_tag.count = user_tag.count + 1
+        user_tag.last_date = datetime.now()
         user_tag.put()
     else:
         user_tag = db.UserTag()
@@ -75,6 +78,7 @@ def tag_added(title, user_id):
         user_tag.title = title
         user_tag.title_lower = title.lower()
         user_tag.date = datetime.now()
+        user_tag.last_date = datetime.now()
         user_tag.count = 1
         user_tag.put()
 
