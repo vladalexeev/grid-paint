@@ -861,3 +861,27 @@ class PageGlobalTags(BasicPageRequestHandler):
             }
         )
 
+
+class PageTagImages(BasicPageRequestHandler):
+    def get(self, *args):
+        tag_name = args[0]
+
+        def artworks_query_func():
+            all_artworks = db.Artwork.all()
+            all_artworks = all_artworks.filter('tags =', tags.tag_url_name(tag_name))
+            return all_artworks.order('-date')
+
+        def href_create_func(offset):
+            return '/tags/' + tag_name + '/images?offset=' + str(offset)
+
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST + 'gallery_' + tag_name + '_' + str(offset)
+
+        model = create_gallery_model(self.request.get('offset'),
+                                     artworks_query_func,
+                                     href_create_func,
+                                     memcache_cursor_key_func)
+
+        model['search_query'] = tag_name
+
+        self.write_template('templates/gallery.html', model)

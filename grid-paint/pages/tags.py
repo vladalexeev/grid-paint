@@ -50,7 +50,7 @@ def tag_added(title, user_id):
 
     global_tag = db.Tag.all().filter('url_name =', url_name).get()
     if global_tag:
-        if hasattr(global_tag, 'count'):
+        if getattr(global_tag, 'count') is not None:
             global_tag.count = global_tag.count + 1
             global_tag.last_date = datetime.now()
             global_tag.put()

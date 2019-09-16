@@ -46,6 +46,7 @@ application = webapp.WSGIApplication([
     ('/images/json/(.*).json', pages.actions.JSONImageRequest),
     ('/images/avatar/(.*).jpg', pages.actions.AvatarImageRequest),
     ('/tags', pages.pages.PageGlobalTags),
+    ('/tags/(.*)/images', pages.pages.PageTagImages),
     ('/notifications', pages.pages.PageNotifications),
     ('/delete-notification', pages.actions.ActionDeleteNotification),
     ('/delete-all-notifications', pages.actions.ActionDeleteAllNotifications),
