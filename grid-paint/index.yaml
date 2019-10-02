@@ -36,14 +36,14 @@ indexes:
   - name: "tags"
   - name: "date"
     direction: desc
-- kind: "Favorite"
-  properties:
-  - name: "user_email"
-  - name: "date"
-    direction: desc
 - kind: "Artwork"
   properties:
   - name: "author_email"
+  - name: "date"
+    direction: desc
+- kind: "Favorite"
+  properties:
+  - name: "user_email"
   - name: "date"
     direction: desc
 - kind: "Notification"

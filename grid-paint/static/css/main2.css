@@ -254,6 +254,15 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	color: #888;
 }
 
+.thumbnail-folder-background {
+	width:200px;
+	height:150px;
+	background-image: url("/img/folder-thumbnail.svg");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
 
 /**
  * 	Image details classes

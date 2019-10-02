@@ -31,6 +31,7 @@ class Tag(db.Model):
     date = db.DateTimeProperty()
     count = db.IntegerProperty()
     last_date = db.DateTimeProperty()
+    cover = db.ReferenceProperty(reference_class=Artwork)
 
 
 class UserTag(db.Model):
@@ -41,6 +42,7 @@ class UserTag(db.Model):
     date = db.DateTimeProperty()
     count = db.IntegerProperty()
     last_date = db.DateTimeProperty()
+    cover = db.ReferenceProperty(reference_class=Artwork)
 
 
 class Comment(db.Expando):

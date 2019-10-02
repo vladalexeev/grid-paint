@@ -275,3 +275,11 @@ def convert_user_profile_for_json(user_profile):
         }
     return result
 
+
+def convert_tag_for_page(tag):
+    return {
+        'tag_id': tag.key().id(),
+        'title': tag.title,
+        'url_name': tag.url_name,
+        'artwork_id': tag.cover.key().id() if tag.cover else None
+    }
