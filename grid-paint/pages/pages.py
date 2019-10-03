@@ -840,7 +840,7 @@ class PageGlobalTags(BasicPageRequestHandler):
         fetched_tags = db.Tag.all().order('-last_date').fetch(limit, offset)
         query_tags = [convert.convert_tag_for_page(t) for t in fetched_tags]
         for t in query_tags:
-            t['url'] = '/gallery?q=' + t['url_name']
+            t['url'] = '/tags/' + t['url_name'] + '/images'
 
         prev_offset = offset - limit
         if prev_offset < 0:
