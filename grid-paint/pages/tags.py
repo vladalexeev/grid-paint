@@ -36,7 +36,7 @@ def get_tag_by_title(title):
         return tag
 
 
-def tag_added(title, user_id):
+def tag_added(title, user_id, artwork):
     if not title:
         return None
 
@@ -53,6 +53,8 @@ def tag_added(title, user_id):
         if getattr(global_tag, 'count') is not None:
             global_tag.count = global_tag.count + 1
             global_tag.last_date = datetime.now()
+            if not global_tag.cover:
+                global_tag.cover = artwork
             global_tag.put()
     else:
         tag = db.Tag.all().filter('url_name =', url_name).get()
@@ -63,6 +65,7 @@ def tag_added(title, user_id):
             tag.url_name = url_name
             tag.date = datetime.now()
             tag.last_date = datetime.now()
+            tag.cover = artwork
             tag.count = 1
             tag.put()
         
@@ -70,11 +73,14 @@ def tag_added(title, user_id):
     if user_tag:
         user_tag.count = user_tag.count + 1
         user_tag.last_date = datetime.now()
+        if not user_tag.cover:
+            user_tag.cover = artwork
         user_tag.put()
     else:
         user_tag = db.UserTag()
         user_tag.user_id = user_id
         user_tag.url_name = url_name
+        user_tag.cover = artwork
         user_tag.title = title
         user_tag.title_lower = title.lower()
         user_tag.date = datetime.now()

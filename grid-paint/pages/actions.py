@@ -347,7 +347,7 @@ class JSONActionSaveImageTags(BasicRequestHandler):
         for tag_title in request_tags:
             url_name = tags.tag_url_name(tag_title)
             if url_name in tags_to_add:
-                db_tag_url_name = tags.tag_added(tag_title, author_profile.key().id())
+                db_tag_url_name = tags.tag_added(tag_title, author_profile.key().id(), artwork)
                 if db_tag_url_name:
                     url_tags.append(db_tag_url_name)
             else:
@@ -362,7 +362,6 @@ class JSONActionSaveImageTags(BasicRequestHandler):
         self.response.out.write(json.dumps({
             'result': 'ok',
         }))
-
 
 
 class ActionDeleteNotification(BasicRequestHandler):
