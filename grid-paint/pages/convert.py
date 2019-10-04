@@ -281,5 +281,6 @@ def convert_tag_for_page(tag):
         'tag_id': tag.key().id(),
         'title': tag.title,
         'url_name': tag.url_name,
-        'artwork_id': tag.cover.key().id() if tag.cover else None
+        'artwork_id': tag.cover.key().id() if tag.cover else None,
+        'count': tag.count,
     }

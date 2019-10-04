@@ -92,7 +92,7 @@ def tag_added(title, user_id, artwork):
     return url_name
 
 
-def tag_deleted(title, user_id):
+def tag_deleted(title, user_id, artwork):
     if not title:
         return
 
@@ -103,12 +103,18 @@ def tag_deleted(title, user_id):
     if global_tag:
         if hasattr(global_tag, 'count'):
             global_tag.count = global_tag.count - 1
-            global_tag.put()
+        if hasattr(global_tag, 'cover') and global_tag.cover.key().id() == artwork.key().id():
+            global_tag.cover = None
+
+        global_tag.put()
 
     user_tag = db.UserTag.all().filter('user_id =', user_id).filter('url_name', url_name).get()
     if user_tag:
+        if hasattr(user_tag, 'cover') and user_tag.cover.key().id() == artwork.key().id():
+            user_tag.cover = None
         user_tag.count = user_tag.count - 1
         user_tag.put()
+
 
 def tag_by_url_name(url_name):
     cache_tag = cache.get(cache.MC_TAG + url_name)

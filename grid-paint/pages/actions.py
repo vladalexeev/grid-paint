@@ -260,7 +260,7 @@ class ActionDeleteImage(BasicRequestHandler):
             self.response.set_status(404)
             return
         
-        if self.user_info.superadmin or artwork.author_email==self.user_info.user_email:
+        if self.user_info.superadmin or artwork.author_email == self.user_info.user_email:
             if self.user_info.read_only:
                 self.response.set_status(403)
                 return            
@@ -282,7 +282,7 @@ class ActionDeleteImage(BasicRequestHandler):
             news_items = db.NewsFeed.all().filter('artwork =', artwork)
             for ni in news_items:
                 ni.delete()
-                
+
             cs.delete_file(artwork.full_image_file_name)
             cs.delete_file(artwork.small_image_file_name)
             if hasattr(artwork,'json_file_name'):
@@ -295,8 +295,11 @@ class ActionDeleteImage(BasicRequestHandler):
             user_profile.artworks_count = user_profile.artworks_count - 1
             user_profile.favorite_count = user_profile.favorite_count - decrease_count
             dao.set_user_profile(user_profile)
-                
-            artwork.delete();
+
+            for tag_url_name in artwork.tags:
+                tags.tag_deleted(tag_url_name, user_profile.key().id(), artwork)
+
+            artwork.delete()
             
             cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
             cache.delete(cache.MC_MAIN_PAGE_RECENT_EDITOR_CHOICE)
@@ -354,7 +357,7 @@ class JSONActionSaveImageTags(BasicRequestHandler):
                 url_tags.append(url_name)
 
         for tag_url_name in tags_to_delete:
-            tags.tag_deleted(tag_url_name, author_profile.key().id())
+            tags.tag_deleted(tag_url_name, author_profile.key().id(), artwork)
 
         artwork.tags = url_tags
         artwork.put()
