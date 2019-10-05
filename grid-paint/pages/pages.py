@@ -864,6 +864,43 @@ class PageGlobalTags(BasicPageRequestHandler):
         )
 
 
+class PageUserTags(BasicPageRequestHandler):
+    def get(self, *args):
+        profile_id = int(args[0])
+        if self.request.get('offset'):
+            offset = int(self.request.get('offset'))
+        else:
+            offset = 0
+
+        limit = 11 if offset == 0 else 10
+
+        fetched_tags = db.UserTag.all().filter('user_id', profile_id).order('-last_date').fetch(limit, offset)
+        query_tags = [convert.convert_tag_for_page(t) for t in fetched_tags]
+        for t in query_tags:
+            t['url'] = '/profiles/{}/tags/{}/images'.format(profile_id, t['url_name'])
+
+        prev_offset = offset - limit
+        if prev_offset < 0:
+            prev_offset = 0
+
+        if len(query_tags) > limit:
+            query_tags = query_tags[:-1]
+            next_offset = offset + limit
+        else:
+            next_offset = -1
+
+        self.write_template(
+            'templates/user-tags.html',
+            {
+                'tags': query_tags,
+                'limit': limit,
+                'offset': offset,
+                'next_offset': next_offset,
+                'prev_offset': prev_offset,
+            }
+        )
+
+
 class PageTagImages(BasicPageRequestHandler):
     def get(self, *args):
         tag_name = args[0]
@@ -878,6 +915,38 @@ class PageTagImages(BasicPageRequestHandler):
 
         def memcache_cursor_key_func(offset):
             return cache.MC_ARTWORK_LIST + 'gallery_' + tag_name + '_' + str(offset)
+
+        model = create_gallery_model(self.request.get('offset'),
+                                     artworks_query_func,
+                                     href_create_func,
+                                     memcache_cursor_key_func)
+
+        model['search_query'] = tag_name
+
+        self.write_template('templates/gallery.html', model)
+
+
+class PageUserTagImages(BasicPageRequestHandler):
+    def get(self, *args):
+        profile_id = int(args[0])
+        tag_name = args[1]
+
+        user = dao.get_user_profile_by_id(profile_id)
+        if not user:
+            self.response.set_status(404)
+            return
+
+        def artworks_query_func():
+            all_artworks = db.Artwork.all()
+            all_artworks = all_artworks.filter('author_email', user.email)
+            all_artworks = all_artworks.filter('tags =', tags.tag_url_name(tag_name))
+            return all_artworks.order('-date')
+
+        def href_create_func(offset):
+            return '/profiles/{}/tags/{}/images?offset='.format(profile_id, tag_name, offset)
+
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST + 'gallery_' + str(profile_id) + '_' + tag_name + '_' + str(offset)
 
         model = create_gallery_model(self.request.get('offset'),
                                      artworks_query_func,
