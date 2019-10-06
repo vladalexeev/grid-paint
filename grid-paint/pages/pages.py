@@ -545,10 +545,10 @@ class PageProfile(BasicRequestHandler):
             'profile': convert.convert_user_profile(user_profile),
             'recent_images': recent_user_images,
             'has_any_recent_images': len(recent_user_images) > 0,
-            'has_more_recent_images': len(recent_user_images) > 3,
+            'has_more_recent_images': len(recent_user_images) >= 3,
             'recent_tags': recent_user_tags,
             'has_any_recent_tags': len(recent_user_tags) > 0,
-            'has_more_recent_tags': len(recent_user_tags) > 3,
+            'has_more_recent_tags': len(recent_user_tags) >= 3,
         }
 
         if self.user_info.user:
