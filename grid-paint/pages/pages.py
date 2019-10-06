@@ -969,8 +969,6 @@ class PageTagImages(BasicPageRequestHandler):
 
 class PageUserTagImages(BasicPageRequestHandler):
     def get(self, *args):
-        import logging
-        logging.error('ejdslkj;lads')
         profile_id = int(args[0])
         tag_name = args[1]
 
