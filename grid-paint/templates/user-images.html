@@ -1,0 +1,221 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}  
+<div class="single-container">
+	
+<div class="container">
+	<div class="row">
+		<div class="col-12 col-sm-4 col-md-2 col-md-offset-2 col-lg-2 col-lg-offset-2">
+			<div class="user-profile-avatar-container-wrapper">
+				<div class="user-profile-avatar-container">
+					<div class="user-profile-avatar user-profile-avatar-edit"
+						 style="background-image: url({{ profile.avatar_url }})" id="avatar"></div>
+				</div>
+			</div>
+			{% if user_info.user and user_info.profile_id != profile.profile_id %}
+				<div style="margin-top: 5px; text-align: center;">
+					<button id="button_follow" class="btn btn-primary btn-tiny" {% if following %}style="display:none;"{% endif %}>Follow</button>
+					<button id="button_unfollow" class="btn btn-default btn-tiny" {% if not following %}style="display:none;"{% endif %}>Unfollow</button>
+				</div>
+			{% endif %}
+		</div>
+		
+		<div class="col-12 col-sm-8 col-md-6 col-lg-6">
+			<div style="font-weight: bold; font-size: 16pt;">{{ profile.nickname }}</div>
+			<div style="color: gray;">joined {{ profile.join_date|date:"d M Y" }}</div>
+			{% if profile.read_only %}
+			<div style="font-weight: bold; font-size: 16pt; color:red;">
+				User is blocked
+				{% if profile.block_reason %}
+				for {{ profile.block_reason }}
+				{% endif %}				
+				{% if profile.block_date %}
+				since {{ profile.block_date|date:"d M Y"}}
+				{% endif %}
+			</div>
+			{% endif %}
+			{% if user_info.superadmin %}
+			<div>
+				{{ profile.email }}
+				{% if profile.read_only %}
+					<a href="/admin/unblock-user?profile_id={{ profile.profile_id }}" class="btn btn-default btn-small">Unblock user</a>
+				{% else %}
+					<a href="#modal-block-user" class="btn btn-default btn-small" data-toggle="modal" data-target="#modal-block-user">Block user</a>
+				{% endif %}
+			</div>
+			<div>
+				{% for email in profile.alternative_emails %}
+					<div>{{ email }}</div>
+				{% endfor %}
+			</div>
+			{% endif%}
+			<div>{{ profile.artworks_count }} artworks</div>
+			<div>
+				<span id="favorite_count">{{ profile.favorite_count}}</span> <i class="icon-star"></i>
+				{% if user_info.superadmin %}
+				  <a id="updateFavoritesButton" href="javascript:updateUserFavorites()" class="btn btn-default btn-small"><i class="icon-refresh"></i></a>
+				  <span id="waitUpdateFavorites" style="display:none;">Wait please...</span>
+				{% endif %}
+			</div>
+			<div><a href="/profiles/{{ profile.profile_id }}/favorites">Favorites</a></div>
+			<div><a href="/profiles/{{ profile.profile_id }}/comments">Comments</a></div>
+			{% if profile.followers_count %}
+			<div><a href="/profiles/{{ profile.profile_id }}/followers" >Followers (<span id="followers-count">{{ profile.followers_count }}</span>)</a></div>
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+<div style="height:20px;"></div>
+
+
+<div class="container">
+	
+	{% include "thumbnails.html" %}
+	
+
+</div>
+</div>
+
+
+<div id="modal-error" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Error</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+profile_id = '{{ profile.profile_id }}';
+
+function showErrorDialog(message) {
+	$("#modal-error .modal-body").html("<p>"+message+"</p>");
+	$("#modal-error .modal-title").html("Error");
+	$("#modal-error").modal();
+}
+
+function getFollowersCount() {
+	var v = $('#followers-count').text();
+	return parseInt(v, 10);
+}
+
+function setFollowersCount(count) {
+	$('#followers-count').text('' + count);
+}
+
+$(function() {
+	$("#button_follow").click(function() {
+		$.getJSON('/follow?user_id='+profile_id)
+			.done(function(data) {
+				if (data=="OK") {
+					$("#button_follow").hide();
+					$("#button_unfollow").show();
+					setFollowersCount(getFollowersCount() + 1);
+				} else if (data=="not_changed") {
+					showErrorDialog("You can follow or unfollow the same person once per minute.");
+				}
+			});	
+
+	});
+	
+	$("#button_unfollow").click(function() {
+		$.getJSON('/unfollow?user_id='+profile_id)
+			.done(function(data) {
+				if (data=="OK") {
+					$("#button_follow").show();
+					$("#button_unfollow").hide();
+					setFollowersCount(getFollowersCount() - 1);
+				} else if (data=="not_changed") {
+					showErrorDialog("You can follow or unfollow the same person once per minute.");
+				}
+			});			
+	});	
+});
+</script>
+
+{% if user_info.superadmin %}
+<div id="modal-block-user" class="modal fade">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Block user</h4>
+	  </div>
+	  <div class="modal-body">
+	    <form name="blockForm" method="POST" action="/admin/block-user" role="form">
+        	<input type="hidden" name="profile_id" value="{{ profile.profile_id }}" />
+        	<div class="form-group">
+    			<label>Block reason</label>
+    			<input type="text" name="block_reason" id="admin_artwork_name" value="" class="form-control"/>
+    		</div>
+        </form>
+	  </div>
+	  <div class="modal-footer">
+	    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+	    <button id="btn-block-user" type="button" class="btn btn-danger">Block user</button>
+	  </div>
+	</div>  		
+  </div>
+</div>
+
+
+<script>
+function updateUserFavorites() {
+	$("#waitUpdateFavorites").show();
+	$("#updateFavoritesButton").hide();
+	$.getJSON(
+		'/admin/updateUserFavorites?profile_id='+profile_id
+	).done(function(data) {
+		$("#waitUpdateFavorites").hide();
+		$("#updateFavoritesButton").show();
+		if (data["error"]) {
+			alert(data["error"]);
+		} else {
+			$("#favorite_count").text(data["count"]);
+		}
+	}).fail(function() {
+		$("#waitUpdateFavorites").hide();
+		$("#updateFavoritesButton").show();
+		alert('Error updating favorites');
+	});
+}
+
+$(function() {
+	$('#btn-block-user').click(
+		function() {
+			$('form[name=blockForm]')[0].submit();
+		}
+	);
+});
+</script>
+{% endif %}
+
+
+<script>
+$(function() {
+    {% if this_user_profile %}
+	$("#top-menu-my-images").addClass("active");
+    {% else %}
+    $("#top-menu-gallery").addClass("active");
+    {% endif %}
+})
+</script>
+
+
+
+
+{% endblock content %}

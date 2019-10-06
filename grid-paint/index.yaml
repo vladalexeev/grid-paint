@@ -13,13 +13,13 @@ indexes:
 - kind: Artwork
   properties:
   - name: author_email
-  - name: tags
   - name: date
     direction: desc
 
 - kind: Artwork
   properties:
   - name: author_email
+  - name: tags
   - name: date
     direction: desc
 
@@ -96,6 +96,12 @@ indexes:
   properties:
   - name: read_only
   - name: nickname
+
+- kind: UserTag
+  properties:
+  - name: user_id
+  - name: date
+    direction: desc
 
 - kind: UserTag
   properties:

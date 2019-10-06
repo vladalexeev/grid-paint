@@ -69,13 +69,51 @@
 
 <div style="height:20px;"></div>
 
+{% if has_any_recent_images%}
+	<div class="container text-center index-page-section" id="recent_images">
+	<h3>Recent images</h3>
 
-<div class="container">
-	
-	{% include "thumbnails.html" %}
-	
+	<div class="row">
+		{% for a in recent_images %}
+			{% include "thumbnail.html" %}
+		{% endfor %}
 
-</div>
+		{% if has_more_recent_images %}
+			<div class="thumbnail-wrapper">
+			  <a href="/profiles/{{ profile.profile_id }}/images">
+			  <div class="thumbnail index-page-thumb-button">
+				<div class="thumb-image"></div>
+			  </div>
+			  </a>
+			</div>
+		{% endif %}
+	</div>
+	</div>
+{% endif %}
+
+
+{% if has_any_recent_tags %}
+	<div class="container text-center index-page-section" id="recent_favorites">
+	<h3>Recent tags</h3>
+
+	<div class="row">
+		{% for t in recent_tags %}
+			{% include "thumbnail-folder.html" %}
+		{% endfor %}
+
+		{% if has_more_recent_tags %}
+			<div class="thumbnail-wrapper">
+			  <a href="/profiles/{{ profile.profile_id }}/tags">
+			  <div class="thumbnail index-page-thumb-button">
+				<div class="thumb-image"></div>
+			  </div>
+			  </a>
+			</div>
+		{% endif %}
+	</div>
+	</div>
+{% endif %}
+
 </div>
 
 
