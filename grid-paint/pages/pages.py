@@ -915,20 +915,27 @@ class PageUserTags(BasicPageRequestHandler):
 
         limit = 11 if offset == 0 else 10
 
-        fetched_tags = db.UserTag.all().filter('user_id', profile_id).order('-last_date').fetch(limit, offset)
+        fetched_tags = db.UserTag.all().filter('user_id', profile_id).order('-last_date').fetch(limit + 1, offset)
         query_tags = [convert.convert_tag_for_page(t) for t in fetched_tags]
         for t in query_tags:
             t['url'] = '/profiles/{}/tags/{}/images'.format(profile_id, t['url_name'])
 
-        prev_offset = offset - limit
+        if offset == 11:
+            prev_offset = 0
+        else:
+            prev_offset = offset - limit
         if prev_offset < 0:
             prev_offset = 0
+
+        has_prev_page = offset > 0
 
         if len(query_tags) > limit:
             query_tags = query_tags[:-1]
             next_offset = offset + limit
+            has_next_page = True
         else:
             next_offset = -1
+            has_next_page = False
 
         self.write_template(
             'templates/user-tags.html',
@@ -938,6 +945,10 @@ class PageUserTags(BasicPageRequestHandler):
                 'offset': offset,
                 'next_offset': next_offset,
                 'prev_offset': prev_offset,
+                'has_next_page': has_next_page,
+                'has_prev_page': has_prev_page,
+                'next_page_href': '/profiles/{}/tags?offset={}'.format(profile_id, next_offset),
+                'prev_page_href': '/profiles/{}/tags?offset={}'.format(profile_id, prev_offset)
             }
         )
 

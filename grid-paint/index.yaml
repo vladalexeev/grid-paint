@@ -37,6 +37,20 @@ indexes:
   - name: "user_id"
   - name: "date"
     direction: desc
+- kind: "Favorite"
+  properties:
+  - name: "user_email"
+  - name: "date"
+    direction: desc
+- kind: "Follow"
+  properties:
+  - name: "leader_email"
+  - name: "follower_email"
+- kind: "UserTag"
+  properties:
+  - name: "user_id"
+  - name: "last_date"
+    direction: desc
 - kind: "Artwork"
   properties:
   - name: "author_email"
@@ -53,19 +67,10 @@ indexes:
   - name: "author_email"
   - name: "date"
     direction: desc
-- kind: "Favorite"
-  properties:
-  - name: "user_email"
-  - name: "date"
-    direction: desc
 - kind: "Follow"
   properties:
   - name: "follower_email"
   - name: "leader_email"
-- kind: "Follow"
-  properties:
-  - name: "leader_email"
-  - name: "follower_email"
 - kind: "Notification"
   properties:
   - name: "recipient_email"
@@ -84,8 +89,3 @@ indexes:
   properties:
   - name: "read_only"
   - name: "nickname"
-- kind: "UserTag"
-  properties:
-  - name: "user_id"
-  - name: "last_date"
-    direction: desc
