@@ -898,6 +898,41 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	margin-right: 10px;
 }
 
+.user-in-title-wrapper {
+	text-align: center;
+}
+
+.user-in-title {
+	display: inline-block;
+}
+
+.user-name-in-title {
+	height: 30px;
+    line-height: 30px;
+    margin-left: 35px;
+    font-size: 14pt;
+    overflow: hidden;
+    text-overflow: ellipsis;
+	max-width: 300px;
+}
+
+.user-avatar-in-title-wrapper {
+	height: 30px;
+    width: 30px;
+    position: absolute;
+}
+
+.user-avatar-in-title-wrapper .user-avatar-in-title {
+	width: 30px;
+    height: 30px;
+    background-size: cover;
+    border-radius: 15px;
+    border: 1px solid #e0e0e0;
+    position: absolute;
+    margin: 0 auto;
+    right: 0;
+}
+
 @media (max-width: 320px) {
 	.image-details-image {
 		min-height: 250px;
@@ -1041,7 +1076,6 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	}
 
 }
-
 
 @media (min-width: 920px) and (max-width: 1150px) {
 	.dummy-banner {
