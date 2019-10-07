@@ -597,6 +597,8 @@ class PageUserImages(BasicRequestHandler):
         if self.user_info.user and profile_id == self.user_info.profile_id:
             model['this_user_profile'] = True
 
+        model['user_page_title'] = 'Images of'
+
         self.write_template('templates/user-images.html', model)
 
 
@@ -620,7 +622,8 @@ class PageUserFavorites(BasicPageRequestHandler):
                                      artworks_query_func, 
                                      href_create_func,
                                      memcache_cursor_key_func)
-        model['profile'] = user_profile
+        model['user_page_title'] = 'Favorites of'
+        model['profile'] = convert.convert_user_profile(user_profile)
     
         if self.user_info.user and self.user_info.profile_id==profile_id:
             model['this_user_profile']=True
@@ -913,6 +916,11 @@ class PageUserTags(BasicPageRequestHandler):
         else:
             offset = 0
 
+        user_profile = dao.get_user_profile_by_id(profile_id)
+        if not user_profile:
+            self.response.set_status(404)
+            return
+
         limit = 11 if offset == 0 else 10
 
         fetched_tags = db.UserTag.all().filter('user_id', profile_id).order('-last_date').fetch(limit + 1, offset)
@@ -940,6 +948,8 @@ class PageUserTags(BasicPageRequestHandler):
         self.write_template(
             'templates/user-tags.html',
             {
+                'user_page_title': 'Tags of',
+                'profile': convert.convert_user_profile(user_profile),
                 'tags': query_tags,
                 'limit': limit,
                 'offset': offset,
@@ -1006,5 +1016,7 @@ class PageUserTagImages(BasicPageRequestHandler):
                                      memcache_cursor_key_func)
 
         model['search_query'] = tag_name
+        model['user_page_title'] = 'Images by tag "{}" of'.format(tag_name)
+        model['profile'] = convert.convert_user_profile(user)
 
-        self.write_template('templates/gallery.html', model)
+        self.write_template('templates/user-images-by-tag.html', model)

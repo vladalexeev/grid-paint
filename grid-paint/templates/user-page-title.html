@@ -1,0 +1,20 @@
+<div class="container">
+    <div class="row">
+        <div style="font-weight: bold; font-size: 16pt; text-align: center">
+            {{ user_page_title }}
+        </div>
+        <div class="user-in-title-wrapper">
+            <div class="user-in-title">
+                <div class="user-avatar-in-title-wrapper">
+                    <div class="user-avatar-in-title"
+                             style="background-image: url({{ profile.avatar_url }})" id="avatar"></div>
+                </div>
+                <div class="user-name-in-title">
+                    <a href="/profiles/{{ profile.profile_id }}">{{ profile.nickname }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="height:20px;"></div>
