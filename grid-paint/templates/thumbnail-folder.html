@@ -2,7 +2,9 @@
     <a href="{{ t.url }}">
         <div class="thumbnail-folder">
             <div class="thumbnail-folder-background">
-                <div class="thumbnail-folder-image" style="background-image: url(/images/png/{{ t.artwork_id }}-small.png);">
+                <div class="thumbnail-folder-image-wrapper">
+                    <div class="thumbnail-folder-image" style="background-image: url(/images/png/{{ t.artwork_id }}-small.png);">
+                    </div>
                 </div>
             </div>
             <div class="thumb-title">{{ t.title }} ({{ t.count }})</div>
