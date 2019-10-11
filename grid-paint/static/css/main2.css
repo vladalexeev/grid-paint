@@ -287,6 +287,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 .thumbnail-folder .thumb-title {
     font-weight: normal;
     color: #666;
+    height: 15pt;
 }
 
 
