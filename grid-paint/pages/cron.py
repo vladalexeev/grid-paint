@@ -5,6 +5,7 @@ from bad_language import hide_bad_language
 from pages import cache
 from common import BasicRequestHandler
 import db
+import dao
 from tags import tag_url_name
 
 
@@ -21,10 +22,14 @@ class CronCleanNotifications(BasicRequestHandler):
         return
 
 
+def get_task_status(task_name):
+    return db.TaskStatus.all().filter('task_name =', task_name).get()
+
+
 class CronUpdateArtworks(BasicRequestHandler):
     def get(self):
         task_name = 'update_artworks_tags'
-        task_status = db.TaskStatus.all().filter('task_name =', task_name).get()
+        task_status = get_task_status(task_name)
         if not task_status:
             task_status = db.TaskStatus()
             task_status.task_name = task_name
@@ -87,3 +92,66 @@ class CronUpdateArtworks(BasicRequestHandler):
         task_status.put()
 
         self.response.set_status(200)
+
+
+class CronUpdateGlobalTags(BasicRequestHandler):
+    def get(self):
+        task_name = 'update_global_tags'
+        task_status = get_task_status(task_name)
+        if not task_status:
+            task_status = db.TaskStatus()
+            task_status.task_name = task_name
+            task_status.finished = False
+            task_status.data = json.dumps({
+                'last_url_name': 0,
+            })
+
+        if task_status.finished:
+            self.response.set_status(200)
+            return
+
+        task_data = json.loads(task_status.data)
+        last_url_name = task_data['last_url_name']
+        tags = db.Tag.all().filter('url_name >', last_url_name).order('url_name').fetch(100, 0)
+        artworks_processed = 0
+        tags_processed = 0
+        for t in tags:
+            if artworks_processed > 1000:
+                break
+            tags_processed += 1
+            url_name = t.url_name
+            artworks = db.Artwork.all().filter('tags =', url_name)
+            global_tag_count = 0
+            users_tag_count = {}
+            for a in artworks:
+                global_tag_count += 1
+                artworks_processed += 1
+                author_email = a.author_email
+                if author_email in users_tag_count:
+                    users_tag_count[author_email] += 1
+                else:
+                    users_tag_count[author_email] = 1
+
+            t.count = global_tag_count
+            t.put()
+
+            for email, count in users_tag_count:
+                user = dao.get_user_profile(email)
+                user_tag = db.UserTag.all().filter('user_id', user.key().id()).filter('url_name', url_name).get()
+                if not user_tag:
+                    user_tag = db.UserTag()
+                    user_tag.user_id = user.key().id()
+                    user_tag.url_name = url_name
+                    user_tag.count = count
+                    user_tag.put()
+
+            last_url_name = url_name
+
+        if tags_processed == 0:
+            task_status.finished = True
+        task_status.data = json.dumps({
+            'last_url_name': last_url_name
+        })
+        task_status.put()
+
+
