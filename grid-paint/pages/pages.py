@@ -536,7 +536,7 @@ class PageProfile(BasicRequestHandler):
         recent_db_images = db.Artwork.all().filter('author_email', user_profile.email).order('-date').fetch(3, 0)
         recent_user_images = [convert.convert_artwork_for_page(a, 200, 150) for a in recent_db_images]
 
-        recent_db_tags = db.UserTag.all().filter('user_id', user_profile.key().id()).order('-date').fetch(3, 0)
+        recent_db_tags = db.UserTag.all().filter('user_id', user_profile.key().id()).order('-last_date').fetch(3, 0)
         recent_user_tags = [convert.convert_tag_for_page(t) for t in recent_db_tags]
         for t in recent_user_tags:
             t['url'] = '/profiles/{}/tags/{}/images'.format(profile_id, t['url_name'])
