@@ -126,14 +126,21 @@ class CronUpdateGlobalTags(BasicRequestHandler):
             artworks = db.Artwork.all().filter('tags =', url_name)
             global_tag_count = 0
             users_tag_count = {}
+            users_tag_last_date = {}
+            users_tag_cover = {}
             for a in artworks:
                 global_tag_count += 1
                 artworks_processed += 1
                 author_email = a.author_email
                 if author_email in users_tag_count:
                     users_tag_count[author_email] += 1
+                    if a.date > users_tag_last_date[author_email]:
+                        users_tag_last_date[author_email] = a.date
+                        users_tag_cover[author_email] = a
                 else:
                     users_tag_count[author_email] = 1
+                    users_tag_cover[author_email] = a
+                    users_tag_last_date[author_email] = a.date
 
             t.count = global_tag_count
             t.put()
@@ -144,7 +151,12 @@ class CronUpdateGlobalTags(BasicRequestHandler):
                 if not user_tag:
                     user_tag = db.UserTag()
                     user_tag.user_id = user.key().id()
-                    user_tag.url_name = url_name
+                    user_tag.url_name = t.url_name
+                    user_tag.title = t.title
+                    user_tag.title_lower = t.title_lower
+                    user_tag.date = datetime.datetime.now()
+                    user_tag.last_date = users_tag_last_date[email]
+                    user_tag.cover = users_tag_cover[email]
                     user_tag.count = count
                     user_tag.put()
 
