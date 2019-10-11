@@ -113,7 +113,10 @@ def tag_deleted(title, user_id, artwork):
         if hasattr(user_tag, 'cover') and user_tag.cover.key().id() == artwork.key().id():
             user_tag.cover = None
         user_tag.count = user_tag.count - 1
-        user_tag.put()
+        if user_tag.count == 0:
+            user_tag.delete()
+        else:
+            user_tag.put()
 
 
 def tag_by_url_name(url_name):
