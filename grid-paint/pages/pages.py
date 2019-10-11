@@ -1015,8 +1015,14 @@ class PageUserTagImages(BasicPageRequestHandler):
                                      href_create_func,
                                      memcache_cursor_key_func)
 
+        user_tag = db.UserTag.all().filter('user_id', profile_id).filter('url_name', tag_name).get()
+        if user_tag:
+            tag_title = user_tag.title
+        else:
+            tag_title = tag_name
+
         model['search_query'] = tag_name
-        model['user_page_title'] = 'Images by tag "{}" of'.format(tag_name)
+        model['user_page_title'] = 'Images by tag "{}" of'.format(tag_title)
         model['profile'] = convert.convert_user_profile(user)
 
         self.write_template('templates/user-images-by-tag.html', model)
