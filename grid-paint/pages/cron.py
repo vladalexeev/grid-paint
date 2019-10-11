@@ -110,13 +110,16 @@ class CronUpdateGlobalTags(BasicRequestHandler):
             self.response.set_status(200)
             return
 
+        limit = 100
+        max_artworks = 1000
+
         task_data = json.loads(task_status.data)
         last_url_name = task_data['last_url_name']
-        tags = db.Tag.all().filter('url_name >', last_url_name).order('url_name').fetch(100, 0)
+        tags = db.Tag.all().filter('url_name >', last_url_name).order('url_name').fetch(limit, 0)
         artworks_processed = 0
         tags_processed = 0
         for t in tags:
-            if artworks_processed > 1000:
+            if artworks_processed >= max_artworks:
                 break
             tags_processed += 1
             url_name = t.url_name
@@ -135,7 +138,7 @@ class CronUpdateGlobalTags(BasicRequestHandler):
             t.count = global_tag_count
             t.put()
 
-            for email, count in users_tag_count:
+            for email, count in users_tag_count.iteritems():
                 user = dao.get_user_profile(email)
                 user_tag = db.UserTag.all().filter('user_id', user.key().id()).filter('url_name', url_name).get()
                 if not user_tag:

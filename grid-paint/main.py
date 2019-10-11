@@ -86,5 +86,6 @@ application = webapp.WSGIApplication([
     ('/unfollow', pages.actions.ActionUnfollow),
     ('/cron/clean-notifications', pages.cron.CronCleanNotifications),
     ('/cron/update-artworks', pages.cron.CronUpdateArtworks),
+    ('/cron/update-tags', pages.cron.CronUpdateGlobalTags),
     ('/tasks/add-artwork-to-news', pages.tasks.TaskAddArtworkToNews),
 ], debug=True)

@@ -7,3 +7,7 @@ cron:
 #  url: /cron/update-artworks
 #  schedule: every 10 minutes
 
+- description: "Update tags"
+  url: /cron/update-tags
+  schedule: every 5 minutes
+
