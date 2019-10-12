@@ -166,15 +166,15 @@ class CronUpdateGlobalTags(BasicRequestHandler):
                 user_tag = db.UserTag.all().filter('user_id', user.key().id()).filter('url_name', url_name).get()
                 if not user_tag:
                     user_tag = db.UserTag()
-                    user_tag.user_id = user.key().id()
-                    user_tag.url_name = t.url_name
-                    user_tag.title = t.title
-                    user_tag.title_lower = t.title_lower
-                    user_tag.date = datetime.datetime.now()
-                    user_tag.last_date = users_tag_last_date[email]
-                    user_tag.cover = users_tag_cover[email]
-                    user_tag.count = count
-                    user_tag.put()
+                user_tag.user_id = user.key().id()
+                user_tag.url_name = t.url_name
+                user_tag.title = t.title
+                user_tag.title_lower = t.title_lower
+                user_tag.date = datetime.datetime.now()
+                user_tag.last_date = users_tag_last_date[email]
+                user_tag.cover = users_tag_cover[email]
+                user_tag.count = count
+                user_tag.put()
 
             last_url_name = url_name
 
