@@ -178,6 +178,15 @@ class CronUpdateGlobalTags(BasicRequestHandler):
 
             last_url_name = url_name
 
+        task_log = db.TaskLog()
+        task_log.task_name = task_name
+        task_log.data = json.dumps({
+            'tags_processed': tags_processed,
+            'artworks_processed': artworks_processed,
+            'last_url_name': last_url_name
+        })
+        task_log.put()
+
         if tags_processed == 0:
             task_status.finished = True
         task_data['last_url_name'] = last_url_name
