@@ -162,6 +162,8 @@ class CronUpdateGlobalTags(BasicRequestHandler):
             t.put()
 
             for email, count in users_tag_count.iteritems():
+                if email is None:
+                    continue
                 user = dao.get_user_profile(email)
                 user_tag = db.UserTag.all().filter('user_id', user.key().id()).filter('url_name', url_name).get()
                 if not user_tag:
