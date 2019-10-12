@@ -104,6 +104,8 @@ class CronUpdateGlobalTags(BasicRequestHandler):
             task_status.finished = False
             task_status.data = json.dumps({
                 'last_url_name': 0,
+                'tags_processed': 0,
+                'artworks_processed': 0,
             })
 
         if task_status.finished:
@@ -128,10 +130,22 @@ class CronUpdateGlobalTags(BasicRequestHandler):
             users_tag_count = {}
             users_tag_last_date = {}
             users_tag_cover = {}
+            min_artwork_date = None
+            max_artwork_date = None
             for a in artworks:
                 global_tag_count += 1
                 artworks_processed += 1
                 author_email = a.author_email
+                if min_artwork_date is None:
+                    min_artwork_date = a.date
+                elif a.date < min_artwork_date:
+                    min_artwork_date = a.date
+
+                if max_artwork_date is None:
+                    max_artwork_date = a.date
+                elif a.date > max_artwork_date:
+                    max_artwork_date = a.date
+
                 if author_email in users_tag_count:
                     users_tag_count[author_email] += 1
                     if a.date > users_tag_last_date[author_email]:
@@ -143,6 +157,8 @@ class CronUpdateGlobalTags(BasicRequestHandler):
                     users_tag_last_date[author_email] = a.date
 
             t.count = global_tag_count
+            t.date = min_artwork_date
+            t.last_date = max_artwork_date
             t.put()
 
             for email, count in users_tag_count.iteritems():
@@ -164,9 +180,10 @@ class CronUpdateGlobalTags(BasicRequestHandler):
 
         if tags_processed == 0:
             task_status.finished = True
-        task_status.data = json.dumps({
-            'last_url_name': last_url_name
-        })
+        task_data['last_url_name'] = last_url_name
+        task_data['tags_processed'] += tags_processed
+        task_data['artworks_processed'] += artworks_processed
+        task_status.data = json.dumps(task_data)
         task_status.put()
 
 
