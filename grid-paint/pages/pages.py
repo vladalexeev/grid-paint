@@ -581,7 +581,7 @@ class PageUserImages(BasicRequestHandler):
             return db.Artwork.all().filter('author_email =', user_profile.email).order('-date')
 
         def href_create_func(offset):
-            return '/profiles/' + str(profile_id) + '?offset=' + str(offset)
+            return '/profiles/' + str(profile_id) + '/images?offset=' + str(offset)
 
         def memcache_cursor_key_func(offset):
             return cache.MC_ARTWORK_LIST + 'profile_' + str(profile_id) + '_' + str(offset)
