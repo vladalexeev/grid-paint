@@ -1005,7 +1005,7 @@ class PageUserTagImages(BasicPageRequestHandler):
             return all_artworks.order('-date')
 
         def href_create_func(offset):
-            return '/profiles/{}/tags/{}/images?offset='.format(profile_id, tag_name, offset)
+            return '/profiles/{}/tags/{}/images?offset={}'.format(profile_id, tag_name, offset)
 
         def memcache_cursor_key_func(offset):
             return cache.MC_ARTWORK_LIST + 'gallery_' + str(profile_id) + '_' + tag_name + '_' + str(offset)
