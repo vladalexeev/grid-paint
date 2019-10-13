@@ -255,7 +255,6 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 }
 
 .thumbnail-folder-background {
-	width:200px;
 	height:150px;
 	background-image: url("/img/folder-thumbnail.svg");
 	background-position: center;
@@ -1020,7 +1019,21 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	.thumb-image {
 		width: 100px;
 		height: 75px;
-	}			
+	}
+
+	.thumbnail-folder-background .thumbnail-folder-image-wrapper {
+        width: 75px;
+        height: 60px;
+	}
+
+	.thumbnail-folder-background .thumbnail-folder-image-wrapper .thumbnail-folder-image {
+        width: 75px;
+        height: 50px;
+	}
+
+	.thumbnail-folder-background {
+        height: 100px;
+    }
 }
 
 
@@ -1063,7 +1076,21 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	.thumb-image {
 		width: 100px;
 		height: 75px;
-	}		
+	}
+
+	.thumbnail-folder-background .thumbnail-folder-image-wrapper {
+        width: 75px;
+        height: 60px;
+	}
+
+	.thumbnail-folder-background .thumbnail-folder-image-wrapper .thumbnail-folder-image {
+        width: 75px;
+        height: 50px;
+	}
+
+	.thumbnail-folder-background {
+        height: 100px;
+    }
 }
 
 @media (min-width: 740px) and (max-width: 920px) {
