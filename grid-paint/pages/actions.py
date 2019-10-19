@@ -1537,6 +1537,40 @@ class JSONAdminRenameTag(BasicRequestHandler):
             }))
 
 
+class JSONSetTagCover(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        user_tag_id = int(self.request.get('tag_id'))
+        artwork_id = int(self.request.get('artwork_id'))
+
+        user_tag = db.UserTag.get_by_id(user_tag_id)
+        if not user_tag:
+            self.response.set_status(400)
+            return
+
+        if user_tag.user_id != self.user_info.profile_id and not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        artwork = dao.get_artwork(artwork_id)
+        if not artwork:
+            self.response.set_status(400)
+            return
+
+        if artwork.author_email != self.user_info.user_email and not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        user_tag.cover = artwork
+        user_tag.put()
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
+
 
 
 

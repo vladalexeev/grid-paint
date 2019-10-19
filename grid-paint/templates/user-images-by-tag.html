@@ -8,12 +8,50 @@
 	{% include "user-page-title.html" %}
 
 <div class="container">
-	
+
+{% if profile.profile_id == user_info.profile_id %}
+	{% with "user-images-by-tag-thumbnail-plugin.html" as template_plugin %}
+		{% include "thumbnails.html" %}
+	{% endwith %}
+{% else %}
 	{% include "thumbnails.html" %}
-	
-
+{% endif %}
 </div>
 </div>
 
+{% if profile.profile_id == user_info.profile_id %}
+<script>
+tag_id = {{ tag.tag_id }}
+
+$(function() {
+	$('.set-image-as-tag-cover').click(function(event) {
+		event.preventDefault();
+		var artwork_id = $(this).attr('artwork_id');
+		$.ajax(
+			{
+				type: 'post',
+				url: '/json/set-user-tag-cover',
+				data: {
+					artwork_id: artwork_id,
+					tag_id: tag_id
+				},
+				dataType: "json",
+				success: function(data) {
+					if (data.result == 'ok') {
+						$('.set-image-as-tag-cover').each(function() {
+							$(this).removeClass('selected');
+						});
+						$('.set-image-as-tag-cover[artwork_id=' + artwork_id + ']').addClass('selected');
+						$('.tag-header-icon-image').css(
+							'background-image',
+							'url(/images/png/' + artwork_id + '-small.png)');
+					}
+				}
+			}
+		)
+	});
+})
+</script>
+{% endif %}
 
 {% endblock content %}

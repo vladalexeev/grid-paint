@@ -73,6 +73,7 @@ application = webapp.WSGIApplication([
     ('/json/save-image', pages.actions.JSONActionSaveImage),
     ('/json/save-image-tags', pages.actions.JSONActionSaveImageTags),
     ('/json/save-alternative-email', pages.actions.JSONSaveAlternativeEmail),
+    ('/json/set-user-tag-cover', pages.actions.JSONSetTagCover),
     ('/json/delete-alternative-email', pages.actions.JsonDeleteAlternativeEmail),
     ('/json/notifications', pages.actions.JSONNotifications),
     ('/json/followers', pages.actions.JSONFollowers),
