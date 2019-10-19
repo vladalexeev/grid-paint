@@ -1018,6 +1018,7 @@ class PageUserTagImages(BasicPageRequestHandler):
         user_tag = db.UserTag.all().filter('user_id', profile_id).filter('url_name', tag_name).get()
         if user_tag:
             tag_title = user_tag.title
+            model['tag'] = convert.convert_tag_for_page(user_tag)
         else:
             tag_title = tag_name
 

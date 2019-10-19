@@ -945,6 +945,58 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
     right: 0;
 }
 
+
+/*
+    Tag header
+*/
+
+.tag-header-icon-row {
+    text-align: center;
+    height: 68px;
+}
+
+.tag-header-icon-button-wrapper {
+    width: 20px;
+    height: 64px;
+    display: inline-block;
+}
+
+.tag-header-icon-background {
+    width: 64px;
+    height: 64px;
+    background-image: url("/img/folder-thumbnail.svg");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: inline-block;
+	position: relative;
+}
+
+.tag-header-icon-background .tag-header-icon-image-wrapper {
+    padding-top: 5px;
+    position: absolute;
+    width: 48px;
+    height: 32px;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.tag-header-icon-background .tag-header-icon-image-wrapper .tag-header-icon-image {
+	width: 48px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+
+/*
+    Media rules
+*/
+
 @media (max-width: 320px) {
 	.image-details-image {
 		min-height: 250px;
