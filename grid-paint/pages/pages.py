@@ -95,44 +95,49 @@ class PageIndex(BasicPageRequestHandler):
                 'og_url': 'https://grid-paint.com',
                 'og_image': 'https://grid-paint.com/img/grid-paint-poster.png'
             })
-        
+
+
 class PagePrivacyPolicy(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/privacy-policy.html',{})
+
 
 class PageRules(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/rules.html',{})
 
+
 class PageHistory(BasicPageRequestHandler):
     def get(self):
         self.write_template('templates/history.html',{})
-        
+
+
 class PageNewImage(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:
             self.redirect(self.user_info.login_url)
-            return;
+            return
         
         if self.user_info.read_only:
             self.response.set_status(403)
             return
         
         self.write_template('templates/new-image.html', {})
-        
+
+
 class PagePainter(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:
             self.redirect(self.user_info.login_url)
-            return;
+            return
         
         if self.user_info.read_only:
             self.response.set_status(403)
             return
                 
         if self.request.get('id'):
-            artwork_id=self.request.get('id')
-            artwork=dao.get_artwork(artwork_id)
+            artwork_id = self.request.get('id')
+            artwork = dao.get_artwork(artwork_id)
             
             if artwork is None:
                 self.response.set_status(404)
@@ -145,19 +150,19 @@ class PagePainter(BasicPageRequestHandler):
                     artwork_json = artwork.json
             else:
                 artwork_json = zlib.decompress(cs.read_file(artwork.json_file_name))
-                
             
-            self.write_template('templates/painter.html', 
-                                {
-                                 'artwork_id': artwork_id,
-                                 'artwork_name': artwork.name,
-                                 'artwork_description': artwork.description,
-                                 'artwork_json': artwork_json,
-                                 'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
-                                 })
+            self.write_template(
+                'templates/painter.html',
+                {
+                    'artwork_id': artwork_id,
+                    'artwork_name': artwork.name,
+                    'artwork_description': artwork.description,
+                    'artwork_json': artwork_json,
+                    'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
+                })
         elif self.request.get('copy_id'):
-            artwork_id=self.request.get('copy_id')
-            artwork=dao.get_artwork(artwork_id)
+            artwork_id = self.request.get('copy_id')
+            artwork = dao.get_artwork(artwork_id)
             
             if hasattr(artwork, 'json'):
                 if artwork.json_compressed:
@@ -167,49 +172,53 @@ class PagePainter(BasicPageRequestHandler):
             else:
                 artwork_json = zlib.decompress(cs.read_file(artwork.json_file_name))
             
-            self.write_template('templates/painter.html', 
-                                {
-                                 'artwork_name': artwork.name+' (copy)',
-                                 'artwork_description': artwork.description+' (copy)',
-                                 'artwork_json': artwork_json,
-                                 'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
-                                 })
+            self.write_template(
+                'templates/painter.html',
+                {
+                    'artwork_name': artwork.name+' (copy)',
+                    'artwork_description': artwork.description+' (copy)',
+                    'artwork_json': artwork_json,
+                    'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
+                })
         else:
-            new_artwork={
-                         'version': {
-                                     'major': 2,
-                                     'minor': 0
-                                     },
-                         'backgroundColor': '#ffffff',
-                         'canvasSize':{
-                                       'width': int(float(self.request.get('artwork_width'))),
-                                       'height': int(float(self.request.get('artwork_height'))),                                       
-                                       },
-                         'layers': [{
-                                     'grid': self.request.get('artwork_grid'),
-                                     'cellSize': int(float(self.request.get('cell_size'))),                     
-                                     'rows':[]
-                                     }],
-                         'recentColors':['#4096EE', '#FFFFFF', '#000000', '#EEEEEE', 
-                                         '#FFFF88', '#CDEB8B', '#6BBA70', '#006E2E', 
-                                         '#C3D9FF', '#356AA0', '#FF0096', '#B02B2C',
-                                         '#FF7400', '#EF9090', '#0099FF', '#9933FF',
-                                         '#2E2EFF', '#8A725D', '#FF3838', '#4BC8D1',
-                                         '#CBD114', '#858585'
-                                         ]
-                         }
-            artwork_json=json.dumps(new_artwork)
-            self.write_template('templates/painter.html', 
-                                {
-                                 'artwork_json': artwork_json
-                                 })
+            new_artwork = {
+                'version': {
+                    'major': 2,
+                    'minor': 0
+                },
+                'backgroundColor': '#ffffff',
+                'canvasSize':{
+                    'width': int(float(self.request.get('artwork_width'))),
+                    'height': int(float(self.request.get('artwork_height'))),
+                },
+                'layers': [{
+                    'grid': self.request.get('artwork_grid'),
+                    'cellSize': int(float(self.request.get('cell_size'))),
+                    'rows': []
+                }],
+                'recentColors':[
+                    '#4096EE', '#FFFFFF', '#000000', '#EEEEEE',
+                    '#FFFF88', '#CDEB8B', '#6BBA70', '#006E2E',
+                    '#C3D9FF', '#356AA0', '#FF0096', '#B02B2C',
+                    '#FF7400', '#EF9090', '#0099FF', '#9933FF',
+                    '#2E2EFF', '#8A725D', '#FF3838', '#4BC8D1',
+                    '#CBD114', '#858585'
+                ]
+            }
+            artwork_json = json.dumps(new_artwork)
+            self.write_template(
+                'templates/painter.html',
+                {
+                    'artwork_json': artwork_json
+                })
             
     def post(self):
         artwork_json=self.request.get('artwork_json')
-        self.write_template('templates/painter.html', 
-                                {
-                                 'artwork_json': artwork_json
-                                 })
+        self.write_template(
+            'templates/painter.html',
+            {
+                'artwork_json': artwork_json
+            })
 
 
 class PageMyImages(BasicPageRequestHandler):
