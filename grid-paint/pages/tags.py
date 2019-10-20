@@ -101,19 +101,20 @@ def tag_deleted(title, user_id, artwork):
 
     global_tag = db.Tag.all().filter('url_name =', url_name).get()
     if global_tag:
-        if hasattr(global_tag, 'count'):
+        if hasattr(global_tag, 'count') and global_tag.count > 0:
             global_tag.count = global_tag.count - 1
-        if hasattr(global_tag, 'cover') and global_tag.cover.key().id() == artwork.key().id():
+        if hasattr(global_tag, 'cover') and global_tag.cover is not None and global_tag.cover.key().id() == artwork.key().id():
             global_tag.cover = None
 
         global_tag.put()
 
     user_tag = db.UserTag.all().filter('user_id =', user_id).filter('url_name', url_name).get()
     if user_tag:
-        if hasattr(user_tag, 'cover') and user_tag.cover.key().id() == artwork.key().id():
+        if hasattr(user_tag, 'cover') and user_tag.cover is not None and user_tag.cover.key().id() == artwork.key().id():
             user_tag.cover = None
-        user_tag.count = user_tag.count - 1
-        if user_tag.count == 0:
+        if user_tag.count > 0:
+            user_tag.count = user_tag.count - 1
+        if user_tag.count <= 0:
             user_tag.delete()
         else:
             user_tag.put()
