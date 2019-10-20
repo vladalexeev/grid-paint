@@ -175,8 +175,8 @@ class PagePainter(BasicPageRequestHandler):
             self.write_template(
                 'templates/painter.html',
                 {
-                    'artwork_name': artwork.name+' (copy)',
-                    'artwork_description': artwork.description+' (copy)',
+                    'artwork_name': artwork.name + ' (copy)',
+                    'artwork_description': (artwork.description if artwork.description else '') + ' (copy)',
                     'artwork_json': artwork_json,
                     'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
                 })
@@ -187,7 +187,7 @@ class PagePainter(BasicPageRequestHandler):
                     'minor': 0
                 },
                 'backgroundColor': '#ffffff',
-                'canvasSize':{
+                'canvasSize': {
                     'width': int(float(self.request.get('artwork_width'))),
                     'height': int(float(self.request.get('artwork_height'))),
                 },
@@ -196,7 +196,7 @@ class PagePainter(BasicPageRequestHandler):
                     'cellSize': int(float(self.request.get('cell_size'))),
                     'rows': []
                 }],
-                'recentColors':[
+                'recentColors': [
                     '#4096EE', '#FFFFFF', '#000000', '#EEEEEE',
                     '#FFFF88', '#CDEB8B', '#6BBA70', '#006E2E',
                     '#C3D9FF', '#356AA0', '#FF0096', '#B02B2C',
