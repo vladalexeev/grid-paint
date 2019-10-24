@@ -1,0 +1,57 @@
+{% extends "base-adv.html" %}
+
+
+{% block content %}
+<div class="single-container">
+
+	<div class="container">
+		<h2>Site news and updates</h2>
+	</div>
+
+
+<div class="container" style="padding: 0;">
+    <div class="index-main-news-container">
+
+        <div class="col-12 col-sm-4">
+            <div class="index-main-news index-page-section">
+                <div class="image">
+                    <img src="/img/news/2019-10-24-user-tags.png" height="120"/>
+                </div>
+				<div class="text">2019-10-24</div>
+                <div class="text">
+                    Organize your artworks by settings tags and view them in folders.
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-4">
+            <div class="index-main-news index-page-section">
+                <div class="image">
+                    <img src="/img/news/2019-07-23-avatar.png" height="120"/>
+                </div>
+				<div class="text">2019-07-23</div>
+                <div class="text">
+					{% if user_info.profile_id %}
+					Upload image for your avatar in <a href="/my-profile">your profile</a>.
+					{% else %}
+					Upload image for your avatar in your profile.
+					{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-4">
+            <div class="index-main-news index-page-section">
+                <div class="image">
+                    <img src="/img/news/2019-07-16-flood-fill.gif" height="120"/>
+                </div>
+				<div class="text">2019-07-16</div>
+                <div class="text">
+                    Use <b>Flood fill</b> tool to easy paint large areas with one color.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
