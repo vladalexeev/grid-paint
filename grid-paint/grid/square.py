@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-'''
-Square grid
-
-Created on 24.07.2013
-@author: Vlad
-'''
 
 import math
 
@@ -13,14 +7,16 @@ import grid.base as base
 
 import colorsys
 
+
 class BasicShape:
     def __init__(self, grid):
         self.grid=grid
-        
+
+
 class BasicShapeFlat(BasicShape):
     def __init__(self, grid):
         BasicShape.__init__(self,grid)
-        self.facet=self.get_facet();
+        self.facet=self.get_facet()
         
     def get_facet(self):
         raise NotImplementedError("Should implement this method")
@@ -35,22 +31,25 @@ class BasicShapeFlat(BasicShape):
                        (x+self.grid.cell_size-facet, y+facet)],
                       fill=color)
 
+
 class ShapeFlat(BasicShapeFlat):
     def get_facet(self):
         return 0
-    
+
+
 class ShapeFlat1(BasicShapeFlat):
     def get_facet(self):
         return self.grid.cell_size/6
-    
+
+
 class ShapeFlat2(BasicShapeFlat):
     def get_facet(self):
         return self.grid.cell_size/4
-    
+
+
 class ShapeFlat3(BasicShapeFlat):
     def get_facet(self):
         return self.grid.cell_size/3
-
 
 
 class BasicShapeCircle(BasicShape):
@@ -69,22 +68,25 @@ class BasicShapeCircle(BasicShape):
                        (x+self.grid.cell_size-facet, y+self.grid.cell_size-facet)],
                       fill=color)
 
+
 class ShapeCircle(BasicShapeCircle):
     def get_facet(self):
         return 0
-    
+
+
 class ShapeCircle1(BasicShapeCircle):
     def get_facet(self):
         return self.grid.cell_size/6
-    
+
+
 class ShapeCircle2(BasicShapeCircle):
     def get_facet(self):
         return self.grid.cell_size/4
-    
+
+
 class ShapeCircle3(BasicShapeCircle):
     def get_facet(self):
         return self.grid.cell_size/3
-
         
         
 class ShapeDiamond(BasicShape):
@@ -118,6 +120,7 @@ class ShapeDiamond(BasicShape):
                        (x+cell_size/2, y+cell_size/2),
                        (x+cell_size, y)],
                       fill=c4)
+
 
 class BasicShapeJewel(BasicShape):
     def __init__(self, grid):
@@ -168,43 +171,40 @@ class BasicShapeJewel(BasicShape):
                        (x+cell_size-facet, y+cell_size-facet),
                        (x+cell_size, y+cell_size)],
                       fill=c4)
-                
-#        image.rectangle([x+facet,
-#                         y+facet,
-#                         x+cell_size-facet-1,
-#                         y+cell_size-facet-1],
-#                        fill=color)
 
 
 class ShapeJewel(BasicShapeJewel):    
     def get_facet(self):
-        return self.grid.cell_size/6;
+        return self.grid.cell_size/6
+
 
 class ShapeJewel2(BasicShapeJewel):    
     def get_facet(self):
-        return self.grid.cell_size/4;
+        return self.grid.cell_size/4
+
 
 class ShapeJewel3(BasicShapeJewel):    
     def get_facet(self):
-        return self.grid.cell_size/3;
+        return self.grid.cell_size/3
 
 
 class GridSquare(base.GridBase):
     def __init__(self):
+        base.GridBase.__init__(self)
         self.shapes={
-                "flat": ShapeFlat(self),
-                "flat1": ShapeFlat1(self),
-                "flat2": ShapeFlat2(self),
-                "flat3": ShapeFlat3(self),
-                "circle": ShapeCircle(self),
-                "circle1": ShapeCircle1(self),
-                "circle2": ShapeCircle2(self),
-                "circle3": ShapeCircle3(self),
-                "diamond": ShapeDiamond(self),
-                "jewel": ShapeJewel(self),
-                "jewel2": ShapeJewel2(self),
-                "jewel3": ShapeJewel3(self)
-                }
+            "flat": ShapeFlat(self),
+            "flat1": ShapeFlat1(self),
+            "flat2": ShapeFlat2(self),
+            "flat3": ShapeFlat3(self),
+            "circle": ShapeCircle(self),
+            "circle1": ShapeCircle1(self),
+            "circle2": ShapeCircle2(self),
+            "circle3": ShapeCircle3(self),
+            "diamond": ShapeDiamond(self),
+            "jewel": ShapeJewel(self),
+            "jewel2": ShapeJewel2(self),
+            "jewel3": ShapeJewel3(self)
+        }
         
     def paintGrid(self, image, color, left, top, width, height, dx=0, dy=0):
         startx = int(math.floor(left / self.cell_size)) * self.cell_size
