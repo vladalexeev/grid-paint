@@ -125,7 +125,7 @@ class ShapeDiamond(BasicShape):
 class BasicShapeJewel(BasicShape):
     def __init__(self, grid):
         BasicShape.__init__(self,grid)
-        self.facet=self.get_facet();
+        self.facet=self.get_facet()
         
     def get_facet(self):
         raise NotImplementedError("Should implement this method")
@@ -188,6 +188,66 @@ class ShapeJewel3(BasicShapeJewel):
         return self.grid.cell_size/3
 
 
+class BasicShapeFramed(BasicShape):
+    def __init__(self, grid):
+        BasicShape.__init__(self, grid)
+        self.frame_width = 0
+        self.frame_light = 0
+
+    def paint(self, image, col, row, color, dx, dy):
+        x = col * self.grid.cell_size + dx
+        y = row * self.grid.cell_size + dy
+        facet = self.grid.cell_size * self.frame_width
+
+        rgb = clr.hex_to_rgb(color)
+        hls = colorsys.rgb_to_hls(*rgb)
+        if self.frame_light > 0:
+            frame_color = clr.rgb256(*colorsys.hls_to_rgb(*clr.lighten_hls(hls, self.frame_light)))
+        else:
+            frame_color = clr.rgb256(*colorsys.hls_to_rgb(*clr.darken_hls(hls, -self.frame_light)))
+
+        image.polygon([
+            (x, y),
+            (x, y + self.grid.cell_size),
+            (x + self.grid.cell_size, y + self.grid.cell_size),
+            (x + self.grid.cell_size, y)
+        ], fill=frame_color)
+
+        image.polygon([(x + facet, y + facet),
+                       (x + facet, y + self.grid.cell_size - facet),
+                       (x + self.grid.cell_size - facet, y + self.grid.cell_size - facet),
+                       (x + self.grid.cell_size - facet, y + facet)],
+                      fill=color)
+
+
+class ShapeFramed5Dark(BasicShapeFramed):
+    def __init__(self, grid):
+        BasicShapeFramed.__init__(self, grid)
+        self.frame_width = 0.05
+        self.frame_light = -0.15
+
+
+class ShapeFramed10Dark(BasicShapeFramed):
+    def __init__(self, grid):
+        BasicShapeFramed.__init__(self, grid)
+        self.frame_width = 0.10
+        self.frame_light = -0.15
+
+
+class ShapeFramed5Light(BasicShapeFramed):
+    def __init__(self, grid):
+        BasicShapeFramed.__init__(self, grid)
+        self.frame_width = 0.05
+        self.frame_light = 0.15
+
+
+class ShapeFramed10Light(BasicShapeFramed):
+    def __init__(self, grid):
+        BasicShapeFramed.__init__(self, grid)
+        self.frame_width = 0.10
+        self.frame_light = 0.15
+
+
 class GridSquare(base.GridBase):
     def __init__(self):
         base.GridBase.__init__(self)
@@ -203,7 +263,11 @@ class GridSquare(base.GridBase):
             "diamond": ShapeDiamond(self),
             "jewel": ShapeJewel(self),
             "jewel2": ShapeJewel2(self),
-            "jewel3": ShapeJewel3(self)
+            "jewel3": ShapeJewel3(self),
+            "frame5d": ShapeFramed5Dark(self),
+            "frame10d": ShapeFramed10Dark(self),
+            "frame5u": ShapeFramed5Light(self),
+            "frame10u": ShapeFramed10Light(self),
         }
         
     def paintGrid(self, image, color, left, top, width, height, dx=0, dy=0):

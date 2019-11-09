@@ -274,6 +274,66 @@ function GridSquare_ShapeJewel3(parent) {
     }
 }
 
+function GridSquare_BasicShapeFramed(parent) {
+    this.parent=parent;
+    this.frameLight = 0;
+    this.frameWidth = 0
+    this.paint=function(paper, col, row, color, dx, dy) {
+		x=col*parent.cellSize+dx;
+		y=row*parent.cellSize+dy;
+        var c=hexToHsl(color);
+        var cellSize=this.parent.cellSize;
+        var facet=this.parent.cellSize * this.frameWidth;
+        var frameColor = hslToHex(c.h, c.s, c.l+this.frameLight);
+
+        paper.setStart();
+        var e1=paper.rect(
+			x,
+			y,
+			cellSize,
+			cellSize);
+		e1.attr({"fill":frameColor, "stroke-width":0});
+
+
+        var e2=paper.rect(
+			x + facet,
+			y + facet,
+			cellSize - facet * 2,
+			cellSize - facet * 2);
+		e2.attr({"fill": color, "stroke-width":0});
+
+        return paper.setFinish();
+    }
+}
+
+function GridSquare_ShapeFramed5Dark(parent) {
+    this.super = GridSquare_BasicShapeFramed;
+    this.super(parent)
+    this.frameLight = -0.15;
+    this.frameWidth = 0.05;
+}
+
+function GridSquare_ShapeFramed10Dark(parent) {
+    this.super = GridSquare_BasicShapeFramed;
+    this.super(parent)
+    this.frameLight = -0.15;
+    this.frameWidth = 0.10;
+}
+
+function GridSquare_ShapeFramed5Light(parent) {
+    this.super = GridSquare_BasicShapeFramed;
+    this.super(parent)
+    this.frameLight = 0.15;
+    this.frameWidth = 0.05;
+}
+
+function GridSquare_ShapeFramed10Light(parent) {
+    this.super = GridSquare_BasicShapeFramed;
+    this.super(parent)
+    this.frameLight = 0.15;
+    this.frameWidth = 0.10;
+}
+
 function GridSquare() {
 	this.cellSize=24;
 	this.name="square";
@@ -358,6 +418,10 @@ function GridSquare() {
 		"jewel2": new GridSquare_ShapeJewel2(this),
 		"jewel3": new GridSquare_ShapeJewel3(this),
 		"diamond": new GridSquare_ShapeDiamond(this),
+		"frame5d": new GridSquare_ShapeFramed5Dark(this),
+		"frame10d": new GridSquare_ShapeFramed10Dark(this),
+		"frame5u": new GridSquare_ShapeFramed5Light(this),
+		"frame10u": new GridSquare_ShapeFramed10Light(this)
 	};
 	
 	this.internalShapes={
