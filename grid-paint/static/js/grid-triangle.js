@@ -130,6 +130,47 @@ function GridTriangle_ShapeJewel(parent) {
 	}	
 }
 
+function GridTriangle_BasicShapeFramed(parent) {
+	this.parent=parent;
+	this.frameLight=0;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=trianglePath(col, row, parent.cellSize);
+		var c=hexToHsl(color);
+		paper.setStart();
+
+        var c1=hslToHex(c.h, c.s, c.l+this.frameLight);
+        var e1=paper.path([
+        	"M", pp[0].x+dx, pp[0].y+dy,
+        	"L", pp[1].x+dx, pp[1].y+dy,
+        	"L", pp[2].x+dx, pp[2].y+dy,
+        	"Z"
+        ])
+        e1.attr({"fill":c1, "stroke-width":0})
+
+
+        var e4=paper.path([
+        	"M", pp[0].x+(pp[3].x-pp[0].x)/3+dx, pp[0].y+(pp[3].y-pp[0].y)/3+dy,
+        	"L", pp[1].x+(pp[3].x-pp[1].x)/3+dx, pp[1].y+(pp[3].y-pp[1].y)/3+dy,
+        	"L", pp[2].x+(pp[3].x-pp[2].x)/3+dx, pp[2].y+(pp[3].y-pp[2].y)/3+dy,
+        	"Z"
+        ])
+        e4.attr({"fill":color, "stroke-width":0})
+
+        return paper.setFinish();
+	}
+}
+
+function GridTriangle_ShapeFramedDark(parent) {
+    this.super = GridTriangle_BasicShapeFramed;
+    this.super(parent);
+    this.frameLight = - 0.15;
+}
+
+function GridTriangle_ShapeFramedLight(parent) {
+    this.super = GridTriangle_BasicShapeFramed;
+    this.super(parent);
+    this.frameLight = 0.15;
+}
 
 
 function GridTriangle () {
@@ -238,7 +279,9 @@ function GridTriangle () {
 		"empty": new GridTriangle_ShapeEmpty(this),
 		"flat": new GridTriangle_ShapeFlat(this),
 		"diamond": new GridTriangle_ShapeDiamond(this),
-		"jewel": new GridTriangle_ShapeJewel(this)
+		"jewel": new GridTriangle_ShapeJewel(this),
+		'frame3u': new GridTriangle_ShapeFramedLight(this),
+		'frame3d': new GridTriangle_ShapeFramedDark(this)
 	}
 	
 	this.internalShapes={
