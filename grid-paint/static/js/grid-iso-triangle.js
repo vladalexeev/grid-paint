@@ -123,6 +123,49 @@ function GridIsoTriangle_ShapeJewel(parent) {
 }
 
 
+function GridIsoTriangle_BasicShapeFramed(parent) {
+	this.parent = parent;
+	this.frameLight = 0;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=isotrianglePath(col, row, parent.cellSize);
+		var c=hexToHsl(color);
+		paper.setStart();
+
+        var c1=hslToHex(c.h, c.s, c.l+this.frameLight);
+        var e1=paper.path([
+        	"M", pp[0].x+dx, pp[0].y+dy,
+        	"L", pp[1].x+dx, pp[1].y+dy,
+        	"L", pp[2].x+dx, pp[2].y+dy,
+        	"Z"
+        ]);
+        e1.attr({"fill":c1, "stroke-width":0});
+
+        var e4=paper.path([
+        	"M", pp[0].x+(pp[3].x-pp[0].x)/3+dx, pp[0].y+(pp[3].y-pp[0].y)/3+dy,
+        	"L", pp[1].x+(pp[3].x-pp[1].x)/3+dx, pp[1].y+(pp[3].y-pp[1].y)/3+dy,
+        	"L", pp[2].x+(pp[3].x-pp[2].x)/3+dx, pp[2].y+(pp[3].y-pp[2].y)/3+dy,
+        	"Z"
+        ]);
+        e4.attr({"fill":color, "stroke-width":0});
+
+        return paper.setFinish();
+	}
+}
+
+
+function GridIsoTriangle_ShapeFramedLight(parent) {
+	this.super = GridIsoTriangle_BasicShapeFramed;
+	this.super(parent);
+	this.frameLight = 0.15;
+}
+
+
+function GridIsoTriangle_ShapeFramedDark(parent) {
+	this.super = GridIsoTriangle_BasicShapeFramed;
+	this.super(parent);
+	this.frameLight = -0.15;
+}
+
 
 function GridIsoTriangle() {
 	this.cellSize=24;
@@ -234,46 +277,48 @@ function GridIsoTriangle() {
 				]
 			}
 		}
-	}
+	};
 	
 	this.isCellInsideWorkspace = function(col, row) {
 		var colWidth=this.cellSize*sin60;
 		var rowCount=(this.workspaceHeight-this.cellSize/2)/this.cellSize*2;
 		var colCount=this.workspaceWidth/colWidth;
 		return col>=0 && col<colCount && row>=0 && row<rowCount;
-	}
+	};
 	
 	this.shapes={
 		"empty": new GridIsoTriangle_ShapeEmpty(this),
 		"flat": new GridIsoTriangle_ShapeFlat(this),
 		"diamond": new GridIsoTriangle_ShapeDiamond(this),
-		"jewel": new GridIsoTriangle_ShapeJewel(this)
-	}
+		"jewel": new GridIsoTriangle_ShapeJewel(this),
+		'frame3u': new GridIsoTriangle_ShapeFramedLight(this),
+		'frame3d': new GridIsoTriangle_ShapeFramedDark(this)
+	};
 	
 	this.internalShapes={
 	    "selected": new GridIsoTriangle_ShapeSelected(this)
-	}
+	};
 	
 	this.shiftLeft={
 	    cell_dx:-2,
 	    cell_dy:0,
 	    dx: -this.cellSize*sin60*2,
 	    dy: 0
-	}
+	};
 	
 	this.shiftRight={
 	    cell_dx:2,
 	    cell_dy:0,
 	    dx:this.cellSize*sin60*2,
 	    dy: 0
-	}
+	};
 	
 	this.shiftUp={
 	    cell_dx:0,
 	    cell_dy:-2,
 	    dx: 0,
 	    dy: -this.cellSize		
-	}
+	};
 	
 	this.shiftDown={
 	    cell_dx:0,
@@ -286,5 +331,5 @@ function GridIsoTriangle() {
 // Register grid
 gridFactory["iso-triangle"]=function() {
 	return new GridIsoTriangle();
-}
+};
 
