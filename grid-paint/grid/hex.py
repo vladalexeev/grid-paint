@@ -1,13 +1,8 @@
-'''
-Created on 29.07.2013
-
-@author: Vlad
-'''
-
 import colorsys
 
 import graphics.color as clr
 import grid.base as base
+
 
 def hex_points(col, row, side_length):
     x=(side_length+side_length*base.cos60)*col
@@ -27,12 +22,13 @@ def hex_points(col, row, side_length):
         {'x': x+dx+side_length/2, 'y': y+half_height}
     ]
 
+
 class ShapeFlat:
     def __init__(self, grid):
         self.grid=grid
     
     def paint(self, image, col, row, color, dx, dy):
-        pp=hex_points(col, row, self.grid.cell_size/2);
+        pp=hex_points(col, row, self.grid.cell_size/2)
         image.polygon([(pp[0]['x']+dx, pp[0]['y']+dy),
                        (pp[1]['x']+dx, pp[1]['y']+dy),
                        (pp[2]['x']+dx, pp[2]['y']+dy),
@@ -40,7 +36,8 @@ class ShapeFlat:
                        (pp[4]['x']+dx, pp[4]['y']+dy),
                        (pp[5]['x']+dx, pp[5]['y']+dy)],
                       fill=color)
-        
+
+
 class ShapeDiamond:
     def __init__(self, grid):
         self.grid=grid
@@ -52,7 +49,6 @@ class ShapeDiamond:
         cx=pp[6]['x']
         cy=pp[6]['y']
 
-        
         c0=clr.rgb256(*colorsys.hls_to_rgb(*clr.lighten_hls(hls, 0.2)))
         image.polygon([(pp[0]['x']+dx, pp[0]['y']+dy),
                        (pp[1]['x']+dx, pp[1]['y']+dy),
@@ -88,7 +84,8 @@ class ShapeDiamond:
                        (pp[0]['x']+dx, pp[0]['y']+dy),
                        (cx+dx, cy+dy)],
                       fill=c5)
-        
+
+
 class ShapeCube:
     def __init__(self, grid):
         self.grid=grid
@@ -96,11 +93,10 @@ class ShapeCube:
     def paint(self, image, col, row, color, dx, dy):
         rgb=clr.hex_to_rgb(color)
         hls=colorsys.rgb_to_hls(*rgb)
-        pp=hex_points(col, row, self.grid.cell_size/2);
+        pp=hex_points(col, row, self.grid.cell_size/2)
         cx=pp[6]['x']
         cy=pp[6]['y']
 
-        
         c0=clr.rgb256(*colorsys.hls_to_rgb(*clr.lighten_hls(hls, 0.2)))
         image.polygon([(pp[0]['x']+dx, pp[0]['y']+dy),
                        (pp[1]['x']+dx, pp[1]['y']+dy),
@@ -130,7 +126,7 @@ class ShapeJewel:
     def paint(self, image, col, row, color, dx, dy):
         rgb=clr.hex_to_rgb(color)
         hls=colorsys.rgb_to_hls(*rgb)
-        pp=hex_points(col, row, self.grid.cell_size/2);
+        pp=hex_points(col, row, self.grid.cell_size/2)
         cx=pp[6]['x']
         cy=pp[6]['y']
 
@@ -183,13 +179,62 @@ class ShapeJewel:
                        (pp[4]['x']+dx+(cx-pp[4]['x'])/2, pp[4]['y']+dy+(cy-pp[4]['y'])/2),
                        (pp[5]['x']+dx+(cx-pp[5]['x'])/2, pp[5]['y']+dy+(cy-pp[5]['y'])/2)],
                       fill=color)
-        
+
+
+class BasicShapeFramed:
+    def __init__(self, grid):
+        self.grid = grid
+        self.frame_light = 0
+
+    def paint(self, image, col, row, color, dx, dy):
+        rgb = clr.hex_to_rgb(color)
+        hls = colorsys.rgb_to_hls(*rgb)
+        pp = hex_points(col, row, self.grid.cell_size / 2)
+        cx = pp[6]['x']
+        cy = pp[6]['y']
+
+        if self.frame_light > 0:
+            c0 = clr.rgb256(*colorsys.hls_to_rgb(*clr.lighten_hls(hls, self.frame_light)))
+        else:
+            c0 = clr.rgb256(*colorsys.hls_to_rgb(*clr.darken_hls(hls, -self.frame_light)))
+
+        image.polygon([(pp[0]['x'] + dx, pp[0]['y'] + dy),
+                       (pp[1]['x'] + dx, pp[1]['y'] + dy),
+                       (pp[2]['x'] + dx, pp[2]['y'] + dy),
+                       (pp[3]['x'] + dx, pp[3]['y'] + dy),
+                       (pp[4]['x'] + dx, pp[4]['y'] + dy),
+                       (pp[5]['x'] + dx, pp[5]['y'] + dy)],
+                      fill=c0)
+
+        image.polygon([(pp[0]['x'] + dx + (cx - pp[0]['x']) / 4, pp[0]['y'] + dy + (cy - pp[0]['y']) / 4),
+                       (pp[1]['x'] + dx + (cx - pp[1]['x']) / 4, pp[1]['y'] + dy + (cy - pp[1]['y']) / 4),
+                       (pp[2]['x'] + dx + (cx - pp[2]['x']) / 4, pp[2]['y'] + dy + (cy - pp[2]['y']) / 4),
+                       (pp[3]['x'] + dx + (cx - pp[3]['x']) / 4, pp[3]['y'] + dy + (cy - pp[3]['y']) / 4),
+                       (pp[4]['x'] + dx + (cx - pp[4]['x']) / 4, pp[4]['y'] + dy + (cy - pp[4]['y']) / 4),
+                       (pp[5]['x'] + dx + (cx - pp[5]['x']) / 4, pp[5]['y'] + dy + (cy - pp[5]['y']) / 4)],
+                      fill=color)
+
+
+class ShapeFramedLight(BasicShapeFramed):
+    def __init__(self, grid):
+        BasicShapeFramed.__init__(self, grid)
+        self.frame_light = 0.15
+
+
+class ShapeFramedDark(BasicShapeFramed):
+    def __init__(self, grid):
+        BasicShapeFramed.__init__(self, grid)
+        self.frame_light = -0.15
+
 
 class GridHex(base.GridBase):
     def __init__(self):
-        self.shapes={
-                     'flat': ShapeFlat(self),
-                     'diamond': ShapeDiamond(self),
-                     'jewel': ShapeJewel(self),
-                     'cube': ShapeCube(self)
-                    }
+        base.GridBase.__init__(self)
+        self.shapes = {
+            'flat': ShapeFlat(self),
+            'diamond': ShapeDiamond(self),
+            'jewel': ShapeJewel(self),
+            'cube': ShapeCube(self),
+            'frame4u': ShapeFramedLight(self),
+            'frame4d': ShapeFramedDark(self)
+        }

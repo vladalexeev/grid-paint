@@ -251,6 +251,54 @@ function GridHex_ShapeCube(parent) {
 }
 
 
+function GridHex_BasicShapeFramed(parent) {
+	this.parent=parent;
+	this.frameLight = 0;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var pp=getHexCellPoints(col, row, parent.cellSize/2);
+		var c=hexToHsl(color);
+
+		cx=pp[6].x;
+		cy=pp[6].y;
+
+		paper.setStart();
+
+		var c0=hslToHex(c.h, c.s, c.l+this.frameLight);
+	    var e0=paper.path([
+	    		"M",pp[0].x+dx, pp[0].y+dy,
+	    		"L",pp[1].x+dx, pp[1].y+dy,
+	    		"L",pp[2].x+dx, pp[2].y+dy,
+	    		"L",pp[3].x+dx, pp[3].y+dy,
+	    		"L",pp[4].x+dx, pp[4].y+dy,
+	    		"L",pp[5].x+dx, pp[5].y+dy,"Z"]);
+	    e0.attr({"fill":c0, "stroke-width":0});
+
+	    var e6=paper.path([
+	    		"M",pp[0].x+dx+(cx-pp[0].x)/4, pp[0].y+dy+(cy-pp[0].y)/4,
+	    		"L",pp[1].x+dx+(cx-pp[1].x)/4, pp[1].y+dy+(cy-pp[1].y)/4,
+	    		"L",pp[2].x+dx+(cx-pp[2].x)/4, pp[2].y+dy+(cy-pp[2].y)/4,
+	    		"L",pp[3].x+dx+(cx-pp[3].x)/4, pp[3].y+dy+(cy-pp[3].y)/4,
+	    		"L",pp[4].x+dx+(cx-pp[4].x)/4, pp[4].y+dy+(cy-pp[4].y)/4,
+	    		"L",pp[5].x+dx+(cx-pp[5].x)/4, pp[5].y+dy+(cy-pp[5].y)/4,"Z"]);
+	    e6.attr({"fill":color, "stroke-width":0});
+
+	    return paper.setFinish();;
+	}
+}
+
+
+function GridHex_ShapeFramedLight(parent) {
+    this.super = GridHex_BasicShapeFramed;
+    this.super(parent);
+    this.frameLight = 0.15;
+}
+
+
+function GridHex_ShapeFramedDark(parent) {
+    this.super = GridHex_BasicShapeFramed;
+    this.super(parent);
+    this.frameLight = -0.15;
+}
 
 
 function GridHex() {
@@ -441,7 +489,9 @@ function GridHex() {
 		"flat": new GridHex_ShapeFlat(this),
 		"diamond": new GridHex_ShapeDiamond(this),
 		"jewel": new GridHex_ShapeJewel(this),
-		"cube": new GridHex_ShapeCube(this)
+		"cube": new GridHex_ShapeCube(this),
+		'frame4u': new GridHex_ShapeFramedLight(this),
+		'frame4d': new GridHex_ShapeFramedDark(this)
 	};
 	
 	this.internalShapes={
