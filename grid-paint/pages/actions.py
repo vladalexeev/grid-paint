@@ -713,6 +713,11 @@ class JSONSaveProfile(BasicRequestHandler):
         if not nickname:
             self.response.set_status(400)
             return
+
+        nickname = nickname.strip()
+        if not nickname:
+            self.response.set_status(400)
+            return
         
         nickname = hide_bad_language(nickname)
 
@@ -1043,6 +1048,7 @@ class JSONGetUserIdByNickname(BasicRequestHandler):
             return
  
         nickname = self.request.get('nickname')
+        nickname = nickname.strip()
         nickname = hide_bad_language(nickname)      
         profile = dao.get_user_profile_by_nickname(nickname)
         if profile:
