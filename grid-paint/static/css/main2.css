@@ -728,6 +728,8 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
     border-radius: 10px;
     min-height: 150px;
 	margin: 0 10px;
+	min-height: 220px;
+    max-height: 220px;
 }
 
 .index-main-news .image {
