@@ -249,14 +249,14 @@ $(function () {
 	$("#save-nickname-button").click(
 		function() {
 			var nickname=$("input[name=nickname]").val();
-			if (!nickname) {
+			if (!nickname || !nickname.trim()) {
 				$("#modal-empty-nickname").modal();
 				return;
 			}
 			
 			$.post(
   				'/json/get-user-id-by-nickname',
-  				{'nickname': nickname},
+  				{'nickname': nickname.trim()},
 				function(data) {
 					if (data.id && data.id != profile_id) {
 						$("#modal-duplicate-nickname").modal();
