@@ -367,6 +367,15 @@ function saveArtwork() {
 		data: $("form[name=f]").serialize(),
 		dataType: "json",
 		success: function(data) {
+		    if (data.error) {
+		        hideCircleLoader();
+		        if (data.error === 'few_pixels') {
+		            showWarningMessage('The image contains too few pixels. Please, create more complex image.');
+		        } else {
+		            showWarningMessage("Something went wrong. Try again.");
+		        }
+		        return;
+		    }
 		    if (data.result) {
     		    var artwork_id = data.result;
     		    var artwork_tags = $('input[name=artwork_tags]').val()

@@ -89,6 +89,18 @@ class JSONActionSaveImage(BasicRequestHandler):
         json_file_content = zlib.compress(artwork_json)
         json_obj = json.loads(artwork_json)
 
+        pixel_count = 0
+        min_pixel_count = 10
+        for layer in json_obj['layers']:
+            for row in layer['rows']:
+                pixel_count += len(row['cells'])
+
+        if pixel_count < min_pixel_count:
+            self.response.out.write(json.dumps({
+                'error': 'few_pixels',
+            }))
+            return
+
         layer = json_obj['layers'][0]
         artwork.grid = layer['grid']
         grid = grids[layer['grid']]()
