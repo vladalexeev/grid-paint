@@ -22,6 +22,10 @@ var redoStack=[];
 
 var selection=new GridSelection();
 
+var drawToolProperties = {};
+var drawToolTemporaryCells = [];
+var drawToolTemporaryShapes = {};
+
 var modalDescriptionVisible = false;
 var modalTagsVisible = false;
 var modalSquareGridSpecialPropertiesVisible = false;
@@ -188,6 +192,84 @@ function pickColorByMouseEvent(event) {
 	}
 }
 
+function draftPaintLineOnCanvasByMouseEvent(event) {
+	var cell=getCellCoordByMouseEvent(event);
+
+	if (paperMouseDown) {
+	    if (!drawToolProperties['startCell']) {
+			drawToolProperties['startCell'] = cell;
+			drawToolProperties['endCell'] = cell;
+	    } else {
+			var startCell = drawToolProperties['startCell'];
+            var endCell = drawToolProperties['endCell'];
+			if (endCell.col == cell.col && endCell.row == cell.row) {
+				return;
+			}
+			drawToolProperties['endCell'] = cell;
+			endCell = cell;
+			var newTemporaryCells = grid.plotLine(startCell.col, startCell.row, endCell.col, endCell.row);
+
+			for (var i = 0; i < drawToolTemporaryCells.length; i++) {
+				var found = false;
+				var oldKey = cellToKey(drawToolTemporaryCells[i]);
+				for (var j=0; j < newTemporaryCells.length; j++) {
+					var newKey = cellToKey(newTemporaryCells[j])
+					if (oldKey == newKey) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					drawToolTemporaryShapes[oldKey].remove();
+					delete drawToolTemporaryShapes[oldKey];
+				}
+			}
+
+			for (var i = 0; i < newTemporaryCells.length; i++) {
+				var newKey = cellToKey(newTemporaryCells[i]);
+				var found = false;
+				for (var j = 0; j < drawToolTemporaryCells.length; j++) {
+					var oldKey = cellToKey(drawToolTemporaryCells[j]);
+					if (newKey == oldKey) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					var cell = newTemporaryCells[i]
+					var element = grid.internalShapes["selected"].paint(paper, cell.col, cell.row, "#ffffff", 0, 0);	
+					drawToolTemporaryShapes[newKey] = element;
+				}
+			}
+
+			drawToolTemporaryCells = newTemporaryCells;
+	    }
+	}
+}
+
+function paintLineOnCanvas() {
+    if (drawToolProperties['startCell'] && drawToolProperties['endCell']) {
+        var startCell = drawToolProperties['startCell'];
+        var endCell = drawToolProperties['endCell'];
+        var cells = drawToolTemporaryCells;
+        for (var i=0; i < cells.length; i++) {
+            storeUndoCell(cells[i].col, cells[i].row, selectedShapeName, selectedColor);
+            paintOnCanvas(cells[i].col, cells[i].row, selectedShapeName, selectedColor);
+		}
+		
+		for (var i = 0; i < cells.length; i++) {
+			var key = cellToKey(cells[i]);
+			drawToolTemporaryShapes[key].remove();
+		}
+        drawToolProperties = {};
+		drawToolTemporaryCells = [];
+		drawToolTemporaryShapes = {};
+	
+        changed = true;
+    }
+}
+
+
 function getArtworkEffectiveRect(grid, artwork) {
 	var x1=100000;
 	var y1=100000;
@@ -274,6 +356,7 @@ function setMode(m) {
 	$('#btn-pencil').removeClass('active').removeAttr("disabled");
 	$('#btn-pick-color').removeClass('active').removeAttr("disabled");
 	$('#btn-flood-fill').removeClass('active').removeAttr("disabled");
+	$('#btn-draw-line').removeClass('active').removeAttr("disabled");
 	$("#btn-copy-mode").removeClass('active').removeAttr("disabled");
 	$("#btn-paste-mode").removeClass('active').removeAttr("disabled");
 	
@@ -296,6 +379,9 @@ function setMode(m) {
 	} else if (mode=='fill') {
 		$("#canvas-wrapper").css("cursor","url(/img/cursors/flood-fill.png) 2 32, crosshair");
 		$('#btn-flood-fill').addClass('active');
+	} else if (mode=='line') {
+		$("#canvas-wrapper").css("cursor","crosshair");
+		$('#btn-draw-line').addClass('active');
 	}
 }
 
@@ -808,6 +894,11 @@ $(function() {
 				redoStack=[];
 				updateUndoRedoButtons();
 				fillAreaOnCanvasByMouseEvent(event);
+			} else if (mode=='line') {
+			    undoStack.push(new UndoStep());
+				redoStack=[];
+				updateUndoRedoButtons();
+				draftPaintLineOnCanvasByMouseEvent(event)
 			}
 		}
 	)
@@ -817,6 +908,8 @@ $(function() {
 			
 			if (mode=="paste") {
 				setMode("paint");
+			} if (mode=='line') {
+			    paintLineOnCanvas();
 			}
 		}
 	)
@@ -829,6 +922,8 @@ $(function() {
 				selectOnCanvasByMouseEvent(event);
 			} else if (mode=="paste") {
 				changePastePositionByMouseEvent(event);
+			} else if (mode=='line') {
+			    draftPaintLineOnCanvasByMouseEvent(event);
 			}
 		}
 	);
@@ -1030,6 +1125,10 @@ $(function() {
 	if (grid.getAdjacentCells && grid.isCellInsideWorkspace) {
 		$('#btn-flood-fill').show();
 	}
+
+	if (grid.plotLine) {
+	    $('#btn-draw-line').show();
+	}
 		
 	$("#shift-toolbar-header").click(
 		function() {
@@ -1166,6 +1265,15 @@ $(function() {
 				setMode('paint');
 			} else {
 				setMode('fill');
+			}
+		});
+
+	$("#btn-draw-line").click(
+		function(event) {
+			if (mode=='line') {
+				setMode('paint');
+			} else {
+				setMode('line');
 			}
 		});
 		

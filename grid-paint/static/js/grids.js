@@ -558,3 +558,6 @@ function GridSelection() {
 	};
 }
 
+function cellToKey(cell) {
+	return cell.col + '_' + cell.row;
+}

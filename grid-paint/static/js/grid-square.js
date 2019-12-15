@@ -455,6 +455,78 @@ function GridSquare() {
 	    dx:0,
 	    dy: this.cellSize
 	}
+
+    this.plotLineLow = function(x0, y0, x1, y1) {
+        var result = [];
+        var dx = x1 - x0;
+        var dy = y1 - y0;
+        var yi = 1;
+        if (dy < 0) {
+            yi = -1;
+            dy = -dy;
+        }
+        var D = 2 * dy - dx;
+        var y = y0;
+
+        for (var x = x0; x <= x1; x++) {
+            result.push({
+                col: x,
+                row: y
+            });
+            if (D > 0) {
+                y = y + yi;
+                D = D - 2 * dx;
+            }
+            D = D + 2 * dy;
+        }
+        return result;
+    }
+
+    this.plotLineHigh = function(x0, y0, x1, y1) {
+        var result = [];
+        var dx = x1 - x0;
+        var dy = y1 - y0;
+        var xi = 1;
+        if (dx < 0) {
+            xi = -1;
+            dx = -dx;
+        }
+        var D = 2*dx - dy;
+        var x = x0;
+
+        for (var y = y0; y <= y1; y++) {
+            result.push({
+                col: x,
+                row: y
+            });
+            if (D > 0) {
+                x = x + xi;
+                D = D - 2*dy;
+            }
+            D = D + 2*dx;
+        }
+        return result;
+    }
+
+	this.plotLine = function(col0, row0, col1, row1) {
+	    var x0 = col0;
+	    var y0 = row0;
+	    var x1 = col1;
+	    var y1 = row1;
+        if (Math.abs(y1 - y0) < Math.abs(x1 - x0)) {
+            if (x0 > x1) {
+                return this.plotLineLow(x1, y1, x0, y0)
+            } else {
+                return this.plotLineLow(x0, y0, x1, y1)
+            }
+        } else {
+            if (y0 > y1) {
+                return this.plotLineHigh(x1, y1, x0, y0)
+            } else {
+                return this.plotLineHigh(x0, y0, x1, y1)
+            }
+        }
+	}
 }
 
 // Register grid
