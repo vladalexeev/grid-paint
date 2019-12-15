@@ -1,1 +1,4 @@
 *.pyc
+Thumbs.db
+.idea
+/venv
