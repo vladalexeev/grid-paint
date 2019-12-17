@@ -527,6 +527,52 @@ function GridSquare() {
             }
         }
 	}
+
+	this.basicLineAngles = [
+		0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330		
+	]
+
+	this.adjustLine = function (startCell, endCell) {
+		var vectorCol = endCell.col - startCell.col;
+		var vectorRow = endCell.row - startCell.row;
+		var vectorLength = Math.sqrt(vectorCol * vectorCol + vectorRow * vectorRow);
+		if (vectorLength == 0) {
+			return endCell;
+		}
+
+		var angleCos = Math.abs(vectorCol) / vectorLength;
+		var angle;
+		if (angleCos == 0 ) {
+			angle = Math.PI / 2;
+		} else {
+			angle = Math.acos(angleCos);
+		}
+		if (vectorCol >=0 && vectorRow >= 0) {
+			// pass
+		} else if (vectorCol < 0 && vectorRow >=0) {
+			angle = Math.PI - angle;
+		} else if (vectorCol < 0 && vectorRow < 0) {
+			angle = Math.PI + angle;
+		} else { // vectorCol >=0 && vectorRow < 0
+			angle = 2 * Math.PI - angle;
+		}
+		var angleGrad = angle * 180 / Math.PI;
+		var minAngleDiff = 100;
+		var chosenAngleGrad = 0;
+		for (var i=0; i < this.basicLineAngles.length; i++) {
+			var diff = Math.abs(angleGrad - this.basicLineAngles[i]);
+			if (diff < minAngleDiff) {
+				minAngleDiff = diff;
+				chosenAngleGrad = this.basicLineAngles[i]
+			}
+		}
+
+		var chosenAngle = chosenAngleGrad * Math.PI / 180;
+		return {
+			col: startCell.col + Math.round(vectorLength * Math.cos(chosenAngle)),
+			row: startCell.row + Math.round(vectorLength * Math.sin(chosenAngle))
+		}
+	}
 }
 
 // Register grid

@@ -201,7 +201,24 @@ function draftPaintLineOnCanvasByMouseEvent(event) {
 			drawToolProperties['endCell'] = cell;
 	    } else {
 			var startCell = drawToolProperties['startCell'];
-            var endCell = drawToolProperties['endCell'];
+			var endCell = drawToolProperties['endCell'];
+			if (event.ctrlKey) {
+				cell = grid.adjustLine(startCell, cell);
+			}
+
+			if (startCell.col == cell.col && startCell.row == cell.row) {
+				// Line with zero length
+				for (var i = 0; i < drawToolTemporaryCells.length; i++) {
+					var key = cellToKey(drawToolTemporaryCells[i]);
+					drawToolTemporaryShapes[key].remove();
+					delete drawToolTemporaryShapes[key];
+				}
+				drawToolTemporaryCells = [];
+				drawToolTemporaryShapes = {};
+				endCell = cell;
+				return;
+			}
+
 			if (endCell.col == cell.col && endCell.row == cell.row) {
 				return;
 			}
