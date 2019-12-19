@@ -192,8 +192,10 @@ function pickColorByMouseEvent(event) {
 	}
 }
 
-function draftPaintLineOnCanvasByMouseEvent(event) {
+function draftDrawToolOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
+
+	var toolName = mode;
 
 	if (paperMouseDown) {
 	    if (!drawToolProperties['startCell']) {
@@ -203,7 +205,7 @@ function draftPaintLineOnCanvasByMouseEvent(event) {
 			var startCell = drawToolProperties['startCell'];
 			var endCell = drawToolProperties['endCell'];
 			if (event.ctrlKey) {
-				cell = grid.adjustLine(startCell, cell);
+				cell = grid.drawTools[toolName].adjustEndCell(startCell, cell);
 			}
 
 			if (startCell.col == cell.col && startCell.row == cell.row) {
@@ -224,7 +226,7 @@ function draftPaintLineOnCanvasByMouseEvent(event) {
 			}
 			drawToolProperties['endCell'] = cell;
 			endCell = cell;
-			var newTemporaryCells = grid.plotLine(startCell.col, startCell.row, endCell.col, endCell.row);
+			var newTemporaryCells = grid.drawTools[toolName].calculateCells(startCell, endCell);
 
 			for (var i = 0; i < drawToolTemporaryCells.length; i++) {
 				var found = false;
@@ -264,7 +266,7 @@ function draftPaintLineOnCanvasByMouseEvent(event) {
 	}
 }
 
-function paintLineOnCanvas() {
+function drawToolOnCanvas() {
     if (drawToolProperties['startCell'] && drawToolProperties['endCell']) {
         var startCell = drawToolProperties['startCell'];
         var endCell = drawToolProperties['endCell'];
@@ -911,11 +913,11 @@ $(function() {
 				redoStack=[];
 				updateUndoRedoButtons();
 				fillAreaOnCanvasByMouseEvent(event);
-			} else if (mode=='line') {
+			} else if (grid.drawTools && grid.drawTools[mode]) {
 			    undoStack.push(new UndoStep());
 				redoStack=[];
 				updateUndoRedoButtons();
-				draftPaintLineOnCanvasByMouseEvent(event)
+				draftDrawToolOnCanvasByMouseEvent(event)
 			}
 		}
 	)
@@ -925,8 +927,8 @@ $(function() {
 			
 			if (mode=="paste") {
 				setMode("paint");
-			} if (mode=='line') {
-			    paintLineOnCanvas();
+			} else if (grid.drawTools && grid.drawTools[mode]) {
+			    drawToolOnCanvas();
 			}
 		}
 	)
@@ -939,8 +941,8 @@ $(function() {
 				selectOnCanvasByMouseEvent(event);
 			} else if (mode=="paste") {
 				changePastePositionByMouseEvent(event);
-			} else if (mode=='line') {
-			    draftPaintLineOnCanvasByMouseEvent(event);
+			} else if (grid.drawTools && grid.drawTools[mode]) {
+			    draftDrawToolOnCanvasByMouseEvent(event);
 			}
 		}
 	);
@@ -1143,10 +1145,18 @@ $(function() {
 		$('#btn-flood-fill').show();
 	}
 
-	if (grid.plotLine) {
-	    $('#btn-draw-line').show();
+	if (grid.drawTools) {
+		for (var toolName in grid.drawTools) {
+			var tool = grid.drawTools[toolName];
+			var button = $(`<button class="btn btn-sm btn-default painter-btn-tool btn-draw-tool" type="button" tool-name="${toolName}" title="${tool.title}"><img src="${tool.iconUrl}" /></button>`)
+			$('#draw-tools-bar').append(button);
+		}
+		$('.btn-draw-tool').click(function(event) {
+			var toolName = $(this).attr('tool-name');
+			setMode(toolName);
+		});
 	}
-		
+	
 	$("#shift-toolbar-header").click(
 		function() {
 			if ($(this).attr("content-visible")) {

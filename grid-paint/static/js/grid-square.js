@@ -334,6 +334,144 @@ function GridSquare_ShapeFramed10Light(parent) {
     this.frameWidth = 0.10;
 }
 
+function GridSquare_ToolLine() {
+	/*
+		A draw tool should contain:
+			properties:
+				- title
+				- iconUrl
+			methods: 
+				- calculateCells(startCell, endCell) - to calculate cell coordinates to be drawn
+				- adjustEndCell(startCell, endCell) - to adjust end point to predefined rulers
+
+	*/
+
+	this.title = 'Draw line';
+	this.iconUrl = '/img/buttons/line.png';
+
+	this.basicLineAngles = [
+		0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330		
+	];
+
+	this.adjustEndCell = function(startCell, endCell) {
+		var vectorCol = endCell.col - startCell.col;
+		var vectorRow = endCell.row - startCell.row;
+		var vectorLength = Math.sqrt(vectorCol * vectorCol + vectorRow * vectorRow);
+		if (vectorLength == 0) {
+			return endCell;
+		}
+
+		var angleCos = Math.abs(vectorCol) / vectorLength;
+		var angle;
+		if (angleCos == 0 ) {
+			angle = Math.PI / 2;
+		} else {
+			angle = Math.acos(angleCos);
+		}
+		if (vectorCol >=0 && vectorRow >= 0) {
+			// pass
+		} else if (vectorCol < 0 && vectorRow >=0) {
+			angle = Math.PI - angle;
+		} else if (vectorCol < 0 && vectorRow < 0) {
+			angle = Math.PI + angle;
+		} else { // vectorCol >=0 && vectorRow < 0
+			angle = 2 * Math.PI - angle;
+		}
+		var angleGrad = angle * 180 / Math.PI;
+		var minAngleDiff = 100;
+		var chosenAngleGrad = 0;
+		for (var i=0; i < this.basicLineAngles.length; i++) {
+			var diff = Math.abs(angleGrad - this.basicLineAngles[i]);
+			if (diff < minAngleDiff) {
+				minAngleDiff = diff;
+				chosenAngleGrad = this.basicLineAngles[i]
+			}
+		}
+
+		var chosenAngle = chosenAngleGrad * Math.PI / 180;
+		return {
+			col: startCell.col + Math.round(vectorLength * Math.cos(chosenAngle)),
+			row: startCell.row + Math.round(vectorLength * Math.sin(chosenAngle))
+		}
+	}
+
+	this.plotLineLow = function(x0, y0, x1, y1) {
+        var result = [];
+        var dx = x1 - x0;
+        var dy = y1 - y0;
+        var yi = 1;
+        if (dy < 0) {
+            yi = -1;
+            dy = -dy;
+        }
+        var D = 2 * dy - dx;
+        var y = y0;
+
+        for (var x = x0; x <= x1; x++) {
+            result.push({
+                col: x,
+                row: y
+            });
+            if (D > 0) {
+                y = y + yi;
+                D = D - 2 * dx;
+            }
+            D = D + 2 * dy;
+        }
+        return result;
+    }
+
+    this.plotLineHigh = function(x0, y0, x1, y1) {
+        var result = [];
+        var dx = x1 - x0;
+        var dy = y1 - y0;
+        var xi = 1;
+        if (dx < 0) {
+            xi = -1;
+            dx = -dx;
+        }
+        var D = 2*dx - dy;
+        var x = x0;
+
+        for (var y = y0; y <= y1; y++) {
+            result.push({
+                col: x,
+                row: y
+            });
+            if (D > 0) {
+                x = x + xi;
+                D = D - 2*dy;
+            }
+            D = D + 2*dx;
+        }
+        return result;
+    }
+
+	this.plotLine = function(col0, row0, col1, row1) {
+	    var x0 = col0;
+	    var y0 = row0;
+	    var x1 = col1;
+	    var y1 = row1;
+        if (Math.abs(y1 - y0) < Math.abs(x1 - x0)) {
+            if (x0 > x1) {
+                return this.plotLineLow(x1, y1, x0, y0)
+            } else {
+                return this.plotLineLow(x0, y0, x1, y1)
+            }
+        } else {
+            if (y0 > y1) {
+                return this.plotLineHigh(x1, y1, x0, y0)
+            } else {
+                return this.plotLineHigh(x0, y0, x1, y1)
+            }
+        }
+	}
+
+	this.calculateCells = function(startCell, endCell) {
+		return this.plotLine(startCell.col, startCell.row, endCell.col, endCell.row);
+	}
+}
+
 function GridSquare() {
 	this.cellSize=24;
 	this.name="square";
@@ -456,122 +594,8 @@ function GridSquare() {
 	    dy: this.cellSize
 	}
 
-    this.plotLineLow = function(x0, y0, x1, y1) {
-        var result = [];
-        var dx = x1 - x0;
-        var dy = y1 - y0;
-        var yi = 1;
-        if (dy < 0) {
-            yi = -1;
-            dy = -dy;
-        }
-        var D = 2 * dy - dx;
-        var y = y0;
-
-        for (var x = x0; x <= x1; x++) {
-            result.push({
-                col: x,
-                row: y
-            });
-            if (D > 0) {
-                y = y + yi;
-                D = D - 2 * dx;
-            }
-            D = D + 2 * dy;
-        }
-        return result;
-    }
-
-    this.plotLineHigh = function(x0, y0, x1, y1) {
-        var result = [];
-        var dx = x1 - x0;
-        var dy = y1 - y0;
-        var xi = 1;
-        if (dx < 0) {
-            xi = -1;
-            dx = -dx;
-        }
-        var D = 2*dx - dy;
-        var x = x0;
-
-        for (var y = y0; y <= y1; y++) {
-            result.push({
-                col: x,
-                row: y
-            });
-            if (D > 0) {
-                x = x + xi;
-                D = D - 2*dy;
-            }
-            D = D + 2*dx;
-        }
-        return result;
-    }
-
-	this.plotLine = function(col0, row0, col1, row1) {
-	    var x0 = col0;
-	    var y0 = row0;
-	    var x1 = col1;
-	    var y1 = row1;
-        if (Math.abs(y1 - y0) < Math.abs(x1 - x0)) {
-            if (x0 > x1) {
-                return this.plotLineLow(x1, y1, x0, y0)
-            } else {
-                return this.plotLineLow(x0, y0, x1, y1)
-            }
-        } else {
-            if (y0 > y1) {
-                return this.plotLineHigh(x1, y1, x0, y0)
-            } else {
-                return this.plotLineHigh(x0, y0, x1, y1)
-            }
-        }
-	}
-
-	this.basicLineAngles = [
-		0, 30, 45, 60, 90, 120, 135, 150, 180, 210, 225, 240, 270, 300, 315, 330		
-	]
-
-	this.adjustLine = function (startCell, endCell) {
-		var vectorCol = endCell.col - startCell.col;
-		var vectorRow = endCell.row - startCell.row;
-		var vectorLength = Math.sqrt(vectorCol * vectorCol + vectorRow * vectorRow);
-		if (vectorLength == 0) {
-			return endCell;
-		}
-
-		var angleCos = Math.abs(vectorCol) / vectorLength;
-		var angle;
-		if (angleCos == 0 ) {
-			angle = Math.PI / 2;
-		} else {
-			angle = Math.acos(angleCos);
-		}
-		if (vectorCol >=0 && vectorRow >= 0) {
-			// pass
-		} else if (vectorCol < 0 && vectorRow >=0) {
-			angle = Math.PI - angle;
-		} else if (vectorCol < 0 && vectorRow < 0) {
-			angle = Math.PI + angle;
-		} else { // vectorCol >=0 && vectorRow < 0
-			angle = 2 * Math.PI - angle;
-		}
-		var angleGrad = angle * 180 / Math.PI;
-		var minAngleDiff = 100;
-		var chosenAngleGrad = 0;
-		for (var i=0; i < this.basicLineAngles.length; i++) {
-			var diff = Math.abs(angleGrad - this.basicLineAngles[i]);
-			if (diff < minAngleDiff) {
-				minAngleDiff = diff;
-				chosenAngleGrad = this.basicLineAngles[i]
-			}
-		}
-
-		var chosenAngle = chosenAngleGrad * Math.PI / 180;
-		return {
-			col: startCell.col + Math.round(vectorLength * Math.cos(chosenAngle)),
-			row: startCell.row + Math.round(vectorLength * Math.sin(chosenAngle))
-		}
+	this.drawTools = {
+		'line': new GridSquare_ToolLine()
 	}
 }
 
