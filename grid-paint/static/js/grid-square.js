@@ -472,6 +472,86 @@ function GridSquare_ToolLine() {
 	}
 }
 
+
+function GridSquare_ToolRectangle() {
+	this.title = 'Draw rectangle';
+	this.iconUrl = '/img/buttons/rectangle.png';
+
+	this.calculateCells = function(startCell, endCell) {
+		var result = [];
+		var top = startCell.row;
+		var left = startCell.col;
+		var bottom = endCell.row;
+		var right = endCell.col;
+		if (top > bottom) {
+			var tmp = top;
+			top = bottom;
+			bottom = tmp;
+		}
+
+		if (left > right) {
+			var tmp = left;
+			left = right;
+			right = tmp;
+		}
+
+		for (var col = left; col <= right; col++) {
+			result.push({
+				col: col, 
+				row: top
+			})
+		}
+
+		for (var row = top + 1; row <= bottom; row++) {
+			result.push({
+				col: right,
+				row: row
+			})
+		}
+
+		for (var col = left; col < right; col++) {
+			result.push({
+				col: col,
+				row: bottom
+			})
+		}
+
+		for (var row = top + 1; row < bottom; row++) {
+			result.push({
+				col: left,
+				row: row
+			})
+		}
+
+		return result;
+	}
+
+	this.adjustEndCell = function(startCell, endCell) {
+		var width = Math.abs(startCell.col - endCell.col);
+		var height = Math.abs(startCell.row - endCell.row);
+		var size;
+		if (width < height) {
+			size = width;
+		} else {
+			size = height;
+		}
+
+		var newEndCellCol = startCell.col + size;
+		var newEndCellRow = startCell.row + size;
+		if (endCell.col < startCell.col) {
+			newEndCellCol = startCell.col - size;
+		}
+		if (endCell.row < startCell.row) {
+			newEndCellRow = startCell.row - size;
+		}
+
+		return {
+			col: newEndCellCol,
+			row: newEndCellRow
+		}
+	}
+}
+
 function GridSquare() {
 	this.cellSize=24;
 	this.name="square";
@@ -595,7 +675,8 @@ function GridSquare() {
 	}
 
 	this.drawTools = {
-		'line': new GridSquare_ToolLine()
+		'line': new GridSquare_ToolLine(),
+		'rectangle': new GridSquare_ToolRectangle()
 	}
 }
 
