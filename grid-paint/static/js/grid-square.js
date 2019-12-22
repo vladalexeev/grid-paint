@@ -489,6 +489,10 @@ function GridSquare_ToolRectangle() {
 			bottom = tmp;
 		}
 
+		if (top == bottom && left == right) {
+			return result;
+		}
+
 		if (left > right) {
 			var tmp = left;
 			left = right;
@@ -509,18 +513,22 @@ function GridSquare_ToolRectangle() {
 			})
 		}
 
-		for (var col = left; col < right; col++) {
-			result.push({
-				col: col,
-				row: bottom
-			})
-		}
+		if (bottom > top) {
+			for (var col = left; col < right; col++) {
+				result.push({
+					col: col,
+					row: bottom
+				})
+			}
+		}	
 
-		for (var row = top + 1; row < bottom; row++) {
-			result.push({
-				col: left,
-				row: row
-			})
+		if (right > left) {
+			for (var row = top + 1; row < bottom; row++) {
+				result.push({
+					col: left,
+					row: row
+				})
+			}
 		}
 
 		return result;
