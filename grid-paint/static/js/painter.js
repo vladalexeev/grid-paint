@@ -238,7 +238,7 @@ function draftDrawToolOnCanvasByMouseEvent(event) {
 						break;
 					}
 				}
-				if (!found) {
+				if (!found && drawToolTemporaryShapes[oldKey]) {
 					drawToolTemporaryShapes[oldKey].remove();
 					delete drawToolTemporaryShapes[oldKey];
 				}

@@ -483,14 +483,15 @@ function GridSquare_ToolRectangle() {
 		var left = startCell.col;
 		var bottom = endCell.row;
 		var right = endCell.col;
+
+		if (top == bottom && left == right) {
+			return result;
+		}
+
 		if (top > bottom) {
 			var tmp = top;
 			top = bottom;
 			bottom = tmp;
-		}
-
-		if (top == bottom && left == right) {
-			return result;
 		}
 
 		if (left > right) {
@@ -559,6 +560,149 @@ function GridSquare_ToolRectangle() {
 		}
 	}
 }
+
+
+
+function GridSquare_ToolEllipse() {
+	this.title = 'Draw ellipse';
+	this.iconUrl = '/img/buttons/ellipse.png';
+
+	this.calculateCells = function(startCell, endCell) {
+		var result = [];
+		var top = startCell.row;
+		var left = startCell.col;
+		var bottom = endCell.row;
+		var right = endCell.col;
+		if (top > bottom) {
+			var tmp = top;
+			top = bottom;
+			bottom = tmp;
+		}
+
+		if (top == bottom && left == right) {
+			return result;
+		}
+
+		if (left > right) {
+			var tmp = left;
+			left = right;
+			right = tmp;
+		}
+
+		// TODO calculate ellipse
+
+		var cx = (left + right) / 2;
+		var cy = (top + bottom) / 2;
+		var a = Math.round((right - left) / 2);
+		var b = Math.round((bottom - top) / 2);
+
+		var addPoint = function(x, y) {
+			result.push({
+				col: Math.round(cx + x),
+				row: Math.round(cy + y)
+			});
+			result.push({
+				col: Math.round(cx - x),
+				row: Math.round(cy + y)
+			});
+			result.push({
+				col: Math.round(cx + x),
+				row: Math.round(cy - y)
+			});
+			result.push({
+				col: Math.round(cx - x),
+				row: Math.round(cy - y)
+			});
+		}
+
+
+		var a2 = a*a, b2 = b*b;
+		var x = 0, y = b; //Starting point
+
+		var incSW = b2*2 + a2*2;
+
+		var deltaW = b2*(-2*x + 3); //deduced from incremental algorithm with the second-order logic
+		var deltaS = a2*(-2*y + 3);
+		var deltaSW = deltaW + deltaS;
+
+		var d1 = b2 - a2*b + a2/4; //dp starting value in the first region
+		var d2 = b2*(x - 0.5)*(x - 0.5) + a2*(y - 1)*(y - 1) - a2*b2; //dp starting value in the second region
+
+		//First region
+		while(a2*(y-0.5) >= b2*(-x-1)) {
+			addPoint(x, y);
+			// DrawPixel(g,-x+xc, -y+yc); // 1st case
+			// DrawPixel(g,-x+xc, y+yc); // 2nd case
+			// DrawPixel(g,x+xc, y+yc); // 3rd case
+			// DrawPixel(g,x+xc, -y+yc); // 4th case
+			if(d1>0) {
+				d1+=deltaSW;
+				deltaW+=b2*2;
+				deltaSW+=incSW;
+				y--;
+			}
+			else {
+				d1+=deltaW;
+				deltaW+=2*b2;
+				deltaSW+=2*b2;
+			}
+			x--;
+		}
+
+		deltaSW = b2*(2 - 2*x) + a2*(-2*y + 3);
+
+		//Second region
+		while(y>=0) {
+			// DrawPixel(g,-x+xc, -y+yc); // 1st case
+			// DrawPixel(g,-x+xc, y+yc); // 2nd case
+			// DrawPixel(g,x+xc, y+yc); // 3rd case
+			// DrawPixel(g,x+xc, -y+yc); // 4th case
+			addPoint(x,y);
+			if(d2>0) {
+				d2+=deltaS;
+				deltaS+=a2*2;
+				deltaSW+=a2*2;
+			}
+			else {
+				d2+=deltaSW;
+				deltaSW+=incSW;
+				deltaS+=a2*2;
+				x--;
+			}
+			y--;
+		}
+
+		console.log(result);
+
+		return result;
+	}
+
+	this.adjustEndCell = function(startCell, endCell) {
+		var width = Math.abs(startCell.col - endCell.col);
+		var height = Math.abs(startCell.row - endCell.row);
+		var size;
+		if (width < height) {
+			size = width;
+		} else {
+			size = height;
+		}
+
+		var newEndCellCol = startCell.col + size;
+		var newEndCellRow = startCell.row + size;
+		if (endCell.col < startCell.col) {
+			newEndCellCol = startCell.col - size;
+		}
+		if (endCell.row < startCell.row) {
+			newEndCellRow = startCell.row - size;
+		}
+
+		return {
+			col: newEndCellCol,
+			row: newEndCellRow
+		}
+	}
+}
+
 
 function GridSquare() {
 	this.cellSize=24;
@@ -684,7 +828,8 @@ function GridSquare() {
 
 	this.drawTools = {
 		'line': new GridSquare_ToolLine(),
-		'rectangle': new GridSquare_ToolRectangle()
+		'rectangle': new GridSquare_ToolRectangle(),
+		'ellipse': new GridSquare_ToolEllipse()
 	}
 }
 
