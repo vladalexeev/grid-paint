@@ -559,5 +559,9 @@ function GridSelection() {
 }
 
 function cellKey(cell) {
-	return cell.col + '_' + cell.row;
+	return _cellKey(cell.col, cell.row);
+}
+
+function _cellKey(col, row) {
+	return col + '_' + row;
 }

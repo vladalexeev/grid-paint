@@ -640,6 +640,20 @@ function GridSquare_ToolEllipse() {
 
 		var result_arr = [];
 		for (k in result) {
+			var col = result[k].col;
+			var row = result[k].row;
+			if (result[_cellKey(col - 1, row)] && result[_cellKey(col, row - 1)]) {
+				continue;
+			}
+			if (result[_cellKey(col - 1, row)] && result[_cellKey(col, row + 1)]) {
+				continue;
+			}
+			if (result[_cellKey(col + 1, row)] && result[_cellKey(col, row - 1)]) {
+				continue;
+			}
+			if (result[_cellKey(col + 1, row)] && result[_cellKey(col, row + 1)]) {
+				continue;
+			}
 			result_arr.push(result[k]);
 		}
 
