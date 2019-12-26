@@ -596,16 +596,6 @@ function GridSquare_ToolEllipse() {
 		var a = (right - left) / 2;
 		var b = (bottom - top) / 2;
 
-		var x_corr = 0;
-		// if (a != Math.floor(a)) {
-		// 	x_corr = 0.5;
-		// }
-
-		var y_corr = 0;
-		// if (b != Math.floor(b)) {
-		// 	y_corr = 0.5;
-		// }
-
 		var addCell = function(cell) {
 			result[cellToKey(cell)] = cell;
 		};
@@ -614,45 +604,48 @@ function GridSquare_ToolEllipse() {
 			var col = Math.round(cx + x);
 			var row = Math.round(cy + y);
 			addCell({
-				col: Math.round(cx + x),
-				row: Math.round(cy + y)
+				col: col,
+				row: row
 			});
 			addCell({
-				col: Math.round(cx - x),
-				row: Math.round(cy + y)
+				col: left + right - col,
+				row: row
 			});
 			addCell({
-				col: Math.round(cx + x),
-				row: Math.round(cy - y)
+				col: col,
+				row: top + bottom - row
 			});
 			addCell({
-				col: Math.round(cx - x),
-				row: Math.round(cy - y)
+				col: left + right - col,
+				row: top + bottom - row
 			});
+			return 
 		};
 
-		var xm = a * a / Math.sqrt(a * a + b * b);
-		var ym = b * b / Math.sqrt(a * a + b * b);
+		var xm = Math.round(a * a / Math.sqrt(a * a + b * b));
+		var ym = Math.round(b * b / Math.sqrt(a * a + b * b));
 		var x, y;
 
 		for (x = 0; x <= xm; x++) {
-			y = Math.sqrt((a * a * b * b - b * b * x * x) / (a * a)) + y_corr;
+			y = Math.sqrt((a * a * b * b - b * b * x * x) / (a * a));
 			addPoint(x, y);
 		}
 
 		for (y = 0; y <= ym; y++) {
-			x = Math.sqrt((a * a * b * b - a * a * y * y) / (b * b)) + x_corr;
-			addPoint(x, y);
+			x = Math.sqrt((a * a * b * b - a * a * y * y) / (b * b));
+			if (x > xm) {
+				addPoint(x, y);
+			}
 		}
-
-		console.log('a=' + a + ' b=' + b + ' cx=' + cx + ' cy=' + cy);
-		console.log('xm=' + xm + ' ym=' + ym);
-		console.log(result);
 
 		var result_arr = [];
 		for (k in result) {
 			result_arr.push(result[k]);
 		}
+
+		console.log('a=' + a + ' b=' + b + ' cx=' + cx + ' cy=' + cy);
+		console.log('xm=' + xm + ' ym=' + ym);
+		console.log(result);
 
 		return result_arr;
 	};
