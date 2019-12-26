@@ -593,14 +593,26 @@ function GridSquare_ToolEllipse() {
 
 		var cx = (left + right) / 2;
 		var cy = (top + bottom) / 2;
-		var a = Math.round((right - left) / 2);
-		var b = Math.round((bottom - top) / 2);
+		var a = (right - left) / 2;
+		var b = (bottom - top) / 2;
+
+		var x_corr = 0;
+		// if (a != Math.floor(a)) {
+		// 	x_corr = 0.5;
+		// }
+
+		var y_corr = 0;
+		// if (b != Math.floor(b)) {
+		// 	y_corr = 0.5;
+		// }
 
 		var addCell = function(cell) {
 			result[cellToKey(cell)] = cell;
 		};
 
 		var addPoint = function(x, y) {
+			var col = Math.round(cx + x);
+			var row = Math.round(cy + y);
 			addCell({
 				col: Math.round(cx + x),
 				row: Math.round(cy + y)
@@ -619,63 +631,22 @@ function GridSquare_ToolEllipse() {
 			});
 		};
 
+		var xm = a * a / Math.sqrt(a * a + b * b);
+		var ym = b * b / Math.sqrt(a * a + b * b);
+		var x, y;
 
-		var a2 = a*a, b2 = b*b;
-		var x = 0, y = b; //Starting point
-
-		var incSW = b2*2 + a2*2;
-
-		var deltaW = b2*(-2*x + 3); //deduced from incremental algorithm with the second-order logic
-		var deltaS = a2*(-2*y + 3);
-		var deltaSW = deltaW + deltaS;
-
-		var d1 = b2 - a2*b + a2/4; //dp starting value in the first region
-		var d2 = b2*(x - 0.5)*(x - 0.5) + a2*(y - 1)*(y - 1) - a2*b2; //dp starting value in the second region
-
-		//First region
-		while(a2*(y-0.5) >= b2*(-x-1)) {
+		for (x = 0; x <= xm; x++) {
+			y = Math.sqrt((a * a * b * b - b * b * x * x) / (a * a)) + y_corr;
 			addPoint(x, y);
-			// DrawPixel(g,-x+xc, -y+yc); // 1st case
-			// DrawPixel(g,-x+xc, y+yc); // 2nd case
-			// DrawPixel(g,x+xc, y+yc); // 3rd case
-			// DrawPixel(g,x+xc, -y+yc); // 4th case
-			if(d1>0) {
-				d1+=deltaSW;
-				deltaW+=b2*2;
-				deltaSW+=incSW;
-				y--;
-			}
-			else {
-				d1+=deltaW;
-				deltaW+=2*b2;
-				deltaSW+=2*b2;
-			}
-			x--;
 		}
 
-		deltaSW = b2*(2 - 2*x) + a2*(-2*y + 3);
-
-		//Second region
-		while(y>=0) {
-			// DrawPixel(g,-x+xc, -y+yc); // 1st case
-			// DrawPixel(g,-x+xc, y+yc); // 2nd case
-			// DrawPixel(g,x+xc, y+yc); // 3rd case
-			// DrawPixel(g,x+xc, -y+yc); // 4th case
-			addPoint(x,y);
-			if(d2>0) {
-				d2+=deltaS;
-				deltaS+=a2*2;
-				deltaSW+=a2*2;
-			}
-			else {
-				d2+=deltaSW;
-				deltaSW+=incSW;
-				deltaS+=a2*2;
-				x--;
-			}
-			y--;
+		for (y = 0; y <= ym; y++) {
+			x = Math.sqrt((a * a * b * b - a * a * y * y) / (b * b)) + x_corr;
+			addPoint(x, y);
 		}
 
+		console.log('a=' + a + ' b=' + b + ' cx=' + cx + ' cy=' + cy);
+		console.log('xm=' + xm + ' ym=' + ym);
 		console.log(result);
 
 		var result_arr = [];
