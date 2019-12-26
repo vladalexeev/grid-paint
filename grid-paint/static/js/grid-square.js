@@ -597,7 +597,7 @@ function GridSquare_ToolEllipse() {
 		var b = (bottom - top) / 2;
 
 		var addCell = function(cell) {
-			result[cellToKey(cell)] = cell;
+			result[cellKey(cell)] = cell;
 		};
 
 		var addPoint = function(x, y) {

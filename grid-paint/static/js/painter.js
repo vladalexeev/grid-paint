@@ -211,7 +211,7 @@ function draftDrawToolOnCanvasByMouseEvent(event) {
 			if (startCell.col == cell.col && startCell.row == cell.row) {
 				// Line with zero length
 				for (var i = 0; i < drawToolTemporaryCells.length; i++) {
-					var key = cellToKey(drawToolTemporaryCells[i]);
+					var key = cellKey(drawToolTemporaryCells[i]);
 					drawToolTemporaryShapes[key].remove();
 					delete drawToolTemporaryShapes[key];
 				}
@@ -230,9 +230,9 @@ function draftDrawToolOnCanvasByMouseEvent(event) {
 
 			for (var i = 0; i < drawToolTemporaryCells.length; i++) {
 				var found = false;
-				var oldKey = cellToKey(drawToolTemporaryCells[i]);
+				var oldKey = cellKey(drawToolTemporaryCells[i]);
 				for (var j=0; j < newTemporaryCells.length; j++) {
-					var newKey = cellToKey(newTemporaryCells[j])
+					var newKey = cellKey(newTemporaryCells[j])
 					if (oldKey == newKey) {
 						found = true;
 						break;
@@ -245,10 +245,10 @@ function draftDrawToolOnCanvasByMouseEvent(event) {
 			}
 
 			for (var i = 0; i < newTemporaryCells.length; i++) {
-				var newKey = cellToKey(newTemporaryCells[i]);
+				var newKey = cellKey(newTemporaryCells[i]);
 				var found = false;
 				for (var j = 0; j < drawToolTemporaryCells.length; j++) {
-					var oldKey = cellToKey(drawToolTemporaryCells[j]);
+					var oldKey = cellKey(drawToolTemporaryCells[j]);
 					if (newKey == oldKey) {
 						found = true;
 						break;
@@ -277,7 +277,7 @@ function drawToolOnCanvas() {
 		}
 		
 		for (var i = 0; i < cells.length; i++) {
-			var key = cellToKey(cells[i]);
+			var key = cellKey(cells[i]);
 			drawToolTemporaryShapes[key].remove();
 		}
         drawToolProperties = {};
