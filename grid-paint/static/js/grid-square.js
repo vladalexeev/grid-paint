@@ -568,7 +568,7 @@ function GridSquare_ToolEllipse() {
 	this.iconUrl = '/img/buttons/ellipse.png';
 
 	this.calculateCells = function(startCell, endCell) {
-		var result = [];
+		var result = {};
 		var top = startCell.row;
 		var left = startCell.col;
 		var bottom = endCell.row;
@@ -596,24 +596,28 @@ function GridSquare_ToolEllipse() {
 		var a = Math.round((right - left) / 2);
 		var b = Math.round((bottom - top) / 2);
 
+		var addCell = function(cell) {
+			result[cellToKey(cell)] = cell;
+		};
+
 		var addPoint = function(x, y) {
-			result.push({
+			addCell({
 				col: Math.round(cx + x),
 				row: Math.round(cy + y)
 			});
-			result.push({
+			addCell({
 				col: Math.round(cx - x),
 				row: Math.round(cy + y)
 			});
-			result.push({
+			addCell({
 				col: Math.round(cx + x),
 				row: Math.round(cy - y)
 			});
-			result.push({
+			addCell({
 				col: Math.round(cx - x),
 				row: Math.round(cy - y)
 			});
-		}
+		};
 
 
 		var a2 = a*a, b2 = b*b;
@@ -674,8 +678,13 @@ function GridSquare_ToolEllipse() {
 
 		console.log(result);
 
-		return result;
-	}
+		var result_arr = [];
+		for (k in result) {
+			result_arr.push(result[k]);
+		}
+
+		return result_arr;
+	};
 
 	this.adjustEndCell = function(startCell, endCell) {
 		var width = Math.abs(startCell.col - endCell.col);
