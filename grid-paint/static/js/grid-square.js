@@ -589,7 +589,48 @@ function GridSquare_ToolEllipse() {
 			right = tmp;
 		}
 
-		// TODO calculate ellipse
+		if (bottom - top < 2 || right - left < 2) {
+			// artifact for ellipses with 1px or 2px width
+			var result_arr = [];
+			for (var x = left; x <= right; x++) {
+				for(var y = top; y <= bottom; y++) {
+					result_arr.push({
+						col: x,
+						row: y
+					});
+				}
+			}
+			return result_arr;
+		}
+
+		if (bottom - top < 4 || right - left < 4) {
+			// artifact for ellipses with 3px or 4px width
+			var result_arr = [];
+			for (var x = left + 1; x < right; x++) {
+				result_arr.push({
+					col: x,
+					row: top
+				});
+				result_arr.push({
+					col: x,
+					row: bottom
+				});
+			}
+
+			for (var y = top + 1; y < bottom; y++) {
+				result_arr.push({
+					col: left,
+					row: y
+				});
+				result_arr.push({
+					col: right,
+					row: y
+				});
+			}
+			return result_arr;
+		}
+
+		// calculate ellipse
 
 		var cx = (left + right) / 2;
 		var cy = (top + bottom) / 2;
@@ -657,9 +698,9 @@ function GridSquare_ToolEllipse() {
 			result_arr.push(result[k]);
 		}
 
-		console.log('a=' + a + ' b=' + b + ' cx=' + cx + ' cy=' + cy);
-		console.log('xm=' + xm + ' ym=' + ym);
-		console.log(result);
+		// console.log('a=' + a + ' b=' + b + ' cx=' + cx + ' cy=' + cy);
+		// console.log('xm=' + xm + ' ym=' + ym);
+		// console.log(result);
 
 		return result_arr;
 	};
