@@ -378,6 +378,12 @@ function setMode(m) {
 	$('#btn-draw-line').removeClass('active').removeAttr("disabled");
 	$("#btn-copy-mode").removeClass('active').removeAttr("disabled");
 	$("#btn-paste-mode").removeClass('active').removeAttr("disabled");
+
+	if (grid.drawTools) {
+		for (var toolName in grid.drawTools) {
+			$('.btn-draw-tool[tool-name='+toolName+']').removeClass('active').removeAttr("disabled");
+		}
+	}
 	
 	
 	mode=m;
@@ -398,9 +404,9 @@ function setMode(m) {
 	} else if (mode=='fill') {
 		$("#canvas-wrapper").css("cursor","url(/img/cursors/flood-fill.png) 2 32, crosshair");
 		$('#btn-flood-fill').addClass('active');
-	} else if (mode=='line') {
+	} else if (grid.drawTools[mode]) {
 		$("#canvas-wrapper").css("cursor","crosshair");
-		$('#btn-draw-line').addClass('active');
+		$('.btn-draw-tool[tool-name='+mode+']').addClass('active');
 	}
 }
 
