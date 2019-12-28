@@ -283,6 +283,10 @@ function drawToolOnCanvas() {
         drawToolProperties = {};
 		drawToolTemporaryCells = [];
 		drawToolTemporaryShapes = {};
+
+		if (selectedShapeName!="empty") {
+			pushRecentColor(selectedColor);	
+		}
 	
         changed = true;
     }
