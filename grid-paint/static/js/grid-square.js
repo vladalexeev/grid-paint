@@ -821,6 +821,14 @@ function GridSquare() {
 		"frame5u": new GridSquare_ShapeFramed5Light(this),
 		"frame10u": new GridSquare_ShapeFramed10Light(this)
 	};
+
+	this.shapesToolbar = [
+		['empty'],
+		['flat', 'flat1', 'flat2', 'flat3'],
+		['circle', 'circle1', 'circle2', 'circle3'],
+		['jewel', 'jewel2', 'jewel3', 'diamond'],
+		['frame5d', 'frame10d', 'frame5u', 'frame10u']
+	];
 	
 	this.internalShapes={
 	    "selected": new GridSquare_ShapeSelected(this)

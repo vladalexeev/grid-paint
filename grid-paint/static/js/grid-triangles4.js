@@ -178,6 +178,10 @@ function GridTriangles4() {
 	    "empty": new GridTriangles4_ShapeEmpty(this),
 		"flat": new GridTriangles4_ShapeFlat(this)
 	}
+
+	this.shapesToolbar = [
+		['empty', 'flat']
+	]
 	
 	this.internalShapes={
 	    "selected": new GridTriangles4_ShapeSelected(this)

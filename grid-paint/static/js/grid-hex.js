@@ -493,6 +493,12 @@ function GridHex() {
 		'frame4u': new GridHex_ShapeFramedLight(this),
 		'frame4d': new GridHex_ShapeFramedDark(this)
 	};
+
+	this.shapesToolbar = [
+		['empty'],
+		['flat', 'diamond', 'jewel', 'cube'],
+		['frame4u', 'frame4d']
+	]
 	
 	this.internalShapes={
 	    "selected": new GridHex_ShapeSelected(this)

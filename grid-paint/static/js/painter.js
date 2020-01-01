@@ -56,20 +56,32 @@ function paintShapeToolButton(shapeName) {
 }
 
 function createShapesToolbar() {
-	var emptyShapeOnSingleRow = Object.keys(toolbarGrid.shapes).length>=5;
-	
 	var shapeElements="";
-	for (var shapeName in toolbarGrid.shapes) {
-		if (shapeName=='empty' && emptyShapeOnSingleRow) {
-			shapeElements+='<div>';	
+	for(var i = 0; i < toolbarGrid.shapesToolbar.length; i++) {
+		shapeElements += '<div>';
+		for (var j = 0; j < toolbarGrid.shapesToolbar[i].length; j++) {
+			var shapeName = toolbarGrid.shapesToolbar[i][j];
+			shapeElements += '<span id="shape-' + shapeName +
+				'" class="grid-shape-button" shape-name="' +
+				shapeName+'"></span>';
 		}
-		shapeElements+='<span id="shape-'+shapeName+
-			'" class="grid-shape-button" shape-name="'+
-			shapeName+'"></span>';
-		if (shapeName=='empty' & emptyShapeOnSingleRow) {
-			shapeElements+='</div>';	
-		}			
+		shapeElements += '</div>';	
 	}
+
+	// var emptyShapeOnSingleRow = Object.keys(toolbarGrid.shapes).length>=5;
+	
+	// var shapeElements="";
+	// for (var shapeName in toolbarGrid.shapes) {
+	// 	if (shapeName=='empty' && emptyShapeOnSingleRow) {
+	// 		shapeElements+='<div>';	
+	// 	}
+	// 	shapeElements+='<span id="shape-'+shapeName+
+	// 		'" class="grid-shape-button" shape-name="'+
+	// 		shapeName+'"></span>';
+	// 	if (shapeName=='empty' & emptyShapeOnSingleRow) {
+	// 		shapeElements+='</div>';	
+	// 	}			
+	// }
 	
 	$("#shapes-toolbar").html(shapeElements);
 	

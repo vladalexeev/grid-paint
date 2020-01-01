@@ -294,6 +294,12 @@ function GridIsoTriangle() {
 		'frame3u': new GridIsoTriangle_ShapeFramedLight(this),
 		'frame3d': new GridIsoTriangle_ShapeFramedDark(this)
 	};
+
+	this.shapesToolbar=[
+		['empty'],
+		['flat', 'diamond', 'jewel'],
+		['frame3u', 'frame3d']
+	];
 	
 	this.internalShapes={
 	    "selected": new GridIsoTriangle_ShapeSelected(this)
