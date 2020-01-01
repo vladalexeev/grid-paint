@@ -1365,5 +1365,8 @@ $(function() {
 			modalSquareGridSpecialPropertiesVisible=true;			
 		}
 	});
-	
+
+	$('#properties-modal').on('shown.bs.modal', function () {
+		$('#modal_artwork_name').focus();
+	});
 });
