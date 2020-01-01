@@ -13,6 +13,8 @@ var recentColors=[];
 var changed=false;
 var paperMouseDown=false;
 
+var toolbarGrid;
+
 var gridArtwork=new GridArtwork();
 var workspaceWidth;
 var workspaceHeight;
@@ -38,11 +40,11 @@ function adjustCanvasWrapper() {
 }
 
 function paintShapeToolButton(shapeName) {
-	var shape=grid.shapes[shapeName];
+	var shape=toolbarGrid.shapes[shapeName];
 	
 	$("#shape-"+shapeName).html("");
 
-	var shapeRect=grid.getCellRect(0,0);
+	var shapeRect=toolbarGrid.getCellRect(0,0);
 	var shapePaper=new Raphael("shape-"+shapeName, shapeRect.width+20, shapeRect.height+20);
 	
 	if (shapeName==selectedShapeName) {
@@ -54,10 +56,10 @@ function paintShapeToolButton(shapeName) {
 }
 
 function createShapesToolbar() {
-	var emptyShapeOnSingleRow = Object.keys(grid.shapes).length>=5;
+	var emptyShapeOnSingleRow = Object.keys(toolbarGrid.shapes).length>=5;
 	
 	var shapeElements="";
-	for (var shapeName in grid.shapes) {
+	for (var shapeName in toolbarGrid.shapes) {
 		if (shapeName=='empty' && emptyShapeOnSingleRow) {
 			shapeElements+='<div>';	
 		}
@@ -72,7 +74,7 @@ function createShapesToolbar() {
 	$("#shapes-toolbar").html(shapeElements);
 	
 	selectedShapeName="flat";
-	for (var shapeName in grid.shapes) {
+	for (var shapeName in toolbarGrid.shapes) {
 		paintShapeToolButton(shapeName);
 	}
 	
@@ -868,6 +870,9 @@ $(function() {
 	selection.grid=grid;
 	selection.paper=paper;
 	selection.loadFromLocalStorage();
+
+	toolbarGrid = gridFactory[artwork.layers[0].grid]();
+	toolbarGrid.cellSize = 24; // TODO toolbar cell size from grid defaults
 	
 	createShapesToolbar();
 	updateUndoRedoButtons();
