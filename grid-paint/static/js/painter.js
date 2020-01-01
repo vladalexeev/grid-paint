@@ -68,21 +68,6 @@ function createShapesToolbar() {
 		shapeElements += '</div>';	
 	}
 
-	// var emptyShapeOnSingleRow = Object.keys(toolbarGrid.shapes).length>=5;
-	
-	// var shapeElements="";
-	// for (var shapeName in toolbarGrid.shapes) {
-	// 	if (shapeName=='empty' && emptyShapeOnSingleRow) {
-	// 		shapeElements+='<div>';	
-	// 	}
-	// 	shapeElements+='<span id="shape-'+shapeName+
-	// 		'" class="grid-shape-button" shape-name="'+
-	// 		shapeName+'"></span>';
-	// 	if (shapeName=='empty' & emptyShapeOnSingleRow) {
-	// 		shapeElements+='</div>';	
-	// 	}			
-	// }
-	
 	$("#shapes-toolbar").html(shapeElements);
 	
 	selectedShapeName="flat";
