@@ -866,6 +866,8 @@ function initPropertiesDialog() {
 		}
 	);
 
+	initialTagsValue = $('input[name=modal_artwork_tags]').val();
+
 	var tags=$("#modal_artwork_tags");
 	tags.tagsinput();
 	tags.tagsinput('input').typeahead({
@@ -935,9 +937,222 @@ function initPropertiesDialog() {
 	});
 }
 
-$(function() {
-    initialTagsValue = $('input[name=modal_artwork_tags]').val();
+function initShiftPanel() {
+	$("#shift-toolbar-header").click(
+		function() {
+			if ($(this).attr("content-visible")) {
+				$("#shift-toolbar-content").slideUp();
+				$("#shift-toolbar-header i").removeClass("icon-chevron-up");
+				$("#shift-toolbar-header i").addClass("icon-chevron-down");
+				$(this).removeAttr("content-visible");
+			} else {
+				$("#shift-toolbar-content").slideDown();
+				$("#shift-toolbar-header i").removeClass("icon-chevron-down");
+				$("#shift-toolbar-header i").addClass("icon-chevron-up");
+				$(this).attr("content-visible","visible");				
+			}
+		});
 
+	$("#btn-shift-left").click(
+		function() {
+			removedCells=gridArtwork.doShiftLeft(grid);
+			changed=true;
+			
+			undoStep=new UndoStep();
+			undoStep.setShiftChange('left', removedCells);
+			undoStack.push(undoStep);
+			redoStack=[];
+			updateUndoRedoButtons();
+		});
+	
+	$("#btn-shift-right").click(
+		function() {
+			removedCells=gridArtwork.doShiftRight(grid);
+			changed=true;
+			
+			undoStep=new UndoStep();
+			undoStep.setShiftChange('right', removedCells);
+			undoStack.push(undoStep);
+			redoStack=[];
+			updateUndoRedoButtons();
+		});
+		
+	$("#btn-shift-up").click(
+		function() {
+			removedCells=gridArtwork.doShiftUp(grid);
+			changed=true;
+			
+			undoStep=new UndoStep();
+			undoStep.setShiftChange('up', removedCells);
+			undoStack.push(undoStep);
+			redoStack=[];
+			updateUndoRedoButtons();
+		});
+		
+	$("#btn-shift-down").click(
+		function() {
+			removedCells=gridArtwork.doShiftDown(grid);
+			changed=true;
+			
+			undoStep=new UndoStep();
+			undoStep.setShiftChange('down', removedCells);
+			undoStack.push(undoStep);
+			redoStack=[];
+			updateUndoRedoButtons();
+		});
+}
+
+function initSizePanel() {
+	$("#size-toolbar-header").click(
+		function() {
+			if ($(this).attr("content-visible")) {
+				$("#size-toolbar-content").slideUp();
+				$("#size-toolbar-header i").removeClass("icon-chevron-up");
+				$("#size-toolbar-header i").addClass("icon-chevron-down");
+				$(this).removeAttr("content-visible");
+			} else {
+				$("#size-toolbar-content").slideDown();
+				$("#size-toolbar-header i").removeClass("icon-chevron-down");
+				$("#size-toolbar-header i").addClass("icon-chevron-up");
+				$(this).attr("content-visible","visible");				
+			}
+		});
+
+	$("#btn-apply-workspace-size").click(
+		function() {
+			var newWidth=parseInt($("#toolbar-workspace-width").val(),10);
+			var newHeight=parseInt($("#toolbar-workspace-height").val(),10);
+			var newCellSize=parseInt($("#toolbar-cell-size").val(),10);
+			
+			if (newWidth<200 || newWidth>4000) {
+				alert("Artwork width should by between 200 and 4000 pixels.");
+				return;
+			}
+			
+			if (newHeight<200 || newHeight>4000) {
+				alert("Artwork height should be between 200 and 4000 pixels");
+				return;
+			}
+			
+			if (newCellSize<10 || newCellSize>32) {
+				alert("Cell size should be between 10 and 32 pixels");
+				return;
+			}
+			
+			$("#canvas")
+				.css("width",newWidth)
+				.css("height",newHeight);
+			grid.workspaceWidth=newWidth;
+			grid.workspaceHeight=newHeight;
+			grid.cellSize=newCellSize;
+			
+			paper.remove();
+			paper=new Raphael("canvas",newWidth,newHeight);
+			grid.paintGrid(paper);
+			createShapesToolbar();
+			selection.paper=paper;
+			
+			var oldGridArtwork=gridArtwork;
+			gridArtwork=new GridArtwork();
+			for (var row=0; row<oldGridArtwork.cells.length; row++) {
+				for (var col=0; col<oldGridArtwork.cells[row].length; col++) {
+					var cell=oldGridArtwork.cells[row][col];
+					if (cell) {
+						var cellRect=grid.getCellRect(col,row);
+						if (cellRect.left+cellRect.width<newWidth && cellRect.top+cellRect.height<newHeight) {
+							paintOnCanvas(col,row,cell.shapeName,cell.color);
+						}
+					}
+				}
+			}
+		});
+}
+
+function initCopyPastePanel() {
+	$("#copy-paste-toolbar-header").click(
+		function() {
+			if ($(this).attr("content-visible")) {
+				$("#copy-paste-toolbar-content").slideUp();
+				$("#copy-paste-toolbar-header i").removeClass("icon-chevron-up");
+				$("#copy-paste-toolbar-header i").addClass("icon-chevron-down");
+				$(this).removeAttr("content-visible");
+			} else {
+				$("#copy-paste-toolbar-content").slideDown();
+				$("#copy-paste-toolbar-header i").removeClass("icon-chevron-down");
+				$("#copy-paste-toolbar-header i").addClass("icon-chevron-up");
+				$(this).attr("content-visible","visible");
+				if (!localStorage["dontShowCopyPasteMessage"]) {
+					$("#copy-paste-message-modal").modal();	
+				}
+			}
+		});
+
+	$("#btn-copy-mode").click(
+		function(event) {
+			if (mode=="copy") {
+				setMode("paint");
+			} else {
+				setMode("copy");
+			} 
+		});
+	
+	$("#btn-paste-mode").click(
+		function(event) {
+			if (mode=="paste") {
+				setMode("paint");
+			} else {
+				setMode("paste");
+			} 
+		});
+	
+}
+
+function initDrawingToolsPanel() {
+	$("#btn-pick-color").click(
+		function() {
+			if (mode=="pick-color") {
+			  setMode("paint");
+			} else {
+			  setMode("pick-color");
+			}
+		}
+	);
+	
+	$('#btn-pencil').click(
+		function() {
+			if (mode!='paint') {
+				setMode('paint');
+			}
+		}
+	);
+
+	$("#btn-flood-fill").click(
+		function(event) {
+			if (mode=='fill') {
+				setMode('paint');
+			} else {
+				setMode('fill');
+			}
+		});
+
+	if (grid.getAdjacentCells && grid.isCellInsideWorkspace) {
+		$('#btn-flood-fill').show();
+	}
+
+	if (grid.drawTools) {
+		for (var toolName in grid.drawTools) {
+			var tool = grid.drawTools[toolName];
+			var button = $(`<button class="btn btn-sm btn-default painter-btn-tool btn-draw-tool" type="button" tool-name="${toolName}" title="${tool.title}"><img src="${tool.iconUrl}" /></button>`)
+			$('#draw-tools-bar').append(button);
+		}
+		$('.btn-draw-tool').click(function(event) {
+			var toolName = $(this).attr('tool-name');
+			setMode(toolName);
+		});
+	}	
+}
+
+$(function() {
 	adjustCanvasWrapper();
 	$(window).resize(
 		function() {
@@ -1121,75 +1336,8 @@ $(function() {
 		}	
 	}
 	selectColor(recentColors[0]);
-	
-	
-	$("#btn-pick-color").click(
-		function() {
-			if (mode=="pick-color") {
-			  setMode("paint");
-			} else {
-			  setMode("pick-color");
-			}
-		}
-	);
-	
-	$('#btn-pencil').click(
-		function() {
-			if (mode!='paint') {
-				setMode('paint');
-			}
-		}
-	);
-	
+		
 	setMode("paint");
-	
-	$("#btn-shift-left").click(
-		function() {
-			removedCells=gridArtwork.doShiftLeft(grid);
-			changed=true;
-			
-			undoStep=new UndoStep();
-			undoStep.setShiftChange('left', removedCells);
-			undoStack.push(undoStep);
-			redoStack=[];
-			updateUndoRedoButtons();
-		});
-	
-	$("#btn-shift-right").click(
-		function() {
-			removedCells=gridArtwork.doShiftRight(grid);
-			changed=true;
-			
-			undoStep=new UndoStep();
-			undoStep.setShiftChange('right', removedCells);
-			undoStack.push(undoStep);
-			redoStack=[];
-			updateUndoRedoButtons();
-		});
-		
-	$("#btn-shift-up").click(
-		function() {
-			removedCells=gridArtwork.doShiftUp(grid);
-			changed=true;
-			
-			undoStep=new UndoStep();
-			undoStep.setShiftChange('up', removedCells);
-			undoStack.push(undoStep);
-			redoStack=[];
-			updateUndoRedoButtons();
-		});
-		
-	$("#btn-shift-down").click(
-		function() {
-			removedCells=gridArtwork.doShiftDown(grid);
-			changed=true;
-			
-			undoStep=new UndoStep();
-			undoStep.setShiftChange('down', removedCells);
-			undoStack.push(undoStep);
-			redoStack=[];
-			updateUndoRedoButtons();
-		});
 		
 	$("#btn-undo").click(
 		function() {
@@ -1200,120 +1348,7 @@ $(function() {
 		function() {
 			doRedo();
 		});
-		
-	if (grid.getAdjacentCells && grid.isCellInsideWorkspace) {
-		$('#btn-flood-fill').show();
-	}
-
-	if (grid.drawTools) {
-		for (var toolName in grid.drawTools) {
-			var tool = grid.drawTools[toolName];
-			var button = $(`<button class="btn btn-sm btn-default painter-btn-tool btn-draw-tool" type="button" tool-name="${toolName}" title="${tool.title}"><img src="${tool.iconUrl}" /></button>`)
-			$('#draw-tools-bar').append(button);
-		}
-		$('.btn-draw-tool').click(function(event) {
-			var toolName = $(this).attr('tool-name');
-			setMode(toolName);
-		});
-	}
-	
-	$("#shift-toolbar-header").click(
-		function() {
-			if ($(this).attr("content-visible")) {
-				$("#shift-toolbar-content").slideUp();
-				$("#shift-toolbar-header i").removeClass("icon-chevron-up");
-				$("#shift-toolbar-header i").addClass("icon-chevron-down");
-				$(this).removeAttr("content-visible");
-			} else {
-				$("#shift-toolbar-content").slideDown();
-				$("#shift-toolbar-header i").removeClass("icon-chevron-down");
-				$("#shift-toolbar-header i").addClass("icon-chevron-up");
-				$(this).attr("content-visible","visible");				
-			}
-		});
-		
-	$("#size-toolbar-header").click(
-		function() {
-			if ($(this).attr("content-visible")) {
-				$("#size-toolbar-content").slideUp();
-				$("#size-toolbar-header i").removeClass("icon-chevron-up");
-				$("#size-toolbar-header i").addClass("icon-chevron-down");
-				$(this).removeAttr("content-visible");
-			} else {
-				$("#size-toolbar-content").slideDown();
-				$("#size-toolbar-header i").removeClass("icon-chevron-down");
-				$("#size-toolbar-header i").addClass("icon-chevron-up");
-				$(this).attr("content-visible","visible");				
-			}
-		});
-
-	$("#copy-paste-toolbar-header").click(
-		function() {
-			if ($(this).attr("content-visible")) {
-				$("#copy-paste-toolbar-content").slideUp();
-				$("#copy-paste-toolbar-header i").removeClass("icon-chevron-up");
-				$("#copy-paste-toolbar-header i").addClass("icon-chevron-down");
-				$(this).removeAttr("content-visible");
-			} else {
-				$("#copy-paste-toolbar-content").slideDown();
-				$("#copy-paste-toolbar-header i").removeClass("icon-chevron-down");
-				$("#copy-paste-toolbar-header i").addClass("icon-chevron-up");
-				$(this).attr("content-visible","visible");
-				if (!localStorage["dontShowCopyPasteMessage"]) {
-					$("#copy-paste-message-modal").modal();	
-				}
-			}
-		});
-		
-	$("#btn-apply-workspace-size").click(
-		function() {
-			var newWidth=parseInt($("#toolbar-workspace-width").val(),10);
-			var newHeight=parseInt($("#toolbar-workspace-height").val(),10);
-			var newCellSize=parseInt($("#toolbar-cell-size").val(),10);
-			
-			if (newWidth<200 || newWidth>4000) {
-				alert("Artwork width should by between 200 and 4000 pixels.");
-				return;
-			}
-			
-			if (newHeight<200 || newHeight>4000) {
-				alert("Artwork height should be between 200 and 4000 pixels");
-				return;
-			}
-			
-			if (newCellSize<10 || newCellSize>32) {
-				alert("Cell size should be between 10 and 32 pixels");
-				return;
-			}
-			
-			$("#canvas")
-				.css("width",newWidth)
-				.css("height",newHeight);
-			grid.workspaceWidth=newWidth;
-			grid.workspaceHeight=newHeight;
-			grid.cellSize=newCellSize;
-			
-			paper.remove();
-			paper=new Raphael("canvas",newWidth,newHeight);
-			grid.paintGrid(paper);
-			createShapesToolbar();
-			selection.paper=paper;
-			
-			var oldGridArtwork=gridArtwork;
-			gridArtwork=new GridArtwork();
-			for (var row=0; row<oldGridArtwork.cells.length; row++) {
-				for (var col=0; col<oldGridArtwork.cells[row].length; col++) {
-					var cell=oldGridArtwork.cells[row][col];
-					if (cell) {
-						var cellRect=grid.getCellRect(col,row);
-						if (cellRect.left+cellRect.width<newWidth && cellRect.top+cellRect.height<newHeight) {
-							paintOnCanvas(col,row,cell.shapeName,cell.color);
-						}
-					}
-				}
-			}
-		});
-		
+									
 	//Disable context menu on canvas
 	$("#canvas").bind("contextmenu", 
 		function(e) {
@@ -1327,43 +1362,7 @@ $(function() {
 				doUndo();
 			}
 		});
-		
-	$("#btn-copy-mode").click(
-		function(event) {
-			if (mode=="copy") {
-				setMode("paint");
-			} else {
-				setMode("copy");
-			} 
-		});
-	
-	$("#btn-paste-mode").click(
-		function(event) {
-			if (mode=="paste") {
-				setMode("paint");
-			} else {
-				setMode("paste");
-			} 
-		});
-		
-	$("#btn-flood-fill").click(
-		function(event) {
-			if (mode=='fill') {
-				setMode('paint');
-			} else {
-				setMode('fill');
-			}
-		});
-
-	$("#btn-draw-line").click(
-		function(event) {
-			if (mode=='line') {
-				setMode('paint');
-			} else {
-				setMode('line');
-			}
-		});
-		
+						
 	$("#copy-paste-message-modal").on("hidden.bs.modal",
 		function() {
 			if ($("#chk-dont-show-copy-paste-message")[0].checked) {
@@ -1372,4 +1371,8 @@ $(function() {
 		});
 
 	initPropertiesDialog();
+	initDrawingToolsPanel();
+	initShiftPanel();
+	initSizePanel();
+	initCopyPastePanel();
 });
