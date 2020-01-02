@@ -13,7 +13,7 @@ var recentColors=[];
 var changed=false;
 var paperMouseDown=false;
 
-var toolbarGrid;
+var shapesToolbarGrid;
 
 var gridArtwork=new GridArtwork();
 var workspaceWidth;
@@ -40,11 +40,11 @@ function adjustCanvasWrapper() {
 }
 
 function paintShapeToolButton(shapeName) {
-	var shape=toolbarGrid.shapes[shapeName];
+	var shape=shapesToolbarGrid.shapes[shapeName];
 	
 	$("#shape-"+shapeName).html("");
 
-	var shapeRect=toolbarGrid.getCellRect(0,0);
+	var shapeRect=shapesToolbarGrid.getCellRect(0,0);
 	var shapePaper=new Raphael("shape-"+shapeName, shapeRect.width+20, shapeRect.height+20);
 	
 	if (shapeName==selectedShapeName) {
@@ -53,33 +53,6 @@ function paintShapeToolButton(shapeName) {
 		bgElement.attr({"fill":"r#ffffff:40-#cccccc", "stroke-width":0});
 	}
 	shape.paint(shapePaper, 0, 0, selectedColor, 10, 10);
-}
-
-function createShapesToolbar() {
-	var shapeElements="";
-	for(var i = 0; i < toolbarGrid.shapesToolbar.length; i++) {
-		shapeElements += '<div>';
-		for (var j = 0; j < toolbarGrid.shapesToolbar[i].length; j++) {
-			var shapeName = toolbarGrid.shapesToolbar[i][j];
-			shapeElements += '<span id="shape-' + shapeName +
-				'" class="grid-shape-button" shape-name="' +
-				shapeName+'"></span>';
-		}
-		shapeElements += '</div>';	
-	}
-
-	$("#shapes-toolbar").html(shapeElements);
-	
-	selectedShapeName="flat";
-	for (var shapeName in toolbarGrid.shapes) {
-		paintShapeToolButton(shapeName);
-	}
-	
-	$(".grid-shape-button").click(
-		function() {
-			selectShape($(this).attr("shape-name"));
-		}
-	);
 }
 
 function selectShape(shapeName) {
@@ -1049,7 +1022,6 @@ function initSizePanel() {
 			paper.remove();
 			paper=new Raphael("canvas",newWidth,newHeight);
 			grid.paintGrid(paper);
-			createShapesToolbar();
 			selection.paper=paper;
 			
 			var oldGridArtwork=gridArtwork;
@@ -1152,6 +1124,72 @@ function initDrawingToolsPanel() {
 	}	
 }
 
+function initShapesToolbar() {
+	shapesToolbarGrid = gridFactory[artwork.layers[0].grid]();
+	shapesToolbarGrid.cellSize = 24; // TODO toolbar cell size from grid defaults
+
+	var shapeElements="";
+	for(var i = 0; i < shapesToolbarGrid.shapesToolbar.length; i++) {
+		shapeElements += '<div class="shapes-toolbar-row" id="shapes-toolbar-row-' + i +'">';
+		for (var j = 0; j < shapesToolbarGrid.shapesToolbar[i].length; j++) {
+			var shapeName = shapesToolbarGrid.shapesToolbar[i][j];
+			shapeElements += '<span id="shape-' + shapeName +
+				'" class="grid-shape-button" shape-name="' +
+				shapeName+'"></span>';
+		}
+		shapeElements += '</div>';	
+	}
+
+	$("#shapes-toolbar").html(shapeElements);
+	
+	selectedShapeName="flat";
+	for (var shapeName in shapesToolbarGrid.shapes) {
+		paintShapeToolButton(shapeName);
+	}
+	
+	$(".grid-shape-button").click(
+		function() {
+			selectShape($(this).attr("shape-name"));
+		}
+	);
+
+	if (shapesToolbarGrid.shapesToolbar.length <= 2) {
+		$("#shapes-toolbar-header i").hide();
+	} else {
+		for(var i = 2; i < shapesToolbarGrid.shapesToolbar.length; i++) {
+			$('#shapes-toolbar-row-' + i).hide();
+		}
+
+		$("#shapes-toolbar-header").click(function() {
+			if ($(this).attr("content-visible")) {
+				var selectedRowIndex = 1;
+				for(var i = 2; i < shapesToolbarGrid.shapesToolbar.length; i++) {
+					if (shapesToolbarGrid.shapesToolbar[i].includes(selectedShapeName)) {
+						selectedRowIndex = i;
+						break;
+					}
+				}
+				for(var i = 1; i < shapesToolbarGrid.shapesToolbar.length; i++) {
+					if (i != selectedRowIndex) {
+						$('#shapes-toolbar-row-' + i).slideUp();
+					}
+				}
+				$("#shapes-toolbar-header i").removeClass("icon-chevron-up");
+				$("#shapes-toolbar-header i").addClass("icon-chevron-down");
+				$(this).removeAttr("content-visible");
+			} else {
+				for(var i = 0; i < shapesToolbarGrid.shapesToolbar.length; i++) {
+					$('#shapes-toolbar-row-' + i).slideDown();
+				}
+				$("#shapes-toolbar-header i").removeClass("icon-chevron-down");
+				$("#shapes-toolbar-header i").addClass("icon-chevron-up");
+				$(this).attr("content-visible","visible");
+			}
+		});
+	}
+}
+
+
 $(function() {
 	adjustCanvasWrapper();
 	$(window).resize(
@@ -1175,11 +1213,8 @@ $(function() {
 	selection.grid=grid;
 	selection.paper=paper;
 	selection.loadFromLocalStorage();
-
-	toolbarGrid = gridFactory[artwork.layers[0].grid]();
-	toolbarGrid.cellSize = 24; // TODO toolbar cell size from grid defaults
 	
-	createShapesToolbar();
+	initShapesToolbar();
 	updateUndoRedoButtons();
 	
 	$("#toolbar-workspace-width").val(artwork.canvasSize.width);
