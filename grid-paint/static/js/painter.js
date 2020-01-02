@@ -842,6 +842,99 @@ function hideCircleLoader() {
 	$('#spinner-fullscreen').remove();
 }
 
+function initPropertiesDialog() {
+	$("#btn-properties-save").click(
+		function() {
+			var artworkName=$("#modal_artwork_name").val();
+			if (artworkName=="") {
+				var messageModal=$("#message-modal");
+				messageModal.find("#message-text").text("Please enter artwork name");
+				messageModal.modal();
+				return;
+			}
+						
+			$("#artwork_name").val($("#modal_artwork_name").val());
+			$("#artwork_tags").val($("#modal_artwork_tags").val());
+			$("#artwork_description").val($("#modal_artwork_description").val());
+
+			$("#properties-modal").modal('hide');
+			
+			var modalAction=$("#modal_success_action").val();
+			if (modalAction=="save") {
+				saveArtwork();
+			}
+		}
+	);
+
+	var tags=$("#modal_artwork_tags");
+	tags.tagsinput();
+	tags.tagsinput('input').typeahead({
+		name: "dataset",
+		remote: "/tag-typeahead?query=%QUERY"
+    }).bind('typeahead:selected', $.proxy(function (obj, datum) {
+      tags.tagsinput('add', datum.value);
+      tags.tagsinput('input').typeahead('setQuery', '');
+    }, $('input')));
+	tags.on(
+		'beforeItemAdd',
+		function(event) {
+			if (event.item.length <= 1 || event.item.length > 64) {
+				$("#modal-tags-hint").show();
+				event.cancel = true
+			} else {
+				$("#modal-tags-hint").hide();
+			}
+		}
+	);
+
+	$('#modal_description_label').click(function() {
+		if (modalDescriptionVisible) {
+			$('#modal_description_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
+			$('#modal_artwork_description').hide();
+			propertiesDialog_updateDescriptionLabelPreview();
+			$('#modal_description_label').find('.save-dialog-expandable-content-preview').show();
+			modalDescriptionVisible=false;			
+		} else {
+			$('#modal_description_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
+			$('#modal_artwork_description').show();
+			$('#modal_description_label').find('.save-dialog-expandable-content-preview').hide();
+			modalDescriptionVisible=true;
+		}
+	});
+	
+	$('#modal_tags_label').click(function() {
+		if (modalTagsVisible) {
+			$('#modal_tags_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
+			$('#modal_artwork_tags_field').hide();
+			$('#modal-tags-hint').hide();
+			propertiesDialog_updateTagsLabelPreview();
+			$('#modal_tags_label').find('.save-dialog-expandable-content-preview').show();
+			modalTagsVisible=false;
+		} else {
+			$('#modal_tags_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
+			$('#modal_artwork_tags_field').show();
+			$('#modal_tags_label').find('.save-dialog-expandable-content-preview').hide();
+			modalTagsVisible=true;			
+		}
+	});
+	
+	$('#modal_square_grid_special_properties_label').click(function() {
+		if (modalSquareGridSpecialPropertiesVisible) {
+			$('#modal_square_grid_special_properties_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
+			$('.save-dialog-special-properties-frame').hide();
+			modalSquareGridSpecialPropertiesVisible=false;
+		} else {
+			$('#modal_square_grid_special_properties_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
+			$('.save-dialog-special-properties-frame').show();
+			modalSquareGridSpecialPropertiesVisible=true;			
+		}
+	});
+
+	$('#properties-modal').on('shown.bs.modal', function () {
+		$('#modal_artwork_name').focus();
+	});
+}
+
 $(function() {
     initialTagsValue = $('input[name=modal_artwork_tags]').val();
 
@@ -996,58 +1089,13 @@ $(function() {
 			showPropertiesDialog("save");
 		}
 	);
-	
-	$("#btn-properties-save").click(
-		function() {
-			var artworkName=$("#modal_artwork_name").val();
-			if (artworkName=="") {
-				var messageModal=$("#message-modal");
-				messageModal.find("#message-text").text("Please enter artwork name");
-				messageModal.modal();
-				return;
-			}
-						
-			$("#artwork_name").val($("#modal_artwork_name").val());
-			$("#artwork_tags").val($("#modal_artwork_tags").val());
-			$("#artwork_description").val($("#modal_artwork_description").val());
-
-			$("#properties-modal").modal('hide');
-			
-			var modalAction=$("#modal_success_action").val();
-			if (modalAction=="save") {
-				saveArtwork();
-			}
-		}
-	);
-	
+		
 	window.onbeforeunload=
 		function() {
 			if (changed) {
 				return "Your drawing was changed. Do you want to leave without saving?";
 			}
-		};
-		
-	var tags=$("#modal_artwork_tags");
-	tags.tagsinput();
-	tags.tagsinput('input').typeahead({
-		name: "dataset",
-		remote: "/tag-typeahead?query=%QUERY"
-    }).bind('typeahead:selected', $.proxy(function (obj, datum) {
-      tags.tagsinput('add', datum.value);
-      tags.tagsinput('input').typeahead('setQuery', '');
-    }, $('input')));
-	tags.on(
-		'beforeItemAdd',
-		function(event) {
-			if (event.item.length <= 1 || event.item.length > 64) {
-				$("#modal-tags-hint").show();
-				event.cancel = true
-			} else {
-				$("#modal-tags-hint").hide();
-			}
-		}
-	);
-		
+		};		
 	
 	//Create color palette
 	var paletteHtml="";
@@ -1322,51 +1370,6 @@ $(function() {
 				localStorage['dontShowCopyPasteMessage']=true;
 			}
 		});
-		
-	$('#modal_description_label').click(function() {
-		if (modalDescriptionVisible) {
-			$('#modal_description_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
-			$('#modal_artwork_description').hide();
-			propertiesDialog_updateDescriptionLabelPreview();
-			$('#modal_description_label').find('.save-dialog-expandable-content-preview').show();
-			modalDescriptionVisible=false;			
-		} else {
-			$('#modal_description_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
-			$('#modal_artwork_description').show();
-			$('#modal_description_label').find('.save-dialog-expandable-content-preview').hide();
-			modalDescriptionVisible=true;
-		}
-	});
-	
-	$('#modal_tags_label').click(function() {
-		if (modalTagsVisible) {
-			$('#modal_tags_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
-			$('#modal_artwork_tags_field').hide();
-			$('#modal-tags-hint').hide();
-			propertiesDialog_updateTagsLabelPreview();
-			$('#modal_tags_label').find('.save-dialog-expandable-content-preview').show();
-			modalTagsVisible=false;
-		} else {
-			$('#modal_tags_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
-			$('#modal_artwork_tags_field').show();
-			$('#modal_tags_label').find('.save-dialog-expandable-content-preview').hide();
-			modalTagsVisible=true;			
-		}
-	});
-	
-	$('#modal_square_grid_special_properties_label').click(function() {
-		if (modalSquareGridSpecialPropertiesVisible) {
-			$('#modal_square_grid_special_properties_label i').removeClass('icon-caret-down').addClass('icon-caret-right');
-			$('.save-dialog-special-properties-frame').hide();
-			modalSquareGridSpecialPropertiesVisible=false;
-		} else {
-			$('#modal_square_grid_special_properties_label i').removeClass('icon-caret-right').addClass('icon-caret-down');
-			$('.save-dialog-special-properties-frame').show();
-			modalSquareGridSpecialPropertiesVisible=true;			
-		}
-	});
 
-	$('#properties-modal').on('shown.bs.modal', function () {
-		$('#modal_artwork_name').focus();
-	});
+	initPropertiesDialog();
 });
