@@ -1080,32 +1080,17 @@ function initCopyPastePanel() {
 }
 
 function initDrawingToolsPanel() {
-	$("#btn-pick-color").click(
-		function() {
-			if (mode=="pick-color") {
-			  setMode("paint");
-			} else {
-			  setMode("pick-color");
-			}
-		}
-	);
+	$("#btn-pick-color").click(function() {
+		setMode("pick-color");
+	});
 	
-	$('#btn-pencil').click(
-		function() {
-			if (mode!='paint') {
-				setMode('paint');
-			}
-		}
-	);
+	$('#btn-pencil').click(function() {
+		setMode('paint');
+	});
 
-	$("#btn-flood-fill").click(
-		function(event) {
-			if (mode=='fill') {
-				setMode('paint');
-			} else {
-				setMode('fill');
-			}
-		});
+	$("#btn-flood-fill").click(function() {
+		setMode('fill');
+	});
 
 	if (grid.getAdjacentCells && grid.isCellInsideWorkspace) {
 		$('#btn-flood-fill').show();
