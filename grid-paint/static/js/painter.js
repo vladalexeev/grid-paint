@@ -122,6 +122,15 @@ function paintOnCanvasByMouseEvent(event) {
 	}
 }
 
+function eraseOnCanvasByMouseEvent(event) {
+	var cell=getCellCoordByMouseEvent(event);
+	if (paperMouseDown) {
+		storeUndoCell(cell.col, cell.row, 'empty', selectedColor);	
+		paintOnCanvas(cell.col, cell.row, 'empty', selectedColor);
+		changed=true;
+	}
+}
+
 function selectOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 	
@@ -354,6 +363,7 @@ function setMode(m) {
 	$('#btn-draw-line').removeClass('active').removeAttr("disabled");
 	$("#btn-copy-mode").removeClass('active').removeAttr("disabled");
 	$("#btn-paste-mode").removeClass('active').removeAttr("disabled");
+	$("#btn-erase").removeClass('active').removeAttr("disabled");
 
 	if (grid.drawTools) {
 		for (var toolName in grid.drawTools) {
@@ -380,6 +390,9 @@ function setMode(m) {
 	} else if (mode=='fill') {
 		$("#canvas-wrapper").css("cursor","url(/img/cursors/flood-fill.png) 2 32, crosshair");
 		$('#btn-flood-fill').addClass('active');
+	} else if (mode=='erase') {
+		$("#canvas-wrapper").css("cursor","url(/img/cursors/eraser.png) 8 32, crosshair");
+		$('#btn-erase').addClass('active');
 	} else if (grid.drawTools[mode]) {
 		$("#canvas-wrapper").css("cursor","crosshair");
 		$('.btn-draw-tool[tool-name='+mode+']').addClass('active');
@@ -1088,6 +1101,10 @@ function initDrawingToolsPanel() {
 		setMode('paint');
 	});
 
+	$('#btn-erase').click(function() {
+		setMode('erase');
+	})
+
 	$("#btn-flood-fill").click(function() {
 		setMode('fill');
 	});
@@ -1238,6 +1255,11 @@ $(function() {
 				redoStack=[];
 				updateUndoRedoButtons();
 				paintOnCanvasByMouseEvent(event);
+			} else if (mode=='erase') {
+				undoStack.push(new UndoStep());
+				redoStack=[];
+				updateUndoRedoButtons();
+				eraseOnCanvasByMouseEvent(event);
 			} else if (mode=="pick-color") {
 				pickColorByMouseEvent(event);
 			} else if (mode=="copy") {
@@ -1277,6 +1299,8 @@ $(function() {
 			updateCellCoordiantesPanel(event);
 			if (mode=="paint") {
 				paintOnCanvasByMouseEvent(event);
+			} else if (mode=='erase') {
+				eraseOnCanvasByMouseEvent(event);
 			} else if (mode=="copy") {
 				selectOnCanvasByMouseEvent(event);
 			} else if (mode=="paste") {

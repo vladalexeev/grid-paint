@@ -276,7 +276,7 @@ function GridTriangle () {
 	}
 	
 	this.shapes={
-		"empty": new GridTriangle_ShapeEmpty(this),
+		// "empty": new GridTriangle_ShapeEmpty(this),
 		"flat": new GridTriangle_ShapeFlat(this),
 		"diamond": new GridTriangle_ShapeDiamond(this),
 		"jewel": new GridTriangle_ShapeJewel(this),
@@ -285,7 +285,7 @@ function GridTriangle () {
 	}
 
 	this.shapesToolbar=[
-		['empty'],
+		// ['empty'],
 		['flat', 'diamond', 'jewel'],
 		['frame3u', 'frame3d']
 	];

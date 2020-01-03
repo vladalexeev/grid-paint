@@ -803,7 +803,7 @@ function GridSquare() {
 	}
 	
 	this.shapes={
-	    "empty": new GridSquare_ShapeEmpty(this),
+	    // "empty": new GridSquare_ShapeEmpty(this),
 		"flat": new GridSquare_ShapeFlat(this),
 		"flat1": new GridSquare_ShapeFlat1(this),
 		"flat2": new GridSquare_ShapeFlat2(this),
@@ -823,7 +823,7 @@ function GridSquare() {
 	};
 
 	this.shapesToolbar = [
-		['empty'],
+		// ['empty'],
 		['flat', 'flat1', 'flat2', 'flat3'],
 		['circle', 'circle1', 'circle2', 'circle3'],
 		['jewel', 'jewel2', 'jewel3', 'diamond'],

@@ -485,7 +485,7 @@ function GridHex() {
 	}
 	
 	this.shapes={
-		"empty": new GridHex_ShapeEmpty(this),
+		// "empty": new GridHex_ShapeEmpty(this),
 		"flat": new GridHex_ShapeFlat(this),
 		"diamond": new GridHex_ShapeDiamond(this),
 		"jewel": new GridHex_ShapeJewel(this),
@@ -495,7 +495,7 @@ function GridHex() {
 	};
 
 	this.shapesToolbar = [
-		['empty'],
+		// ['empty'],
 		['flat', 'diamond', 'jewel', 'cube'],
 		['frame4u', 'frame4d']
 	]
