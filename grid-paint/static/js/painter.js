@@ -380,7 +380,7 @@ function setMode(m) {
 		$("#canvas-wrapper").css("cursor","url(/img/cursors/pick-color.png) 2 32, crosshair");
 		$('#btn-pick-color').addClass('active');
 	} else if (mode=="copy") {
-		$("#canvas-wrapper").css("cursor","crosshair"); // TODO change cursor
+		$("#canvas-wrapper").css("cursor","url(/img/cursors/mark-area.png) 8 8, crosshair");
 		$('#btn-copy-mode').addClass('active');	
 		selection.copyPrepare();	
 	} else if (mode=="paste") {
