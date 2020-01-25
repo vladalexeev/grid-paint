@@ -17,12 +17,12 @@
 <div class="image-details-comments" id="notifications-container">
 </div>
 
-<div id="nav_buttons" style="display:none; margin:10px;" class="text-center">
-	<form name="a" class="form-inline">
-		<button id="button_prev" type="button" class="btn btn-small btn-desfault">Prev</button>
-		<input type="text" id="offset" class="form-control" size="4" />
-		<button id="button_next" type="button" class="btn btn-small btn-desfault">Next</button>
-	</form>
+<div>
+	<div id="notifications-spinner" class="spinner-wrapper" style="display:none;"><div class="spinner"></div></div>
+</div>
+
+<div class="empty-page-message" style="display:none;">
+	There are no notifications for you
 </div>
 
 </div>
@@ -50,25 +50,8 @@
 
 
 <script>
-var maxCount=10;
-
-function getCurrentOffset() {
-	return parseInt($("#offset").val(), 10);
-}
-
-function setCurrentOffset(offset) {
-	$("#offset").val(offset);
-	showCurrentOffset();
-}
-
-function showCurrentOffset() {
-	loadNotifications(maxCount, getCurrentOffset());
-}
-</script>
-
-<script>
-var spinner='<div class="spinner-wrapper"><div class="spinner"></div></div>';
-var emptyPage='<div class="empty-page-message">There are no notifications for you</div>';
+var pageSize=10;
+var loading=false;
 
 function commentToHtml(comment) {
 	var result='';
@@ -89,10 +72,11 @@ function constructNotificationComponent(n) {
 	var hyperlink='';
 	var content='';
 	if (n.type=='follow') {
-		result=`<div id="notification-${n.id}" class="notification-container">\
+		result=`<div id="notification-${n.id}" class="notification-container" notification-id="${n.id}">\
 			<div class="notification-icon"><i class="icon-user"></i></div>\
 			<div class="comment">\
 				<div class="comment-header">\
+					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
 					<div>${n.date}</div>\
 					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> is now following you</div>\
 				</div>\
@@ -132,10 +116,11 @@ function constructNotificationComponent(n) {
 	var result='';
 	
 	if (validNotification) {
-		result=`<div id="notification-${n.id}" class="notification-container">\
+		result=`<div id="notification-${n.id}" class="notification-container" notification-id="${n.id}">\
 			<div class="notification-icon"><i class="${iconName}"></i></div>\
 			<div class="comment">\
 				<div class="comment-header">\
+					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
 					<div>${n.date}</div>\
 					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
 					<h2><a href="${hyperlink}">${n.artwork.name}</a></h2>\
@@ -144,10 +129,11 @@ function constructNotificationComponent(n) {
 			</div>\
 		</div>`;
 	} else {
-		result=`<div id="notification-${n.id}" class="notification-container">\
+		result=`<div id="notification-${n.id}" class="notification-container" notification-id="${n.id}">\
 			<div class="notification-icon"><i class="${iconName}"></i></div>\
 			<div class="comment">\
 				<div class="comment-header">\
+					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
 					<div>${n.date}</div>\
 					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
 					<div>Artwork or comment was deleted</div>\
@@ -158,89 +144,108 @@ function constructNotificationComponent(n) {
 	return result;
 };
 
+function appendNotificationElement(notification) {
+	var html=constructNotificationComponent(notification);
+	$('#notifications-container').append(html);
+}
+
 function loadNotifications(limit, offset) {
-	$("#nav_buttons").hide();
-	$("#button_delete_all").hide();
-	$('#notifications-container').html(spinner);
-	$.get('/json/notifications?limit='+(limit+1)+'&offset='+offset,
+	loading=true;
+	updatePageControls();
+	$.get('/json/notifications?limit='+limit+'&offset='+offset,
 		function(data) {
+			loading=false;
+			updatePageControls();
 			var notifications=JSON.parse(data);
+
 			var html='';
-			for (var i=0; i<notifications.length && i<limit; i++) {
+			for (var i = 0; i < notifications.length; i++) {
 				html+=constructNotificationComponent(notifications[i]);
 			}
-			if (!html) {
-				html=emptyPage;
-			}
-			$('#notifications-container').html(html);
-			
-			if (offset>0 || notifications.length>limit) {
-				$("#nav_buttons").show();	
-			} else {
-				$("#nav_buttons").hide();
-			}
-			
-			if (offset==0) {
-				$('#button_prev').attr('disabled', 'disabled');
-			} else {
-				$('#button_prev').removeAttr('disabled');
-			}
-			
-			if (notifications.length <= limit) {
-				$('#button_next').attr('disabled', 'disabled');
-			} else {
-				$('#button_next').removeAttr('disabled');
-			}
-			
-			if (notifications.length > 0 || offset > 0) {
-				$("#button_delete_all").show();
-			}
+			$('#notifications-container').append(html);
+			updatePageControls();
 		}
 	);
 };
 
+function updatePageControls() {
+	if (loading) {
+		$('#notifications-spinner').show();
+		$('.empty-page-message').hide();
+		$('#button_delete_all').hide();
+	} else {
+		$('#notifications-spinner').hide();
+		if ($('.notification-container').length > 0) {
+			$('.empty-page-message').hide();
+			$('#button_delete_all').show();
+		} else {
+			$('.empty-page-message').show();
+			$('#button_delete_all').hide();
+		}
+	}
+}
+
+function onDeleteNotification(id) {
+	if (loading) {
+		return;
+	}
+	loading = true;
+	$('#notification-'+id).slideUp(300, function() {
+		$('#notification-'+id).remove();
+		$.post(
+			'/json/delete-notifications',
+			{
+				id: [id]
+			},
+			function(data) {
+				loadNotifications(1, pageSize - 1);
+			},
+			'json'
+		);
+	});
+}
+
+function onDeleteAllVisibleNotifications() {
+	if (loading) {
+		return;
+	}
+	loading = true;
+	$("#modal-confirm-delete").modal("hide");
+	var ids = [];
+	$('.notification-container').each(function() {
+		ids.push($(this).attr('notification-id'));
+	});
+
+	var deleting = false;
+	$('.notification-container').slideUp(500, function() {
+		if (deleting) {
+			return;
+		}
+		deleting = true;
+		$('.notification-container').remove();
+		$.post(
+			'/json/delete-notifications',
+			{
+				id: ids
+			},
+			function(data) {
+				loadNotifications(pageSize, 0);
+			},
+			'json'
+		);
+	});
+}
+
 $(function() {
-	$("#button_prev").click(function() {
-		var offset = getCurrentOffset() - maxCount;
-		if (offset<0) {
-			offset=0;
-		}
-		setCurrentOffset(offset);
-		window.scrollTo(0,0);
-	});
-	
-	$("#button_next").click(function() {
-		var offset = getCurrentOffset() + maxCount;
-		setCurrentOffset(offset);
-		window.scrollTo(0,0);
-	});
-	
-	$("#offset").keypress(function(event) {
-		if (event.which==13) {
-			showCurrentOffset();
-			window.scrollTo(0,0);
-			event.preventDefault();
-		}
-	});
-	
 	$("#button_delete_all").click(function() {
 		$("#modal-confirm-delete").modal("show");
 	});
 	
 	$("#button_confirm_delete").click(function() {
-		$("#nav_buttons").hide();
-		$("#button_delete_all").hide();
-		$('#notifications-container').html(spinner);
-		$("#modal-confirm-delete").modal("hide");
-		
-		$.get("/delete-all-notifications",
-			function() {
-				$('#header-notifications').hide();
-				$('#notifications-container').html(emptyPage);
-			});
+		onDeleteAllVisibleNotifications();
 	});
-	
-	setCurrentOffset(0);
+
+	loadNotifications(pageSize, 0);
 });
 </script>
 {% endblock content %}

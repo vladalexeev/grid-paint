@@ -1,4 +1,5 @@
 *.pyc
 Thumbs.db
 .idea
+.vscode
 /venv

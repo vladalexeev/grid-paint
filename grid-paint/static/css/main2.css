@@ -817,6 +817,11 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	margin-left: 40px;
 }
 
+.notification-container .notification-remove {
+	float: right;
+	cursor: pointer;
+}
+
 .btn-tiny {
 	padding: 2px 10px;
 }

@@ -379,27 +379,6 @@ class JSONActionSaveImageTags(BasicRequestHandler):
         }))
 
 
-class ActionDeleteNotification(BasicRequestHandler):
-    def get(self):
-        notification_id = self.request.get('id')
-        notification = db.Notification.get(notification_id)
-        if notification is not None:
-            if notification.recipient_email == self.user_info.user_email:
-                dao.delete_notification(notification)
-            else:
-                self.response.set_status(403)
-
-                
-class ActionDeleteAllNotifications(BasicRequestHandler):
-    def get(self):
-        if not self.user_info.user:
-            self.response.set_status(403)
-            return
-
-        user_email = self.user_info.user_email
-        dao.delete_all_notifications(user_email)
-
-                
 class ActionComlainComment(BasicRequestHandler):
     def get(self):
         if not self.user_info.user:
@@ -464,7 +443,7 @@ class ActionSaveComment(BasicRequestHandler):
             dao.add_user_profile(user_profile)
         
         artwork_id = self.request.get('artwork_id')
-        comment_text = self.request.get('comment_text').strip();
+        comment_text = self.request.get('comment_text').strip()
         ref_comment_id = self.request.get('ref_comment_id')
         
         if not antispam.check_comment(user_profile.email, artwork_id, comment_text):
@@ -1078,7 +1057,7 @@ class ActionAdminBlockUser(BasicRequestHandler):
         profile_id = int(self.request.get('profile_id'))
         block_reason = self.request.get('block_reason')
         
-        user_profile = dao.get_user_profile_by_id(profile_id);
+        user_profile = dao.get_user_profile_by_id(profile_id)
         user_profile.read_only = True
         user_profile.block_date = datetime.datetime.now()
         user_profile.block_reason = block_reason
@@ -1094,7 +1073,7 @@ class ActionAdminUnblockUser(BasicRequestHandler):
         
         profile_id = int(self.request.get('profile_id'))
         
-        user_profile = dao.get_user_profile_by_id(profile_id);
+        user_profile = dao.get_user_profile_by_id(profile_id)
         if hasattr(user_profile, 'read_only'):
             del user_profile.read_only
         if hasattr(user_profile, 'block_date'):
@@ -1207,7 +1186,7 @@ class ActionFollow(BasicRequestHandler):
             
         dao.follow(user.email, self.user_info.user_email)
         
-        user.followers_count = getattr(user, 'followers_count', 0) + 1;
+        user.followers_count = getattr(user, 'followers_count', 0) + 1
         user.put()
         
         current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
@@ -1254,7 +1233,7 @@ class ActionUnfollow(BasicRequestHandler):
                     
         dao.unfollow(user.email, self.user_info.user_email)
         
-        user.followers_count = getattr(user, 'followers_count', 0) - 1;
+        user.followers_count = getattr(user, 'followers_count', 0) - 1
         user.put()
         
         current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
@@ -1589,6 +1568,26 @@ class JSONSetTagCover(BasicRequestHandler):
             'result': 'ok',
         }))
 
+
+class JSONDeleteNotifications(BasicRequestHandler):
+    def get(self):
+        self.delete_notifications()
+
+    def post(self):
+        self.delete_notifications()
+
+    def delete_notifications(self):
+        notifications_ids = self.request.get_all('id[]')
+        for id in notifications_ids:
+            notification_id = int(id)
+            notification = db.Notification.get_by_id(notification_id)
+            if notification is not None:
+                if notification.recipient_email == self.user_info.user_email:
+                    dao.delete_notification(notification)
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
 
 
 
