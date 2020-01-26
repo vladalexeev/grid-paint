@@ -111,7 +111,15 @@ function constructNotificationComponent(n) {
 		} else {
 			validNotification=false;
 		}
-	} 
+	} else if (n.type=='editors_choice') {
+		iconName='icon-certificate';
+		headerText="added your artwork to Editor's choice";
+		if (n.artwork) {
+			hyperlink=`/images/details/${n.artwork.id}`;
+		} else {
+			validNotification=false;
+		}
+	}
 	
 	var result='';
 	

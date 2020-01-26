@@ -821,6 +821,13 @@ class JSONActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork.name = artwork_name
         artwork.description = artwork_description
         if artwork_editor_choice:
+            if not artwork.editor_choice:
+                notification = db.Notification()
+                notification.recipient_email = artwork.author_email
+                notification.sender_email = self.user_info.user_email
+                notification.type = 'editors_choice'
+                notification.artwork = artwork
+                dao.add_notification(notification)
             artwork.editor_choice = True
             artwork.editor_choice_date = datetime.datetime.now()
         else:
