@@ -235,38 +235,28 @@ function GridDiamond() {
 	}
 
 	this.getAdjacentCells = function(col, row) {
-	    var cellType = col % 4;
-	    if (cellType==0) {
-	        return [
-	            {col: col+3, row: row-1},
-	            {col: col+1, row: row},
-	            {col: col+2, row: row}
-	        ]
-	    } else if (cellType==1) {
-            return [
-            	{col: col-3, row: row},
-	            {col: col-1, row: row},
-	            {col: col+2, row: row}
-            ]
-	    } else if (cellType==2) {
-            return [
-            	{col: col+3, row: row},
-	            {col: col-2, row: row},
-	            {col: col+1, row: row}
-            ]
-	    } else if (cellType==3) {
-            return [
-            	{col: col-3, row: row+1},
-	            {col: col-2, row: row},
-	            {col: col-1, row: row}
-            ]
-	    }
+		if (row % 2 == 0) {
+			return [
+				{col: col - 1, row: row - 1},
+				{col: col, row: row - 1},
+				{col: col - 1, row: row + 1},
+				{col: col, row: row + 1}
+			]
+		} else {
+			return [
+				{col: col, row: row - 1},
+				{col: col + 1, row: row - 1},
+				{col: col, row: row + 1},
+				{col: col + 1, row: row + 1}
+			]
+		}
 	}
 
 	this.isCellInsideWorkspace = function(col, row) {
-		var colCount=this.workspaceWidth/this.cellSize*4;
-		var rowCount=this.workspaceHeight/this.cellSize;
-		return col>=0 && col<colCount && row>=0 && row<rowCount;
+		var cellRect = this.getCellRect(col, row);
+		return cellRect.left >= 0 && cellRect.top >= 0 &&
+			cellRect.left + cellRect.width < this.workspaceWidth &&
+			cellRect.top + cellRect.height < this.workspaceHeight;
 	}
 		
 	this.shapes={
@@ -284,14 +274,14 @@ function GridDiamond() {
 	}
 	
 	this.shiftLeft={
-	    cell_dx:-4,
+	    cell_dx:-1,
 	    cell_dy:0,
 	    dx: -this.cellSize,
 	    dy: 0
 	}
 	
 	this.shiftRight={
-	    cell_dx:4,
+	    cell_dx:1,
 	    cell_dy:0,
 	    dx: this.cellSize,
 	    dy: 0
@@ -299,14 +289,14 @@ function GridDiamond() {
 	
 	this.shiftUp={
 	    cell_dx:0,
-	    cell_dy:-4,
+	    cell_dy:-1,
 	    dx: 0,
 	    dy: -this.cellSize
 	}
 	
 	this.shiftDown={
 	    cell_dx:0,
-	    cell_dy:4,
+	    cell_dy:1,
 	    dx:0,
 	    dy: this.cellSize
 	}
