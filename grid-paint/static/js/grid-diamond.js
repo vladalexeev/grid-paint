@@ -60,6 +60,53 @@ function GridDiamond_ShapeFlat(parent) {
 	}
 }
 
+function GridDiamond_ShapeDiamond(parent) {
+	this.name="flat";
+	this.parent=parent;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var points=GridDiamond_Points(col, row, parent.cellSize);
+		var cx = points[0].x;
+		var cy = points[1].y;
+		var c=hexToHsl(color);
+
+		paper.setStart();
+				
+		var c1=hslToHex(c.h, c.s, c.l+0.2);
+		var e1=paper.path([
+			"M", points[0].x + dx, points[0].y + dy,
+			"L", cx + dx, cy + dy,
+			"L", points[3].x + dx, points[3].y + dy,
+			"Z"]);
+		e1.attr({"fill":c1, "stroke-width":0});
+				
+		var c2=hslToHex(c.h, c.s, c.l+0.1);
+		var e2=paper.path([
+			"M", points[0].x + dx, points[0].y + dy,
+			"L", cx + dx, cy + dy,
+			"L", points[1].x + dx, points[1].y + dy,
+			"Z"])
+		e2.attr({"fill":c2, "stroke-width":0});
+				
+		var c3=hslToHex(c.h, c.s, c.l-0.1);
+		var e3=paper.path([
+			"M", points[2].x + dx, points[2].y + dy,
+			"L", cx + dx, cy + dy,
+			"L", points[3].x + dx, points[3].y + dy,
+			"Z"])
+		e3.attr({"fill":c3, "stroke-width":0});
+				
+		var c4=hslToHex(c.h, c.s, c.l-0.2);
+		var e4=paper.path([
+			"M", points[1].x + dx, points[1].y + dy,
+			"L", cx + dx, cy + dy,
+			"L", points[2].x + dx, points[2].y + dy,
+			"Z"])
+		e4.attr({"fill":c4, "stroke-width":0});
+		return paper.setFinish();
+	}
+}
+
+
 function GridDiamond_ShapeSelected(parent) {
 	this.name="selected";
 	this.parent=parent;
@@ -158,11 +205,12 @@ function GridDiamond() {
 	}
 		
 	this.shapes={
-		"flat": new GridDiamond_ShapeFlat(this)
+		"flat": new GridDiamond_ShapeFlat(this),
+		"diamond": new GridDiamond_ShapeDiamond(this)
 	}
 
 	this.shapesToolbar = [
-		[/* 'empty', */ 'flat']
+		[/* 'empty', */ 'flat', 'diamond']
 	]
 	
 	this.internalShapes={
