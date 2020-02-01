@@ -112,8 +112,6 @@ function GridDiamond_ShapeJewel(parent) {
 	this.parent = parent;
 	this.paint = function(paper, col, row, color, dx, dy) {
 		var points = GridDiamond_Points(col, row, parent.cellSize);
-		var cx = points[0].x;
-		var cy = points[1].y;
 		var facet = parent.cellSize / 4;
 		var points2 = [
 			{x: points[0].x, y: points[0].y + facet},

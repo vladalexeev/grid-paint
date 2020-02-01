@@ -19,6 +19,7 @@ from grid.triangle import GridTriangle
 from grid.iso_triangle import GridIsoTriangle
 from grid.hex import GridHex
 from grid.triangles4 import GridTriangles4
+from grid.diamond import GridDiamond
 
 from graphics.svg import SvgImageWriter
 
@@ -40,13 +41,14 @@ from const import NEWS_TYPE_CHANGE_ARTWORK, NEWS_TYPE_NEW_ARTWORK
 
 from bad_language import hide_bad_language
 
-grids={
-       'square': GridSquare,
-       'triangle': GridTriangle,
-       'iso-triangle': GridIsoTriangle,
-       'hex': GridHex,
-       'triangles4': GridTriangles4
-       }
+grids = {
+    'square': GridSquare,
+    'triangle': GridTriangle,
+    'iso-triangle': GridIsoTriangle,
+    'hex': GridHex,
+    'triangles4': GridTriangles4,
+    'diamond': GridDiamond,
+}
 
 
 class JSONActionSaveImage(BasicRequestHandler):
