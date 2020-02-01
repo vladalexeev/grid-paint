@@ -187,6 +187,46 @@ function GridDiamond_ShapeSelected(parent) {
 	}
 }
 
+function GridDiamond_BasicShapeFramed(parent) {
+	this.parent = parent;
+	this.frameLight = 0;
+	this.paint=function(paper, col, row, color, dx, dy) {
+		var points = GridDiamond_Points(col, row, parent.cellSize);
+		var c = hexToHsl(color);
+		paper.setStart();
+
+        var c1 = hslToHex(c.h, c.s, c.l+this.frameLight);
+        var e1 = paper.path(createSvgDiamondPath(points, dx, dy));
+		e1.attr({"fill":c1, "stroke-width":0})
+		
+		var frame = this.parent.cellSize * 0.1;
+		var points2 = [
+			{x: points[0].x, y: points[0].y + frame},
+			{x: points[1].x - frame, y: points[1].y},
+			{x: points[2].x, y: points[2].y - frame},
+			{x: points[3].x + frame, y: points[3].y}
+		]
+
+        var e4=paper.path(createSvgDiamondPath(points2, dx, dy))
+        e4.attr({"fill":color, "stroke-width":0})
+
+        return paper.setFinish();
+	}
+}
+
+function GridDiamond_ShapeFramedDark(parent) {
+    this.super = GridDiamond_BasicShapeFramed;
+    this.super(parent);
+    this.frameLight = - 0.15;
+}
+
+function GridDiamond_ShapeFramedLight(parent) {
+    this.super = GridDiamond_BasicShapeFramed;
+    this.super(parent);
+    this.frameLight = 0.15;
+}
+
+
 function GridDiamond() {
 	this.cellSize=24;
 	this.name="diamond";
@@ -299,10 +339,13 @@ function GridDiamond() {
 		"flat": new GridDiamond_ShapeFlat(this),
 		"diamond": new GridDiamond_ShapeDiamond(this),
 		"jewel": new GridDiamond_ShapeJewel(this),
+		"frame10d": new GridDiamond_ShapeFramedDark(this),
+		"frame10u": new GridDiamond_ShapeFramedLight(this)
 	}
 
 	this.shapesToolbar = [
-		[/* 'empty', */ 'flat', 'jewel', 'diamond']
+		[/* 'empty', */ 'flat', 'jewel', 'diamond'],
+		['frame10d', 'frame10u']
 	]
 	
 	this.internalShapes={
