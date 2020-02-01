@@ -2,11 +2,12 @@
  * Diamond grid
  */
 
+
 function GridDiamond_Points(col, row, cellSize) {
-    var dSub = row;
-    var dSum = col * 2;
-    if (dSub % 2 != 0) {
-        dSum += 1;
+    var dSub = row * 2;
+    var dSum = col;
+    if (dSum % 2 != 0) {
+        dSub += 1;
     }
 
     var d2 = (dSum - dSub) / 2;
@@ -209,11 +210,14 @@ function GridDiamond() {
 	
 	this.pointToCell=function(x,y) {
         var d1 = Math.floor((x + y - this.cellSize / 2) / this.cellSize);
-        var d2 = Math.floor((x - y - this.cellSize / 2) / this.cellSize + 1);
+		var d2 = Math.floor((x - y - this.cellSize / 2) / this.cellSize + 1);
+		
+		var col = d1 + d2;
+		var row = Math.floor((d1 - d2) / 2);
 
         return {
-            col: Math.floor((d1 + d2) / 2), 
-            row: d1 - d2
+            col: col, 
+            row: row
         }
 	}
 	
@@ -235,18 +239,18 @@ function GridDiamond() {
 	}
 
 	this.getAdjacentCells = function(col, row) {
-		if (row % 2 == 0) {
+		if (col % 2 == 0) {
 			return [
 				{col: col - 1, row: row - 1},
-				{col: col, row: row - 1},
-				{col: col - 1, row: row + 1},
-				{col: col, row: row + 1}
+				{col: col + 1, row: row - 1},
+				{col: col - 1, row: row},
+				{col: col + 1, row: row}
 			]
 		} else {
 			return [
-				{col: col, row: row - 1},
-				{col: col + 1, row: row - 1},
-				{col: col, row: row + 1},
+				{col: col - 1, row: row},
+				{col: col + 1, row: row},
+				{col: col - 1, row: row + 1},
 				{col: col + 1, row: row + 1}
 			]
 		}
@@ -257,6 +261,38 @@ function GridDiamond() {
 		return cellRect.left >= 0 && cellRect.top >= 0 &&
 			cellRect.left + cellRect.width < this.workspaceWidth &&
 			cellRect.top + cellRect.height < this.workspaceHeight;
+	}
+
+	this.specialPasteShift=function(cells, baseCol, baseRow, pasteCol, pasteRow) {
+		var shiftCol=pasteCol-baseCol;
+		var shiftRow=pasteRow-baseRow;
+		var result=[];
+		
+		var baseCellTop=(baseCol % 2) == 0;
+		var pasteCellTop=(pasteCol % 2) == 0;
+		var rowAddition=0;
+		if (baseCellTop && !pasteCellTop) {
+			rowAddition=1;
+		} else if (!baseCellTop && pasteCellTop) {
+			rowAddition=-1;
+		}
+		
+		for (var i=0; i<cells.length; i++) {
+			var cc=cells[i];
+			
+			var shiftedCol=cc.col+shiftCol;
+			var shiftedRow=cc.row+shiftRow+((cc.col+shiftCol-pasteCol)%2)*rowAddition;
+			if (shiftedRow>=0) {
+				result.push({
+					col: shiftedCol,
+					row: shiftedRow,
+					shapeName: cc.shapeName,
+					color: cc.color
+				})
+			}
+		}
+		
+		return result;
 	}
 		
 	this.shapes={
