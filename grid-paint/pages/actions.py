@@ -128,10 +128,8 @@ class JSONActionSaveImage(BasicRequestHandler):
             for cell in layer['cells']:
                 grid.paintShape(image_draw, cell, dx, dy)
         elif json_obj['version']['major'] == 2:
-            for row in layer['rows']:
-                for cell in row['cells']:
-                    grid.paintShape2(image_draw, cell[0], row['row'], cell[1], cell[2],dx,dy)
-                    
+            grid.paint_layer_2(image_draw, layer, dx, dy)
+
         if artwork.grid == 'square' and json_obj['gridVisible']:
             grid.paintGrid(image_draw, '#000000', -dx, -dy, image_width, image_height, dx, dy)
         
@@ -155,10 +153,8 @@ class JSONActionSaveImage(BasicRequestHandler):
                 for cell in layer['cells']:
                     grid.paintPoint(pixel_image_draw, cell['col'], cell['row'], cell['color'], p_dx, p_dy)
             elif json_obj['version']['major'] == 2:
-                for row in layer['rows']:
-                    for cell in row['cells']:
-                        grid.paintPoint(pixel_image_draw, cell[0], row['row'], cell[2], p_dx, p_dy)
-                        
+                grid.paint_layer_2(pixel_image_draw, layer, p_dx, p_dy)
+
             pixel_memory_file = StringIO.StringIO()
             pixel_image.save(pixel_memory_file, 'png')
 
@@ -604,10 +600,9 @@ class SVGImageRequest(BasicRequestHandler):
                 artwork_json = artwork.json
         else:
             artwork_json = zlib.decompress(cs.read_file(artwork.json_file_name))
-                    
-        
+
         json_obj=json.loads(artwork_json)
-        
+
         image_width=json_obj['effectiveRect']['width']
         image_height=json_obj['effectiveRect']['height']
         image=SvgImageWriter(self.response.out)
@@ -626,10 +621,8 @@ class SVGImageRequest(BasicRequestHandler):
             for cell in layer['cells']:
                 grid.paintShape(image, cell, dx, dy)
         elif json_obj['version']['major']==2:
-            for row in layer['rows']:
-                for cell in row['cells']:
-                    grid.paintShape2(image, cell[0], row['row'], cell[1], cell[2],dx,dy)
-            
+            grid.paint_layer_2(image, layer, dx, dy)
+
         image.endImage()
         
 class JSONImageRequest(BasicRequestHandler):

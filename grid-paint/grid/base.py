@@ -26,3 +26,8 @@ class GridBase:
     def paintShape2(self, image, col, row, shape_name, color, dx, dy):
         shape = self.shapes[shape_name]
         shape.paint(image, col, row, color, dx, dy)
+
+    def paint_layer_2(self, image, layer, dx, dy):
+        for row in layer['rows']:
+            for cell in row['cells']:
+                self.paintShape2(image, cell[0], row['row'], cell[1], cell[2], dx, dy)

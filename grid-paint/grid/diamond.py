@@ -56,6 +56,7 @@ class ShapeFlat:
             ],
             fill=color
         )
+        image.point([(pp[0]['x']+dx, pp[0]['y']+dy - 1)], color)
 
 
 class ShapeDiamond:
@@ -109,6 +110,8 @@ class ShapeDiamond:
             ],
             fill=c4
         )
+
+        image.point([(points[0]['x'] + dx, points[0]['y'] + dy - 1)], c1)
 
 
 class ShapeJewel:
@@ -195,6 +198,8 @@ class ShapeJewel:
             fill=color
         )
 
+        image.point([(points[0]['x'] + dx, points[0]['y'] + dy - 1)], c1)
+
 
 class BasicShapeFramed:
     def __init__(self, grid):
@@ -251,6 +256,8 @@ class BasicShapeFramed:
             fill=color
         )
 
+        image.point([(points[0]['x'] + dx, points[0]['y'] + dy - 1)], c1)
+
 
 class ShapeFramedLight(BasicShapeFramed):
     def __init__(self, grid):
@@ -274,3 +281,17 @@ class GridDiamond(base.GridBase):
             'frame10u': ShapeFramedLight(self),
             'frame10d': ShapeFramedDark(self)
         }
+
+    def paint_layer_2(self, image, layer, dx, dy):
+        # It is needed to paint pixel in special order for diamond grid
+        for row in layer['rows']:
+            for cell in row['cells']:
+                if cell[0] % 2 == 0:
+                    self.paintShape2(image, cell[0], row['row'], cell[1], cell[2], dx, dy)
+
+            for cell in row['cells']:
+                if cell[0] % 2 == 1:
+                    self.paintShape2(image, cell[0], row['row'], cell[1], cell[2], dx, dy)
+
+
+
