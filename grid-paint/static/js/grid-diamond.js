@@ -351,26 +351,26 @@ function GridDiamond() {
 	}
 	
 	this.shiftLeft={
-	    cell_dx:-1,
+	    cell_dx:-2,
 	    cell_dy:0,
 	    dx: -this.cellSize,
 	    dy: 0
 	}
-	
+
 	this.shiftRight={
-	    cell_dx:1,
+	    cell_dx:2,
 	    cell_dy:0,
 	    dx: this.cellSize,
 	    dy: 0
 	}
-	
+
 	this.shiftUp={
 	    cell_dx:0,
 	    cell_dy:-1,
 	    dx: 0,
 	    dy: -this.cellSize
 	}
-	
+
 	this.shiftDown={
 	    cell_dx:0,
 	    cell_dy:1,
