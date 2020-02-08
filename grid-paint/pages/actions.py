@@ -1587,8 +1587,11 @@ class JSONDeleteNotifications(BasicRequestHandler):
                 if notification.recipient_email == self.user_info.user_email:
                     dao.delete_notification(notification)
 
+        notifications_count = dao.get_notification_count(self.user_info.user_email)
+
         self.response.out.write(json.dumps({
             'result': 'ok',
+            'notifications_count': notifications_count
         }))
 
 
