@@ -153,7 +153,9 @@ class JSONActionSaveImage(BasicRequestHandler):
                 for cell in layer['cells']:
                     grid.paintPoint(pixel_image_draw, cell['col'], cell['row'], cell['color'], p_dx, p_dy)
             elif json_obj['version']['major'] == 2:
-                grid.paint_layer_2(pixel_image_draw, layer, p_dx, p_dy)
+                for row in layer['rows']:
+                    for cell in row['cells']:
+                        grid.paintPoint(pixel_image_draw, cell[0], row['row'], cell[2], p_dx, p_dy)
 
             pixel_memory_file = StringIO.StringIO()
             pixel_image.save(pixel_memory_file, 'png')
