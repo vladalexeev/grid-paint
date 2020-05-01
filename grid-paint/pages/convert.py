@@ -258,6 +258,11 @@ def convert_user_profile(user_profile):
         
     if hasattr(user_profile, 'block_reason'):
         result['block_reason'] = user_profile.block_reason
+
+    if hasattr(user_profile, 'self_block'):
+        result['self_block'] = True
+        result['nickname'] = 'Hidden',
+        result['avatar_url'] = None
         
     return result
 

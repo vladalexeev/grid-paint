@@ -4,14 +4,20 @@
 {% block content %}
 
 <div class="container single-container">
-<h2 class="text-center">
-My profile
-{% if profile.read_only %}
-<span style="color:red;">[Blocked{% if profile.block_reason %} fore {{ profile.block_reason }}{% endif %}{% if profile.block_date %} since {{ profile.block_date|date:"d M Y"}}{% endif %}]</span>
+<div class="row">
+<div class="col-12 col-sm-12 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2">
+    <h2 class="text-center">
+    My profile
+    </h2>
+{% if profile.self_block %}
+    <div class="alert alert-warning"><b>Warning</b> You blocked your profile yourself. Unblock it by clicking n "Unblock profile" button below.</div>
 {% endif %}
-</h2>
-	
-	
+{% if profile.read_only %}
+    <div class="alert alert-danger"><b>Warning</b>Your profile has been blocked by administrator {% if profile.block_reason %} for {{ profile.block_reason }}{% endif %}{% if profile.block_date %} since {{ profile.block_date|date:"d M Y"}}{% endif %}]</div>
+{% endif %}
+</div>
+</div>
+
 	<div class="row">
 		<div class="col-12 col-sm-4 col-md-2 col-md-offset-2 col-lg-2 col-lg-offset-2">
 			<div class="user-profile-avatar-container-wrapper">
@@ -79,7 +85,17 @@ My profile
                         </div>
 					</div>
 				</div>
-				
+
+                <div class="form-group">
+                    <label class="col-xs-4 control-label">Additional</label>
+                    <div class="col-xs-8">
+                      {% if profile.self_block %}
+                          <button id="self-unblock-button" class="btn btn-primary">Unblock profile</button>
+                      {% else %}
+                          <button id="self-block-button" class="btn btn-default">Block profile</button>
+                      {% endif %}
+					</div>
+                </div>
 			</form>
 		</div>
 	
@@ -401,6 +417,37 @@ $(function () {
 			"json"
 		);
 	})
+
+    $("#self-block-button").click(function() {
+        $.post(
+            '/json/self-block',
+            {'block': true},
+            function(data) {
+                if (data.result) {
+                    location.reload();
+                } else {
+                    showErrorMessage("Something went wrong");
+                }
+            },
+            "json"
+        );
+    })
+
+    $("#self-unblock-button").click(function() {
+        $.post(
+            '/json/self-block',
+            {'block': false},
+            function(data) {
+                if (data.result) {
+                    location.reload();
+                } else {
+                    showErrorMessage("Something went wrong");
+                }
+            },
+            "json"
+        );
+    })
+
 });
 
 var errorMessages = {

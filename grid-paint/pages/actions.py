@@ -1597,4 +1597,26 @@ class JSONDeleteNotifications(BasicRequestHandler):
         }))
 
 
+class JSONActionSelfBlock(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        block = self.request.get('block') == 'true'
+
+        user_profile = dao.get_user_profile(self.user_info.user_email)
+        if user_profile:
+            if block:
+                user_profile.self_block = block
+                dao.set_user_profile(user_profile)
+            elif hasattr(user_profile, 'self_block'):
+                del user_profile.self_block
+                dao.set_user_profile(user_profile)
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+            'self_block': block
+        }))
+
 
