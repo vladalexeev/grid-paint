@@ -10,7 +10,7 @@
     My profile
     </h2>
 {% if profile.self_block %}
-    <div class="alert alert-warning"><b>Warning</b> You blocked your profile yourself. Unblock it by clicking n "Unblock profile" button below.</div>
+    <div class="alert alert-warning"><b>Warning</b> You blocked your profile yourself. Unblock it by clicking on "Unblock profile" button below.</div>
 {% endif %}
 {% if profile.read_only %}
     <div class="alert alert-danger"><b>Warning</b>Your profile has been blocked by administrator {% if profile.block_reason %} for {{ profile.block_reason }}{% endif %}{% if profile.block_date %} since {{ profile.block_date|date:"d M Y"}}{% endif %}]</div>
