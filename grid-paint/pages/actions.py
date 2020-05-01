@@ -1412,7 +1412,7 @@ class AvatarImageRequest(BasicRequestHandler):
         profile_id = ar[0]
         user_profile = dao.get_user_profile_by_id(int(profile_id))
         if hasattr(user_profile, 'self_block'):
-            self.redirect("/img/self-block-user-avatar.png")
+            self.redirect("/img/self-block.svg")
 
         if user_profile.avatar_file:
             file_name = user_profile.avatar_file
