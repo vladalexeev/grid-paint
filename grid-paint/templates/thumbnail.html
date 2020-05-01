@@ -22,8 +22,19 @@
     	{% if template_plugin %}
     		{% include template_plugin %}
     	{% endif %}
-  		<div class="thumb-image" style="background-image: url({% if a.copyright_block %}/img/copyright-thumb.png{% endif %}{% if a.block %}/img/block-thumb.png{% endif %}{% if not a.copyright_block and not a.block %}{{ a.thumbnail_image_name }}{% endif %});">
-		</div>
+        {% if a.author.self_block %}
+            <div class="thumb-image" style="background-image: url(/img/self-block-thumb.svg);"></div>
+        {% else %}
+            {% if a.copyright_block %}
+                <div class="thumb-image" style="background-image: url(/img/copyright-thumb.png);"></div>
+            {% else %}
+                {% if a.block %}
+              		<div class="thumb-image" style="background-image: url(/img/block-thumb.png);"></div>
+                {% else %}
+              		<div class="thumb-image" style="background-image: url({{ a.thumbnail_image_name }});"></div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
 		<div class="thumb-details">
 			<div class="thumb-title">{{ a.name }}</div>
 			<div class="thumb-author">{{ a.author.nickname }}</div>
