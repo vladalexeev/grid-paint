@@ -438,6 +438,19 @@ class PageImage(BasicPageRequestHandler):
         converted_artwork = convert.convert_artwork_for_page(artwork, 600, 400)
         if 'tags' in converted_artwork:
             converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']])
+
+        if 'self_block' in converted_artwork['author']:
+            self.write_template(
+                'templates/artwork-details-blocked.html',
+                {
+                    'artwork': converted_artwork
+                })
+            return
+
+        can_edit_artwork = self.user_info.superadmin or artwork.author_email==self.user_info.user_email
+        if 'block' in converted_artwork or 'copyright_block' in converted_artwork and not can_edit_artwork:
+            self.write_template('templates/artwork-details-blocked.html', {})
+            return
             
         if self.user_info.user:
             following = dao.is_follower(artwork.author_email, self.user_info.user_email)
@@ -447,7 +460,7 @@ class PageImage(BasicPageRequestHandler):
         self.write_template('templates/artwork-details.html', 
             {
                 'artwork': converted_artwork,
-                'can_edit_artwork': self.user_info.superadmin or artwork.author_email==self.user_info.user_email,
+                'can_edit_artwork': can_edit_artwork,
                 'comments': comments,
                 'favorite_count': favorite_count,
                 'favorite': favorite,
@@ -524,7 +537,7 @@ class PageMyProfile(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:
             self.response.set_status(403)
-            return;
+            return
         
         user_profile = dao.get_user_profile(self.user_info.user_email)
         
