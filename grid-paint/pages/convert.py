@@ -261,8 +261,7 @@ def convert_user_profile(user_profile):
 
     if hasattr(user_profile, 'self_block'):
         result['self_block'] = True
-        result['nickname'] = 'Hidden',
-        result['avatar_url'] = None
+        result['nickname'] = 'User deleted'
         
     return result
 

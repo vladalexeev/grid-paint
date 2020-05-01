@@ -21,17 +21,24 @@
 	<div class="row">
 		<div class="col-12 col-sm-4 col-md-2 col-md-offset-2 col-lg-2 col-lg-offset-2">
 			<div class="user-profile-avatar-container-wrapper">
-				<div class="user-profile-avatar-container">
-					<div class="delete-avatar-button" id="delete-avatar-button" style="display: {% if profile.avatar_file %}auto{% else %}none{% endif %}"></div>
-					<div class="user-profile-avatar" style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.key.id }}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})" id="avatar">
-					</div>
-					<div class="user-profile-avatar-change-mask" id="avatar-mask"></div>
-					<div class="spinner" style="display:none;" id="avatar-change-spinner"></div>
+                {% if profile.self_block %}
+                    <div class="user-profile-avatar-container">
+                        <div class="user-profile-avatar" style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.key.id }}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})" id="avatar">
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="user-profile-avatar-container">
+                        <div class="delete-avatar-button" id="delete-avatar-button" style="display: {% if profile.avatar_file %}auto{% else %}none{% endif %}"></div>
+                        <div class="user-profile-avatar" style="background-image: url({% if profile.avatar_file %}/images/avatar/{{ profile.key.id }}.jpg{% else %}/img/svg-buttons/empty-avatar.svg{% endif %})" id="avatar">
+                        </div>
+                        <div class="user-profile-avatar-change-mask" id="avatar-mask"></div>
+                        <div class="spinner" style="display:none;" id="avatar-change-spinner"></div>
 
-					<form name="f" action="/upload-avatar" method="POST" enctype="multipart/form-data" style="display:none;">
-						<input type="file" name="file" id="avatar-file">
-					</form>
-				</div>
+                        <form name="f" action="/upload-avatar" method="POST" enctype="multipart/form-data" style="display:none;">
+                            <input type="file" name="file" id="avatar-file">
+                        </form>
+                    </div>
+                {% endif %}
 			</div>
 		</div>
 		

@@ -1411,6 +1411,9 @@ class AvatarImageRequest(BasicRequestHandler):
     def get(self, *ar):
         profile_id = ar[0]
         user_profile = dao.get_user_profile_by_id(int(profile_id))
+        if hasattr(user_profile, 'self_block'):
+            self.redirect("/img/self-block-user-avatar.png")
+
         if user_profile.avatar_file:
             file_name = user_profile.avatar_file
             cache_key = cache.MC_IMAGE_PREFIX+file_name
