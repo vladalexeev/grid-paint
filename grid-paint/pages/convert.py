@@ -214,6 +214,12 @@ def convert_comment_for_page_rich(comment):
     result['small_image_height'] = int(comment.artwork_ref.small_image_height / 2)
     result['artwork_copyright_block'] = hasattr(comment.artwork_ref, 'copyright_block')
     result['artwork_block'] = hasattr(comment.artwork_ref, 'block')
+
+    import dao
+    artwork_author_profile = dao.get_user_profile(comment.artwork_ref.author_email)
+    if artwork_author_profile and hasattr(artwork_author_profile, 'self_block'):
+        result['artwork_author_self_block'] = True
+
     return result
 
 
