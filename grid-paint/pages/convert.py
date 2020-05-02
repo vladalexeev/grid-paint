@@ -201,6 +201,9 @@ def convert_comment_for_page(comment):
               }
     if hasattr(comment, 'hidden'):
         result['hidden'] = True
+
+    if 'self_block' in result['author']:
+        result['text'] = []
         
     return result
 

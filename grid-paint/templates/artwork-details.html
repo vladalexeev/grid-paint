@@ -126,10 +126,15 @@
 		  		<div class="user-avatar-in-comment" style="background-image:url({{comment.author.avatar_url}})" ></div>
 		  		<b>
 		  			<span id="commenter-name">
-		  			{% if comment.author.profile_id %}<a href="/profiles/{{ comment.author.profile_id}}">{{ comment.author.nickname }}</a>
-		  			{% else %}
-		  			{{ comment.author.nickname }}
-		  			{% endif %}
+                    {% if comment.author.self_block %}
+                        {{ comment.author.nickname }}
+                    {% else %}
+                        {% if comment.author.profile_id %}
+                            <a href="/profiles/{{ comment.author.profile_id}}">{{ comment.author.nickname }}</a>
+                        {% else %}
+                            {{ comment.author.nickname }}
+                        {% endif %}
+                    {% endif %}
 		  			</span>
 		  		</b> - {{ comment.date|date:"d M Y H:i" }}
 		  		<div class="pull-right">
@@ -162,11 +167,16 @@
 		  		</div>
 		  	</div>
 		  	{% if user_info.superadmin %}
-		  		<div class="comment-text"  id="text_hidden" style="color:red;{% if not comment.hidden %}display:none;{% endif %}">Hidden by administrator</div>
+                {% if comment.hidden %}
+		  		<div class="comment-text"  id="text_hidden" style="color:red;">Hidden by administrator</div>
+                {% endif %}
 			  	{% for t in comment.text %}
 			  	  <div class="comment-text">{{t}}</div>
 			  	{% endfor %}		  	
 		  	{% else %}
+                {% if comment.author.self_block %}
+                    <div class="comment-text" style="color: gray;">[Comment not available]</div>
+                {% endif %}
 			  	{% if comment.hidden %}
 			  		<div class="comment-text" style="color:red;">Hidden by administrator</div>
 			  	{% endif %}
