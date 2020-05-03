@@ -604,6 +604,10 @@ class PageUserImages(BasicRequestHandler):
             self.response.set_status(404)
             return
 
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
+
         def artworks_query_func():
             return db.Artwork.all().filter('author_email =', user_profile.email).order('-date')
 
@@ -633,6 +637,10 @@ class PageUserFavorites(BasicPageRequestHandler):
     def get(self, *arg):
         profile_id = int(arg[0])        
         user_profile = dao.get_user_profile_by_id(profile_id)
+
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
         
         def artworks_query_func():
             all_artworks=db.Favorite.all()
@@ -824,6 +832,10 @@ class PageUserFollowers(BasicPageRequestHandler):
     def get(self, *arg):
         profile_id = int(arg[0])
         user_profile = dao.get_user_profile_by_id(profile_id)
+
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
         
         model = {
             'user_page_title': 'Followers of',
@@ -837,6 +849,10 @@ class PageUserLeaders(BasicPageRequestHandler):
     def get(self, *arg):
         profile_id = int(arg[0])
         user_profile = dao.get_user_profile_by_id(profile_id)
+
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
 
         model = {
             'user_page_title': 'Leaders of',
@@ -934,6 +950,10 @@ class PageUserTags(BasicPageRequestHandler):
             self.response.set_status(404)
             return
 
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
+
         limit = 11 if offset == 0 else 10
 
         fetched_tags = db.UserTag.all().filter('user_id', profile_id).order('-last_date').fetch(limit + 1, offset)
@@ -1008,6 +1028,10 @@ class PageUserTagImages(BasicPageRequestHandler):
 
         user = dao.get_user_profile_by_id(profile_id)
         if not user:
+            self.response.set_status(404)
+            return
+
+        if hasattr(user, 'self_block'):
             self.response.set_status(404)
             return
 
