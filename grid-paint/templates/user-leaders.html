@@ -6,12 +6,7 @@
 <div class="single-container">
 	<div class="container">
 	
-	{% if profile_id %}
 	<h2>Leaders of {{ nickname }}</h2>
-	{% else %}
-	<h2>I follow</h2>
-	{% endif %}
-	
 	
 	<table class="table table-striped">
 		<tbody id="table-content">
@@ -39,11 +34,7 @@
 <script>
 var maxCount = 20;
 
-{% if profile_id %}
-var profile_id = {{ profile_id }}; 
-{% else %}
-var profile_id = {{ user_info.profile_id }};
-{% endif %}
+var profile_id = {{ profile_id }};
 
 function getCurrentOffset() {
 	return parseInt($("#offset").val(), 10);

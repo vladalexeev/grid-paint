@@ -860,9 +860,9 @@ class PageMyFollowers(BasicPageRequestHandler):
         if not self.user_info.user:
             self.response.set_status(403)
             return
-        
-        self.write_template('templates/user-followers.html', {})
-        
+
+        self.redirect('/profiles/{}/followers'.format(self.user_info.profile_id))
+
 
 class PageMyLeaders(BasicPageRequestHandler):
     def get(self, *arg):
@@ -870,7 +870,7 @@ class PageMyLeaders(BasicPageRequestHandler):
             self.response.set_status(403)
             return
         
-        self.write_template('templates/user-leaders.html', {})
+        self.redirect('/profiles/{}/leaders'.format(self.user_info.profile_id))
 
 
 class PageAdminTags(BasicPageRequestHandler):
