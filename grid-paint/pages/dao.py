@@ -211,6 +211,9 @@ def follow(leader_email, follower_email):
         follow.leader_email = leader_email
         follow.follower_email = follower_email
         follow.put()
+        return True
+    else:
+        return False
         
         
 def unfollow(leader_email, follower_email):
@@ -220,6 +223,9 @@ def unfollow(leader_email, follower_email):
     follow = db.Follow.all().filter('leader_email =', leader_email).filter('follower_email =', follower_email).get()
     if follow:
         follow.delete()
+        return True
+    else:
+        return False
         
         
 def get_followers(leader_email, limit, offset):
