@@ -105,9 +105,9 @@
                 </div>
 			</form>
 		</div>
-	
 	</div>
-	
+
+    {% if not profile.self_block %}
 	<div class="row">
 		<div class="col-12 col-sm-12 col-md-8 col-md-offset-2">
 			<div class="panel panel-default">
@@ -125,6 +125,7 @@
 			</div>
 		</div>
 	</div>
+    {% endif %}
 </div>
 
 <div id="modal-delete-avatar" class="modal fade">
