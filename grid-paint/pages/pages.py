@@ -658,15 +658,6 @@ class PageUserFavorites(BasicPageRequestHandler):
         self.write_template('templates/user-favorites.html', model)
 
 
-class PageMyFavorites(BasicPageRequestHandler):
-    def get(self, *arg):
-        if not self.user_info.user:
-            self.response.set_status(403)
-            return
-
-        self.redirect('/profiles/{}/favorites'.format(self.user_info.profile_id))
-
-
 class PageTopFavorites(BasicPageRequestHandler):
     def get(self):
         def artworks_query_func():
@@ -853,24 +844,6 @@ class PageUserLeaders(BasicPageRequestHandler):
         }
 
         self.write_template('templates/user-leaders.html', model)
-
-
-class PageMyFollowers(BasicPageRequestHandler):
-    def get(self, *arg):
-        if not self.user_info.user:
-            self.response.set_status(403)
-            return
-
-        self.redirect('/profiles/{}/followers'.format(self.user_info.profile_id))
-
-
-class PageMyLeaders(BasicPageRequestHandler):
-    def get(self, *arg):
-        if not self.user_info.user:
-            self.response.set_status(403)
-            return
-        
-        self.redirect('/profiles/{}/leaders'.format(self.user_info.profile_id))
 
 
 class PageAdminTags(BasicPageRequestHandler):
