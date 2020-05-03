@@ -10,7 +10,11 @@
                              style="background-image: url({{ profile.avatar_url }})" id="avatar"></div>
                 </div>
                 <div class="user-name-in-title">
-                    <a href="/profiles/{{ profile.profile_id }}">{{ profile.nickname }}</a>
+                    {% if profile.self_block %}
+                        {{ profile.nickname }}
+                    {% else %}
+                        <a href="/profiles/{{ profile.profile_id }}">{{ profile.nickname }}</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
