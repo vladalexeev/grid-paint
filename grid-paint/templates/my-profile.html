@@ -45,10 +45,28 @@
 		<div class="col-12 col-sm-8 col-md-6 col-lg-6">
 			<form name="form-profile" role="form" class="form-horizontal" action="/save-profile" method="POST"
 				onsubmit="return false">
+                {% if profile.self_block %}
 				<div class="form-group">
+                    <button id="self-unblock-button" class="btn btn-primary" style="width: calc(100% - 30px); margin: 0 15px;">Unblock profile</button>
+                </div>
+                {% endif %}
+
+                <div class="form-group">
 					<label class="col-xs-4 control-label">Joined</label>
 					<div class="col-xs-8">
-						<input type="text" class="form-control" disabled value="{{ profile.join_date|date:"d M Y" }}" />
+                        <div class="input-group" style="width: 100%">
+						    <input type="text" class="form-control" disabled value="{{ profile.join_date|date:"d M Y" }}" />
+                            {% if not profile.self_block %}
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="glyphicon glyphicon-triangle-bottom"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                      <li><a href="#" id="self-block-button">Block profile</a></li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        </div>
 					</div>
 				</div>
 				
@@ -99,17 +117,6 @@
                         </div>
 					</div>
 				</div>
-
-                <div class="form-group">
-                    <label class="col-xs-4 control-label">Additional</label>
-                    <div class="col-xs-8">
-                      {% if profile.self_block %}
-                          <button id="self-unblock-button" class="btn btn-primary">Unblock profile</button>
-                      {% else %}
-                          <button id="self-block-button" class="btn btn-default">Block profile</button>
-                      {% endif %}
-					</div>
-                </div>
 			</form>
 		</div>
 	</div>
@@ -244,6 +251,30 @@
 	    <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
 	  </div>
 	</div>  		
+  </div>
+</div>
+
+
+<div id="modal-confirm-self-block" class="modal fade">
+  <div class="modal-dialog">
+  	<div class="modal-content">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	    <h4 class="modal-title">Warning</h4>
+	  </div>
+	  <div class="modal-body">
+        <p>We are very grieved that you are leaving Grid Paint.</p>
+	    <p>If you block your profile, you will not able to create new artworks here as well as see your artworks and comments.</p>
+	    <p>Blocking account does not mean that all your data will be removed immediatelly. If you change your mind, you have 60 days to fully recover access to Grid Paint.</p>
+        <p>Our goal is to provide better service. If you have any suggestions, please, send us an e-mail by address at the bottom of the page.</p>
+        <p></p>
+        <p>Do you really want to block your profile?</p>
+	  </div>
+	  <div class="modal-footer">
+	    <button id="btn-delete-alternative-email-confirm" class="btn btn-danger" id="self-block-button-confirm">Yes</button>
+	    <a href="#" class="btn btn-success" data-dismiss="modal">No</a>
+	  </div>
+	</div>
   </div>
 </div>
 
@@ -434,6 +465,10 @@ $(function () {
 	})
 
     $("#self-block-button").click(function() {
+        $("#modal-confirm-self-block").modal('show');
+    });
+
+    $("#self-block-button-confirm").click(function() {
         $.post(
             '/json/self-block',
             {'block': true},
@@ -446,7 +481,7 @@ $(function () {
             },
             "json"
         );
-    })
+    });
 
     $("#self-unblock-button").click(function() {
         $.post(
