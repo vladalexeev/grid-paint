@@ -826,9 +826,9 @@ class PageUserFollowers(BasicPageRequestHandler):
         user_profile = dao.get_user_profile_by_id(profile_id)
         
         model = {
-            'profile_id': user_profile.key().id(),
-            'nickname': user_profile.nickname
-            }
+            'user_page_title': 'Followers of',
+            'profile': convert.convert_user_profile(user_profile)
+        }
         
         self.write_template('templates/user-followers.html', model)
 
@@ -839,8 +839,8 @@ class PageUserLeaders(BasicPageRequestHandler):
         user_profile = dao.get_user_profile_by_id(profile_id)
 
         model = {
-            'profile_id': user_profile.key().id(),
-            'nickname': user_profile.nickname
+            'user_page_title': 'Leaders of',
+            'profile': convert.convert_user_profile(user_profile)
         }
 
         self.write_template('templates/user-leaders.html', model)

@@ -5,8 +5,8 @@
 
 <div class="single-container">
 	<div class="container">
-	
-	<h2>Followers of {{ nickname }}</h2>
+
+   {% include "user-page-title.html" %}
 	
 	<table class="table table-striped">
 		<tbody id="table-content">
@@ -34,7 +34,7 @@
 <script>
 var maxCount = 20;
 
-var profile_id = {{ profile_id }};
+var profile_id = {{ profile.profile_id }};
 
 function getCurrentOffset() {
 	return parseInt($("#offset").val(), 10);
