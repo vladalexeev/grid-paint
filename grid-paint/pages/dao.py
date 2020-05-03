@@ -255,4 +255,15 @@ def add_to_news_feed(user_email, artwork, news_type, date=None):
         if date:
             news_feed_item.date = date
         news_feed_item.put()
-    
+
+
+def schedule_update_user(profile_id, update_date, action):
+    current_updates = db.UpdateUser.all().filter('profile_id =', profile_id)
+    for c in current_updates:
+        c.delete()
+
+    update_user = db.UpdateUser()
+    update_user.profile_id = profile_id
+    update_user.update_date = update_date
+    update_user.action = action
+    update_user.put()

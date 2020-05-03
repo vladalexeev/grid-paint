@@ -1615,9 +1615,19 @@ class JSONActionSelfBlock(BasicRequestHandler):
             if block:
                 user_profile.self_block = block
                 dao.set_user_profile(user_profile)
+                dao.schedule_update_user(
+                    self.user_info.profile_id,
+                    datetime.datetime.now() + datetime.timedelta(days=60),
+                    'self_block'
+                )
             elif hasattr(user_profile, 'self_block'):
                 del user_profile.self_block
                 dao.set_user_profile(user_profile)
+                dao.schedule_update_user(
+                    self.user_info.profile_id,
+                    datetime.datetime.now() + datetime.timedelta(days=1),
+                    'update'
+                )
 
         self.response.out.write(json.dumps({
             'result': 'ok',
