@@ -55,27 +55,34 @@
 				<div class="form-group">
 					<label class="col-xs-4 control-label">Primary E-mail [hidden]</label>
 					<div class="col-xs-8">
-						<input type="text" class="form-control" disabled value="{{ profile.email }}" />
+                        <div class="input-group" style="width: 100%">
+						    <input type="text" class="form-control" disabled value="{{ profile.email }}" />
+                            {% if not profile.alternative_emails %}
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default" id="btn-add-alternative-email" title="Add alternative E-mail">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </button>
+                                </div>
+            				{% endif %}
+                        </div>
 					</div>
 				</div>
 
+                {% if profile.alternative_emails %}
 				<div class="form-group">
 					<label class="col-xs-4 control-label">Alternative E-mail [hidden]</label>
 					<div class="col-xs-8">
-						{% if profile.alternative_emails %}
-							<div class="alternative-emails">
-							{% for email in profile.alternative_emails %}
-								<div class="alert alert-info">
-									<span id="alternative-email">{{ email }}</span>
-									<span class="btn-delete-alternative-email glyphicon glyphicon-remove pull-right" style="cursor:pointer;"></span>
-								</div>
-							{% endfor %}
-							</div>
-						{% else %}
-						<button class="btn btn-small btn-default" type="button" id="btn-add-alternative-email">Add</button>
-						{% endif %}
+                        <div class="alternative-emails">
+                        {% for email in profile.alternative_emails %}
+                            <div class="alert alert-info">
+                                <span id="alternative-email">{{ email }}</span>
+                                <span class="btn-delete-alternative-email glyphicon glyphicon-remove pull-right" style="cursor:pointer;"></span>
+                            </div>
+                        {% endfor %}
+                        </div>
 					</div>
 				</div>
+                {% endif %}
 				
 				<div class="form-group">
 					<label class="col-xs-4 control-label">Display name</label>
@@ -192,7 +199,7 @@
 	    <h4 class="modal-title">Add alternative E-mail</h4>
 	  </div>
 	  <div class="modal-body">
-	    <p>Enter alternative E-mail. You will able to log in with it.</p>
+	    <p>Enter alternative E-mail. You will able to log in using it.</p>
 	    <div>
 	    	<input type="text" name="alternative_email" class="form-control"/>
 	    </div>
