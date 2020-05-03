@@ -204,6 +204,8 @@ def is_follower(leader_email, follower_email):
 def follow(leader_email, follower_email):
     memcache_key = cache.MC_FAVORITE_BY_USER+leader_email+'_'+follower_email
     cache.delete(memcache_key)
+    cache.delete(cache.MC_USER_PROFILE + leader_email)
+    cache.delete(cache.MC_USER_PROFILE + follower_email)
     
     follow = db.Follow.all().filter('leader_email =', leader_email).filter('follower_email =', follower_email).get()
     if not follow:
@@ -219,6 +221,8 @@ def follow(leader_email, follower_email):
 def unfollow(leader_email, follower_email):
     memcache_key = cache.MC_FAVORITE_BY_USER+leader_email+'_'+follower_email
     cache.delete(memcache_key)
+    cache.delete(cache.MC_USER_PROFILE + leader_email)
+    cache.delete(cache.MC_USER_PROFILE + follower_email)
     
     follow = db.Follow.all().filter('leader_email =', leader_email).filter('follower_email =', follower_email).get()
     if follow:
