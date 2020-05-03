@@ -97,15 +97,22 @@ function loadFollowers(limit, offset) {
 }
 
 function itemToHtml(item) {
-	result=
-		'<tr>'+
-		'<td>'+
-		'<a href="/profiles/' + item.profile_id + '">' +
-		'<div class="user-avatar-in-list" style="background-image: url(' + item.avatar_url + ')"></div>'+
-		item.nickname +
-		'</a>'+
-		'</td>' +
-		'</tr>';
+    if (item.self_block) {
+        result = '<tr><td>' +
+            '<div class="user-avatar-in-list" style="background-image: url(' + item.avatar_url + ')"></div>' +
+            item.nickname +
+            '</td></tr>';
+    } else {
+        result =
+            '<tr>' +
+            '<td>' +
+            '<a href="/profiles/' + item.profile_id + '">' +
+            '<div class="user-avatar-in-list" style="background-image: url(' + item.avatar_url + ')"></div>' +
+            item.nickname +
+            '</a>' +
+            '</td>' +
+            '</tr>';
+    }
 		
 	return result;
 }

@@ -286,6 +286,9 @@ def convert_user_profile_for_json(user_profile):
             'profile_id': user_profile.key().id(),
             'avatar_url': avatar_url
         }
+    if hasattr(user_profile, 'self_block'):
+        result['nickname'] = '[User deleted]'
+        result['self_block'] = True
     return result
 
 

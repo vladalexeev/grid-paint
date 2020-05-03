@@ -84,12 +84,14 @@ def add_user_profile(profile):
     
 def set_user_profile(profile):
     profile.put()
-    cache.add(cache.MC_USER_PROFILE+profile.email, profile)
     for email in getattr(profile, 'alternative_email', []):
-        cache.add(cache.MC_USER_PROFILE+email, profile)
-        
+        cache.delete(cache.MC_USER_PROFILE+email)
+
+    cache.delete(cache.MC_USER_PROFILE + profile.email)
     cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
     cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+    cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
+    cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
     
 def get_artwork_favorite_count(artwork):
     memcache_key = cache.MC_FAVORITE_COUNT+str(artwork.key().id())

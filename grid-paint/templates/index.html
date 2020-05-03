@@ -227,10 +227,15 @@ link at the top.
 		{% for u in productive_artists %}
 		<tr>
 			<td>
-				<a href="/profiles/{{ u.profile_id }}">
-					<div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
-					{{ u.nickname }}
-				</a>
+                {% if u.self_block %}
+                    <div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
+                    {{ u.nickname }}
+                {% else %}
+                    <a href="/profiles/{{ u.profile_id }}">
+                        <div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
+                        {{ u.nickname }}
+                    </a>
+                {% endif %}
 			</td>
 			<td>
 				{{ u.artworks_count }}
@@ -257,10 +262,15 @@ link at the top.
 		{% for u in top_rated_artists %}
 		<tr>
 			<td>
-				<a href="/profiles/{{ u.profile_id }}">
-					<div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
-					{{ u.nickname }}
-				</a>
+                {% if u.self_block %}
+                    <div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
+                    {{ u.nickname }}
+                {% else %}
+                    <a href="/profiles/{{ u.profile_id }}">
+                        <div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
+                        {{ u.nickname }}
+                    </a>
+                {% endif %}
 			</td>
 			<td>
 				{{ u.favorite_count }}
