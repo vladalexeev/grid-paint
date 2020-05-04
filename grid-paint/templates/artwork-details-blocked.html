@@ -1,0 +1,50 @@
+{% extends "base-adv.html" %}
+
+{% block title %}Artwork not available{% endblock %}
+{% block description %}
+<meta name="description" content="Artwork not available">
+{% endblock %}
+
+{% block include_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}  
+
+<div class="single-container">
+    <div class="container">
+        {% if artwork.author.self_block %}
+            <div style="text-align: center;">
+                <div><img src="/img/self-block.svg" /></div>
+                <div style="font-size: 2em; color: gray;">
+                    The author of the artwork stopped using Grid Paint.
+                </div>
+            </div>
+        {% endif %}
+
+		{% if artwork.copyright_block %}
+            <div style="text-align: center;">
+                <div>
+                    <img src="/img/copyright-image.png" />
+                </div>
+                <div style="font-size:2em; color:red;">
+                    This image is blocked due to copyright infringement.
+                </div>
+            </div>
+		{% endif %}
+
+		{% if artwork.block %}
+            <div style="text-align: center;">
+                <div>
+                    <img src="/img/block-image.png" />
+                </div>
+                <div style="font-size:2em; color:red; text-align: center;">
+                    This image is blocked due to {{ artwork.block_reason }}.
+                </div>
+            </div>
+		{% endif %}
+    </div>
+</div>
+
+
+{% endblock content %}

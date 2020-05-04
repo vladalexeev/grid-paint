@@ -84,12 +84,14 @@ def add_user_profile(profile):
     
 def set_user_profile(profile):
     profile.put()
-    cache.add(cache.MC_USER_PROFILE+profile.email, profile)
     for email in getattr(profile, 'alternative_email', []):
-        cache.add(cache.MC_USER_PROFILE+email, profile)
-        
+        cache.delete(cache.MC_USER_PROFILE+email)
+
+    cache.delete(cache.MC_USER_PROFILE + profile.email)
     cache.delete(cache.MC_MAIN_PAGE_RECENT_IMAGES_KEY)
     cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
+    cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
+    cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
     
 def get_artwork_favorite_count(artwork):
     memcache_key = cache.MC_FAVORITE_COUNT+str(artwork.key().id())
@@ -202,6 +204,8 @@ def is_follower(leader_email, follower_email):
 def follow(leader_email, follower_email):
     memcache_key = cache.MC_FAVORITE_BY_USER+leader_email+'_'+follower_email
     cache.delete(memcache_key)
+    cache.delete(cache.MC_USER_PROFILE + leader_email)
+    cache.delete(cache.MC_USER_PROFILE + follower_email)
     
     follow = db.Follow.all().filter('leader_email =', leader_email).filter('follower_email =', follower_email).get()
     if not follow:
@@ -209,15 +213,23 @@ def follow(leader_email, follower_email):
         follow.leader_email = leader_email
         follow.follower_email = follower_email
         follow.put()
+        return True
+    else:
+        return False
         
         
 def unfollow(leader_email, follower_email):
     memcache_key = cache.MC_FAVORITE_BY_USER+leader_email+'_'+follower_email
     cache.delete(memcache_key)
+    cache.delete(cache.MC_USER_PROFILE + leader_email)
+    cache.delete(cache.MC_USER_PROFILE + follower_email)
     
     follow = db.Follow.all().filter('leader_email =', leader_email).filter('follower_email =', follower_email).get()
     if follow:
         follow.delete()
+        return True
+    else:
+        return False
         
         
 def get_followers(leader_email, limit, offset):
@@ -243,4 +255,15 @@ def add_to_news_feed(user_email, artwork, news_type, date=None):
         if date:
             news_feed_item.date = date
         news_feed_item.put()
-    
+
+
+def schedule_update_user(profile_id, update_date, action):
+    current_updates = db.UpdateUser.all().filter('profile_id =', profile_id)
+    for c in current_updates:
+        c.delete()
+
+    update_user = db.UpdateUser()
+    update_user.profile_id = profile_id
+    update_user.update_date = update_date
+    update_user.action = action
+    update_user.put()

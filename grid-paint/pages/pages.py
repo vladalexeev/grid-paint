@@ -438,6 +438,19 @@ class PageImage(BasicPageRequestHandler):
         converted_artwork = convert.convert_artwork_for_page(artwork, 600, 400)
         if 'tags' in converted_artwork:
             converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']])
+
+        if 'self_block' in converted_artwork['author']:
+            self.write_template(
+                'templates/artwork-details-blocked.html',
+                {
+                    'artwork': converted_artwork
+                })
+            return
+
+        can_edit_artwork = self.user_info.superadmin or artwork.author_email==self.user_info.user_email
+        if 'block' in converted_artwork or 'copyright_block' in converted_artwork and not can_edit_artwork:
+            self.write_template('templates/artwork-details-blocked.html', {})
+            return
             
         if self.user_info.user:
             following = dao.is_follower(artwork.author_email, self.user_info.user_email)
@@ -447,7 +460,7 @@ class PageImage(BasicPageRequestHandler):
         self.write_template('templates/artwork-details.html', 
             {
                 'artwork': converted_artwork,
-                'can_edit_artwork': self.user_info.superadmin or artwork.author_email==self.user_info.user_email,
+                'can_edit_artwork': can_edit_artwork,
                 'comments': comments,
                 'favorite_count': favorite_count,
                 'favorite': favorite,
@@ -524,7 +537,7 @@ class PageMyProfile(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:
             self.response.set_status(403)
-            return;
+            return
         
         user_profile = dao.get_user_profile(self.user_info.user_email)
         
@@ -591,6 +604,10 @@ class PageUserImages(BasicRequestHandler):
             self.response.set_status(404)
             return
 
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
+
         def artworks_query_func():
             return db.Artwork.all().filter('author_email =', user_profile.email).order('-date')
 
@@ -620,6 +637,10 @@ class PageUserFavorites(BasicPageRequestHandler):
     def get(self, *arg):
         profile_id = int(arg[0])        
         user_profile = dao.get_user_profile_by_id(profile_id)
+
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
         
         def artworks_query_func():
             all_artworks=db.Favorite.all()
@@ -643,15 +664,6 @@ class PageUserFavorites(BasicPageRequestHandler):
             model['this_user_profile']=True
         
         self.write_template('templates/user-favorites.html', model)
-
-
-class PageMyFavorites(BasicPageRequestHandler):
-    def get(self, *arg):
-        if not self.user_info.user:
-            self.response.set_status(403)
-            return
-
-        self.redirect('/profiles/{}/favorites'.format(self.user_info.profile_id))
 
 
 class PageTopFavorites(BasicPageRequestHandler):
@@ -820,31 +832,34 @@ class PageUserFollowers(BasicPageRequestHandler):
     def get(self, *arg):
         profile_id = int(arg[0])
         user_profile = dao.get_user_profile_by_id(profile_id)
+
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
         
         model = {
-            'profile_id': user_profile.key().id(),
-            'nickname': user_profile.nickname
-            }
+            'user_page_title': 'Followers of',
+            'profile': convert.convert_user_profile(user_profile)
+        }
         
         self.write_template('templates/user-followers.html', model)
-        
-        
-class PageMyFollowers(BasicPageRequestHandler):
-    def get(self, *arg):
-        if not self.user_info.user:
-            self.response.set_status(403)
-            return
-        
-        self.write_template('templates/user-followers.html', {})
-        
 
-class PageMyLeaders(BasicPageRequestHandler):
+
+class PageUserLeaders(BasicPageRequestHandler):
     def get(self, *arg):
-        if not self.user_info.user:
-            self.response.set_status(403)
+        profile_id = int(arg[0])
+        user_profile = dao.get_user_profile_by_id(profile_id)
+
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
             return
-        
-        self.write_template('templates/user-leaders.html', {})
+
+        model = {
+            'user_page_title': 'Leaders of',
+            'profile': convert.convert_user_profile(user_profile)
+        }
+
+        self.write_template('templates/user-leaders.html', model)
 
 
 class PageAdminTags(BasicPageRequestHandler):
@@ -935,6 +950,10 @@ class PageUserTags(BasicPageRequestHandler):
             self.response.set_status(404)
             return
 
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
+
         limit = 11 if offset == 0 else 10
 
         fetched_tags = db.UserTag.all().filter('user_id', profile_id).order('-last_date').fetch(limit + 1, offset)
@@ -1009,6 +1028,10 @@ class PageUserTagImages(BasicPageRequestHandler):
 
         user = dao.get_user_profile_by_id(profile_id)
         if not user:
+            self.response.set_status(404)
+            return
+
+        if hasattr(user, 'self_block'):
             self.response.set_status(404)
             return
 

@@ -167,15 +167,19 @@ link at the top.
 	<div class="rich-comment">
 		<div class="rich-comment-image">
 			<a href="/images/details/{{ c.artwork_key }}">
-				{% if c.artwork_copyright_block %}
-					<img src="/img/copyright-thumb.png" width="100" height="75" border="0"/>
-				{% endif %}
-				{% if c.artwork_block %}
-					<img src="/img/block-thumb.png" width="100" height="75" border="0"/>
-				{% endif %}
-				{% if not c.artwork_copyright_block and not c.artwork_block %}
-				<img src="{{ c.small_image_file }}" width="{{ c.small_image_width }}" height="{{ c.small_image_height }}" border="0"/>
-				{% endif %}
+                {% if c.artwork_author_self_block %}
+                    <img src="/img/self-block-thumb.svg" width="100" height="75" border="0"/>
+                {% else %}
+       				{% if c.artwork_copyright_block %}
+	    				<img src="/img/copyright-thumb.png" width="100" height="75" border="0"/>
+                    {% else %}
+                        {% if c.artwork_block %}
+                            <img src="/img/block-thumb.png" width="100" height="75" border="0"/>
+                        {% else %}
+                            <img src="{{ c.small_image_file }}" width="{{ c.small_image_width }}" height="{{ c.small_image_height }}" border="0"/>
+                        {% endif %}
+    				{% endif %}
+                {% endif %}
 			</a>
 		</div>
 		<div class="comment">
@@ -184,6 +188,9 @@ link at the top.
 				<h2><a href="/images/details/{{ c.artwork_key }}">{{ c.artwork_name }}</a></h2>
 				<div>{{ c.date|date:"d M Y H:i" }} <b>{{c.author.nickname}}</b></div>
 			</div>
+            {% if c.author.self_block %}
+                <div class="comment-text" style="color:gray">[Comment not available]</div>
+            {% endif %}
 			{% if c.hidden %}
 				<div class="comment-text" style="color:red">Hidden by administrator</div>
 			{% else %}
@@ -220,10 +227,15 @@ link at the top.
 		{% for u in productive_artists %}
 		<tr>
 			<td>
-				<a href="/profiles/{{ u.profile_id }}">
-					<div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
-					{{ u.nickname }}
-				</a>
+                {% if u.self_block %}
+                    <div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
+                    {{ u.nickname }}
+                {% else %}
+                    <a href="/profiles/{{ u.profile_id }}">
+                        <div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
+                        {{ u.nickname }}
+                    </a>
+                {% endif %}
 			</td>
 			<td>
 				{{ u.artworks_count }}
@@ -250,10 +262,15 @@ link at the top.
 		{% for u in top_rated_artists %}
 		<tr>
 			<td>
-				<a href="/profiles/{{ u.profile_id }}">
-					<div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
-					{{ u.nickname }}
-				</a>
+                {% if u.self_block %}
+                    <div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
+                    {{ u.nickname }}
+                {% else %}
+                    <a href="/profiles/{{ u.profile_id }}">
+                        <div class="user-avatar-in-list" style="background-image: url({{ u.avatar_url }})"></div>
+                        {{ u.nickname }}
+                    </a>
+                {% endif %}
 			</td>
 			<td>
 				{{ u.favorite_count }}

@@ -1188,24 +1188,23 @@ class ActionFollow(BasicRequestHandler):
         else:
             cache.add(antispam_key, datetime.datetime.now())
             
-        dao.follow(user.email, self.user_info.user_email)
-        
-        user.followers_count = getattr(user, 'followers_count', 0) + 1
-        user.put()
-        
-        current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
-        current_user.leaders_count = getattr(current_user, 'leaders_count', 0) + 1
-        current_user.put()
-        
-        artworks = db.Artwork.all().filter('author_email =', user.email).order('-date').fetch(3)
-        for a in artworks:
-            dao.add_to_news_feed(self.user_info.user_email, a, NEWS_TYPE_NEW_ARTWORK, a.date)
-        
-        notification = db.Notification()
-        notification.recipient_email = user.email
-        notification.type = 'follow'
-        notification.sender_email = self.user_info.user_email
-        dao.add_notification(notification)
+        if dao.follow(user.email, self.user_info.user_email):
+            user.followers_count = getattr(user, 'followers_count', 0) + 1
+            user.put()
+
+            current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
+            current_user.leaders_count = getattr(current_user, 'leaders_count', 0) + 1
+            current_user.put()
+
+            artworks = db.Artwork.all().filter('author_email =', user.email).order('-date').fetch(3)
+            for a in artworks:
+                dao.add_to_news_feed(self.user_info.user_email, a, NEWS_TYPE_NEW_ARTWORK, a.date)
+
+            notification = db.Notification()
+            notification.recipient_email = user.email
+            notification.type = 'follow'
+            notification.sender_email = self.user_info.user_email
+            dao.add_notification(notification)
         
         self.response.out.write(json.dumps('OK'))
 
@@ -1235,15 +1234,18 @@ class ActionUnfollow(BasicRequestHandler):
         else:
             cache.add(antispam_key, datetime.datetime.now())
                     
-        dao.unfollow(user.email, self.user_info.user_email)
-        
-        user.followers_count = getattr(user, 'followers_count', 0) - 1
-        user.put()
-        
-        current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
-        current_user.leaders_count = getattr(current_user, 'leaders_count', 0) - 1
-        current_user.put()
-        
+        if dao.unfollow(user.email, self.user_info.user_email):
+            user.followers_count = getattr(user, 'followers_count', 0) - 1
+            if user.followers_count < 0:
+                user.followers_count = 0
+            user.put()
+
+            current_user = dao.get_user_profile_by_id(self.user_info.profile_id)
+            current_user.leaders_count = getattr(current_user, 'leaders_count', 0) - 1
+            if current_user.leaders_count < 0:
+                current_user.leaders_count = 0
+            current_user.put()
+
         self.response.out.write(json.dumps('OK'))
             
             
@@ -1411,6 +1413,9 @@ class AvatarImageRequest(BasicRequestHandler):
     def get(self, *ar):
         profile_id = ar[0]
         user_profile = dao.get_user_profile_by_id(int(profile_id))
+        if hasattr(user_profile, 'self_block'):
+            self.redirect("/img/self-block.svg")
+
         if user_profile.avatar_file:
             file_name = user_profile.avatar_file
             cache_key = cache.MC_IMAGE_PREFIX+file_name
@@ -1596,5 +1601,37 @@ class JSONDeleteNotifications(BasicRequestHandler):
             'notifications_count': notifications_count
         }))
 
+
+class JSONActionSelfBlock(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        block = self.request.get('block') == 'true'
+
+        user_profile = dao.get_user_profile(self.user_info.user_email)
+        if user_profile:
+            if block:
+                user_profile.self_block = block
+                dao.set_user_profile(user_profile)
+                dao.schedule_update_user(
+                    self.user_info.profile_id,
+                    datetime.datetime.now() + datetime.timedelta(days=60),
+                    'self_block'
+                )
+            elif hasattr(user_profile, 'self_block'):
+                del user_profile.self_block
+                dao.set_user_profile(user_profile)
+                dao.schedule_update_user(
+                    self.user_info.profile_id,
+                    datetime.datetime.now() + datetime.timedelta(days=1),
+                    'update'
+                )
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+            'self_block': block
+        }))
 
 

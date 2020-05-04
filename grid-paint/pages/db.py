@@ -113,3 +113,12 @@ class TaskStatus(db.Expando):
     last_date = db.DateTimeProperty()
     data = db.StringProperty()
     finished = db.BooleanProperty()
+
+
+class UpdateUser(db.Expando):
+    """
+    Entity for schedule user refresh and update
+    """
+    profile_id = db.IntegerProperty()
+    update_date = db.DateTimeProperty()
+    action = db.StringProperty()

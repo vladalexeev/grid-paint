@@ -201,6 +201,9 @@ def convert_comment_for_page(comment):
               }
     if hasattr(comment, 'hidden'):
         result['hidden'] = True
+
+    if 'self_block' in result['author']:
+        result['text'] = []
         
     return result
 
@@ -211,6 +214,12 @@ def convert_comment_for_page_rich(comment):
     result['small_image_height'] = int(comment.artwork_ref.small_image_height / 2)
     result['artwork_copyright_block'] = hasattr(comment.artwork_ref, 'copyright_block')
     result['artwork_block'] = hasattr(comment.artwork_ref, 'block')
+
+    import dao
+    artwork_author_profile = dao.get_user_profile(comment.artwork_ref.author_email)
+    if artwork_author_profile and hasattr(artwork_author_profile, 'self_block'):
+        result['artwork_author_self_block'] = True
+
     return result
 
 
@@ -248,6 +257,7 @@ def convert_user_profile(user_profile):
             'artworks_count': user_profile.artworks_count,
             'favorite_count': user_profile.favorite_count,
             'followers_count': getattr(user_profile, 'followers_count', 0),
+            'leaders_count': getattr(user_profile, 'leaders_count', 0),
             'read_only': hasattr(user_profile, 'read_only'),
             # 'alternative_emails': getattr(user_profile, 'alternative_emails', []),
             'avatar_url': avatar_url,
@@ -258,6 +268,10 @@ def convert_user_profile(user_profile):
         
     if hasattr(user_profile, 'block_reason'):
         result['block_reason'] = user_profile.block_reason
+
+    if hasattr(user_profile, 'self_block'):
+        result['self_block'] = True
+        result['nickname'] = '[User deleted]'
         
     return result
 
@@ -273,6 +287,9 @@ def convert_user_profile_for_json(user_profile):
             'profile_id': user_profile.key().id(),
             'avatar_url': avatar_url
         }
+    if hasattr(user_profile, 'self_block'):
+        result['nickname'] = '[User deleted]'
+        result['self_block'] = True
     return result
 
 

@@ -50,91 +50,98 @@
 				{% endfor %}
 			</div>
 			{% endif%}
-			<div>{{ profile.artworks_count }} artworks</div>
-			<div>
-				<span id="favorite_count">{{ profile.favorite_count}}</span> <i class="icon-star"></i>
-				{% if user_info.superadmin %}
-				  <a id="updateFavoritesButton" href="javascript:updateUserFavorites()" class="btn btn-default btn-small"><i class="icon-refresh"></i></a>
-				  <span id="waitUpdateFavorites" style="display:none;">Wait please...</span>
-				{% endif %}
-			</div>
-			<div><a href="/profiles/{{ profile.profile_id }}/favorites">Favorites</a></div>
-			<div><a href="/profiles/{{ profile.profile_id }}/comments">Comments</a></div>
-			{% if profile.followers_count %}
-			<div><a href="/profiles/{{ profile.profile_id }}/followers" >Followers (<span id="followers-count">{{ profile.followers_count }}</span>)</a></div>
-			{% endif %}
+            {% if not profile.self_block %}
+                <div>{{ profile.artworks_count }} artworks</div>
+                <div>
+                    <span id="favorite_count">{{ profile.favorite_count}}</span> <i class="icon-star"></i>
+                    {% if user_info.superadmin %}
+                      <a id="updateFavoritesButton" href="javascript:updateUserFavorites()" class="btn btn-default btn-small"><i class="icon-refresh"></i></a>
+                      <span id="waitUpdateFavorites" style="display:none;">Wait please...</span>
+                    {% endif %}
+                </div>
+                <div><a href="/profiles/{{ profile.profile_id }}/favorites">Favorites</a></div>
+                <div><a href="/profiles/{{ profile.profile_id }}/comments">Comments</a></div>
+                {% if profile.followers_count %}
+                <div><a href="/profiles/{{ profile.profile_id }}/followers" >Followers (<span id="followers-count">{{ profile.followers_count }}</span>)</a></div>
+                {% endif %}
+                {% if profile.leaders_count %}
+                <div><a href="/profiles/{{ profile.profile_id }}/leaders" >Leaders (<span id="followers-count">{{ profile.leaders_count }}</span>)</a></div>
+                {% endif %}
+            {% endif %}
 		</div>
 	</div>
 </div>
 
-<div style="height:20px;"></div>
+{% if profile.self_block %}
+    <div style="height: 500px;"></div>
+{% else %}
+    <div style="height:20px;"></div>
 
-{% if has_any_recent_images%}
-	<div class="container text-center index-page-section" id="recent_images">
-	<h3>Recent images</h3>
+    {% if has_any_recent_images%}
+        <div class="container text-center index-page-section" id="recent_images">
+        <h3>Recent images</h3>
 
-	<div class="row">
-		{% for a in recent_images %}
-			{% include "thumbnail.html" %}
-		{% endfor %}
+        <div class="row">
+            {% for a in recent_images %}
+                {% include "thumbnail.html" %}
+            {% endfor %}
 
-		{% if has_more_recent_images %}
-			<div class="thumbnail-wrapper">
-			  <a href="/profiles/{{ profile.profile_id }}/images">
-			  <div class="thumbnail index-page-thumb-button">
-				<div class="thumb-image"></div>
-			  </div>
-			  </a>
-			</div>
-		{% endif %}
-	</div>
-	</div>
-{% endif %}
-
-
-{% if has_any_recent_tags %}
-	<div class="container text-center index-page-section" id="recent_favorites">
-	<h3>Recent tags</h3>
-
-	<div class="row">
-		{% for t in recent_tags %}
-			{% include "thumbnail-folder.html" %}
-		{% endfor %}
-
-		{% if has_more_recent_tags %}
-			<div class="thumbnail-wrapper">
-			  <a href="/profiles/{{ profile.profile_id }}/tags">
-			  <div class="thumbnail index-page-thumb-button">
-				<div class="thumb-image"></div>
-			  </div>
-			  </a>
-			</div>
-		{% endif %}
-	</div>
-	</div>
-{% endif %}
-
-</div>
+            {% if has_more_recent_images %}
+                <div class="thumbnail-wrapper">
+                  <a href="/profiles/{{ profile.profile_id }}/images">
+                  <div class="thumbnail index-page-thumb-button">
+                    <div class="thumb-image"></div>
+                  </div>
+                  </a>
+                </div>
+            {% endif %}
+        </div>
+        </div>
+    {% endif %}
 
 
-<div id="modal-error" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title">Error</h4>
-      </div>
-      <div class="modal-body">
-        <p>One fine body</p>
-      </div>
-      <div class="modal-footer">
-        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+    {% if has_any_recent_tags %}
+        <div class="container text-center index-page-section" id="recent_favorites">
+        <h3>Recent tags</h3>
+
+        <div class="row">
+            {% for t in recent_tags %}
+                {% include "thumbnail-folder.html" %}
+            {% endfor %}
+
+            {% if has_more_recent_tags %}
+                <div class="thumbnail-wrapper">
+                  <a href="/profiles/{{ profile.profile_id }}/tags">
+                  <div class="thumbnail index-page-thumb-button">
+                    <div class="thumb-image"></div>
+                  </div>
+                  </a>
+                </div>
+            {% endif %}
+        </div>
+        </div>
+    {% endif %}
+
+    </div>
+
+
+    <div id="modal-error" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Error</h4>
+          </div>
+          <div class="modal-body">
+            <p>One fine body</p>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-
-
+{% endif %}
 
 
 <script>
