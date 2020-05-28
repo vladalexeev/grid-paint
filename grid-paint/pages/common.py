@@ -64,16 +64,30 @@ def get_settings():
         
 def save_settings(settings):
     settings.put()
-        
+
+BANNED_USER_AGENTS = [
+    'ahrefs',
+    'blexbot',
+    'semrush',
+    'dotbot',
+    'petalbot',
+    'mj12bot',
+    'ccbot'
+]
+
+
+def check_user_agent(user_agent):
+    user_agent = user_agent.lower()
+    for agent in BANNED_USER_AGENTS:
+        if user_agent.find(agent) > 0:
+            raise Exception('Banned user agent: ' + agent)
+
 
 class BasicRequestHandler(webapp.RequestHandler):
     def initialize(self, request, response):
         user_agent = request.headers.get('User-Agent')
         if user_agent:
-            user_agent = user_agent.lower() 
-            if user_agent.find('ahrefs') >= 0 or user_agent.find('blexbot') >=0 or user_agent.find('semrush') >=0 or user_agent.find('dotbot') >=0:
-                raise Exception('Banned user agent')
-            
+            check_user_agent(user_agent)
         
         webapp.RequestHandler.initialize(self, request, response)
         self.user_info=UserInfo(self.request.uri)
