@@ -58,3 +58,19 @@ class SvgImageWriter:
         
     def point(self, point, fill):
         pass
+
+    def ellipse(self, xy, fill):
+        """
+        Paint ellipse
+        :param xy: list of tuples with ellipse bounding box [(x0, y0), (x1, y1)]
+        :param fill: fill color
+        """
+        x0, y0 = xy[0]
+        x1, y1 = xy[1]
+        cx = (x0 + x1) / 2
+        cy = (y0 + y1) / 2
+        rx = abs(x1 - x0) / 2
+        ry = abs(y1 - y0) / 2
+        self.writer.write(
+            u'<ellipse cx="{}" cy="{}" rx="{}" ry="{}" style="fill: {}"/>'.format(cx, cy, rx, ry, fill)
+        )
