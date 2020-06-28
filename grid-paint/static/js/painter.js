@@ -1191,6 +1191,228 @@ function initShapesToolbar() {
 	}
 }
 
+function onCanvasMouseDown(event) {
+	paperMouseDown=true;
+	updateCellCoordiantesPanel(event);
+	
+	if (mode=="paint") {
+		undoStack.push(new UndoStep());
+		redoStack=[];
+		updateUndoRedoButtons();
+		paintOnCanvasByMouseEvent(event);
+	} else if (mode=='erase') {
+		undoStack.push(new UndoStep());
+		redoStack=[];
+		updateUndoRedoButtons();
+		eraseOnCanvasByMouseEvent(event);
+	} else if (mode=="pick-color") {
+		pickColorByMouseEvent(event);
+	} else if (mode=="copy") {
+		selectOnCanvasByMouseEvent(event);
+	} else if (mode=="paste") {
+		undoStack.push(new UndoStep());
+		redoStack=[];
+		updateUndoRedoButtons();
+		pasteSelection();
+		selection.pasteFinished();
+	} else if (mode=='fill') {
+		undoStack.push(new UndoStep());
+		redoStack=[];
+		updateUndoRedoButtons();
+		fillAreaOnCanvasByMouseEvent(event);
+	} else if (grid.drawTools && grid.drawTools[mode]) {
+		undoStack.push(new UndoStep());
+		redoStack=[];
+		updateUndoRedoButtons();
+		draftDrawToolOnCanvasByMouseEvent(event)
+	}
+}
+
+function onCanvasMouseUp(event) {
+	paperMouseDown=false;
+			
+	if (mode=="paste") {
+		setMode("paint");
+	} else if (grid.drawTools && grid.drawTools[mode]) {
+		drawToolOnCanvas();
+	}
+}
+
+function onCanvasMouseMove(event) {
+	updateCellCoordiantesPanel(event);
+	if (mode=="paint") {
+		paintOnCanvasByMouseEvent(event);
+	} else if (mode=='erase') {
+		eraseOnCanvasByMouseEvent(event);
+	} else if (mode=="copy") {
+		selectOnCanvasByMouseEvent(event);
+	} else if (mode=="paste") {
+		changePastePositionByMouseEvent(event);
+	} else if (grid.drawTools && grid.drawTools[mode]) {
+		draftDrawToolOnCanvasByMouseEvent(event);
+	}
+}
+
+function is_touch_device() {  
+	try {  
+	  	document.createEvent("TouchEvent");  
+	  	return true;  
+	} catch (e) {  
+	  	return false;  
+	}  
+}
+
+var touchMode = 'ready';
+var touchDown = false;
+var ongoingTouches = new Array();
+
+function getOngoingTouch(identifier) {
+	for (let i = 0; i < ongoingTouches.length; i++) {
+		if (ongoingTouches[i].identifier == identifier) {
+			return ongoingTouches[i];
+		}
+	}
+}
+
+function setOngoingTouch(identifier, pageX, pageY) {
+	for (let i = 0; i < ongoingTouches.length; i++) {
+		if (ongoingTouches[i].identifier == identifier) {
+			ongoingTouches[i].pageX = pageX;
+			ongoingTouches[i].pageY = pageY;
+			return;
+		}
+	}
+	ongoingTouches.push({
+		identifier: identifier,
+		pageX: pageX,
+		pageY: pageY
+	});
+}
+
+function deleteOngoingTouch(identifier) {
+	let index = -1;
+	for (let i = 0; i < ongoingTouches.length; i++) {
+		if (ongoingTouches[i] == identifier) {
+			index = i;
+			break;
+		}
+	}
+	ongoingTouches.splice(index, 1);
+}
+
+function onCanvasTouchStart(evt) {
+	evt.preventDefault();
+	let touches = evt.originalEvent.changedTouches;
+	for (let i = 0; i < touches.length; i++) {
+		setOngoingTouch(touches[i].identifier, touches[i].pageX, touches[i].pageY);
+	}
+
+	if (touchMode == 'ready') {
+		if (ongoingTouches.length == 1) {
+			touchMode = 'paint'
+		} else if (ongoingTouches.length == 2) {
+			touchMode = 'pan'
+		} else {
+			touchMode = 'invalid';
+		}
+	} else if (touchMode == 'paint') {
+		if (ongoingTouches.length == 1) {
+		}
+		else if (ongoingTouches.length == 2) {
+			touchMode = 'pan'
+		} else {
+			touchMode = 'invalid'
+		}
+	}
+}
+
+function onCanvasTouchMove(evt) {
+	evt.preventDefault();
+
+	if (touchMode == 'paint') {
+		let currentTouch = evt.originalEvent.changedTouches[0];
+		let prevTouch = getOngoingTouch(currentTouch.identifier);
+		if (!prevTouch) {
+			console.log('no prev touch', currentTouch.identifier, ongoingTouches);
+			return;
+		}
+		if (Math.abs(currentTouch.pageX - prevTouch.pageX) < 4 && Math.abs(currentTouch.pageY - prevTouch.pageY) < 4) {
+			console.log('no move');
+			return;
+		}
+		let mouseEvent = {
+			pageX: currentTouch.pageX,
+			pageY: currentTouch.pageY,
+			which: 1,
+			altKey: evt.altKey,
+			ctrlKey: evt.ctrlKey,
+			shiftKey: evt.shiftKey
+		}
+		if (!touchDown) {
+			onCanvasMouseDown(mouseEvent)
+			touchDown = true;
+		}
+		onCanvasMouseMove(mouseEvent);
+		setOngoingTouch(currentTouch.identifier, currentTouch.pageX, currentTouch.pageY);
+	} else if (touchMode == 'pan' && evt.originalEvent.changedTouches.length == 2 && ongoingTouches.length == 2) {
+		let newTouches = evt.originalEvent.changedTouches;
+		let newTouch_1 = newTouches[0];
+		let newTouch_2 = newTouches[1];
+		let oldTouch_1 = getOngoingTouch(newTouch_1.identifier);
+		let oldTouch_2 = getOngoingTouch(newTouch_2.identifier);
+		let dx1 = newTouch_1.pageX - oldTouch_1.pageX;
+		let dy1 = newTouch_1.pageY - oldTouch_1.pageY;
+		let dx2 = newTouch_2.pageX - oldTouch_2.pageX;
+		let dy2 = newTouch_2.pageY - oldTouch_2.pageY;
+		let scalarMult = dx1 * dx2 + dy1 * dy2;
+		if (scalarMult > 0) {
+			let dx = (dx1 + dx2) / 2;
+			let dy = (dy1 + dy2) / 2
+			try {
+				$('#canvas').parent()[0].scrollBy(-dx, -dy);
+			} catch (e) {
+				console.log(e);
+			}
+		}
+		setOngoingTouch(newTouch_1.identifier, newTouch_1.pageX, newTouch_1.pageY);
+		setOngoingTouch(newTouch_2.identifier, newTouch_2.pageX, newTouch_2.pageY);
+	}
+}
+
+function onCanvasTouchEnd(evt) {
+	evt.preventDefault();
+	let touches = evt.originalEvent.changedTouches;
+	if (touchMode == 'paint' && touches.length == 1) {
+		if (touchDown) {
+			let mouseEvent = {
+				pageX: touches[0].pageX,
+				pageY: touches[0].pageY,
+				which: 1,
+				altKey: evt.altKey,
+				ctrlKey: evt.ctrlKey,
+				shiftKey: evt.shiftKey
+			}			
+			onCanvasMouseMove(mouseEvent);
+			onCanvasMouseUp(mouseEvent);
+		}
+	}
+
+	for (let i = 0; i < touches.length; i++) {
+		deleteOngoingTouch(touches[i].identifier);
+	}
+
+	touchDown = false;
+	if (ongoingTouches.length == 0) {
+		touchMode = 'ready';
+	} else {
+		touchMode = 'invalid';
+	}
+}
+
+function onCanvasTouchCancel(evt) {
+	onCanvasTouchEnd(evt)
+}
+
 
 $(function() {
 	adjustCanvasWrapper();
@@ -1245,71 +1467,18 @@ $(function() {
 	}
 	
 	$("#canvas")
-	.mousedown(
-		function(event) {
-			paperMouseDown=true;
-			updateCellCoordiantesPanel(event);
-			
-			if (mode=="paint") {
-				undoStack.push(new UndoStep());
-				redoStack=[];
-				updateUndoRedoButtons();
-				paintOnCanvasByMouseEvent(event);
-			} else if (mode=='erase') {
-				undoStack.push(new UndoStep());
-				redoStack=[];
-				updateUndoRedoButtons();
-				eraseOnCanvasByMouseEvent(event);
-			} else if (mode=="pick-color") {
-				pickColorByMouseEvent(event);
-			} else if (mode=="copy") {
-				selectOnCanvasByMouseEvent(event);
-			} else if (mode=="paste") {
-				undoStack.push(new UndoStep());
-				redoStack=[];
-				updateUndoRedoButtons();
-				pasteSelection();
-				selection.pasteFinished();
-			} else if (mode=='fill') {
-				undoStack.push(new UndoStep());
-				redoStack=[];
-				updateUndoRedoButtons();
-				fillAreaOnCanvasByMouseEvent(event);
-			} else if (grid.drawTools && grid.drawTools[mode]) {
-			    undoStack.push(new UndoStep());
-				redoStack=[];
-				updateUndoRedoButtons();
-				draftDrawToolOnCanvasByMouseEvent(event)
-			}
-		}
-	)
-	.mouseup(
-		function(event) {
-			paperMouseDown=false;
-			
-			if (mode=="paste") {
-				setMode("paint");
-			} else if (grid.drawTools && grid.drawTools[mode]) {
-			    drawToolOnCanvas();
-			}
-		}
-	)
-	.mousemove(
-		function(event) {
-			updateCellCoordiantesPanel(event);
-			if (mode=="paint") {
-				paintOnCanvasByMouseEvent(event);
-			} else if (mode=='erase') {
-				eraseOnCanvasByMouseEvent(event);
-			} else if (mode=="copy") {
-				selectOnCanvasByMouseEvent(event);
-			} else if (mode=="paste") {
-				changePastePositionByMouseEvent(event);
-			} else if (grid.drawTools && grid.drawTools[mode]) {
-			    draftDrawToolOnCanvasByMouseEvent(event);
-			}
-		}
-	);
+		.mousedown(onCanvasMouseDown)
+		.mouseup(onCanvasMouseUp)
+		.mousemove(onCanvasMouseMove);
+
+	if (is_touch_device()) {
+		console.log('Touch present');
+		$("#canvas")
+			.on('touchstart', onCanvasTouchStart)
+			.on('touchmove', onCanvasTouchMove)
+			.on('touchend', onCanvasTouchEnd)
+			.on('touchcancel', onCanvasTouchCancel)
+	}
 	
 	$.mask.definitions['k'] = "[A-Fa-f0-9]";
 	$("#color-picker-text").mask("#kkkkkk");
