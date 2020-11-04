@@ -333,7 +333,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	border: 1px solid #c0c0c0;
 	border-radius: 5px;
 	margin: 10px 0 10px 0;
-	padding:10px;
+	padding:0;
 	background-color: #f0f0f0;
 	overflow: hidden;
 }
@@ -344,11 +344,11 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
     height: 44px;
     border-radius: 22px;
     background-size: cover;
-    margin-right: 10px;
+    margin: 10px;
 }
 
 .image-details-header h3 {
-	margin-top:0;
+	margin-top:10px;
 	margin-bottom:0;
 }
 
@@ -358,10 +358,12 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 
 .image-details-header .details {
 	color: #808080;
+	padding-bottom: 10px;
+    border-bottom: 1px solid lightgray;
 }
 
 .image-details-header .description-text {
-	padding: 4px 100px 4px 0px;
+	padding: 4px 100px 4px 10px;
 }
 
 .image-details-actions {

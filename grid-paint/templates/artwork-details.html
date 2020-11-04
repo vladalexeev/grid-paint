@@ -108,7 +108,7 @@
 		  <div class="description-text">{{ d }}</div>
 		{% endfor%}
 		{% if artwork.tags %}
-		<div>
+		<div class="description-text">
 			{% for tag in artwork.tags %}
 			  <a href="/gallery?q={{ tag.url_name }}">#{{ tag.title }}</a>
 			{% endfor %}
