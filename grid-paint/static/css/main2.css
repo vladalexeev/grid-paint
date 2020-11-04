@@ -1356,8 +1356,7 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	}
 	
 	.image-details-favorite-wrapper {
-		position: absolute;
-	}	
+	}
 }
 
 @media (min-width: 1150px) {
@@ -1390,8 +1389,7 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	}
 	
 	.image-details-favorite-wrapper {
-		position: absolute;
-	}		
+	}
 }
 
 
