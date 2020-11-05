@@ -219,7 +219,11 @@ function onDeleteNotification(id) {
 			},
 			function(data) {
 				if (data.result == 'ok') {
-					$('.header-notifications-count').text(data.notifications_count);
+				    if (data.notifications_count > 0) {
+					    $('.header-notifications-count').text(data.notifications_count);
+					} else {
+					    $('#header-notifications').css('display', 'none');
+					}
 				}
 				loadNotifications(1, pageSize - 1);
 			},
@@ -253,7 +257,11 @@ function onDeleteAllVisibleNotifications() {
 			},
 			function(data) {
 				if (data.result == 'ok') {
-					$('.header-notifications-count').text(data.notifications_count);
+				    if (data.notifications_count > 0) {
+					    $('.header-notifications-count').text(data.notifications_count);
+					} else {
+					    $('#header-notifications').css('display', 'none');
+					}
 				}
 				loadNotifications(pageSize, 0);
 			},
