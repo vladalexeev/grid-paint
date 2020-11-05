@@ -83,6 +83,18 @@ function constructNotificationComponent(n) {
 			</div>\
 		</div>`;
 		return result;
+	} else if (n.type == 'admin_message') {
+		return `<div id="notification-${n.id}" class="notification-container" notification-id="${n.id}">\
+			<div class="notification-icon"><i class="icon-warning-sign"></i></div>\
+			<div class="comment">\
+				<div class="comment-header">\
+					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
+					<div>${n.date}</div>\
+					<h2>Message from administrator</h2>
+				</div>\
+    			<div class="comment-text"><b>${n.message}</b></div>\
+			</div>\
+		</div>`;
 	}
 	
 	if (n.type=='comment') {
