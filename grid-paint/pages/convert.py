@@ -69,8 +69,11 @@ def convert_notification(notification):
         result['sender'] = convert_user(notification.sender_email)
     except:
         pass
+
+    if hasattr(notification, 'message'):
+        result['message'] = notification.message
     
-    return result;
+    return result
 
 
 def convert_notification_json(notification):
@@ -112,6 +115,9 @@ def convert_notification_json(notification):
             'nickname': n['sender'].get('nickname'),
             'profile_id': n['sender'].get('profile_id')
             }
+
+    if 'message' in n:
+        result['message'] = n['message']
         
     return result
         

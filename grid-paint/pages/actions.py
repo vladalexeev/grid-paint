@@ -1103,7 +1103,28 @@ class ActionAdminFlushMemcacheForIndexPage(BasicRequestHandler):
         cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
         
         self.redirect('/')
-        
+
+
+class ActionAdminSendMessageToUser(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        profile_id = int(self.request.get('profile_id'))
+        message = self.request.get('message')
+
+        user_profile = dao.get_user_profile_by_id(profile_id)
+
+        notification = db.Notification()
+        notification.recipient_email = user_profile.email
+        notification.type = 'admin_message'
+        notification.sender_email = self.user_info.user_email
+        notification.message = message
+        dao.add_notification(notification)
+
+        self.redirect('/profiles/' + str(profile_id))
+
 
 class JSONSaveAlternativeEmail(BasicRequestHandler):
     def post(self, *args):
