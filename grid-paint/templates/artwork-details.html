@@ -56,6 +56,32 @@
 			{% endif %}
 		{% endif %}
 	</div>
+	{% if not user_info.read_only and can_edit_artwork %}
+	<div class="image-details-actions">
+		<div class="btn-group">
+		  <a href="/painter?id={{ artwork.key.id }}" class="btn btn-sm btn-success"><i class="icon icon-pencil icon-white"></i> Edit image</a>
+		  <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<span class="caret"></span>
+			<span class="sr-only">Toggle Dropdown</span>
+		  </button>
+		  <ul class="dropdown-menu">
+			<li><a href="/painter?copy_id={{ artwork.key.id }}"><i class="icon icon-copy icon-white"></i> Create copy</a></li>
+			<li><a href="{{ artwork.full_image_file_name }}" target="_blank"><i class="icon icon-arrow-down"></i> Donwload PNG</a></li>
+			<li><a href="/images/svg/{{ artwork.key.id }}.svg"><i class="icon icon-arrow-down"></i> Download SVG</a></li>
+			<li role="separator" class="divider"></li>
+			<li><a href="#" image-key="{{ artwork.key.id }}" class="btn-delete-image"><i class="icon icon-remove icon-white"></i> Delete</a></li>
+		  </ul>
+		</div>
+	</div>
+	{% endif %}
+	{% if user_info.superadmin %}
+	<div class="image-details-actions">
+		<a href="/images/json/{{ artwork.key.id }}.json" class="btn btn-sm btn-default" title="Download JSON"><i class="icon icon-arrow-down"></i>JSON</a>
+		<a href="#" id="admin-artwork-properties" class="btn btn-sm btn-default" title="Artwork properties">Properties</a>
+		<a href="#" id="update-start-count" class="btn btn-sm btn-default" title="Update stars count"><i class="icon-star"></i> <i class="icon-refresh"></i></a>
+	</div>
+	{% endif %}
+
 	<div class="image-details-header">
 		<div class="image-details-header-avatar" style="background-image:url({{artwork.author.avatar_url}})"></div>
 		<h3 id="artwork-name">
@@ -78,11 +104,12 @@
 				{% endif %}
 			</span>
 		</div>
+		<div class="details-delimiter"></div>
 		{% for d in artwork.description_list %}
 		  <div class="description-text">{{ d }}</div>
 		{% endfor%}
 		{% if artwork.tags %}
-		<div>
+		<div class="description-text">
 			{% for tag in artwork.tags %}
 			  <a href="/gallery?q={{ tag.url_name }}">#{{ tag.title }}</a>
 			{% endfor %}
@@ -91,30 +118,6 @@
 		
 		<div style="clear: both"></div>		
 	</div>
-	
-	<div class="image-details-actions" style="overflow: hidden;">
-		<div class="fb-like" data-href="http://grid-paint.com/images/details/{{ artwork.key.id }}" data-layout="standard" data-action="like" data-size="small" data-show-faces="true" data-share="true"></div>
-	</div>
-	
-	{% if not user_info.read_only %}
-	<div class="image-details-actions">
-		{% if can_edit_artwork %}
-		<a href="/painter?id={{ artwork.key.id }}" class="btn btn-sm btn-success" title="Edit image"><i class="icon icon-pencil icon-white"></i> Edit</a>
-		<a href="#" image-key="{{ artwork.key.id }}" class="btn btn-sm btn-danger btn-delete-image" title="Delete image"><i class="icon icon-remove icon-white"></i> Delete</a>
-		<a href="{{ artwork.full_image_file_name }}" class="btn btn-sm btn-default" title="Download PNG"><i class="icon icon-arrow-down"></i>PNG</a>
-		<a href="/images/svg/{{ artwork.key.id }}.svg" class="btn btn-sm btn-default" title="Download SVG"><i class="icon icon-arrow-down"></i>SVG</a>
-		{% endif %}
-		{% if user_info.superadmin %}
-		<a href="/images/json/{{ artwork.key.id }}.json" class="btn btn-sm btn-default" title="Download JSON"><i class="icon icon-arrow-down"></i>JSON</a>
-		<a href="#" id="admin-artwork-properties" class="btn btn-sm btn-default" title="Artwork properties">Properties</a>
-		<a href="#" id="update-start-count" class="btn btn-sm btn-default" title="Update stars count"><i class="icon-star"></i> <i class="icon-refresh"></i></a>
-		{% endif %}
-		{% if can_edit_artwork %}
-		<a href="/painter?copy_id={{ artwork.key.id }}" class="btn btn-sm btn-primary" title="Create a copy" style="float:right;"><i class="icon icon-copy icon-white"></i> Create a copy</a>
-		{% endif %}
-	</div>
-	{% endif %}
-	
 	
 	<div class="delimiter"></div>
 	
