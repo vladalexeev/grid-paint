@@ -72,6 +72,11 @@
 			<li><a href="#" image-key="{{ artwork.key.id }}" class="btn-delete-image"><i class="icon icon-remove icon-white"></i> Delete</a></li>
 		  </ul>
 		</div>
+
+		<div style="display: inline-block; margin-left: 20px">
+			<span id="collaborators-count">0 collaborators</span>
+			<button type="button" id="btn-add-collaborator" class="btn btn-primary btn-xs"><i class="icon icon-plus icon-white"></i></button>
+		</div>
 	</div>
 	{% endif %}
 	{% if user_info.superadmin %}
@@ -256,6 +261,23 @@
   </div>
 </div>
 
+<div id="modal-add-collaborator" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Add collaborator</h4>
+      </div>
+      <div class="modal-body">
+        <div style="height: 300px;" id="add-collaborator-list">
+			<div class="spinner"></div>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <script>
 var artworkId='{{ artwork.key.id }}';
@@ -426,6 +448,47 @@ $(function() {
 		$('textarea[name=comment_text]').val(text + smile);
 		event.stopPropagation();
 	});
+})
+</script>
+
+
+<script>
+$(function() {
+	$('#btn-add-collaborator').click(function() {
+		$('#add-collaborator-list').html('<div class="spinner"></div>');
+		$('#modal-add-collaborator').modal('show');
+		$.getJSON('/json/leaders?limit=100&offset=0&profile_id='+authorId).success(
+			function(data) {
+				if (data.length == 0) {
+					html = '<p>You can invite for collaboration those users, who you follow.</p><p>Follow your friend and invite him to paint together.</p>'
+					$('#add-collaborator-list').html(html);
+					return;
+				}
+
+				html = '<table class="table table-striped"><tbody class="table-content">';
+				for (var i = 0; i < data.length; i++) {
+					item = data[i];
+					html +=
+						`<tr>
+							<td>
+								<a href="/profiles/${item.profile_id}" target="_blank">
+									<div class="user-avatar-in-list" style="background-image: url(${item.avatar_url})"></div>${item.nickname}
+								</a>
+							</td>
+							<td style="width: 50px; align: right;">
+								<button type="button" class="btn btn-primary btn-xs btn-add-collaborator-item" btn-data="${item.profile_id}">Add</button>
+							</td>
+						</tr>`
+				}
+				html += '</tbody></table>';
+				$('#add-collaborator-list').html(html);
+				$('.btn-add-collaborator-item').click(function(event) {
+					// TODO send invitation
+					console.log(event.target.getAttribute('btn-data'));
+				})
+			}
+		)
+	})
 })
 </script>
 
