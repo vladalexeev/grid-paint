@@ -1,5 +1,9 @@
 {% extends "base-adv.html" %}
 
+{% block include_js %}
+{{ block.super }}
+<script src="/js/moment.js"></script>
+{% endblock %}
 
 {% block content %}
 <div style="min-height:610px;">
@@ -71,14 +75,15 @@ function constructNotificationComponent(n) {
 	var headerText='notified'
 	var hyperlink='';
 	var content='';
+	var notificationDate = moment.utc(n.date).fromNow();
 	if (n.type=='follow') {
 		result=`<div id="notification-${n.id}" class="notification-container" notification-id="${n.id}">\
 			<div class="notification-icon"><i class="icon-user"></i></div>\
 			<div class="comment">\
 				<div class="comment-header">\
 					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
-					<div>${n.date}</div>\
-					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> is now following you</div>\
+					<div class="notification-date">${notificationDate}</div>\
+					<div class="notification-header-text"><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> is now following you</div>\
 				</div>\
 			</div>\
 		</div>`;
@@ -89,8 +94,8 @@ function constructNotificationComponent(n) {
 			<div class="comment">\
 				<div class="comment-header">\
 					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
-					<div>${n.date}</div>\
-					<h2>Message from administrator</h2>
+					<div class="notification-date">${notificationDate}</div>\
+					<div class="notification-header-text">Message from administrator</div>
 				</div>\
     			<div class="comment-text"><b>${n.message}</b></div>\
 			</div>\
@@ -149,9 +154,9 @@ function constructNotificationComponent(n) {
 			<div class="comment">\
 				<div class="comment-header">\
 					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
-					<div>${n.date}</div>\
-					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
-					<h2><a href="${hyperlink}">${n.artwork.name}</a></h2>\
+					<div class="notification-date">${notificationDate}</div>\
+					<div class="notification-header-text"><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
+					<div class="notification-header-artwork"><a href="${hyperlink}"><b>${n.artwork.name}</b></a></div>\
 				</div>\
 				${content}\
 			</div>\
@@ -162,8 +167,8 @@ function constructNotificationComponent(n) {
 			<div class="comment">\
 				<div class="comment-header">\
 					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
-					<div>${n.date}</div>\
-					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
+					<div class="notification-date">${notificationDate}</div>\
+					<div class="notification-header-text"><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
 					<div>Artwork or comment was deleted</div>\
 				</div>\
 			</div>\
