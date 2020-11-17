@@ -476,15 +476,31 @@ $(function() {
 								</a>
 							</td>
 							<td style="width: 50px; align: right;">
-								<button type="button" class="btn btn-primary btn-xs btn-invite-collaborator-item" btn-data="${item.profile_id}">Invite</button>
+							    <span id="invited-${item.profile_id}" style="display: none;">invited</span>
+							    <span id="invite-request-${item.profile_id}" style="display: none;">???</span>
+								<button type="button" class="btn btn-primary btn-xs btn-invite-collaborator-item" id="btn-invite-${item.profile_id}" btn-data="${item.profile_id}">Invite</button>
 							</td>
 						</tr>`
 				}
 				html += '</tbody></table>';
 				$('#invite-collaborator-list').html(html);
 				$('.btn-invite-collaborator-item').click(function(event) {
-					// TODO send invitation
-					console.log(event.target.getAttribute('btn-data'));
+					collaborator_id = event.target.getAttribute('btn-data')
+					$('#btn-invite-'+collaborator_id).css('display', 'none');
+					$('#invite-request'+collaborator_id).css('display', '');
+					$.post(
+					    '/json/artwork-invite-collaborator',
+					    {
+                            'artwork_id': artworkId,
+                            'collaborator_id': event.target.getAttribute('btn-data')
+					    },
+					    null,
+					    'json'
+					).done(function(data) {
+					    $('#invite-request'+collaborator_id).css('display', 'none');
+					    $('#invited-'+collaborator_id).css('display', '');
+					}).fail(function() {
+					});
 				})
 			}
 		)

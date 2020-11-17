@@ -82,6 +82,7 @@ application = webapp.WSGIApplication([
     ('/json/self-block', pages.actions.JSONActionSelfBlock),
     ('/json/delete-tag', pages.actions.JSONAdminDeleteTag),
     ('/json/rename-tag', pages.actions.JSONAdminRenameTag),
+    ('/json/artwork-invite-collaborator', pages.actions.JSONInviteCollaborator),
     ('/comments', pages.pages.PageComments),
     ('/follow', pages.actions.ActionFollow),
     ('/unfollow', pages.actions.ActionUnfollow),

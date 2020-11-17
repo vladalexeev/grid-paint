@@ -131,6 +131,14 @@ function constructNotificationComponent(n) {
 		} else {
 			validNotification=false;
 		}
+	} else if (n.type == 'artwork_collaborator_invite') {
+	    iconName = 'icon-picture';
+	    headerText = 'invited you to join him in editing of artwork';
+	    if (n.artwork) {
+			hyperlink=`/images/details/${n.artwork.id}`;
+		} else {
+			validNotification=false;
+		}
 	}
 	
 	var result='';

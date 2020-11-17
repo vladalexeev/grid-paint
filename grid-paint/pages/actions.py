@@ -1656,3 +1656,36 @@ class JSONActionSelfBlock(BasicRequestHandler):
         }))
 
 
+class JSONInviteCollaborator(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        artwork_id = int(self.request.get('artwork_id'))
+        collaborator_id = int(self.request.get('collaborator_id'))
+
+        artwork = dao.get_artwork(artwork_id)
+        if artwork is None:
+            self.response.set_status(400)
+            return
+
+        if not self.user_info.superadmin and self.user_info.user_email != artwork.author_email:
+            self.response.set_status(403)
+            return
+
+        collaborator = dao.get_user_profile_by_id(collaborator_id)
+        if collaborator is None:
+            self.response.set_status(400)
+            return
+
+        invite_notification = db.Notification()
+        invite_notification.sender_email = self.user_info.user_email
+        invite_notification.recipient_email = collaborator.email
+        invite_notification.type = 'artwork_collaborator_invite'
+        invite_notification.artwork = artwork
+        dao.add_notification(invite_notification)
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
