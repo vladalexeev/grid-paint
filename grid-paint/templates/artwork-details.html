@@ -475,9 +475,9 @@ $(function() {
 									<div class="user-avatar-in-list" style="background-image: url(${item.avatar_url})"></div>${item.nickname}
 								</a>
 							</td>
-							<td style="width: 50px; align: right;">
+							<td style="width: 50px; text-align: right;">
 							    <span id="invited-${item.profile_id}" style="display: none;">invited</span>
-							    <span id="invite-request-${item.profile_id}" style="display: none;">???</span>
+							    <span id="invite-request-${item.profile_id}" style="display: none;"><i class="icon icon-circle-blank" /></span>
 								<button type="button" class="btn btn-primary btn-xs btn-invite-collaborator-item" id="btn-invite-${item.profile_id}" btn-data="${item.profile_id}">Invite</button>
 							</td>
 						</tr>`
@@ -487,7 +487,7 @@ $(function() {
 				$('.btn-invite-collaborator-item').click(function(event) {
 					collaborator_id = event.target.getAttribute('btn-data')
 					$('#btn-invite-'+collaborator_id).css('display', 'none');
-					$('#invite-request'+collaborator_id).css('display', '');
+					$('#invite-request-'+collaborator_id).css('display', '');
 					$.post(
 					    '/json/artwork-invite-collaborator',
 					    {
@@ -497,7 +497,7 @@ $(function() {
 					    null,
 					    'json'
 					).done(function(data) {
-					    $('#invite-request'+collaborator_id).css('display', 'none');
+					    $('#invite-request-'+collaborator_id).css('display', 'none');
 					    $('#invited-'+collaborator_id).css('display', '');
 					}).fail(function() {
 					});
