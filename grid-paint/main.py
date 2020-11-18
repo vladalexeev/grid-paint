@@ -83,6 +83,8 @@ application = webapp.WSGIApplication([
     ('/json/delete-tag', pages.actions.JSONAdminDeleteTag),
     ('/json/rename-tag', pages.actions.JSONAdminRenameTag),
     ('/json/artwork-invite-collaborator', pages.actions.JSONInviteCollaborator),
+    ('/json/accept-notification', pages.actions.JSONAcceptNotification),
+    ('/json/reject-notification', pages.actions.JSONRejectNotification),
     ('/comments', pages.pages.PageComments),
     ('/follow', pages.actions.ActionFollow),
     ('/unfollow', pages.actions.ActionUnfollow),

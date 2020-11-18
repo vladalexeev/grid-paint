@@ -141,6 +141,16 @@ function constructNotificationComponent(n) {
 	    headerText = 'invited you to join him in editing of artwork';
 	    if (n.artwork) {
 			hyperlink=`/images/details/${n.artwork.id}`;
+			if (n.status == 'accepted') {
+			    content = `<div class="comment-text"><div class="text-success">Accepted</div></div>`
+			} else if (n.status == 'rejected') {
+			    content = `<div class="comment-text"><div class="text-danger">Rejected</div></div>`
+			} else {
+                content = `<div class="comment-text">
+                    <button class="btn btn-sm btn-success" onclick="acceptNotification(${n.id})">Accept</button>
+                    <button class="btn btn-sm btn-danger" onclick="rejectNotification(${n.id})">Reject</button>
+                </div>`;
+			}
 		} else {
 			validNotification=false;
 		}
@@ -281,6 +291,48 @@ function onDeleteAllVisibleNotifications() {
 			'json'
 		);
 	});
+}
+
+function showCircleLoader() {
+	$('body').append(
+		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
+	)
+}
+
+function hideCircleLoader() {
+	$('#spinner-fullscreen').remove();
+}
+
+function acceptNotification(notificationId) {
+    showCircleLoader();
+    $.post(
+        '/json/accept-notification',
+        {
+            'notification_id': notificationId,
+        },
+        null,
+        'json'
+    ).done(function(data) {
+        hideCircleLoader();
+        $('.notification-container').remove();
+        loadNotifications(pageSize, 0);
+    })
+}
+
+function rejectNotification(notificationId) {
+    showCircleLoader();
+    $.post(
+        '/json/reject-notification',
+        {
+            'notification_id': notificationId,
+        },
+        null,
+        'json'
+    ).done(function(data) {
+        hideCircleLoader();
+        $('.notification-container').remove();
+        loadNotifications(pageSize, 0);
+    })
 }
 
 $(function() {

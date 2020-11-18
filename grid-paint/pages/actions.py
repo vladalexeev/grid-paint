@@ -1689,3 +1689,49 @@ class JSONInviteCollaborator(BasicRequestHandler):
         self.response.out.write(json.dumps({
             'result': 'ok',
         }))
+
+
+class JSONAcceptNotification(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        notification_id = int(self.request.get('notification_id'))
+        notification = db.Notification.get_by_id(notification_id)
+
+        if notification.recipient_email != self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        # TODO add actions for accept
+
+        notification.status = 'accepted'
+        notification.put()
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
+
+
+class JSONRejectNotification(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        notification_id = int(self.request.get('notification_id'))
+        notification = db.Notification.get_by_id(notification_id)
+
+        if notification.recipient_email != self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        # TODO add actions for reject if necessary
+
+        notification.status = 'rejected'
+        notification.put()
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
