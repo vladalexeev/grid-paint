@@ -154,6 +154,14 @@ function constructNotificationComponent(n) {
 		} else {
 			validNotification=false;
 		}
+	} else if (n.type == 'artwork_collaborator_invite_accept') {
+	    iconName = 'icon-ok';
+	    headerText = 'accepted your invite to edit artwork';
+		if (n.artwork) {
+			hyperlink=`/images/details/${n.artwork.id}`;
+		} else {
+			validNotification=false;
+		}
 	}
 	
 	var result='';

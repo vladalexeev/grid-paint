@@ -1704,7 +1704,34 @@ class JSONAcceptNotification(BasicRequestHandler):
             self.response.set_status(403)
             return
 
-        # TODO add actions for accept
+        if notification.type == 'artwork_collaborator_invite':
+            artwork = notification.artwork
+            author_email = artwork.author_email
+            author = dao.get_user_profile(author_email)
+            author_id = author.key().id()
+            author_collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', author_id).get()
+            if author_collaborator is None:
+                author_collaborator = db.ArtworkCollaborator()
+                author_collaborator.artwork = artwork
+                author_collaborator.user_id = author_id
+                author_collaborator.put()
+
+            recipient_email = notification.recipient_email
+            recipient = dao.get_user_profile(recipient_email)
+            recipient_id = recipient.key().id()
+            collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', recipient_id).get()
+            if collaborator is None:
+                collaborator = db.ArtworkCollaborator()
+                collaborator.artwork = artwork
+                collaborator.user_id = recipient_id
+                collaborator.put()
+
+            new_notification = db.Notification()
+            new_notification.artwork = artwork
+            new_notification.sender_email = recipient_email
+            new_notification.recipient_email = author_email
+            new_notification.type = 'artwork_collaborator_invite_accept'
+            new_notification.put()
 
         notification.status = 'accepted'
         notification.put()

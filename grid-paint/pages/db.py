@@ -24,6 +24,12 @@ class Artwork(db.Expando):
     editor_choice_date = db.DateTimeProperty()
 
 
+class ArtworkCollaborator(db.Model):
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    user_id = db.IntegerProperty()
+    date = db.DateTimeProperty(auto_now=True)
+
+
 class Tag(db.Model):
     url_name = db.StringProperty()
     title = db.StringProperty()
