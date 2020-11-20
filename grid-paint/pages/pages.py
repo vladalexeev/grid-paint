@@ -436,6 +436,8 @@ class PageImage(BasicPageRequestHandler):
         comments = [convert.convert_comment_for_page(c) for c in db_comments]
         
         converted_artwork = convert.convert_artwork_for_page(artwork, 600, 400)
+        author_user_id = converted_artwork.get('author', {}).get('profile_id')
+
         if 'tags' in converted_artwork:
             converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']])
 
@@ -455,11 +457,19 @@ class PageImage(BasicPageRequestHandler):
         if self.user_info.user:
             following = dao.is_follower(artwork.author_email, self.user_info.user_email)
         else:
-            following = None 
+            following = None
+
+        db_collaborators = db.ArtworkCollaborator.all().filter('artwork =', artwork).order('-last_date')
+        collaborators = [
+            convert.convert_user_profile(dao.get_user_profile_by_id(c.user_id))
+            for c in db_collaborators
+            if c.user_id != author_user_id
+        ]
         
         self.write_template('templates/artwork-details.html', 
             {
                 'artwork': converted_artwork,
+                'collaborators': collaborators,
                 'can_edit_artwork': can_edit_artwork,
                 'comments': comments,
                 'favorite_count': favorite_count,

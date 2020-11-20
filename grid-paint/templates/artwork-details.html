@@ -109,6 +109,16 @@
 				{% endif %}
 			</span>
 		</div>
+
+		{% if collaborators %}
+		<div class="details">
+			in collaboration with
+			{% for c in collaborators %}
+				<a href="/profiles/{{ c.profile_id }}">{{ c.nickname }}</a>{% if not forloop.last %},{% endif %}
+			{% endfor %}
+		</div>
+		{% endif %}
+
 		<div class="details-delimiter"></div>
 		{% for d in artwork.description_list %}
 		  <div class="description-text">{{ d }}</div>

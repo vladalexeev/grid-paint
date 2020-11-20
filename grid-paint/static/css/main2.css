@@ -339,7 +339,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 }
 
 .image-details-header-avatar {
-    float: left;
+    position: absolute;
     width: 44px;
     height: 44px;
     border-radius: 22px;
@@ -350,6 +350,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 .image-details-header h3 {
 	margin-top:10px;
 	margin-bottom:0;
+	margin-left: 65px;
 }
 
 .image-details-header .artist {
@@ -358,6 +359,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 
 .image-details-header .details {
 	color: #808080;
+	margin-left: 65px;
 }
 
 .image-details-header .details-delimiter {
