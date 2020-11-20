@@ -27,7 +27,8 @@ class Artwork(db.Expando):
 class ArtworkCollaborator(db.Model):
     artwork = db.ReferenceProperty(reference_class=Artwork)
     user_id = db.IntegerProperty()
-    date = db.DateTimeProperty(auto_now=True)
+    join_date = db.DateTimeProperty(auto_now=True)
+    last_date = db.DateTimeProperty(auto_now=True)
 
 
 class Tag(db.Model):

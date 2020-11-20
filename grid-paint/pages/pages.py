@@ -563,6 +563,9 @@ class PageProfile(BasicRequestHandler):
         recent_db_images = db.Artwork.all().filter('author_email', user_profile.email).order('-date').fetch(3, 0)
         recent_user_images = [convert.convert_artwork_for_page(a, 200, 150) for a in recent_db_images]
 
+        recent_db_group_images = db.ArtworkCollaborator.all().filter('user_id =', profile_id).order('-last_date').fetch(3, 0)
+        recent_group_images = [convert.convert_artwork_for_page(a.artwork, 200, 150) for a in recent_db_group_images]
+
         recent_db_tags = db.UserTag.all().filter('user_id', user_profile.key().id()).order('-last_date').fetch(3, 0)
         recent_user_tags = [convert.convert_tag_for_page(t) for t in recent_db_tags]
         for t in recent_user_tags:
@@ -573,6 +576,9 @@ class PageProfile(BasicRequestHandler):
             'recent_images': recent_user_images,
             'has_any_recent_images': len(recent_user_images) > 0,
             'has_more_recent_images': len(recent_user_images) >= 3,
+            'group_images': recent_group_images,
+            'has_any_group_images': len(recent_group_images) > 0,
+            'has_more_group_images': len(recent_group_images) >= 3,
             'recent_tags': recent_user_tags,
             'has_any_recent_tags': len(recent_user_tags) > 0,
             'has_more_recent_tags': len(recent_user_tags) >= 3,
@@ -1064,3 +1070,47 @@ class PageUserTagImages(BasicPageRequestHandler):
         model['profile'] = convert.convert_user_profile(user)
 
         self.write_template('templates/user-images-by-tag.html', model)
+
+
+class PageUserGroupImages(BasicPageRequestHandler):
+    def get(self, *args):
+        try:
+            profile_id = int(args[0])
+        except ValueError:
+            self.response.set_status(404)
+            return
+
+        user_profile = dao.get_user_profile_by_id(profile_id)
+        if not user_profile:
+            self.response.set_status(404)
+            return
+
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
+
+        def artworks_query_func():
+            return db.ArtworkCollaborator.all().filter('user_id =', profile_id).order('-last_date')
+
+        def href_create_func(offset):
+            return '/profiles/' + str(profile_id) + '/group-images?offset=' + str(offset)
+
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST + 'group_images_' + str(profile_id) + '_' + str(offset)
+
+        model = create_gallery_model(self.request.get('offset'),
+                                     artworks_query_func,
+                                     href_create_func,
+                                     memcache_cursor_key_func)
+        model['profile'] = convert.convert_user_profile(user_profile)
+        if self.user_info.user:
+            model['following'] = dao.is_follower(user_profile.email, self.user_info.user_email)
+
+        if self.user_info.user and profile_id == self.user_info.profile_id:
+            model['this_user_profile'] = True
+
+        model['user_page_title'] = 'Group images of'
+
+        self.write_template('templates/user-group-images.html', model)
+
+
