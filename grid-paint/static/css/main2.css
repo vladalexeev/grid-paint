@@ -832,6 +832,10 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	color: #44a8ff;
 }
 
+.notification-container .notification-icon .icon-remove {
+	color: #ff5757;
+}
+
 .notification-container .comment {
 	margin-left: 40px;
 }

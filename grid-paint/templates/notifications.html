@@ -162,6 +162,14 @@ function constructNotificationComponent(n) {
 		} else {
 			validNotification=false;
 		}
+	} else if (n.type == 'resign_collaborator') {
+	    iconName = 'icon-remove';
+	    headerText = 'removed himself from collaborators of artwork';
+		if (n.artwork) {
+			hyperlink=`/images/details/${n.artwork.id}`;
+		} else {
+			validNotification=false;
+		}
 	}
 	
 	var result='';

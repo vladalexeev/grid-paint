@@ -1779,3 +1779,33 @@ class JSONRejectNotification(BasicRequestHandler):
         self.response.out.write(json.dumps({
             'result': 'ok',
         }))
+
+
+class JSONResignCollaborator(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        artwork_id = int(self.request.get('artwork_id'))
+        arwork = dao.get_artwork(artwork_id)
+
+        if arwork is None:
+            self.response.set_status(404)
+            return
+
+        user_id = self.user_info.profile_id
+
+        collaborator = db.ArtworkCollaborator.all().filter('artwork =', arwork).filter('user_id =', user_id).get()
+        if collaborator is not None:
+            collaborator.delete()
+            notification = db.Notification()
+            notification.sender_email = self.user_info.user_email
+            notification.recipient_email = arwork.author_email
+            notification.artwork = arwork
+            notification.type = 'resign_collaborator'
+            notification.put()
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))

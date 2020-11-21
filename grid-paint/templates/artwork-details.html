@@ -65,12 +65,16 @@
 			<span class="sr-only">Toggle Dropdown</span>
 		  </button>
 		  <ul class="dropdown-menu">
-			<li><a href="/painter?copy_id={{ artwork.key.id }}"><i class="icon icon-copy icon-white"></i> Create copy</a></li>
+			<li><a href="/painter?copy_id={{ artwork.key.id }}"><i class="icon icon-copy"></i> Create copy</a></li>
 			<li><a href="{{ artwork.full_image_file_name }}" target="_blank"><i class="icon icon-arrow-down"></i> Donwload PNG</a></li>
 			<li><a href="/images/svg/{{ artwork.key.id }}.svg"><i class="icon icon-arrow-down"></i> Download SVG</a></li>
 			{% if user_info.superadmin or user_is_author %}
 			<li role="separator" class="divider"></li>
-			<li><a href="#" image-key="{{ artwork.key.id }}" class="btn-delete-image"><i class="icon icon-remove icon-white"></i> Delete</a></li>
+			<li><a href="#" image-key="{{ artwork.key.id }}" class="btn-delete-image"><i class="icon icon-remove"></i> Delete image</a></li>
+			{% endif %}
+			{% if user_is_collaborator and not user_is_author%}
+			<li role="separator" class="divider"></li>
+			<li><a href="#" id="btn-resign"><i class="icon icon-signout"></i> Resign</a></li>
 			{% endif %}
 		  </ul>
 		</div>
@@ -252,6 +256,26 @@
       <div class="modal-footer">
         <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
         <a href="#" id="btn-confirm-delete" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal-confirm-resign" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <p>Do you really want to remove yourself from collaborators?</p>
+		<p>After doing this you will not able to edit this image.</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a href="#" id="btn-confirm-resign" class="btn btn-danger">Resign</a>
       </div>
     </div>
   </div>
@@ -463,10 +487,23 @@ $(function() {
 		event.stopPropagation();
 	});
 })
+
+function showCircleLoader() {
+	$('body').append(
+		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
+	)
+}
+
+function hideCircleLoader() {
+	$('#spinner-fullscreen').remove();
+}
+
 </script>
 
 
 <script>
+// Collaborators
+
 $(function() {
 	$('#btn-invite-collaborators').click(function() {
 		$('#invite-collaborator-list').html('<div class="spinner"></div>');
@@ -518,7 +555,26 @@ $(function() {
 				})
 			}
 		)
-	})
+	});
+
+	$('#btn-resign').click(function() {
+		$('#modal-confirm-resign').modal('show');
+	});
+
+	$('#btn-confirm-resign').click(function() {
+		$('#modal-confirm-resign').modal('hide');
+		showCircleLoader();
+		$.post(
+			'/json/resign-collaborator',
+			{
+				'artwork_id': artworkId
+			},
+			function() {
+				document.location.reload();
+			},
+			'json'
+		)
+	});
 })
 </script>
 
@@ -529,7 +585,7 @@ $(function() {
 <script src="/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
 
 
-<div id="properties-modal" id="modal-confirm-delete" class="modal fade">
+<div id="properties-modal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -699,15 +755,6 @@ function showComment(id, parent_id) {
 		});	
 }
 
-function showCircleLoader() {
-	$('body').append(
-		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
-	)
-}
-
-function hideCircleLoader() {
-	$('#spinner-fullscreen').remove();
-}
 </script>
 
 

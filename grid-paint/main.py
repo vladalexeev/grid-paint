@@ -86,6 +86,7 @@ application = webapp.WSGIApplication([
     ('/json/artwork-invite-collaborator', pages.actions.JSONInviteCollaborator),
     ('/json/accept-notification', pages.actions.JSONAcceptNotification),
     ('/json/reject-notification', pages.actions.JSONRejectNotification),
+    ('/json/resign-collaborator', pages.actions.JSONResignCollaborator),
     ('/comments', pages.pages.PageComments),
     ('/follow', pages.actions.ActionFollow),
     ('/unfollow', pages.actions.ActionUnfollow),
