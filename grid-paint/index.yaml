@@ -28,12 +28,12 @@ indexes:
   - name: "author_email"
   - name: "date"
     direction: desc
-- kind: "UserTag"
+- kind: "ArtworkCollaborator"
   properties:
   - name: "user_id"
   - name: "last_date"
     direction: desc
-- kind: "ArtworkCollaborator"
+- kind: "UserTag"
   properties:
   - name: "user_id"
   - name: "last_date"
@@ -42,6 +42,15 @@ indexes:
   properties:
   - name: "artwork_ref"
   - name: "date"
+- kind: "ArtworkCollaborator"
+  properties:
+  - name: "artwork"
+  - name: "last_date"
+    direction: desc
+- kind: "Follow"
+  properties:
+  - name: "leader_email"
+  - name: "follower_email"
 - kind: "Follow"
   properties:
   - name: "follower_email"
@@ -51,10 +60,6 @@ indexes:
   - name: "recipient_email"
   - name: "date"
     direction: desc
-- kind: "Follow"
-  properties:
-  - name: "leader_email"
-  - name: "follower_email"
 - kind: "Artwork"
   properties:
   - name: "author_email"

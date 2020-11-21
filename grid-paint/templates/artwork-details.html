@@ -68,15 +68,19 @@
 			<li><a href="/painter?copy_id={{ artwork.key.id }}"><i class="icon icon-copy icon-white"></i> Create copy</a></li>
 			<li><a href="{{ artwork.full_image_file_name }}" target="_blank"><i class="icon icon-arrow-down"></i> Donwload PNG</a></li>
 			<li><a href="/images/svg/{{ artwork.key.id }}.svg"><i class="icon icon-arrow-down"></i> Download SVG</a></li>
+			{% if user_info.superadmin or user_is_author %}
 			<li role="separator" class="divider"></li>
 			<li><a href="#" image-key="{{ artwork.key.id }}" class="btn-delete-image"><i class="icon icon-remove icon-white"></i> Delete</a></li>
+			{% endif %}
 		  </ul>
 		</div>
 
+		{% if user_info.superadmin or user_is_author %}
 		<div style="display: inline-block; margin-left: 20px">
 			<span id="collaborators-count">0 collaborators</span>
 			<button type="button" id="btn-invite-collaborators" class="btn btn-primary btn-xs"><i class="icon icon-plus icon-white"></i></button>
 		</div>
+		{% endif %}
 	</div>
 	{% endif %}
 	{% if user_info.superadmin %}

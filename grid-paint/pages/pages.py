@@ -449,7 +449,18 @@ class PageImage(BasicPageRequestHandler):
                 })
             return
 
-        can_edit_artwork = self.user_info.superadmin or artwork.author_email==self.user_info.user_email
+        user_is_author = artwork.author_email == self.user_info.user_email
+
+        db_collaborators = db.ArtworkCollaborator.all().filter('artwork =', artwork).order('-last_date')
+        collaborators = [
+            convert.convert_user_profile(dao.get_user_profile_by_id(c.user_id))
+            for c in db_collaborators
+            if c.user_id != author_user_id
+        ]
+
+        user_is_collaborator = self.user_info.profile_id in [c['profile_id'] for c in collaborators]
+
+        can_edit_artwork = self.user_info.superadmin or user_is_author or user_is_collaborator
         if 'block' in converted_artwork or 'copyright_block' in converted_artwork and not can_edit_artwork:
             self.write_template('templates/artwork-details-blocked.html', {})
             return
@@ -459,18 +470,13 @@ class PageImage(BasicPageRequestHandler):
         else:
             following = None
 
-        db_collaborators = db.ArtworkCollaborator.all().filter('artwork =', artwork).order('-last_date')
-        collaborators = [
-            convert.convert_user_profile(dao.get_user_profile_by_id(c.user_id))
-            for c in db_collaborators
-            if c.user_id != author_user_id
-        ]
-        
         self.write_template('templates/artwork-details.html', 
             {
                 'artwork': converted_artwork,
                 'collaborators': collaborators,
                 'can_edit_artwork': can_edit_artwork,
+                'user_is_author': user_is_author,
+                'user_is_collaborator': user_is_collaborator,
                 'comments': comments,
                 'favorite_count': favorite_count,
                 'favorite': favorite,

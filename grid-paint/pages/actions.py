@@ -66,10 +66,17 @@ class JSONActionSaveImage(BasicRequestHandler):
         artwork_name = self.request.get('artwork_name')
         artwork_description = self.request.get('artwork_description')
 
+        collaborator = None
+
         if artwork_id:
             news_type = NEWS_TYPE_CHANGE_ARTWORK
             artwork = dao.get_artwork(artwork_id)
-            if not self.user_info.superadmin and artwork.author_email != self.user_info.user_email:
+
+            user_is_author = artwork.author_email == self.user_info.user_email
+            collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', self.user_info.profile_id).get()
+            user_is_collaborator = collaborator is not None
+
+            if not self.user_info.superadmin and not user_is_author and not user_is_collaborator:
                 # should be the same user or superadmin
                 self.response.set_status(403)
                 return
@@ -259,6 +266,10 @@ class JSONActionSaveImage(BasicRequestHandler):
                 'type': news_type
             })
 
+        if collaborator is not None:
+            collaborator.last_date = datetime.datetime.now()
+            collaborator.put()
+
         self.response.out.write(json.dumps({
             'result': saved_id.id(),
         }))
@@ -342,7 +353,13 @@ class JSONActionSaveImageTags(BasicRequestHandler):
             return
 
         artwork = dao.get_artwork(artwork_id)
-        if not self.user_info.superadmin and artwork.author_email != self.user_info.user_email:
+
+        user_is_author = artwork.author_email == self.user_info.user_email
+
+        collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', self.user_info.profile_id).get()
+        user_is_collaborator = collaborator is not None
+
+        if not self.user_info.superadmin and not user_is_author and not user_is_collaborator:
             # should be the same user or superadmin
             self.response.set_status(403)
             return
