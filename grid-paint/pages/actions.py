@@ -1809,3 +1809,46 @@ class JSONResignCollaborator(BasicRequestHandler):
         self.response.out.write(json.dumps({
             'result': 'ok',
         }))
+
+
+class JSONArtworkCollaborators(BasicRequestHandler):
+    def get(self):
+        artwork_id = int(self.request.get('artwork_id'))
+        arwork = dao.get_artwork(artwork_id)
+
+        db_collaborators = db.ArtworkCollaborator.all().filter('artwork =', arwork)
+        collaborators = []
+        for c in db_collaborators:
+            user_id = c.user_id
+            user_profile = dao.get_user_profile_by_id(user_id)
+            if user_profile is not None:
+                collaborators.append(convert.convert_user_profile_for_json(user_profile))
+
+        self.response.out.write(json.dumps(collaborators))
+
+
+class JSONDismissCollaborator(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        artwork_id = int(self.request.get('artwork_id'))
+        collaborator_id = int(self.request.get('collaborator_id'))
+
+        artwork = dao.get_artwork(artwork_id)
+        if artwork is None:
+            self.response.set_status(400)
+            return
+
+        if not self.user_info.superadmin and self.user_info.user_email != artwork.author_email:
+            self.response.set_status(403)
+            return
+
+        collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', collaborator_id).get()
+        if collaborator is not None:
+            collaborator.delete()
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
