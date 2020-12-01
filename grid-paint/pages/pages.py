@@ -147,6 +147,15 @@ class PagePainter(BasicPageRequestHandler):
             if artwork is None:
                 self.response.set_status(404)
                 return
+
+            user_is_author = artwork.author_email == self.user_info.user_email
+            collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', self.user_info.profile_id).get()
+            user_is_collaborator = collaborator is not None
+
+            if not self.user_info.superadmin and not user_is_author and not user_is_collaborator:
+                # should be the same user or superadmin
+                self.response.set_status(403)
+                return
             
             if hasattr(artwork,'json'):            
                 if artwork.json_compressed:
