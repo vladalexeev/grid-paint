@@ -698,6 +698,8 @@ class ActionSaveSettings(BasicRequestHandler):
             settings.show_analytics=False
             
         settings.admin_email= self.request.get('admin_email')
+        settings.exchange_url = self.request.get('exchange_url')
+        settings.exchange_salt = self.request.get('exchange_salt')
             
         common.save_settings(settings)
         cache.add(cache.MC_SETTINGS, settings)
