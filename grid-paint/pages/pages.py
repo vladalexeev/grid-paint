@@ -18,6 +18,8 @@ import zlib
 
 from common import BasicPageRequestHandler
 from common import BasicRequestHandler
+from common import get_settings
+from exchange_tokens import generate_token
 
 page_size=10
 users_page_size=50
@@ -156,6 +158,19 @@ class PagePainter(BasicPageRequestHandler):
                 # should be the same user or superadmin
                 self.response.set_status(403)
                 return
+
+            collaborators_count = db.ArtworkCollaborator.all().filter('artwork =', artwork).count()
+            settings = get_settings()
+            exchange_token = ''
+            if collaborators_count > 0:
+                # Generate security token for grid-paint-exchange, because it's group artwork
+                exchange_token = generate_token(
+                    settings.exchange_salt,
+                    artwork_id,
+                    self.user_info.profile_id,
+                    self.user_info.user_name,
+                    self.user_info.avatar_url
+                )
             
             if hasattr(artwork,'json'):            
                 if artwork.json_compressed:
@@ -172,7 +187,9 @@ class PagePainter(BasicPageRequestHandler):
                     'artwork_name': artwork.name,
                     'artwork_description': artwork.description,
                     'artwork_json': artwork_json,
-                    'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
+                    'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags]),
+                    'exchange_token': exchange_token,
+                    'exchange_url': settings.exchange_url
                 })
         elif self.request.get('copy_id'):
             artwork_id = self.request.get('copy_id')

@@ -399,7 +399,7 @@ function setMode(m) {
 	}
 }
 
-function saveArtwork() {
+function prepareArtworkToSave() {
 	var a={
 		version: {
 			major:2,
@@ -414,50 +414,56 @@ function saveArtwork() {
 		layers:[{
 			grid:grid.name,
 			cellSize:grid.cellSize,
-			rows:[]	
+			rows:[]
 		}],
 		recentColors: recentColors
 	};
-	
+
 	if (grid.name=='square') {
 		a['effectivePixelArtRect'] = getArtworkEffectivePixelArtRect(grid, gridArtwork);
 	}
-	
+
 	a['transparentBackground'] = $('#modal_transparent_background')[0].checked;
 	a['gridVisible'] = $('#modal_artwork_grid_visible')[0].checked;
 	a['additionalPixelImage'] = $('#modal_artwork_pixel_art')[0].checked;
-	
+
+	if (artwork.id) {
+		a.id=artwork.id;
+	}
+
+	for (var row=0; row<gridArtwork.cells.length; row++) {
+		var rowElement={
+			row:row
+		};
+		var cellArray=[];
+
+		for (var col=0; col<gridArtwork.cells[row].length; col++) {
+			if (gridArtwork.cells[row][col] && gridArtwork.cells[row][col].shapeName!="empty") {
+				cellArray.push([
+					col,
+					gridArtwork.cells[row][col].shapeName,
+					gridArtwork.cells[row][col].color
+				]);
+			}
+		}
+
+		rowElement.cells=cellArray;
+		a.layers[0].rows.push(rowElement);
+	}
+
+    return a;
+}
+
+function saveArtwork() {
+    var a = prepareArtworkToSave();
+
 	if (a.effectiveRect.width<0 || a.effectiveRect.height<0) {
 		var messageModal=$("#message-modal");
 		messageModal.find("#message-text").text("Cannot save empty image");
 		messageModal.modal();
 		return;
 	}
-	
-	if (artwork.id) {
-		a.id=artwork.id;
-	}
-	
-	for (var row=0; row<gridArtwork.cells.length; row++) {
-		var rowElement={
-			row:row
-		};
-		var cellArray=[];
-		
-		for (var col=0; col<gridArtwork.cells[row].length; col++) {
-			if (gridArtwork.cells[row][col] && gridArtwork.cells[row][col].shapeName!="empty") {
-				cellArray.push([
-					col,
-					gridArtwork.cells[row][col].shapeName,
-					gridArtwork.cells[row][col].color	
-				]);
-			}
-		}
-		
-		rowElement.cells=cellArray;
-		a.layers[0].rows.push(rowElement);
-	}
-	
+
     $("input[name=artwork_json]").val(JSON.stringify(a));
     changed=false;
     showCircleLoader();
@@ -1413,6 +1419,27 @@ function onCanvasTouchCancel(evt) {
 	onCanvasTouchEnd(evt)
 }
 
+var initComplete = false;
+function initialPaintArtwork() {
+    initComplete = true;
+    hideCircleLoader();
+    if (artwork.version.major==1) {
+		var layer=artwork.layers[0];
+		for (var i=0; i<layer.cells.length; i++) {
+			paintOnCanvas(layer.cells[i].col, layer.cells[i].row, layer.cells[i].shape, layer.cells[i].color);
+		}
+	} else if (artwork.version.major==2) {
+		var layer=artwork.layers[0];
+		for (var rowIndex=0; rowIndex<layer.rows.length; rowIndex++) {
+			var cellRow=layer.rows[rowIndex];
+			for (var cellIndex=0; cellIndex<cellRow.cells.length; cellIndex++) {
+				var cell=cellRow.cells[cellIndex];
+				paintOnCanvas(cell[0], cellRow.row, cell[1], cell[2]);
+			}
+		}
+	}
+}
+
 
 $(function() {
 	adjustCanvasWrapper();
@@ -1448,24 +1475,7 @@ $(function() {
 	$('#modal_artwork_grid_visible')[0].checked = artwork['gridVisible'];
 	$('#modal_artwork_pixel_art')[0].checked = artwork['additionalPixelImage'];
 	$('#modal_transparent_background')[0].checked = artwork['transparentBackground'];
-	
-	
-	if (artwork.version.major==1) {
-		var layer=artwork.layers[0];
-		for (var i=0; i<layer.cells.length; i++) {
-			paintOnCanvas(layer.cells[i].col, layer.cells[i].row, layer.cells[i].shape, layer.cells[i].color);
-		}
-	} else if (artwork.version.major==2) {
-		var layer=artwork.layers[0];
-		for (var rowIndex=0; rowIndex<layer.rows.length; rowIndex++) {
-			var cellRow=layer.rows[rowIndex]; 
-			for (var cellIndex=0; cellIndex<cellRow.cells.length; cellIndex++) {
-				var cell=cellRow.cells[cellIndex];
-				paintOnCanvas(cell[0], cellRow.row, cell[1], cell[2]);
-			}
-		}
-	}
-	
+
 	$("#canvas")
 		.mousedown(onCanvasMouseDown)
 		.mouseup(onCanvasMouseUp)
@@ -1588,4 +1598,51 @@ $(function() {
 	initShiftPanel();
 	initSizePanel();
 	initCopyPastePanel();
+
+	if (exchangeToken) {
+	    showCircleLoader();
+	    timeoutTaskId = setTimeout(initialPaintArtwork, 5000)
+
+	    socket = io(exchangeUrl);
+	    socket.on('connect', (data) => {
+	        console.log('socket.io => connect');
+	        socket.emit('login', {'token': exchangeToken})
+	    });
+	    socket.on('disconnect', (data) => {
+	        console.log('socket.io => disconnect');
+	    })
+	    socket.on('login_ok', (data) => {
+	        console.log('socket.io => login_ok');
+	    });
+	    socket.on('login_fail', (data) => {
+	        console.log('socket.io => login_fail');
+	    });
+	    socket.on('you_are_first', (data) => {
+	        console.log('socket.io => you_are_first')
+	        if (!initComplete) {
+	            clearTimeout(timeoutTaskId);
+	            initialPaintArtwork();
+	        }
+	    });
+	    socket.on('ask_image', (data) => {
+	        console.log('socket.io => ask_image')
+	        new_data = {
+	            'sid': data.sid,
+	            'image': prepareArtworkToSave()
+	        }
+	        console.log('socket.io <- full_image');
+	        console.log(new_data)
+	        socket.emit('full_image', new_data)
+	    });
+	    socket.on('redirect_full_image', (data) => {
+	        console.log('socket.io => redirect_full_image')
+	        if (!initComplete) {
+	            console.log(data);
+	            artwork = data;
+	            initialPaintArtwork();
+	        }
+	    })
+	} else {
+	    initialPaintArtwork()
+	}
 });
