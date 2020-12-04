@@ -33,6 +33,8 @@ var modalTagsVisible = false;
 var modalSquareGridSpecialPropertiesVisible = false;
 var initialTagsValue = null;
 
+var collaboratorsOnline = [];
+
 // 
 function adjustCanvasWrapper() {
 	$("#canvas-wrapper").height($(window).height()-60);
@@ -1419,6 +1421,30 @@ function onCanvasTouchCancel(evt) {
 	onCanvasTouchEnd(evt)
 }
 
+function addCollaborator(collaborator) {
+    var sid = collaborator.sid;
+    var exists = false;
+    for (var i = 0; i < collaboratorsOnline.length; i++) {
+        if (collaboratorsOnline[i].sid == sid) {
+            exists = true;
+            break;
+        }
+    }
+    collaboratorsOnline.push(collaborator);
+}
+
+function deleteCollaborator(sid) {
+    var index = -1;
+    for (var i = 0; i < collaboratorsOnline.length; i++) {
+        if (collaboratorsOnline[i].sid == sid) {
+            index = i
+            break;
+        }
+    }
+    collaboratorsOnline.splice(index, 1);
+
+}
+
 var initComplete = false;
 function initialPaintArtwork() {
     initComplete = true;
@@ -1613,6 +1639,14 @@ $(function() {
 	    })
 	    socket.on('login_ok', (data) => {
 	        console.log('socket.io => login_ok');
+
+	        var tokenPayload = JSON.parse(atob(exchangeToken.split('.')[1]));
+	        console.log('socket.io <- hello');
+	        console.log(tokenPayload.user);
+	        socket.emit('hello', tokenPayload.user);
+
+	        console.log('socket.io <- who_is_here')
+	        socket.emit('who_is_here', {})
 	    });
 	    socket.on('login_fail', (data) => {
 	        console.log('socket.io => login_fail');
@@ -1623,6 +1657,24 @@ $(function() {
 	            clearTimeout(timeoutTaskId);
 	            initialPaintArtwork();
 	        }
+	    });
+	    socket.on('hello', (data) => {
+	        console.log('socket.io => hello');
+	        console.log(data);
+	        addCollaborator(data);
+	    });
+	    socket.on('bye', (data) => {
+	        console.log('socket.io => bye');
+	        console.log(data)
+	        var sid = data.sid;
+	        deleteCollaborator(data);
+	    });
+	    socket.on('who_is_here', (data) => {
+	        console.log('socket.io => who_is_here');
+	        var tokenPayload = JSON.parse(atob(exchangeToken.split('.')[1]));
+	        console.log('socket.io <- hello');
+	        console.log(tokenPayload.user);
+	        socket.emit('hello', tokenPayload.user);
 	    });
 	    socket.on('ask_image', (data) => {
 	        console.log('socket.io => ask_image')
