@@ -1057,6 +1057,22 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 }
 
 /*
+Group image status popup
+*/
+
+.popup-group-image-status {
+    position: fixed;
+    top: 65px;
+    right: 20px;
+    min-height: 40px;
+    min-width: 40px;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 0 6px #c0c0c0;
+}
+
+
+/*
 	Media rules for image lists
 */
 @media (max-width: 400px) {

@@ -1626,16 +1626,23 @@ $(function() {
 	initCopyPastePanel();
 
 	if (exchangeToken) {
+	    $('#group-image-status').show();
+
 	    showCircleLoader();
 	    timeoutTaskId = setTimeout(initialPaintArtwork, 5000)
 
 	    socket = io(exchangeUrl);
 	    socket.on('connect', (data) => {
 	        console.log('socket.io => connect');
+	        console.log('socket.io <- login');
 	        socket.emit('login', {'token': exchangeToken})
+            $('#group-image-status #socketio-online').show();
+            $('#group-image-status #socketio-offline').hide();
 	    });
 	    socket.on('disconnect', (data) => {
 	        console.log('socket.io => disconnect');
+            $('#group-image-status #socketio-online').hide();
+            $('#group-image-status #socketio-offline').show();
 	    })
 	    socket.on('login_ok', (data) => {
 	        console.log('socket.io => login_ok');
