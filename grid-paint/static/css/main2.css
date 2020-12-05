@@ -1060,9 +1060,33 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 Group image status popup
 */
 
-.popup-group-image-status {
+.group-image-online {
     position: fixed;
     top: 65px;
+    right: 20px;
+    min-height: 24px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 0 6px #c0c0c0;
+}
+
+.group-image-online #socketio-online {
+    margin: 4px 10px;
+    color: green;
+}
+
+.group-image-online #socketio-offline {
+    margin: 4px 10px;
+    color: red;
+}
+
+.group-image-online #call-collaborators {
+    margin: 5px 5px 5px 26px;
+}
+
+.group-image-users-online {
+    position: fixed;
+    top: 105px;
     right: 20px;
     min-height: 40px;
     min-width: 40px;
@@ -1071,16 +1095,13 @@ Group image status popup
     box-shadow: 0 0 6px #c0c0c0;
 }
 
-.popup-group-image-status #socketio-online {
-    font-size: 24px;
-    margin: 4px 10px;
-    color: green;
-}
 
-.popup-group-image-status #socketio-offline {
-    font-size: 24px;
-    margin: 4px 10px;
-    color: red;
+.group-image-users-online .user-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background-size: contain;
+    margin: 5px;
 }
 
 

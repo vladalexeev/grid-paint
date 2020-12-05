@@ -1442,7 +1442,23 @@ function deleteCollaborator(sid) {
         }
     }
     collaboratorsOnline.splice(index, 1);
+}
 
+function updateCollaboratorsPanel() {
+    if (collaboratorsOnline.length == 0) {
+        $('.group-image-users-online').hide();
+        $('#call-collaborators').show();
+        return;
+    } else {
+        $('.group-image-users-online').show();
+        $('#call-collaborators').hide();
+    }
+    var html = '';
+    for (var i = 0; i < collaboratorsOnline.length; i++) {
+        var c = collaboratorsOnline[i]
+        html += `<div class="user-icon" style="background-image: url(${c.user.avatar_url})" title="${c.user.nickname}"></div>`;
+    }
+    $('.group-image-users-online').html(html);
 }
 
 var initComplete = false;
@@ -1626,7 +1642,7 @@ $(function() {
 	initCopyPastePanel();
 
 	if (exchangeToken) {
-	    $('#group-image-status').show();
+	    $('.group-image-online').show();
 
 	    showCircleLoader();
 	    timeoutTaskId = setTimeout(initialPaintArtwork, 5000)
@@ -1636,13 +1652,15 @@ $(function() {
 	        console.log('socket.io => connect');
 	        console.log('socket.io <- login');
 	        socket.emit('login', {'token': exchangeToken})
-            $('#group-image-status #socketio-online').show();
-            $('#group-image-status #socketio-offline').hide();
+            $('#socketio-online').show();
+            $('#call-collaborators').show();
+            $('#socketio-offline').hide();
 	    });
 	    socket.on('disconnect', (data) => {
 	        console.log('socket.io => disconnect');
-            $('#group-image-status #socketio-online').hide();
-            $('#group-image-status #socketio-offline').show();
+            $('#socketio-online').hide();
+            $('#call-collaborators').hide();
+            $('#socketio-offline').show();
 	    })
 	    socket.on('login_ok', (data) => {
 	        console.log('socket.io => login_ok');
@@ -1669,12 +1687,14 @@ $(function() {
 	        console.log('socket.io => hello');
 	        console.log(data);
 	        addCollaborator(data);
+	        updateCollaboratorsPanel();
 	    });
 	    socket.on('bye', (data) => {
 	        console.log('socket.io => bye');
 	        console.log(data)
 	        var sid = data.sid;
 	        deleteCollaborator(data);
+	        updateCollaboratorsPanel();
 	    });
 	    socket.on('who_is_here', (data) => {
 	        console.log('socket.io => who_is_here');
