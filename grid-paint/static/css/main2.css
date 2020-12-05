@@ -1071,6 +1071,19 @@ Group image status popup
     box-shadow: 0 0 6px #c0c0c0;
 }
 
+.popup-group-image-status #socketio-online {
+    font-size: 24px;
+    margin: 4px 10px;
+    color: green;
+}
+
+.popup-group-image-status #socketio-offline {
+    font-size: 24px;
+    margin: 4px 10px;
+    color: red;
+}
+
+
 
 /*
 	Media rules for image lists
