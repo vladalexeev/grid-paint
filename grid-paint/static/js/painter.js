@@ -892,6 +892,15 @@ function pasteSelection() {
 		paintOnCanvas(cc.col, cc.row, cc.shapeName, cc.color);
 	}
 	changed=true;
+
+	if (socket != null) {
+		var changes = {
+			cells: pasteCells
+		}
+		console.log('socket.io <- changes (pasteSelection)');
+		console.log(changes);
+		socket.emit('changes', changes);
+	}
 }
 
 function setBackgroundColor(color) {
