@@ -33,6 +33,7 @@ var modalTagsVisible = false;
 var modalSquareGridSpecialPropertiesVisible = false;
 var initialTagsValue = null;
 
+var socket = null;
 var collaboratorsOnline = [];
 
 // 
@@ -113,23 +114,65 @@ function paintOnCanvasByMouseEvent(event) {
 		if (event.which==3) {
 			newShapeName="empty";
 		}
+
+		// Return immediately if there are no actual changes
+		var oldCell = gridArtwork.getCell(cell.col, cell.row);
+		if ((oldCell == null || oldCell.shapeName == 'empty') && newShapeName == 'empty') {
+			return;
+		}
+		if (oldCell != null && oldCell.shapeName == newShapeName && oldCell.color == selectedColor) {
+			return;
+		}
 		
 		storeUndoCell(cell.col, cell.row, newShapeName, selectedColor);
-		
 		paintOnCanvas(cell.col, cell.row, newShapeName, selectedColor);
 		if (newShapeName!="empty") {
 			pushRecentColor(selectedColor);	
 		}
 		changed=true;
+
+		if (socket != null) {
+			var changes = {
+				'cells': [{
+					col: cell.col,
+					row: cell.row,
+					shapeName: newShapeName,
+					color: selectedColor
+				}]
+			}
+			console.log('socket.io <- changes (paintOnCanvasByMouseEvent)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}
 }
 
 function eraseOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 	if (paperMouseDown) {
+		// Return immediately if there are no actual changes
+		var oldCell = gridArtwork.getCell(cell.col, cell.row);
+		if (oldCell == null || oldCell.shapeName == 'empty') {
+			return;
+		}
+
 		storeUndoCell(cell.col, cell.row, 'empty', selectedColor);	
 		paintOnCanvas(cell.col, cell.row, 'empty', selectedColor);
 		changed=true;
+
+		if (socket != null) {
+			var changes = {
+				'cells': [{
+					col: cell.col,
+					row: cell.row,
+					shapeName: 'empty',
+					color: selectedColor
+				}]
+			}
+			console.log('socket.io <- changes (eraseOnCanvasByMouseEvent)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}
 }
 
@@ -1720,7 +1763,19 @@ $(function() {
 	            artwork = data;
 	            initialPaintArtwork();
 	        }
-	    })
+		});
+		socket.on('redirect_changes', (data) => {
+			console.log('socket.io => redirect_changes');
+			console.log(data);
+			var user = data.user;
+			var changes = data.changes
+			if (changes.cells) {
+				for (var i = 0; i < changes.cells.length; i++) {
+					var cell = changes.cells[i];
+					paintOnCanvas(cell.col, cell.row, cell.shapeName, cell.color);
+				}
+			}
+		});
 	} else {
 	    initialPaintArtwork()
 	}
