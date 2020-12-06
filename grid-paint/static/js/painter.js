@@ -314,7 +314,25 @@ function drawToolOnCanvas() {
 			pushRecentColor(selectedColor);	
 		}
 	
-        changed = true;
+		changed = true;
+		
+		if (socket != null) {
+			var changes = {
+				cells: []
+			}
+			for (var i=0; i < cells.length; i++) {
+				changes.cells.push({
+					col: cells[i].col,
+					row: cells[i].row,
+					shapeName: selectedShapeName,
+					color: selectedColor
+				})
+			}
+	
+			console.log('socket.io <- changes (drawToolOnCanvas)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
     }
 }
 
@@ -722,6 +740,24 @@ function fillAreaOnCanvasByMouseEvent(event) {
 		}
 		
 		changed=true;
+
+		if (socket != null) {
+			var changes = {
+				cells: []
+			}
+			for (var i=0; i < fillCells.length; i++) {
+				changes.cells.push({
+					col: fillCells[i].col,
+					row: fillCells[i].row,
+					shapeName: newShapeName,
+					color: selectedColor
+				})
+			}
+	
+			console.log('socket.io <- changes (fillAreaOnCanvasByMouseEvent)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}
 }
 
