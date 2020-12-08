@@ -1035,6 +1035,18 @@ function initShiftPanel() {
 			}
 		});
 
+	var sendShiftBySocket = function(shift) {
+		if (socket) {
+			var changes = {
+				shift: shift
+			}
+	
+			console.log('socket.io <- changes (shiftWorkspace)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
+	}
+
 	$("#btn-shift-left").click(
 		function() {
 			removedCells=gridArtwork.doShiftLeft(grid);
@@ -1045,6 +1057,7 @@ function initShiftPanel() {
 			undoStack.push(undoStep);
 			redoStack=[];
 			updateUndoRedoButtons();
+			sendShiftBySocket('left');
 		});
 	
 	$("#btn-shift-right").click(
@@ -1057,6 +1070,7 @@ function initShiftPanel() {
 			undoStack.push(undoStep);
 			redoStack=[];
 			updateUndoRedoButtons();
+			sendShiftBySocket('right');
 		});
 		
 	$("#btn-shift-up").click(
@@ -1069,6 +1083,7 @@ function initShiftPanel() {
 			undoStack.push(undoStep);
 			redoStack=[];
 			updateUndoRedoButtons();
+			sendShiftBySocket('up');
 		});
 		
 	$("#btn-shift-down").click(
@@ -1081,6 +1096,7 @@ function initShiftPanel() {
 			undoStack.push(undoStep);
 			redoStack=[];
 			updateUndoRedoButtons();
+			sendShiftBySocket('down');
 		});
 }
 
@@ -1832,6 +1848,17 @@ $(function() {
 			}
 			if (changes.backgroundColor) {
 				setBackgroundColor(changes.backgroundColor);
+			}
+			if (changes.shift) {
+				if (changes.shift == 'left') {
+					gridArtwork.doShiftLeft(grid);
+				} else if (changes.shift == 'right') {
+					gridArtwork.doShiftRight(grid);
+				} else if (changes.shift == 'up') {
+					gridArtwork.doShiftUp(grid);
+				} else if (changes.shift == 'down') {
+					gridArtwork.doShiftDown(grid);
+				}
 			}
 		});
 	} else {
