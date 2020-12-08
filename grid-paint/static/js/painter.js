@@ -1100,6 +1100,34 @@ function initShiftPanel() {
 		});
 }
 
+function applyWorkspaceSize(newWidth, newHeight, newCellSize) {
+	$("#canvas")
+		.css("width",newWidth)
+		.css("height",newHeight);
+	grid.workspaceWidth=newWidth;
+	grid.workspaceHeight=newHeight;
+	grid.cellSize=newCellSize;
+	
+	paper.remove();
+	paper=new Raphael("canvas",newWidth,newHeight);
+	grid.paintGrid(paper);
+	selection.paper=paper;
+	
+	var oldGridArtwork=gridArtwork;
+	gridArtwork=new GridArtwork();
+	for (var row=0; row<oldGridArtwork.cells.length; row++) {
+		for (var col=0; col<oldGridArtwork.cells[row].length; col++) {
+			var cell=oldGridArtwork.cells[row][col];
+			if (cell) {
+				var cellRect=grid.getCellRect(col,row);
+				if (cellRect.left+cellRect.width<newWidth && cellRect.top+cellRect.height<newHeight) {
+					paintOnCanvas(col,row,cell.shapeName,cell.color);
+				}
+			}
+		}
+	}
+}
+
 function initSizePanel() {
 	$("#size-toolbar-header").click(
 		function() {
@@ -1136,31 +1164,21 @@ function initSizePanel() {
 				alert("Cell size should be between 10 and 32 pixels");
 				return;
 			}
-			
-			$("#canvas")
-				.css("width",newWidth)
-				.css("height",newHeight);
-			grid.workspaceWidth=newWidth;
-			grid.workspaceHeight=newHeight;
-			grid.cellSize=newCellSize;
-			
-			paper.remove();
-			paper=new Raphael("canvas",newWidth,newHeight);
-			grid.paintGrid(paper);
-			selection.paper=paper;
-			
-			var oldGridArtwork=gridArtwork;
-			gridArtwork=new GridArtwork();
-			for (var row=0; row<oldGridArtwork.cells.length; row++) {
-				for (var col=0; col<oldGridArtwork.cells[row].length; col++) {
-					var cell=oldGridArtwork.cells[row][col];
-					if (cell) {
-						var cellRect=grid.getCellRect(col,row);
-						if (cellRect.left+cellRect.width<newWidth && cellRect.top+cellRect.height<newHeight) {
-							paintOnCanvas(col,row,cell.shapeName,cell.color);
-						}
+
+			applyWorkspaceSize(newWidth, newHeight, newCellSize);
+
+			if (socket) {
+				var changes = {
+					workspace: {
+						width: newWidth,
+						height: newHeight,
+						cellSize: newCellSize
 					}
 				}
+		
+				console.log('socket.io <- changes (setBackgroundColor)');
+				console.log(changes);
+				socket.emit('changes', changes);
 			}
 		});
 }
@@ -1859,6 +1877,9 @@ $(function() {
 				} else if (changes.shift == 'down') {
 					gridArtwork.doShiftDown(grid);
 				}
+			}
+			if (changes.workspace) {
+				applyWorkspaceSize(changes.workspace.width, changes.workspace.height, changes.workspace.cellSize);
 			}
 		});
 	} else {
