@@ -1649,6 +1649,16 @@ $(function() {
 			updateUndoRedoButtons();
 			
 			setBackgroundColor(selectedColor);
+
+			if (socket) {
+				var changes = {
+					backgroundColor: selectedColor
+				}
+		
+				console.log('socket.io <- changes (setBackgroundColor)');
+				console.log(changes);
+				socket.emit('changes', changes);
+			}
 		}
 	);
 	
@@ -1819,6 +1829,9 @@ $(function() {
 					var cell = changes.cells[i];
 					paintOnCanvas(cell.col, cell.row, cell.shapeName, cell.color);
 				}
+			}
+			if (changes.backgroundColor) {
+				setBackgroundColor(changes.backgroundColor);
 			}
 		});
 	} else {
