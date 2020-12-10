@@ -823,16 +823,23 @@ function updateUndoRedoButtons() {
 function doUndo() {
 	if (undoStack.length>0) {
 		var undoStep=undoStack.pop();
+		var changes = {
+			cells: []
+		};
 		if (undoStep.shiftChange) {
 			var dir=undoStep.shiftChange.dir;
 			if (dir=='left') {
-				gridArtwork.doShiftRight(grid); 
+				gridArtwork.doShiftRight(grid);
+				changes.shift = 'right';
 			} else if (dir=='right') {
 				gridArtwork.doShiftLeft(grid);
+				changes.shift = 'left';
 			} else if (dir=='up') {
 				gridArtwork.doShiftDown(grid);
+				changes.shift = 'down';
 			} else if (dir=='down') {
 				gridArtwork.doShiftUp(grid);
+				changes.shift = 'up';
 			}
 			var removedCells=undoStep.shiftChange.removedCells;
 			for (var i=0; i<removedCells.length; i++) {
@@ -841,46 +848,85 @@ function doUndo() {
 					removedCells[i].row, 
 					removedCells[i].shapeName, 
 					removedCells[i].color);
+				changes.cells.push({
+					col: removedCells[i].col,
+					row: removedCells[i].row,
+					shapeName: removedCells[i].shapeName,
+					color: removedCells[i].color
+				});
 			}
 		} else if (undoStep.backgroundChange) {
 			setBackgroundColor(undoStep.backgroundChange.oldColor);
+			changes.backgroundColor = undoStep.backgroundChange.oldColor
 		} else {
 			for (var i=0; i<undoStep.cellChanges.length; i++) {
 				cc=undoStep.cellChanges[i];
 				paintOnCanvas(cc.col, cc.row, cc.oldShapeName, cc.oldColor);
+				changes.cells.push({
+					col: cc.col,
+					row: cc.row,
+					shapeName: cc.oldShapeName,
+					color: cc.oldColor
+				})
 			}			
 		}
 		
 		redoStack.push(undoStep);
 		updateUndoRedoButtons();
+
+		if (socket) {
+			console.log('socket.io <- changes (undo)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}
 }
 
 function doRedo() {
 	if (redoStack.length>0) {
 		var redoStep=redoStack.pop();
+		var changes = {
+			cells: []
+		}
 		if (redoStep.shiftChange) {
 			var dir=redoStep.shiftChange.dir;
 			if (dir=='left') {
-				gridArtwork.doShiftLeft(grid); 
+				gridArtwork.doShiftLeft(grid);
+				changes.shift = 'left';
 			} else if (dir=='right') {
 				gridArtwork.doShiftRight(grid);
+				changes.shift = 'right';
 			} else if (dir=='up') {
 				gridArtwork.doShiftUp(grid);
+				changes.shift = 'up';
 			} else if (dir=='down') {
 				gridArtwork.doShiftDown(grid);
+				changes.shift = 'down'
 			}
 		} else if (redoStep.backgroundChange) {
 			setBackgroundColor(redoStep.backgroundChange.newColor);	
+			changes.backgroundColor = redoStep.backgroundChange.newColor;
 		} else {
 			for (var i=0; i<redoStep.cellChanges.length; i++) {
 				cc=redoStep.cellChanges[i];
 				paintOnCanvas(cc.col, cc.row, cc.newShapeName, cc.newColor);
+				changes.cells.push({
+					col: cc.col,
+					row: cc.row,
+					shapeName: cc.newShapeName,
+					color: cc.newColor
+				})
 			}
 		}
 		
 		undoStack.push(redoStep);
 		updateUndoRedoButtons();
+
+		if (socket) {
+			console.log('socket.io <- changes (redo)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}	
 }
 
@@ -1176,7 +1222,7 @@ function initSizePanel() {
 					}
 				}
 		
-				console.log('socket.io <- changes (setBackgroundColor)');
+				console.log('socket.io <- changes (setWorkspaceSize)');
 				console.log(changes);
 				socket.emit('changes', changes);
 			}
