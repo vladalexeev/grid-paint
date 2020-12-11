@@ -35,6 +35,7 @@ var initialTagsValue = null;
 
 var socket = null;
 var collaboratorsOnline = [];
+var collaboratorBadges = [];
 
 // 
 function adjustCanvasWrapper() {
@@ -1651,6 +1652,33 @@ function initialPaintArtwork() {
 }
 
 
+function drawCollaboratorPointerToCell(user, cell) {
+	var item = null;
+	var pointer = $('#collaborator-pointer-' + user.user_id)
+	var cellRect = grid.getCellRect(cell.col, cell.row);
+	var x = cellRect.left + cellRect.width / 2;
+	var y = cellRect.top + cellRect.height / 2;
+
+	if (pointer.length == 0) {
+		html = 
+			`<div class="collaborator-pointer" id="collaborator-pointer-${user.user_id}">
+				<div class="wrapper">				
+					<div class="arrow"></div>
+					<div class="nickname">${user.nickname}</div>
+					<div class="avatar" style="background-image: url(${user.avatar_url})"></div>
+				</div>
+			</div>`;
+		pointer = $(html);
+		console.log(pointer);
+		$('#canvas-wrapper #canvas').append(pointer);
+	}
+
+	pointer.css('left', (x - 10) + 'px');
+	pointer.css('top', (y - 30) + 'px');
+	pointer.show();
+}
+
+
 $(function() {
 	adjustCanvasWrapper();
 	$(window).resize(
@@ -1905,9 +1933,14 @@ $(function() {
 			var user = data.user;
 			var changes = data.changes
 			if (changes.cells) {
+				var lastCell = null;
 				for (var i = 0; i < changes.cells.length; i++) {
 					var cell = changes.cells[i];
 					paintOnCanvas(cell.col, cell.row, cell.shapeName, cell.color);
+					lastCell = cell;
+				}
+				if (lastCell) {
+					drawCollaboratorPointerToCell(data.user, lastCell);
 				}
 			}
 			if (changes.backgroundColor) {
