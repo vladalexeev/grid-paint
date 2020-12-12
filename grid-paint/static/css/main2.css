@@ -1117,6 +1117,7 @@ Collaborator pointer
 	position: absolute;
 	width: 120px;
 	height: 30px;
+	transition: all 0.2s ease-out;
 }
 
 .collaborator-pointer .wrapper {
@@ -1126,7 +1127,7 @@ Collaborator pointer
 .collaborator-pointer .nickname {
 	position: absolute;
 	height: 20px;
-	background: red;
+	background: #fff;
 	font-size: 12px;
 	width: 100%;
 	padding-left: 24px;
@@ -1134,7 +1135,9 @@ Collaborator pointer
 	border-radius: 9px;
 	overflow: hidden;
     text-overflow: ellipsis;
-    padding-right: 4px;	
+	padding-right: 4px;	
+	border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
 .collaborator-pointer .avatar {
@@ -1154,7 +1157,7 @@ Collaborator pointer
   	height: 0; 
   	border-left: 10px solid transparent;
   	border-right: 10px solid transparent;
-  	border-top: 20px solid #f00;
+  	border-top: 20px solid #fff;
 }
 
 
