@@ -170,6 +170,12 @@ function constructNotificationComponent(n) {
 		} else {
 			validNotification=false;
 		}
+	} else if (n.type == 'collaborator_changed_artwork') {
+	    iconName = 'icon-picture';
+	    headerText = 'edited your artwork';
+
+	} else {
+	    headerText = n.type;
 	}
 	
 	var result='';

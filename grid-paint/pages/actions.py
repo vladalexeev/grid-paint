@@ -270,6 +270,15 @@ class JSONActionSaveImage(BasicRequestHandler):
             collaborator.last_date = datetime.datetime.now()
             collaborator.put()
 
+            collaborator_user = dao.get_user_profile_by_id(collaborator.user_id)
+
+            notification = db.Notification()
+            notification.recipient_email = artwork.author_email
+            notification.artwork = artwork
+            notification.sender_email = collaborator_user.email
+            notification.type = 'collaborator_changed_artwork'
+            notification.put()
+
         self.response.out.write(json.dumps({
             'result': saved_id.id(),
         }))
