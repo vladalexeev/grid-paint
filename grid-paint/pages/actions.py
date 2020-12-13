@@ -277,7 +277,7 @@ class JSONActionSaveImage(BasicRequestHandler):
             notification.artwork = artwork
             notification.sender_email = collaborator_user.email
             notification.type = 'collaborator_changed_artwork'
-            notification.put()
+            dao.add_notification(notification)
 
         self.response.out.write(json.dumps({
             'result': saved_id.id(),
@@ -1759,10 +1759,10 @@ class JSONAcceptNotification(BasicRequestHandler):
             new_notification.sender_email = recipient_email
             new_notification.recipient_email = author_email
             new_notification.type = 'artwork_collaborator_invite_accept'
-            new_notification.put()
+            dao.add_notification(new_notification)
 
         notification.status = 'accepted'
-        notification.put()
+        dao.add_notification(notification)
 
         self.response.out.write(json.dumps({
             'result': 'ok',
@@ -1785,7 +1785,7 @@ class JSONRejectNotification(BasicRequestHandler):
         # TODO add actions for reject if necessary
 
         notification.status = 'rejected'
-        notification.put()
+        dao.add_notification(notification)
 
         self.response.out.write(json.dumps({
             'result': 'ok',
@@ -1815,7 +1815,7 @@ class JSONResignCollaborator(BasicRequestHandler):
             notification.recipient_email = arwork.author_email
             notification.artwork = arwork
             notification.type = 'resign_collaborator'
-            notification.put()
+            dao.add_notification(notification)
 
         self.response.out.write(json.dumps({
             'result': 'ok',
