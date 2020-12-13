@@ -1471,6 +1471,8 @@ Collaborator pointer
 	.dummy-banner {
 		width: 160px;
 		height: 600px;
+		background-image: url('/img/banner-sample.png');
+		background-size: cover;
 	}
 	
 	.sidebar-adv {
@@ -1500,6 +1502,8 @@ Collaborator pointer
 	.dummy-banner {
 		width: 160px;
 		height: 600px;
+		background-image: url('/img/banner-sample.png');
+		background-size: cover;
 	}
 	
 	.sidebar-adv {
