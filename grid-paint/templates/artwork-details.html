@@ -66,7 +66,7 @@
 		  </button>
 		  <ul class="dropdown-menu">
 			<li><a href="/painter?copy_id={{ artwork.key.id }}"><i class="icon icon-copy"></i> Create copy</a></li>
-			<li><a href="{{ artwork.full_image_file_name }}" target="_blank"><i class="icon icon-arrow-down"></i> Donwload PNG</a></li>
+			<li><a href="{{ artwork.full_image_file_name }}" target="_blank"><i class="icon icon-arrow-down"></i> Download PNG</a></li>
 			<li><a href="/images/svg/{{ artwork.key.id }}.svg"><i class="icon icon-arrow-down"></i> Download SVG</a></li>
 			{% if user_info.superadmin or user_is_author %}
 			<li role="separator" class="divider"></li>
@@ -306,7 +306,7 @@
         <h4 class="modal-title">Manage collaborators</h4>
       </div>
       <div class="modal-body">
-        <div style="height: 300px;" id="collaborators-list">
+        <div style="height: 300px; overflow-y: scroll;" id="collaborators-list">
 			<div class="spinner"></div>
 		</div>
       </div>
