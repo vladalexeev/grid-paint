@@ -315,6 +315,10 @@ class ActionDeleteImage(BasicRequestHandler):
             for ni in news_items:
                 ni.delete()
 
+            collaborators = db.ArtworkCollaborator.all().filter('artwork =', artwork)
+            for c in collaborators:
+                c.delete()
+
             cs.delete_file(artwork.full_image_file_name)
             cs.delete_file(artwork.small_image_file_name)
             if hasattr(artwork,'json_file_name'):
