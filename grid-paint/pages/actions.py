@@ -72,6 +72,10 @@ class JSONActionSaveImage(BasicRequestHandler):
             news_type = NEWS_TYPE_CHANGE_ARTWORK
             artwork = dao.get_artwork(artwork_id)
 
+            if artwork is None:
+                self.response.set_status(404)
+                return
+
             user_is_author = artwork.author_email == self.user_info.user_email
             collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', self.user_info.profile_id).get()
             user_is_collaborator = collaborator is not None
