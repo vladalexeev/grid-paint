@@ -1598,8 +1598,10 @@ function addCollaborator(collaborator) {
             exists = true;
             break;
         }
-    }
-    collaboratorsOnline.push(collaborator);
+	}
+	if (!exists) {
+		collaboratorsOnline.push(collaborator);
+	}
 }
 
 function deleteCollaborator(sid) {
@@ -1609,8 +1611,8 @@ function deleteCollaborator(sid) {
             index = i
             break;
         }
-    }
-    collaboratorsOnline.splice(index, 1);
+	}
+	collaboratorsOnline.splice(index, 1);
 }
 
 function updateCollaboratorsPanel() {
@@ -1855,7 +1857,7 @@ $(function() {
 
 	    socket = io(exchangeUrl);
 	    socket.on('connect', (data) => {
-	        console.log('socket.io => connect');
+			console.log('socket.io => connect');
 	        console.log('socket.io <- login');
 	        socket.emit('login', {'token': exchangeToken})
             $('#socketio-online').show();
@@ -1899,7 +1901,7 @@ $(function() {
 	        console.log('socket.io => bye');
 	        console.log(data)
 	        var sid = data.sid;
-	        deleteCollaborator(data);
+	        deleteCollaborator(sid);
 	        updateCollaboratorsPanel();
 	    });
 	    socket.on('who_is_here', (data) => {
