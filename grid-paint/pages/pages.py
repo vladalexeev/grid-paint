@@ -490,7 +490,9 @@ class PageImage(BasicPageRequestHandler):
             if c.user_id != author_user_id
         ]
 
-        user_is_collaborator = self.user_info.profile_id in [c['profile_id'] for c in collaborators]
+        user_is_collaborator = False
+        if self.user_info.user:
+            user_is_collaborator = self.user_info.profile_id in [c['profile_id'] for c in collaborators]
 
         can_edit_artwork = self.user_info.superadmin or user_is_author or user_is_collaborator
         if 'block' in converted_artwork or 'copyright_block' in converted_artwork and not can_edit_artwork:
