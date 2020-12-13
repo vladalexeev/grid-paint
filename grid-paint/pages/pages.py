@@ -119,6 +119,12 @@ class PageNews(BasicPageRequestHandler):
         self.write_template('templates/news.html',{})
 
 
+class PageHelpCollaborators(BasicPageRequestHandler):
+    def get(self):
+        self.write_template('templates/help-collaborators.html',{})
+
+
+
 class PageNewImage(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:
