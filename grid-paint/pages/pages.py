@@ -31,8 +31,11 @@ class PageIndex(BasicPageRequestHandler):
         if self.user_info.user:
             newsfeed_artworks = db.NewsFeed.all().filter('user_email =', self.user_info.user_email).order('-date').fetch(7)
             newsfeed = [convert.convert_artwork_for_page(a, 200, 150) for a in newsfeed_artworks]
-            if len(newsfeed) < 3:
-                newsfeed = None
+            if 0 < len(newsfeed) < 3:
+                for i in range(len(newsfeed), 3):
+                    newsfeed.append({
+                        'not_found': True
+                    })
             elif len(newsfeed) < 7:
                 newsfeed = newsfeed[0:3]
         

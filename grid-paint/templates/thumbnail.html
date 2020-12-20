@@ -1,7 +1,6 @@
 {% if a.not_found %}
-  <div class="col-xs-6 col-md-3">  
-  	<a href="/images/details/{{ a.key.id }}">
-    <div class="thumbnail index-page-thumbnail" style="background-color: #f8f8f8;">
+  <div class="thumbnail-wrapper" image_id="{{ a.key.id }}">
+    <div class="thumbnail index-page-thumbnail" style="cursor: default;">
     	{% if template_plugin %}
     		{% include template_plugin %}
     	{% endif %}
@@ -13,7 +12,6 @@
 			<div class="thumb-date">&nbsp;</div>
 		</div>
 	</div>
-	</a>
   </div>
 {% else %}
   <div class="thumbnail-wrapper">  
