@@ -186,8 +186,7 @@ class JSONActionSaveImage(BasicRequestHandler):
         artwork.small_image_width = small_image_size[0]
         artwork.small_image_height = small_image_size[1]
         
-        if self.user_info.user_email == artwork.author_email:
-            artwork.date = datetime.datetime.now()
+        artwork.date = datetime.datetime.now()
             
         saved_id = artwork.put()
         
