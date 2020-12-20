@@ -10,6 +10,9 @@ from tags import tag_url_name
 
 
 class CronCleanNotifications(BasicRequestHandler):
+    """
+    Delete notifications older than 90 days
+    """
     def get(self):
         date = datetime.datetime.now() - datetime.timedelta(days=90)
         notifications = db.Notification.all().filter('date <', date).fetch(100)
@@ -19,7 +22,18 @@ class CronCleanNotifications(BasicRequestHandler):
             n.delete()
 
         self.response.set_status(200)
-        return
+
+
+class CronCleanOldNews(BasicRequestHandler):
+    """
+    Delete old news from newsfeed older than 90 days
+    """
+    def get(self):
+        date = datetime.datetime.now() - datetime.timedelta(days=90)
+        news = db.NewsFeed.all().filter('date <', date).fetch(200)
+        for n in news:
+            n.delete()
+        self.response.set_status(200)
 
 
 def get_task_status(task_name):

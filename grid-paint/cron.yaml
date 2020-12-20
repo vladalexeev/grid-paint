@@ -1,7 +1,11 @@
 cron:
 - description: "Delete old notifications"
   url: /cron/clean-notifications
-  schedule: every 12 hours
+  schedule: every 4 hours
+
+- description: "Delete old news"
+  url: /cron/clean-news
+  schedule: every 2 hours
 
 #- description: "Update artworks"
 #  url: /cron/update-artworks
