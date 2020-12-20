@@ -65,13 +65,25 @@
 			<span class="sr-only">Toggle Dropdown</span>
 		  </button>
 		  <ul class="dropdown-menu">
-			<li><a href="/painter?copy_id={{ artwork.key.id }}"><i class="icon icon-copy icon-white"></i> Create copy</a></li>
-			<li><a href="{{ artwork.full_image_file_name }}" target="_blank"><i class="icon icon-arrow-down"></i> Donwload PNG</a></li>
+			<li><a href="/painter?copy_id={{ artwork.key.id }}"><i class="icon icon-copy"></i> Create copy</a></li>
+			<li><a href="{{ artwork.full_image_file_name }}" target="_blank"><i class="icon icon-arrow-down"></i> Download PNG</a></li>
 			<li><a href="/images/svg/{{ artwork.key.id }}.svg"><i class="icon icon-arrow-down"></i> Download SVG</a></li>
+			{% if user_info.superadmin or user_is_author %}
 			<li role="separator" class="divider"></li>
-			<li><a href="#" image-key="{{ artwork.key.id }}" class="btn-delete-image"><i class="icon icon-remove icon-white"></i> Delete</a></li>
+			<li><a href="#" image-key="{{ artwork.key.id }}" class="btn-delete-image"><i class="icon icon-remove"></i> Delete image</a></li>
+			{% endif %}
+			{% if user_is_collaborator and not user_is_author%}
+			<li role="separator" class="divider"></li>
+			<li><a href="#" id="btn-resign"><i class="icon icon-signout"></i> Resign</a></li>
+			{% endif %}
 		  </ul>
 		</div>
+
+		{% if user_info.superadmin or user_is_author %}
+		<div style="display: inline-block; margin-left: 20px">
+			<button type="button" id="btn-manage-collaborators" class="btn btn-primary btn-sm"><i class="icon icon-group"></i> Collaborators...</button>
+		</div>
+		{% endif %}
 	</div>
 	{% endif %}
 	{% if user_info.superadmin %}
@@ -104,6 +116,16 @@
 				{% endif %}
 			</span>
 		</div>
+
+		{% if collaborators %}
+		<div class="details">
+			in collaboration with
+			{% for c in collaborators %}
+				<a href="/profiles/{{ c.profile_id }}">{{ c.nickname }}</a>{% if not forloop.last %},{% endif %}
+			{% endfor %}
+		</div>
+		{% endif %}
+
 		<div class="details-delimiter"></div>
 		{% for d in artwork.description_list %}
 		  <div class="description-text">{{ d }}</div>
@@ -239,6 +261,26 @@
 </div>
 
 
+<div id="modal-confirm-resign" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <p>Do you really want to remove yourself from collaborators?</p>
+		<p>After doing this you will not able to edit this image.</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a href="#" id="btn-confirm-resign" class="btn btn-danger">Resign</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div id="modal-error" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -251,6 +293,41 @@
       </div>
       <div class="modal-footer">
         <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-collaborators" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Manage collaborators</h4>
+      </div>
+      <div class="modal-body">
+        <div style="height: 300px; overflow-y: scroll;" id="collaborators-list">
+			<div class="spinner"></div>
+		</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal-confirm-dismiss" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a href="#" id="btn-confirm-dismiss" class="btn btn-danger">Dismiss</a>
       </div>
     </div>
   </div>
@@ -427,6 +504,156 @@ $(function() {
 		event.stopPropagation();
 	});
 })
+
+function showCircleLoader() {
+	$('body').append(
+		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
+	)
+}
+
+function hideCircleLoader() {
+	$('#spinner-fullscreen').remove();
+}
+
+</script>
+
+
+<script>
+// Collaborators
+
+$(function() {
+	$('#btn-manage-collaborators').click(function() {
+		$('#collaborators-list').html('<div class="spinner"></div>');
+		$('#modal-collaborators').modal('show');
+		$.getJSON('/json/collaborators?artwork_id='+artworkId).success(
+			function(data) {
+				var collaborators = data
+				var collaborators_ids = [];
+				for (var i=0; i<collaborators.length; i++) {
+					collaborators_ids.push(collaborators[i].profile_id);
+				}
+				console.log(collaborators_ids);
+
+				$.getJSON('/json/leaders?limit=100&offset=0&profile_id='+authorId).success(
+					function(data) {
+						if (data.length == 0) {
+							html = '<p>You can invite for collaboration those users, who you follow.</p><p>Follow your friend and invite him to paint together.</p>'
+							$('#collaborators-list').html(html);
+							return;
+						}
+
+						html = '<table class="table table-striped"><tbody class="table-content">';
+						for (var i = 0; i < data.length; i++) {
+							item = data[i];
+							if (collaborators_ids.indexOf(item.profile_id) >= 0) {
+								html +=
+									`<tr>
+										<td>
+											<a href="/profiles/${item.profile_id}" target="_blank">
+												<div class="user-avatar-in-list" style="background-image: url(${item.avatar_url})"></div>
+												<span id="collaborator-name-${item.profile_id}">${item.nickname}</span>
+											</a>
+										</td>
+										<td style="width: 50px; text-align: right;">
+											<span id="dismissed-${item.profile_id}" style="display: none;">dismissed</span>
+											<span id="dismiss-request-${item.profile_id}" style="display: none;"><i class="icon icon-circle-blank" /></span>
+											<button type="button" class="btn btn-danger btn-xs btn-dismiss-collaborator-item" id="btn-dismiss-${item.profile_id}" btn-data="${item.profile_id}">Dismiss</button>
+										</td>
+									</tr>`
+							} else {
+								html +=
+									`<tr>
+										<td>
+											<a href="/profiles/${item.profile_id}" target="_blank">
+												<div class="user-avatar-in-list" style="background-image: url(${item.avatar_url})"></div>
+												<span id="collaborator-name-${item.profile_id}">${item.nickname}</span>
+											</a>
+										</td>
+										<td style="width: 50px; text-align: right;">
+											<span id="invited-${item.profile_id}" style="display: none;">invited</span>
+											<span id="invite-request-${item.profile_id}" style="display: none;"><i class="icon icon-circle-blank" /></span>
+											<button type="button" class="btn btn-primary btn-xs btn-invite-collaborator-item" id="btn-invite-${item.profile_id}" btn-data="${item.profile_id}">Invite</button>
+										</td>
+									</tr>`
+							}
+						}
+						html += '</tbody></table>';
+						$('#collaborators-list').html(html);
+
+						$('.btn-invite-collaborator-item').click(function(event) {
+							var collaborator_id = event.target.getAttribute('btn-data')
+							$('#btn-invite-'+collaborator_id).css('display', 'none');
+							$('#invite-request-'+collaborator_id).css('display', '');
+							$.post(
+								'/json/invite-collaborator',
+								{
+									'artwork_id': artworkId,
+									'collaborator_id': collaborator_id
+								},
+								null,
+								'json'
+							).done(function(data) {
+								$('#invite-request-'+collaborator_id).css('display', 'none');
+								$('#invited-'+collaborator_id).css('display', '');
+							}).fail(function() {
+							});
+						});
+
+						$('.btn-dismiss-collaborator-item').click(function(event) {
+							collaborator_id = event.target.getAttribute('btn-data');
+							collaborator_name = $('#collaborator-name-'+collaborator_id).text();
+							$('#modal-confirm-dismiss .modal-body').html(
+								`<p>Do you really want to dismiss ${collaborator_name}?</p>
+								<p>He will not be able to edit this image any more.</p>`
+							);
+							$('#modal-confirm-dismiss #btn-confirm-dismiss').attr('btn-data', collaborator_id);
+							$('#modal-confirm-dismiss').modal('show');
+						})
+					}
+				)
+
+			}
+		)
+	});
+
+	$('#btn-resign').click(function() {
+		$('#modal-confirm-resign').modal('show');
+	});
+
+	$('#btn-confirm-resign').click(function() {
+		$('#modal-confirm-resign').modal('hide');
+		showCircleLoader();
+		$.post(
+			'/json/resign-collaborator',
+			{
+				'artwork_id': artworkId
+			},
+			function() {
+				document.location.reload();
+			},
+			'json'
+		)
+	});
+
+	$('#btn-confirm-dismiss').click(function(event) {
+		var collaborator_id = event.target.getAttribute('btn-data')
+		$('#modal-confirm-dismiss').modal('hide');
+		$('#btn-dismiss-'+collaborator_id).css('display', 'none');
+		$('#dismiss-request-'+collaborator_id).css('display', '');
+		$.post(
+			'/json/dismiss-collaborator',
+			{
+				'artwork_id': artworkId,
+				'collaborator_id': collaborator_id
+			},
+			null,
+			'json'
+		).done(function(data) {
+			$('#dismiss-request-'+collaborator_id).css('display', 'none');
+			$('#dismissed-'+collaborator_id).css('display', '');
+		});
+	});
+})
 </script>
 
 
@@ -436,7 +663,7 @@ $(function() {
 <script src="/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
 
 
-<div id="properties-modal" id="modal-confirm-delete" class="modal fade">
+<div id="properties-modal" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -606,15 +833,6 @@ function showComment(id, parent_id) {
 		});	
 }
 
-function showCircleLoader() {
-	$('body').append(
-		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
-	)
-}
-
-function hideCircleLoader() {
-	$('#spinner-fullscreen').remove();
-}
 </script>
 
 

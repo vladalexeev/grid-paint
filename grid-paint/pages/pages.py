@@ -18,6 +18,8 @@ import zlib
 
 from common import BasicPageRequestHandler
 from common import BasicRequestHandler
+from common import get_settings
+from exchange_tokens import generate_token
 
 page_size=10
 users_page_size=50
@@ -117,6 +119,12 @@ class PageNews(BasicPageRequestHandler):
         self.write_template('templates/news.html',{})
 
 
+class PageHelpCollaborators(BasicPageRequestHandler):
+    def get(self):
+        self.write_template('templates/help-collaborators.html',{})
+
+
+
 class PageNewImage(BasicPageRequestHandler):
     def get(self):
         if not self.user_info.user:
@@ -147,6 +155,28 @@ class PagePainter(BasicPageRequestHandler):
             if artwork is None:
                 self.response.set_status(404)
                 return
+
+            user_is_author = artwork.author_email == self.user_info.user_email
+            collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', self.user_info.profile_id).get()
+            user_is_collaborator = collaborator is not None
+
+            if not self.user_info.superadmin and not user_is_author and not user_is_collaborator:
+                # should be the same user or superadmin
+                self.response.set_status(403)
+                return
+
+            collaborators_count = db.ArtworkCollaborator.all().filter('artwork =', artwork).count()
+            settings = get_settings()
+            exchange_token = ''
+            if collaborators_count > 0:
+                # Generate security token for grid-paint-exchange, because it's group artwork
+                exchange_token = generate_token(
+                    settings.exchange_salt,
+                    artwork_id,
+                    self.user_info.profile_id,
+                    self.user_info.user_name,
+                    self.user_info.avatar_url
+                )
             
             if hasattr(artwork,'json'):            
                 if artwork.json_compressed:
@@ -163,7 +193,9 @@ class PagePainter(BasicPageRequestHandler):
                     'artwork_name': artwork.name,
                     'artwork_description': artwork.description,
                     'artwork_json': artwork_json,
-                    'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags])
+                    'artwork_tags': ','.join([tags.tag_by_url_name(t).title for t in artwork.tags]),
+                    'exchange_token': exchange_token,
+                    'exchange_url': settings.exchange_url
                 })
         elif self.request.get('copy_id'):
             artwork_id = self.request.get('copy_id')
@@ -436,6 +468,8 @@ class PageImage(BasicPageRequestHandler):
         comments = [convert.convert_comment_for_page(c) for c in db_comments]
         
         converted_artwork = convert.convert_artwork_for_page(artwork, 600, 400)
+        author_user_id = converted_artwork.get('author', {}).get('profile_id')
+
         if 'tags' in converted_artwork:
             converted_artwork['tags_merged'] = ','.join([tags.tag_by_url_name(t.title).title for t in converted_artwork['tags']])
 
@@ -447,7 +481,20 @@ class PageImage(BasicPageRequestHandler):
                 })
             return
 
-        can_edit_artwork = self.user_info.superadmin or artwork.author_email==self.user_info.user_email
+        user_is_author = artwork.author_email == self.user_info.user_email
+
+        db_collaborators = db.ArtworkCollaborator.all().filter('artwork =', artwork).order('-last_date')
+        collaborators = [
+            convert.convert_user_profile(dao.get_user_profile_by_id(c.user_id))
+            for c in db_collaborators
+            if c.user_id != author_user_id
+        ]
+
+        user_is_collaborator = False
+        if self.user_info.user:
+            user_is_collaborator = self.user_info.profile_id in [c['profile_id'] for c in collaborators]
+
+        can_edit_artwork = self.user_info.superadmin or user_is_author or user_is_collaborator
         if 'block' in converted_artwork or 'copyright_block' in converted_artwork and not can_edit_artwork:
             self.write_template('templates/artwork-details-blocked.html', {})
             return
@@ -455,12 +502,15 @@ class PageImage(BasicPageRequestHandler):
         if self.user_info.user:
             following = dao.is_follower(artwork.author_email, self.user_info.user_email)
         else:
-            following = None 
-        
+            following = None
+
         self.write_template('templates/artwork-details.html', 
             {
                 'artwork': converted_artwork,
+                'collaborators': collaborators,
                 'can_edit_artwork': can_edit_artwork,
+                'user_is_author': user_is_author,
+                'user_is_collaborator': user_is_collaborator,
                 'comments': comments,
                 'favorite_count': favorite_count,
                 'favorite': favorite,
@@ -563,6 +613,9 @@ class PageProfile(BasicRequestHandler):
         recent_db_images = db.Artwork.all().filter('author_email', user_profile.email).order('-date').fetch(3, 0)
         recent_user_images = [convert.convert_artwork_for_page(a, 200, 150) for a in recent_db_images]
 
+        recent_db_group_images = db.ArtworkCollaborator.all().filter('user_id =', profile_id).order('-last_date').fetch(3, 0)
+        recent_group_images = [convert.convert_artwork_for_page(a.artwork, 200, 150) for a in recent_db_group_images]
+
         recent_db_tags = db.UserTag.all().filter('user_id', user_profile.key().id()).order('-last_date').fetch(3, 0)
         recent_user_tags = [convert.convert_tag_for_page(t) for t in recent_db_tags]
         for t in recent_user_tags:
@@ -573,6 +626,9 @@ class PageProfile(BasicRequestHandler):
             'recent_images': recent_user_images,
             'has_any_recent_images': len(recent_user_images) > 0,
             'has_more_recent_images': len(recent_user_images) >= 3,
+            'group_images': recent_group_images,
+            'has_any_group_images': len(recent_group_images) > 0,
+            'has_more_group_images': len(recent_group_images) >= 3,
             'recent_tags': recent_user_tags,
             'has_any_recent_tags': len(recent_user_tags) > 0,
             'has_more_recent_tags': len(recent_user_tags) >= 3,
@@ -1064,3 +1120,47 @@ class PageUserTagImages(BasicPageRequestHandler):
         model['profile'] = convert.convert_user_profile(user)
 
         self.write_template('templates/user-images-by-tag.html', model)
+
+
+class PageUserGroupImages(BasicPageRequestHandler):
+    def get(self, *args):
+        try:
+            profile_id = int(args[0])
+        except ValueError:
+            self.response.set_status(404)
+            return
+
+        user_profile = dao.get_user_profile_by_id(profile_id)
+        if not user_profile:
+            self.response.set_status(404)
+            return
+
+        if hasattr(user_profile, 'self_block'):
+            self.response.set_status(404)
+            return
+
+        def artworks_query_func():
+            return db.ArtworkCollaborator.all().filter('user_id =', profile_id).order('-last_date')
+
+        def href_create_func(offset):
+            return '/profiles/' + str(profile_id) + '/group-images?offset=' + str(offset)
+
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST + 'group_images_' + str(profile_id) + '_' + str(offset)
+
+        model = create_gallery_model(self.request.get('offset'),
+                                     artworks_query_func,
+                                     href_create_func,
+                                     memcache_cursor_key_func)
+        model['profile'] = convert.convert_user_profile(user_profile)
+        if self.user_info.user:
+            model['following'] = dao.is_follower(user_profile.email, self.user_info.user_email)
+
+        if self.user_info.user and profile_id == self.user_info.profile_id:
+            model['this_user_profile'] = True
+
+        model['user_page_title'] = 'Group images of'
+
+        self.write_template('templates/user-group-images.html', model)
+
+

@@ -1,5 +1,9 @@
 {% extends "base-adv.html" %}
 
+{% block include_js %}
+{{ block.super }}
+<script src="/js/moment.js"></script>
+{% endblock %}
 
 {% block content %}
 <div style="min-height:610px;">
@@ -71,14 +75,15 @@ function constructNotificationComponent(n) {
 	var headerText='notified'
 	var hyperlink='';
 	var content='';
+	var notificationDate = moment.utc(n.date).fromNow();
 	if (n.type=='follow') {
 		result=`<div id="notification-${n.id}" class="notification-container" notification-id="${n.id}">\
 			<div class="notification-icon"><i class="icon-user"></i></div>\
 			<div class="comment">\
 				<div class="comment-header">\
 					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
-					<div>${n.date}</div>\
-					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> is now following you</div>\
+					<div class="notification-date">${notificationDate}</div>\
+					<div class="notification-header-text"><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> is now following you</div>\
 				</div>\
 			</div>\
 		</div>`;
@@ -89,8 +94,8 @@ function constructNotificationComponent(n) {
 			<div class="comment">\
 				<div class="comment-header">\
 					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
-					<div>${n.date}</div>\
-					<h2>Message from administrator</h2>
+					<div class="notification-date">${notificationDate}</div>\
+					<div class="notification-header-text">Message from administrator</div>
 				</div>\
     			<div class="comment-text"><b>${n.message}</b></div>\
 			</div>\
@@ -131,6 +136,46 @@ function constructNotificationComponent(n) {
 		} else {
 			validNotification=false;
 		}
+	} else if (n.type == 'artwork_collaborator_invite') {
+	    iconName = 'icon-picture';
+	    headerText = 'invited you to join him in editing of artwork';
+	    if (n.artwork) {
+			hyperlink=`/images/details/${n.artwork.id}`;
+			if (n.status == 'accepted') {
+			    content = `<div class="comment-text"><div class="text-success">Accepted</div></div>`
+			} else if (n.status == 'rejected') {
+			    content = `<div class="comment-text"><div class="text-danger">Rejected</div></div>`
+			} else {
+                content = `<div class="comment-text">
+                    <button class="btn btn-sm btn-success" onclick="acceptNotification(${n.id})">Accept</button>
+                    <button class="btn btn-sm btn-danger" onclick="rejectNotification(${n.id})">Reject</button>
+                </div>`;
+			}
+		} else {
+			validNotification=false;
+		}
+	} else if (n.type == 'artwork_collaborator_invite_accept') {
+	    iconName = 'icon-ok';
+	    headerText = 'accepted your invite to edit artwork';
+		if (n.artwork) {
+			hyperlink=`/images/details/${n.artwork.id}`;
+		} else {
+			validNotification=false;
+		}
+	} else if (n.type == 'resign_collaborator') {
+	    iconName = 'icon-remove';
+	    headerText = 'removed himself from collaborators of artwork';
+		if (n.artwork) {
+			hyperlink=`/images/details/${n.artwork.id}`;
+		} else {
+			validNotification=false;
+		}
+	} else if (n.type == 'collaborator_changed_artwork') {
+	    iconName = 'icon-picture';
+	    headerText = 'edited your artwork';
+
+	} else {
+	    headerText = n.type;
 	}
 	
 	var result='';
@@ -141,9 +186,9 @@ function constructNotificationComponent(n) {
 			<div class="comment">\
 				<div class="comment-header">\
 					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
-					<div>${n.date}</div>\
-					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
-					<h2><a href="${hyperlink}">${n.artwork.name}</a></h2>\
+					<div class="notification-date">${notificationDate}</div>\
+					<div class="notification-header-text"><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
+					<div class="notification-header-artwork"><a href="${hyperlink}"><b>${n.artwork.name}</b></a></div>\
 				</div>\
 				${content}\
 			</div>\
@@ -154,8 +199,8 @@ function constructNotificationComponent(n) {
 			<div class="comment">\
 				<div class="comment-header">\
 					<div class="notification-remove" onclick="onDeleteNotification(${n.id})"><i class="icon-remove"></i></div>\
-					<div>${n.date}</div>\
-					<div><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
+					<div class="notification-date">${notificationDate}</div>\
+					<div class="notification-header-text"><b><a href="/profiles/${n.sender.profile_id}">${n.sender.nickname}</a></b> ${headerText}</div>\
 					<div>Artwork or comment was deleted</div>\
 				</div>\
 			</div>\
@@ -268,6 +313,48 @@ function onDeleteAllVisibleNotifications() {
 			'json'
 		);
 	});
+}
+
+function showCircleLoader() {
+	$('body').append(
+		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
+	)
+}
+
+function hideCircleLoader() {
+	$('#spinner-fullscreen').remove();
+}
+
+function acceptNotification(notificationId) {
+    showCircleLoader();
+    $.post(
+        '/json/accept-notification',
+        {
+            'notification_id': notificationId,
+        },
+        null,
+        'json'
+    ).done(function(data) {
+        hideCircleLoader();
+        $('.notification-container').remove();
+        loadNotifications(pageSize, 0);
+    })
+}
+
+function rejectNotification(notificationId) {
+    showCircleLoader();
+    $.post(
+        '/json/reject-notification',
+        {
+            'notification_id': notificationId,
+        },
+        null,
+        'json'
+    ).done(function(data) {
+        hideCircleLoader();
+        $('.notification-container').remove();
+        loadNotifications(pageSize, 0);
+    })
 }
 
 $(function() {

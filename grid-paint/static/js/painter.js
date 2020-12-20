@@ -33,6 +33,10 @@ var modalTagsVisible = false;
 var modalSquareGridSpecialPropertiesVisible = false;
 var initialTagsValue = null;
 
+var socket = null;
+var collaboratorsOnline = [];
+var collaboratorBadges = [];
+
 // 
 function adjustCanvasWrapper() {
 	$("#canvas-wrapper").height($(window).height()-60);
@@ -111,23 +115,65 @@ function paintOnCanvasByMouseEvent(event) {
 		if (event.which==3) {
 			newShapeName="empty";
 		}
+
+		// Return immediately if there are no actual changes
+		var oldCell = gridArtwork.getCell(cell.col, cell.row);
+		if ((oldCell == null || oldCell.shapeName == 'empty') && newShapeName == 'empty') {
+			return;
+		}
+		if (oldCell != null && oldCell.shapeName == newShapeName && oldCell.color == selectedColor) {
+			return;
+		}
 		
 		storeUndoCell(cell.col, cell.row, newShapeName, selectedColor);
-		
 		paintOnCanvas(cell.col, cell.row, newShapeName, selectedColor);
 		if (newShapeName!="empty") {
 			pushRecentColor(selectedColor);	
 		}
 		changed=true;
+
+		if (socket != null) {
+			var changes = {
+				'cells': [{
+					col: cell.col,
+					row: cell.row,
+					shapeName: newShapeName,
+					color: selectedColor
+				}]
+			}
+			console.log('socket.io <- changes (paintOnCanvasByMouseEvent)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}
 }
 
 function eraseOnCanvasByMouseEvent(event) {
 	var cell=getCellCoordByMouseEvent(event);
 	if (paperMouseDown) {
+		// Return immediately if there are no actual changes
+		var oldCell = gridArtwork.getCell(cell.col, cell.row);
+		if (oldCell == null || oldCell.shapeName == 'empty') {
+			return;
+		}
+
 		storeUndoCell(cell.col, cell.row, 'empty', selectedColor);	
 		paintOnCanvas(cell.col, cell.row, 'empty', selectedColor);
 		changed=true;
+
+		if (socket != null) {
+			var changes = {
+				'cells': [{
+					col: cell.col,
+					row: cell.row,
+					shapeName: 'empty',
+					color: selectedColor
+				}]
+			}
+			console.log('socket.io <- changes (eraseOnCanvasByMouseEvent)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}
 }
 
@@ -269,7 +315,25 @@ function drawToolOnCanvas() {
 			pushRecentColor(selectedColor);	
 		}
 	
-        changed = true;
+		changed = true;
+		
+		if (socket != null) {
+			var changes = {
+				cells: []
+			}
+			for (var i=0; i < cells.length; i++) {
+				changes.cells.push({
+					col: cells[i].col,
+					row: cells[i].row,
+					shapeName: selectedShapeName,
+					color: selectedColor
+				})
+			}
+	
+			console.log('socket.io <- changes (drawToolOnCanvas)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
     }
 }
 
@@ -399,7 +463,7 @@ function setMode(m) {
 	}
 }
 
-function saveArtwork() {
+function prepareArtworkToSave() {
 	var a={
 		version: {
 			major:2,
@@ -414,50 +478,56 @@ function saveArtwork() {
 		layers:[{
 			grid:grid.name,
 			cellSize:grid.cellSize,
-			rows:[]	
+			rows:[]
 		}],
 		recentColors: recentColors
 	};
-	
+
 	if (grid.name=='square') {
 		a['effectivePixelArtRect'] = getArtworkEffectivePixelArtRect(grid, gridArtwork);
 	}
-	
+
 	a['transparentBackground'] = $('#modal_transparent_background')[0].checked;
 	a['gridVisible'] = $('#modal_artwork_grid_visible')[0].checked;
 	a['additionalPixelImage'] = $('#modal_artwork_pixel_art')[0].checked;
-	
+
+	if (artwork.id) {
+		a.id=artwork.id;
+	}
+
+	for (var row=0; row<gridArtwork.cells.length; row++) {
+		var rowElement={
+			row:row
+		};
+		var cellArray=[];
+
+		for (var col=0; col<gridArtwork.cells[row].length; col++) {
+			if (gridArtwork.cells[row][col] && gridArtwork.cells[row][col].shapeName!="empty") {
+				cellArray.push([
+					col,
+					gridArtwork.cells[row][col].shapeName,
+					gridArtwork.cells[row][col].color
+				]);
+			}
+		}
+
+		rowElement.cells=cellArray;
+		a.layers[0].rows.push(rowElement);
+	}
+
+    return a;
+}
+
+function saveArtwork() {
+    var a = prepareArtworkToSave();
+
 	if (a.effectiveRect.width<0 || a.effectiveRect.height<0) {
 		var messageModal=$("#message-modal");
 		messageModal.find("#message-text").text("Cannot save empty image");
 		messageModal.modal();
 		return;
 	}
-	
-	if (artwork.id) {
-		a.id=artwork.id;
-	}
-	
-	for (var row=0; row<gridArtwork.cells.length; row++) {
-		var rowElement={
-			row:row
-		};
-		var cellArray=[];
-		
-		for (var col=0; col<gridArtwork.cells[row].length; col++) {
-			if (gridArtwork.cells[row][col] && gridArtwork.cells[row][col].shapeName!="empty") {
-				cellArray.push([
-					col,
-					gridArtwork.cells[row][col].shapeName,
-					gridArtwork.cells[row][col].color	
-				]);
-			}
-		}
-		
-		rowElement.cells=cellArray;
-		a.layers[0].rows.push(rowElement);
-	}
-	
+
     $("input[name=artwork_json]").val(JSON.stringify(a));
     changed=false;
     showCircleLoader();
@@ -671,6 +741,24 @@ function fillAreaOnCanvasByMouseEvent(event) {
 		}
 		
 		changed=true;
+
+		if (socket != null) {
+			var changes = {
+				cells: []
+			}
+			for (var i=0; i < fillCells.length; i++) {
+				changes.cells.push({
+					col: fillCells[i].col,
+					row: fillCells[i].row,
+					shapeName: newShapeName,
+					color: selectedColor
+				})
+			}
+	
+			console.log('socket.io <- changes (fillAreaOnCanvasByMouseEvent)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}
 }
 
@@ -736,16 +824,23 @@ function updateUndoRedoButtons() {
 function doUndo() {
 	if (undoStack.length>0) {
 		var undoStep=undoStack.pop();
+		var changes = {
+			cells: []
+		};
 		if (undoStep.shiftChange) {
 			var dir=undoStep.shiftChange.dir;
 			if (dir=='left') {
-				gridArtwork.doShiftRight(grid); 
+				gridArtwork.doShiftRight(grid);
+				changes.shift = 'right';
 			} else if (dir=='right') {
 				gridArtwork.doShiftLeft(grid);
+				changes.shift = 'left';
 			} else if (dir=='up') {
 				gridArtwork.doShiftDown(grid);
+				changes.shift = 'down';
 			} else if (dir=='down') {
 				gridArtwork.doShiftUp(grid);
+				changes.shift = 'up';
 			}
 			var removedCells=undoStep.shiftChange.removedCells;
 			for (var i=0; i<removedCells.length; i++) {
@@ -754,46 +849,85 @@ function doUndo() {
 					removedCells[i].row, 
 					removedCells[i].shapeName, 
 					removedCells[i].color);
+				changes.cells.push({
+					col: removedCells[i].col,
+					row: removedCells[i].row,
+					shapeName: removedCells[i].shapeName,
+					color: removedCells[i].color
+				});
 			}
 		} else if (undoStep.backgroundChange) {
 			setBackgroundColor(undoStep.backgroundChange.oldColor);
+			changes.backgroundColor = undoStep.backgroundChange.oldColor
 		} else {
 			for (var i=0; i<undoStep.cellChanges.length; i++) {
 				cc=undoStep.cellChanges[i];
 				paintOnCanvas(cc.col, cc.row, cc.oldShapeName, cc.oldColor);
+				changes.cells.push({
+					col: cc.col,
+					row: cc.row,
+					shapeName: cc.oldShapeName,
+					color: cc.oldColor
+				})
 			}			
 		}
 		
 		redoStack.push(undoStep);
 		updateUndoRedoButtons();
+
+		if (socket) {
+			console.log('socket.io <- changes (undo)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}
 }
 
 function doRedo() {
 	if (redoStack.length>0) {
 		var redoStep=redoStack.pop();
+		var changes = {
+			cells: []
+		}
 		if (redoStep.shiftChange) {
 			var dir=redoStep.shiftChange.dir;
 			if (dir=='left') {
-				gridArtwork.doShiftLeft(grid); 
+				gridArtwork.doShiftLeft(grid);
+				changes.shift = 'left';
 			} else if (dir=='right') {
 				gridArtwork.doShiftRight(grid);
+				changes.shift = 'right';
 			} else if (dir=='up') {
 				gridArtwork.doShiftUp(grid);
+				changes.shift = 'up';
 			} else if (dir=='down') {
 				gridArtwork.doShiftDown(grid);
+				changes.shift = 'down'
 			}
 		} else if (redoStep.backgroundChange) {
 			setBackgroundColor(redoStep.backgroundChange.newColor);	
+			changes.backgroundColor = redoStep.backgroundChange.newColor;
 		} else {
 			for (var i=0; i<redoStep.cellChanges.length; i++) {
 				cc=redoStep.cellChanges[i];
 				paintOnCanvas(cc.col, cc.row, cc.newShapeName, cc.newColor);
+				changes.cells.push({
+					col: cc.col,
+					row: cc.row,
+					shapeName: cc.newShapeName,
+					color: cc.newColor
+				})
 			}
 		}
 		
 		undoStack.push(redoStep);
 		updateUndoRedoButtons();
+
+		if (socket) {
+			console.log('socket.io <- changes (redo)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
 	}	
 }
 
@@ -805,6 +939,15 @@ function pasteSelection() {
 		paintOnCanvas(cc.col, cc.row, cc.shapeName, cc.color);
 	}
 	changed=true;
+
+	if (socket != null) {
+		var changes = {
+			cells: pasteCells
+		}
+		console.log('socket.io <- changes (pasteSelection)');
+		console.log(changes);
+		socket.emit('changes', changes);
+	}
 }
 
 function setBackgroundColor(color) {
@@ -939,6 +1082,18 @@ function initShiftPanel() {
 			}
 		});
 
+	var sendShiftBySocket = function(shift) {
+		if (socket) {
+			var changes = {
+				shift: shift
+			}
+	
+			console.log('socket.io <- changes (shiftWorkspace)');
+			console.log(changes);
+			socket.emit('changes', changes);
+		}
+	}
+
 	$("#btn-shift-left").click(
 		function() {
 			removedCells=gridArtwork.doShiftLeft(grid);
@@ -949,6 +1104,7 @@ function initShiftPanel() {
 			undoStack.push(undoStep);
 			redoStack=[];
 			updateUndoRedoButtons();
+			sendShiftBySocket('left');
 		});
 	
 	$("#btn-shift-right").click(
@@ -961,6 +1117,7 @@ function initShiftPanel() {
 			undoStack.push(undoStep);
 			redoStack=[];
 			updateUndoRedoButtons();
+			sendShiftBySocket('right');
 		});
 		
 	$("#btn-shift-up").click(
@@ -973,6 +1130,7 @@ function initShiftPanel() {
 			undoStack.push(undoStep);
 			redoStack=[];
 			updateUndoRedoButtons();
+			sendShiftBySocket('up');
 		});
 		
 	$("#btn-shift-down").click(
@@ -985,7 +1143,36 @@ function initShiftPanel() {
 			undoStack.push(undoStep);
 			redoStack=[];
 			updateUndoRedoButtons();
+			sendShiftBySocket('down');
 		});
+}
+
+function applyWorkspaceSize(newWidth, newHeight, newCellSize) {
+	$("#canvas")
+		.css("width",newWidth)
+		.css("height",newHeight);
+	grid.workspaceWidth=newWidth;
+	grid.workspaceHeight=newHeight;
+	grid.cellSize=newCellSize;
+	
+	paper.remove();
+	paper=new Raphael("canvas",newWidth,newHeight);
+	grid.paintGrid(paper);
+	selection.paper=paper;
+	
+	var oldGridArtwork=gridArtwork;
+	gridArtwork=new GridArtwork();
+	for (var row=0; row<oldGridArtwork.cells.length; row++) {
+		for (var col=0; col<oldGridArtwork.cells[row].length; col++) {
+			var cell=oldGridArtwork.cells[row][col];
+			if (cell) {
+				var cellRect=grid.getCellRect(col,row);
+				if (cellRect.left+cellRect.width<newWidth && cellRect.top+cellRect.height<newHeight) {
+					paintOnCanvas(col,row,cell.shapeName,cell.color);
+				}
+			}
+		}
+	}
 }
 
 function initSizePanel() {
@@ -1024,31 +1211,21 @@ function initSizePanel() {
 				alert("Cell size should be between 10 and 32 pixels");
 				return;
 			}
-			
-			$("#canvas")
-				.css("width",newWidth)
-				.css("height",newHeight);
-			grid.workspaceWidth=newWidth;
-			grid.workspaceHeight=newHeight;
-			grid.cellSize=newCellSize;
-			
-			paper.remove();
-			paper=new Raphael("canvas",newWidth,newHeight);
-			grid.paintGrid(paper);
-			selection.paper=paper;
-			
-			var oldGridArtwork=gridArtwork;
-			gridArtwork=new GridArtwork();
-			for (var row=0; row<oldGridArtwork.cells.length; row++) {
-				for (var col=0; col<oldGridArtwork.cells[row].length; col++) {
-					var cell=oldGridArtwork.cells[row][col];
-					if (cell) {
-						var cellRect=grid.getCellRect(col,row);
-						if (cellRect.left+cellRect.width<newWidth && cellRect.top+cellRect.height<newHeight) {
-							paintOnCanvas(col,row,cell.shapeName,cell.color);
-						}
+
+			applyWorkspaceSize(newWidth, newHeight, newCellSize);
+
+			if (socket) {
+				var changes = {
+					workspace: {
+						width: newWidth,
+						height: newHeight,
+						cellSize: newCellSize
 					}
 				}
+		
+				console.log('socket.io <- changes (setWorkspaceSize)');
+				console.log(changes);
+				socket.emit('changes', changes);
 			}
 		});
 }
@@ -1413,6 +1590,96 @@ function onCanvasTouchCancel(evt) {
 	onCanvasTouchEnd(evt)
 }
 
+function addCollaborator(collaborator) {
+    var sid = collaborator.sid;
+    var exists = false;
+    for (var i = 0; i < collaboratorsOnline.length; i++) {
+        if (collaboratorsOnline[i].sid == sid) {
+            exists = true;
+            break;
+        }
+	}
+	if (!exists) {
+		collaboratorsOnline.push(collaborator);
+	}
+}
+
+function deleteCollaborator(sid) {
+    var index = -1;
+    for (var i = 0; i < collaboratorsOnline.length; i++) {
+        if (collaboratorsOnline[i].sid == sid) {
+            index = i
+            break;
+        }
+	}
+	collaboratorsOnline.splice(index, 1);
+}
+
+function updateCollaboratorsPanel() {
+    if (collaboratorsOnline.length == 0) {
+        $('.group-image-users-online').hide();
+        $('#call-collaborators').show();
+        return;
+    } else {
+        $('.group-image-users-online').show();
+        $('#call-collaborators').hide();
+    }
+    var html = '';
+    for (var i = 0; i < collaboratorsOnline.length; i++) {
+        var c = collaboratorsOnline[i]
+        html += `<div class="user-icon" style="background-image: url(${c.user.avatar_url})" title="${c.user.nickname}"></div>`;
+    }
+    $('.group-image-users-online').html(html);
+}
+
+var initComplete = false;
+function initialPaintArtwork() {
+    initComplete = true;
+    hideCircleLoader();
+    if (artwork.version.major==1) {
+		var layer=artwork.layers[0];
+		for (var i=0; i<layer.cells.length; i++) {
+			paintOnCanvas(layer.cells[i].col, layer.cells[i].row, layer.cells[i].shape, layer.cells[i].color);
+		}
+	} else if (artwork.version.major==2) {
+		var layer=artwork.layers[0];
+		for (var rowIndex=0; rowIndex<layer.rows.length; rowIndex++) {
+			var cellRow=layer.rows[rowIndex];
+			for (var cellIndex=0; cellIndex<cellRow.cells.length; cellIndex++) {
+				var cell=cellRow.cells[cellIndex];
+				paintOnCanvas(cell[0], cellRow.row, cell[1], cell[2]);
+			}
+		}
+	}
+}
+
+
+function drawCollaboratorPointerToCell(user, cell) {
+	var item = null;
+	var pointer = $('#collaborator-pointer-' + user.user_id)
+	var cellRect = grid.getCellRect(cell.col, cell.row);
+	var x = cellRect.left + cellRect.width / 2;
+	var y = cellRect.top + cellRect.height / 2;
+
+	if (pointer.length == 0) {
+		html = 
+			`<div class="collaborator-pointer" id="collaborator-pointer-${user.user_id}">
+				<div class="wrapper">				
+					<div class="arrow"></div>
+					<div class="nickname">${user.nickname}</div>
+					<div class="avatar" style="background-image: url(${user.avatar_url})"></div>
+				</div>
+			</div>`;
+		pointer = $(html);
+		console.log(pointer);
+		$('#canvas-wrapper #canvas').append(pointer);
+	}
+
+	pointer.css('left', (x - 10) + 'px');
+	pointer.css('top', (y - 30) + 'px');
+	pointer.show();
+}
+
 
 $(function() {
 	adjustCanvasWrapper();
@@ -1448,24 +1715,7 @@ $(function() {
 	$('#modal_artwork_grid_visible')[0].checked = artwork['gridVisible'];
 	$('#modal_artwork_pixel_art')[0].checked = artwork['additionalPixelImage'];
 	$('#modal_transparent_background')[0].checked = artwork['transparentBackground'];
-	
-	
-	if (artwork.version.major==1) {
-		var layer=artwork.layers[0];
-		for (var i=0; i<layer.cells.length; i++) {
-			paintOnCanvas(layer.cells[i].col, layer.cells[i].row, layer.cells[i].shape, layer.cells[i].color);
-		}
-	} else if (artwork.version.major==2) {
-		var layer=artwork.layers[0];
-		for (var rowIndex=0; rowIndex<layer.rows.length; rowIndex++) {
-			var cellRow=layer.rows[rowIndex]; 
-			for (var cellIndex=0; cellIndex<cellRow.cells.length; cellIndex++) {
-				var cell=cellRow.cells[cellIndex];
-				paintOnCanvas(cell[0], cellRow.row, cell[1], cell[2]);
-			}
-		}
-	}
-	
+
 	$("#canvas")
 		.mousedown(onCanvasMouseDown)
 		.mouseup(onCanvasMouseUp)
@@ -1509,6 +1759,16 @@ $(function() {
 			updateUndoRedoButtons();
 			
 			setBackgroundColor(selectedColor);
+
+			if (socket) {
+				var changes = {
+					backgroundColor: selectedColor
+				}
+		
+				console.log('socket.io <- changes (setBackgroundColor)');
+				console.log(changes);
+				socket.emit('changes', changes);
+			}
 		}
 	);
 	
@@ -1588,4 +1848,122 @@ $(function() {
 	initShiftPanel();
 	initSizePanel();
 	initCopyPastePanel();
+
+	if (exchangeToken) {
+	    $('.group-image-online').show();
+
+	    showCircleLoader();
+	    timeoutTaskId = setTimeout(initialPaintArtwork, 5000)
+
+	    socket = io(exchangeUrl);
+	    socket.on('connect', (data) => {
+			console.log('socket.io => connect');
+	        console.log('socket.io <- login');
+	        socket.emit('login', {'token': exchangeToken})
+            $('#socketio-online').show();
+            $('#call-collaborators').show();
+            $('#socketio-offline').hide();
+	    });
+	    socket.on('disconnect', (data) => {
+	        console.log('socket.io => disconnect');
+            $('#socketio-online').hide();
+            $('#call-collaborators').hide();
+            $('#socketio-offline').show();
+	    })
+	    socket.on('login_ok', (data) => {
+	        console.log('socket.io => login_ok');
+
+	        var tokenPayload = JSON.parse(atob(exchangeToken.split('.')[1]));
+	        console.log('socket.io <- hello');
+	        console.log(tokenPayload.user);
+	        socket.emit('hello', tokenPayload.user);
+
+	        console.log('socket.io <- who_is_here')
+	        socket.emit('who_is_here', {})
+	    });
+	    socket.on('login_fail', (data) => {
+	        console.log('socket.io => login_fail');
+	    });
+	    socket.on('you_are_first', (data) => {
+	        console.log('socket.io => you_are_first')
+	        if (!initComplete) {
+	            clearTimeout(timeoutTaskId);
+	            initialPaintArtwork();
+	        }
+	    });
+	    socket.on('hello', (data) => {
+	        console.log('socket.io => hello');
+	        console.log(data);
+	        addCollaborator(data);
+	        updateCollaboratorsPanel();
+	    });
+	    socket.on('bye', (data) => {
+	        console.log('socket.io => bye');
+	        console.log(data)
+	        var sid = data.sid;
+	        deleteCollaborator(sid);
+	        updateCollaboratorsPanel();
+	    });
+	    socket.on('who_is_here', (data) => {
+	        console.log('socket.io => who_is_here');
+	        var tokenPayload = JSON.parse(atob(exchangeToken.split('.')[1]));
+	        console.log('socket.io <- hello');
+	        console.log(tokenPayload.user);
+	        socket.emit('hello', tokenPayload.user);
+	    });
+	    socket.on('ask_image', (data) => {
+	        console.log('socket.io => ask_image')
+	        new_data = {
+	            'sid': data.sid,
+	            'image': prepareArtworkToSave()
+	        }
+	        console.log('socket.io <- full_image');
+	        console.log(new_data)
+	        socket.emit('full_image', new_data)
+	    });
+	    socket.on('redirect_full_image', (data) => {
+	        console.log('socket.io => redirect_full_image')
+	        if (!initComplete) {
+	            console.log(data);
+	            artwork = data;
+	            initialPaintArtwork();
+	        }
+		});
+		socket.on('redirect_changes', (data) => {
+			console.log('socket.io => redirect_changes');
+			console.log(data);
+			var user = data.user;
+			var changes = data.changes
+			if (changes.cells) {
+				var lastCell = null;
+				for (var i = 0; i < changes.cells.length; i++) {
+					var cell = changes.cells[i];
+					paintOnCanvas(cell.col, cell.row, cell.shapeName, cell.color);
+					lastCell = cell;
+				}
+				if (lastCell) {
+					drawCollaboratorPointerToCell(data.user, lastCell);
+				}
+			}
+			if (changes.backgroundColor) {
+				setBackgroundColor(changes.backgroundColor);
+			}
+			if (changes.shift) {
+				if (changes.shift == 'left') {
+					gridArtwork.doShiftLeft(grid);
+				} else if (changes.shift == 'right') {
+					gridArtwork.doShiftRight(grid);
+				} else if (changes.shift == 'up') {
+					gridArtwork.doShiftUp(grid);
+				} else if (changes.shift == 'down') {
+					gridArtwork.doShiftDown(grid);
+				}
+			}
+			if (changes.workspace) {
+				applyWorkspaceSize(changes.workspace.width, changes.workspace.height, changes.workspace.cellSize);
+			}
+		});
+	} else {
+	    initialPaintArtwork()
+	}
 });

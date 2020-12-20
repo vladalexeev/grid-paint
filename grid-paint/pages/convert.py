@@ -72,6 +72,9 @@ def convert_notification(notification):
 
     if hasattr(notification, 'message'):
         result['message'] = notification.message
+
+    if hasattr(notification, 'status'):
+        result['status'] = notification.status
     
     return result
 
@@ -118,6 +121,9 @@ def convert_notification_json(notification):
 
     if 'message' in n:
         result['message'] = n['message']
+
+    if 'status' in n:
+        result['status'] = n['status']
         
     return result
         

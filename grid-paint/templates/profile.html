@@ -100,6 +100,28 @@
         </div>
     {% endif %}
 
+    {% if has_any_group_images%}
+        <div class="container text-center index-page-section" id="editor_choice">
+        <h3>Group images</h3>
+
+        <div class="row">
+            {% for a in group_images %}
+                {% include "thumbnail.html" %}
+            {% endfor %}
+
+            {% if has_more_group_images %}
+                <div class="thumbnail-wrapper">
+                  <a href="/profiles/{{ profile.profile_id }}/group-images">
+                  <div class="thumbnail index-page-thumb-button">
+                    <div class="thumb-image"></div>
+                  </div>
+                  </a>
+                </div>
+            {% endif %}
+        </div>
+        </div>
+    {% endif %}
+
 
     {% if has_any_recent_tags %}
         <div class="container text-center index-page-section" id="recent_favorites">

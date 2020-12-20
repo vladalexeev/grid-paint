@@ -24,6 +24,13 @@ class Artwork(db.Expando):
     editor_choice_date = db.DateTimeProperty()
 
 
+class ArtworkCollaborator(db.Model):
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    user_id = db.IntegerProperty()
+    join_date = db.DateTimeProperty(auto_now=True)
+    last_date = db.DateTimeProperty(auto_now=True)
+
+
 class Tag(db.Model):
     url_name = db.StringProperty()
     title = db.StringProperty()
@@ -75,6 +82,8 @@ class Settings(db.Model):
     show_ads = db.BooleanProperty()
     show_analytics = db.BooleanProperty()
     admin_email = db.StringProperty()
+    exchange_url = db.StringProperty()
+    exchange_salt = db.StringProperty()
 
 
 class Favorite(db.Expando):

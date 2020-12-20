@@ -101,6 +101,10 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	margin-left: 220px !important;
 }
 
+.painter-canvas-wrapper #canvas {
+	position: relative;
+}
+
 .painter-toolbar-full {
 	position: fixed;
 	left:0;
@@ -339,7 +343,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 }
 
 .image-details-header-avatar {
-    float: left;
+    position: absolute;
     width: 44px;
     height: 44px;
     border-radius: 22px;
@@ -350,6 +354,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 .image-details-header h3 {
 	margin-top:10px;
 	margin-bottom:0;
+	margin-left: 65px;
 }
 
 .image-details-header .artist {
@@ -358,6 +363,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 
 .image-details-header .details {
 	color: #808080;
+	margin-left: 65px;
 }
 
 .image-details-header .details-delimiter {
@@ -818,8 +824,20 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	color: #67da69;
 }
 
+.notification-container .notification-icon .icon-ok {
+	color: #67da69;
+}
+
 .notification-container .notification-icon .icon-certificate {
 	color: #ff6a00;
+}
+
+.notification-container .notification-icon .icon-picture {
+	color: #44a8ff;
+}
+
+.notification-container .notification-icon .icon-remove {
+	color: #ff5757;
 }
 
 .notification-container .comment {
@@ -829,6 +847,18 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 .notification-container .notification-remove {
 	float: right;
 	cursor: pointer;
+}
+
+.notification-container .notification-date {
+    color: gray
+}
+
+.notification-container .notification-header-text {
+    font-size: 12pt;
+}
+
+.notification-container .notification-header-artwork {
+    font-size: 12pt;
 }
 
 .btn-tiny {
@@ -1029,6 +1059,108 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
     background-position: center;
     background-size: contain;
 }
+
+/*
+Group image status popup
+*/
+
+.group-image-online {
+    position: fixed;
+    top: 65px;
+    right: 20px;
+    min-height: 24px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 0 6px #c0c0c0;
+}
+
+.group-image-online #socketio-online {
+    margin: 4px 10px;
+    color: green;
+}
+
+.group-image-online #socketio-offline {
+    margin: 4px 10px;
+    color: red;
+}
+
+.group-image-online #call-collaborators {
+    margin: 5px 5px 5px 26px;
+}
+
+.group-image-users-online {
+    position: fixed;
+    top: 105px;
+    right: 20px;
+    min-height: 40px;
+    min-width: 40px;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 0 6px #c0c0c0;
+}
+
+
+.group-image-users-online .user-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    background-size: contain;
+    margin: 5px;
+}
+
+
+/*
+Collaborator pointer
+*/
+
+.collaborator-pointer {
+	position: absolute;
+	width: 120px;
+	height: 30px;
+	transition: all 0.2s ease-out;
+}
+
+.collaborator-pointer .wrapper {
+	position: relative;
+}
+
+.collaborator-pointer .nickname {
+	position: absolute;
+	height: 20px;
+	background: #fff;
+	font-size: 12px;
+	width: 100%;
+	padding-left: 24px;
+	padding-top: 2px;
+	border-radius: 9px;
+	overflow: hidden;
+    text-overflow: ellipsis;
+	padding-right: 4px;	
+	border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.collaborator-pointer .avatar {
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	width: 16px;
+	height: 16px;
+	background-size: cover;
+	border-radius: 8px;
+}
+
+.collaborator-pointer .arrow {
+	position: absolute;
+	top: 10px;
+	width: 0; 
+  	height: 0; 
+  	border-left: 10px solid transparent;
+  	border-right: 10px solid transparent;
+  	border-top: 20px solid #fff;
+}
+
+
 
 /*
 	Media rules for image lists
@@ -1339,6 +1471,8 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	.dummy-banner {
 		width: 160px;
 		height: 600px;
+		background-image: url('/img/banner-sample.png');
+		background-size: cover;
 	}
 	
 	.sidebar-adv {
@@ -1368,6 +1502,8 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 	.dummy-banner {
 		width: 160px;
 		height: 600px;
+		background-image: url('/img/banner-sample.png');
+		background-size: cover;
 	}
 	
 	.sidebar-adv {

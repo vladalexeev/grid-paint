@@ -66,10 +66,21 @@ class JSONActionSaveImage(BasicRequestHandler):
         artwork_name = self.request.get('artwork_name')
         artwork_description = self.request.get('artwork_description')
 
+        collaborator = None
+
         if artwork_id:
             news_type = NEWS_TYPE_CHANGE_ARTWORK
             artwork = dao.get_artwork(artwork_id)
-            if not self.user_info.superadmin and artwork.author_email != self.user_info.user_email:
+
+            if artwork is None:
+                self.response.set_status(404)
+                return
+
+            user_is_author = artwork.author_email == self.user_info.user_email
+            collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', self.user_info.profile_id).get()
+            user_is_collaborator = collaborator is not None
+
+            if not self.user_info.superadmin and not user_is_author and not user_is_collaborator:
                 # should be the same user or superadmin
                 self.response.set_status(403)
                 return
@@ -175,8 +186,7 @@ class JSONActionSaveImage(BasicRequestHandler):
         artwork.small_image_width = small_image_size[0]
         artwork.small_image_height = small_image_size[1]
         
-        if self.user_info.user_email == artwork.author_email:
-            artwork.date = datetime.datetime.now()
+        artwork.date = datetime.datetime.now()
             
         saved_id = artwork.put()
         
@@ -259,6 +269,20 @@ class JSONActionSaveImage(BasicRequestHandler):
                 'type': news_type
             })
 
+        if collaborator is not None:
+            collaborator.last_date = datetime.datetime.now()
+            collaborator.put()
+
+            collaborator_user = dao.get_user_profile_by_id(collaborator.user_id)
+
+            if self.user_info.user_email != artwork.author_email:
+                notification = db.Notification()
+                notification.recipient_email = artwork.author_email
+                notification.artwork = artwork
+                notification.sender_email = collaborator_user.email
+                notification.type = 'collaborator_changed_artwork'
+                dao.add_notification(notification)
+
         self.response.out.write(json.dumps({
             'result': saved_id.id(),
         }))
@@ -294,6 +318,10 @@ class ActionDeleteImage(BasicRequestHandler):
             news_items = db.NewsFeed.all().filter('artwork =', artwork)
             for ni in news_items:
                 ni.delete()
+
+            collaborators = db.ArtworkCollaborator.all().filter('artwork =', artwork)
+            for c in collaborators:
+                c.delete()
 
             cs.delete_file(artwork.full_image_file_name)
             cs.delete_file(artwork.small_image_file_name)
@@ -342,7 +370,13 @@ class JSONActionSaveImageTags(BasicRequestHandler):
             return
 
         artwork = dao.get_artwork(artwork_id)
-        if not self.user_info.superadmin and artwork.author_email != self.user_info.user_email:
+
+        user_is_author = artwork.author_email == self.user_info.user_email
+
+        collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', self.user_info.profile_id).get()
+        user_is_collaborator = collaborator is not None
+
+        if not self.user_info.superadmin and not user_is_author and not user_is_collaborator:
             # should be the same user or superadmin
             self.response.set_status(403)
             return
@@ -681,6 +715,8 @@ class ActionSaveSettings(BasicRequestHandler):
             settings.show_analytics=False
             
         settings.admin_email= self.request.get('admin_email')
+        settings.exchange_url = self.request.get('exchange_url')
+        settings.exchange_salt = self.request.get('exchange_salt')
             
         common.save_settings(settings)
         cache.add(cache.MC_SETTINGS, settings)
@@ -1656,3 +1692,182 @@ class JSONActionSelfBlock(BasicRequestHandler):
         }))
 
 
+class JSONInviteCollaborator(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        artwork_id = int(self.request.get('artwork_id'))
+        collaborator_id = int(self.request.get('collaborator_id'))
+
+        artwork = dao.get_artwork(artwork_id)
+        if artwork is None:
+            self.response.set_status(400)
+            return
+
+        if not self.user_info.superadmin and self.user_info.user_email != artwork.author_email:
+            self.response.set_status(403)
+            return
+
+        collaborator = dao.get_user_profile_by_id(collaborator_id)
+        if collaborator is None:
+            self.response.set_status(400)
+            return
+
+        invite_notification = db.Notification()
+        invite_notification.sender_email = self.user_info.user_email
+        invite_notification.recipient_email = collaborator.email
+        invite_notification.type = 'artwork_collaborator_invite'
+        invite_notification.artwork = artwork
+        dao.add_notification(invite_notification)
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
+
+
+class JSONAcceptNotification(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        notification_id = int(self.request.get('notification_id'))
+        notification = db.Notification.get_by_id(notification_id)
+
+        if notification.recipient_email != self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        if notification.type == 'artwork_collaborator_invite':
+            artwork = notification.artwork
+            author_email = artwork.author_email
+            author = dao.get_user_profile(author_email)
+            author_id = author.key().id()
+            author_collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', author_id).get()
+            if author_collaborator is None:
+                author_collaborator = db.ArtworkCollaborator()
+                author_collaborator.artwork = artwork
+                author_collaborator.user_id = author_id
+                author_collaborator.put()
+
+            recipient_email = notification.recipient_email
+            recipient = dao.get_user_profile(recipient_email)
+            recipient_id = recipient.key().id()
+            collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', recipient_id).get()
+            if collaborator is None:
+                collaborator = db.ArtworkCollaborator()
+                collaborator.artwork = artwork
+                collaborator.user_id = recipient_id
+                collaborator.put()
+
+            new_notification = db.Notification()
+            new_notification.artwork = artwork
+            new_notification.sender_email = recipient_email
+            new_notification.recipient_email = author_email
+            new_notification.type = 'artwork_collaborator_invite_accept'
+            dao.add_notification(new_notification)
+
+        notification.status = 'accepted'
+        dao.add_notification(notification)
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
+
+
+class JSONRejectNotification(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        notification_id = int(self.request.get('notification_id'))
+        notification = db.Notification.get_by_id(notification_id)
+
+        if notification.recipient_email != self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        # TODO add actions for reject if necessary
+
+        notification.status = 'rejected'
+        dao.add_notification(notification)
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
+
+
+class JSONResignCollaborator(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        artwork_id = int(self.request.get('artwork_id'))
+        arwork = dao.get_artwork(artwork_id)
+
+        if arwork is None:
+            self.response.set_status(404)
+            return
+
+        user_id = self.user_info.profile_id
+
+        collaborator = db.ArtworkCollaborator.all().filter('artwork =', arwork).filter('user_id =', user_id).get()
+        if collaborator is not None:
+            collaborator.delete()
+            notification = db.Notification()
+            notification.sender_email = self.user_info.user_email
+            notification.recipient_email = arwork.author_email
+            notification.artwork = arwork
+            notification.type = 'resign_collaborator'
+            dao.add_notification(notification)
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
+
+
+class JSONArtworkCollaborators(BasicRequestHandler):
+    def get(self):
+        artwork_id = int(self.request.get('artwork_id'))
+        arwork = dao.get_artwork(artwork_id)
+
+        db_collaborators = db.ArtworkCollaborator.all().filter('artwork =', arwork)
+        collaborators = []
+        for c in db_collaborators:
+            user_id = c.user_id
+            user_profile = dao.get_user_profile_by_id(user_id)
+            if user_profile is not None:
+                collaborators.append(convert.convert_user_profile_for_json(user_profile))
+
+        self.response.out.write(json.dumps(collaborators))
+
+
+class JSONDismissCollaborator(BasicRequestHandler):
+    def post(self):
+        if not self.user_info.user_email:
+            self.response.set_status(403)
+            return
+
+        artwork_id = int(self.request.get('artwork_id'))
+        collaborator_id = int(self.request.get('collaborator_id'))
+
+        artwork = dao.get_artwork(artwork_id)
+        if artwork is None:
+            self.response.set_status(400)
+            return
+
+        if not self.user_info.superadmin and self.user_info.user_email != artwork.author_email:
+            self.response.set_status(403)
+            return
+
+        collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', collaborator_id).get()
+        if collaborator is not None:
+            collaborator.delete()
+
+        self.response.out.write(json.dumps({
+            'result': 'ok',
+        }))
