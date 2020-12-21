@@ -10,11 +10,8 @@ def hide_bad_language(s):
     if not s:
         return s
 
-    result = unidecode.unidecode(s)  # remove accents from the string
-    result = result.replace('[?]', '')
-
     filter_1 = ProfanityFilter()
-    result = filter_1.censor(result)
+    result = filter_1.censor(s)
     
     filter_2 = get_default_filter()
     result = filter_2.mask_bad_words(result)
