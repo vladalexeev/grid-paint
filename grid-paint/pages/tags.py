@@ -20,7 +20,8 @@ def tag_url_name(title):
         replace(':', '-').\
         replace('#', '-').\
         replace('&', '-').\
-        replace('=', '-')
+        replace('=', '-').\
+        replace('[?]', '')
 
     return unicode(result, 'utf-8')
 
