@@ -5,7 +5,7 @@ cron:
 
 - description: "Delete old news"
   url: /cron/clean-news
-  schedule: every 2 hours
+  schedule: every 1 hours
 
 #- description: "Update artworks"
 #  url: /cron/update-artworks
