@@ -1191,11 +1191,11 @@ function initSizePanel() {
 			}
 		});
 
-	$("#btn-apply-workspace-size").click(
+	$("#btn-set-workspace-size").click(
 		function() {
-			var newWidth=parseInt($("#toolbar-workspace-width").val(),10);
-			var newHeight=parseInt($("#toolbar-workspace-height").val(),10);
-			var newCellSize=parseInt($("#toolbar-cell-size").val(),10);
+			var newWidth=parseInt($("#workspace-width").val(),10);
+			var newHeight=parseInt($("#workspace-height").val(),10);
+			var newCellSize=parseInt($("#workspace-cell-size").val(),10);
 			
 			if (newWidth<200 || newWidth>4000) {
 				alert("Artwork width should by between 200 and 4000 pixels.");
@@ -1213,6 +1213,8 @@ function initSizePanel() {
 			}
 
 			applyWorkspaceSize(newWidth, newHeight, newCellSize);
+
+			$("#workspace-size-modal").modal("hide");
 
 			if (socket) {
 				var changes = {
@@ -1708,9 +1710,9 @@ $(function() {
 	initShapesToolbar();
 	updateUndoRedoButtons();
 	
-	$("#toolbar-workspace-width").val(artwork.canvasSize.width);
-	$("#toolbar-workspace-height").val(artwork.canvasSize.height);
-	$("#toolbar-cell-size").val(artwork.layers[0].cellSize);
+	$("#workspace-width").val(artwork.canvasSize.width);
+	$("#workspace-height").val(artwork.canvasSize.height);
+	$("#workspace-cell-size").val(artwork.layers[0].cellSize);
 	
 	$('#modal_artwork_grid_visible')[0].checked = artwork['gridVisible'];
 	$('#modal_artwork_pixel_art')[0].checked = artwork['additionalPixelImage'];
@@ -1777,6 +1779,12 @@ $(function() {
 			showPropertiesDialog("save");
 		}
 	);
+
+	$("#btn-workspace-size").click(
+		function() {
+			$("#workspace-size-modal").modal("show");
+		}
+	)
 		
 	window.onbeforeunload=
 		function() {

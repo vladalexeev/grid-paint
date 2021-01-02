@@ -32,6 +32,7 @@
 	<div class="painter-toolbar-full text-center">
 		<div style="margin-bottom:10px;">
 			<button id="btn-save" class="btn btn-sm btn-primary" type="button" title="Save image"><i class="icon icon-hdd icon-white"></i> Save</button>
+			<button id="btn-workspace-size" class="btn btn-sm" type="button" title="Workspace size"><i class="icon icon-edit"></i></button>
 			<div class="btn-group">
 				<button id="btn-undo" class="btn btn-sm" type="button" title="Undo (Ctrl-Z)"><i class="icon icon-reply"></i></button>
 				<button id="btn-redo" class="btn btn-sm" type="button" title="Redo"><i class="icon icon-share-alt"></i></button>
@@ -92,28 +93,6 @@
 			</div>
 		</div>
 		<div class="painter-toolbar">
-			<!-- Size toolbar -->
-			<div class="painter-toolbar-header" id="size-toolbar-header" style="cursor:pointer;">
-				Size
-				<div class="pull-right"><i class="icon-chevron-down"></i></div>
-			</div>
-			<div id="size-toolbar-content" style="display:none">
-				<div class="painter-toolbar-form">
-					<label>Workspace size:</label>
-					<input type="number" id="toolbar-workspace-width" style="width:60px;"/>
-					&times;
-					<input type="number" id="toolbar-workspace-height" style="width:60px;"/>
-				</div>
-				<div class="painter-toolbar-form">
-					<label>Cell size:</label>
-					<input type="number" id="toolbar-cell-size" />
-				</div>
-				<div class="painter-toolbar-form">
-					<button type="button" id="btn-apply-workspace-size" class="btn btn-sm btn-primary">Apply</button>
-				</div>							
-			</div>
-		</div>
-		<div class="painter-toolbar">
 			<!-- Copy/Paste toolbar -->
 			<div class="painter-toolbar-header" id="copy-paste-toolbar-header" style="cursor:pointer;">
 				Copy / Paste
@@ -144,6 +123,36 @@
 	<div id="call-collaborators" style="display: none;">Call your friends to draw together</div>
 </div>
 <div class="group-image-users-online" style="display: none;">
+</div>
+
+<div id="workspace-size-modal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">Workspace size</h4>
+            </div>
+			<div class="modal-body">
+				<form role="form">
+					<label>Size</label>
+					<div>
+						<input type="number" class="form-control" id="workspace-width" name="workspace-width" style="width: 100px; display: inline-block;">
+						×
+						<input type="number" class="form-control" id="workspace-height" name="workspace-height" style="width: 100px; display: inline-block;">
+					</div>
+					<div style="height: 20px"></div>
+					<label>Cell size</label>
+					<div>
+						<input type="number" class="form-control" id="workspace-cell-size" name="workspace-cell-size" style="width: 100px; display: inline-block;"> px
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn" data-dismiss="modal">Close</button>
+				<button id="btn-set-workspace-size" type="button" class="btn btn-primary">Change</button>
+			</div>
+		</div>
+	</div>
 </div>
 
 <div id="properties-modal" class="modal fade" role="dialog">
