@@ -147,7 +147,7 @@
 		{% for comment in comments %}
 		  <a name="comment-{{ comment.key }}"></a>
 		  <div class="comment-wrapper">
-			<div class="comment" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
+			<div class="comment {% if comment.hidden %}hidden-comment{% endif %}" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
 				<div class="comment-header">
 					<div class="user-avatar-in-comment" style="background-image:url({{comment.author.avatar_url}})" ></div>
 					<b>
@@ -194,7 +194,7 @@
 						<i class="glyphicon glyphicon-share-alt"></i> Reply
 					</span>
 			  {% endif %}
-			  <div class="btn-group">
+			  <div class="btn-group" {% if not user_info.profile_id %}style="display: none;"{% endif %}>
 				  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<i class="glyphicon glyphicon-option-vertical"></i>
 				  </button>
@@ -206,16 +206,16 @@
 					  </li>
 					  {% endif %}
 					  {% if user_info.superadmin %}
-					  <li class="hide_comment_button"  comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+					  <li class="hide_comment_button" id="hide-comment-button-{{ comment.key }}" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
 						  {% if comment.hidden %}style="display:none;"{% endif%} >
-						  <a href="javascript:void()"><i class="glyphicon glyphicon-eye-close"></i> Hide comment</a>
+						  <a href="javascript:void(0)"><i class="glyphicon glyphicon-eye-close"></i> Hide comment</a>
 					  </li>
-					  <li class="show_comment_button" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+					  <li class="show_comment_button" id="show-comment-button-{{ comment.key }}" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
 						  {% if not comment.hidden %}style="display:none"{% endif %} >
-						  <a href="javascript:void()"><i class="glyphicon glyphicon-eye-open"></i> Show comment</a>
+						  <a href="javascript:void(0)"><i class="glyphicon glyphicon-eye-open"></i> Show comment</a>
 					  </li>
 					  <li class="delete_comment_button" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
-						  <a href="javascript:void()"><i class="glyphicon glyphicon-trash"></i> Delete comment</a>
+						  <a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i> Delete comment</a>
 					  </li>
 					  {% endif %}
 				  </ul>
@@ -412,7 +412,7 @@ $(function() {
 		comment_id = $(this).attr("comment_id");
 		artwork_id = $(this).attr("parent_id");
 		$.getJSON("/complain-comment?comment_id="+comment_id+"&artwork_id="+artwork_id);
-		$('#comment-'+comment_id).css('opacity', 0.5)
+		$('#comment-'+comment_id).addClass('hidden-comment');
 	});	
 });
 
@@ -825,9 +825,10 @@ function hideComment(id, parent_id) {
 	$.getJSON('/admin/hide-comment?id='+id+'&parent_id='+parent_id)
 		.done(function(data) {
 			if (data=="OK") {
+				$("#comment-"+id).addClass('hidden-comment');
 				$("#comment-"+id).find("#text_hidden").show();
-				$("#comment-"+id).find(".show_comment_button").show();
-				$("#comment-"+id).find(".hide_comment_button").hide();
+				$("#show-comment-button-"+id).show();
+				$("#hide-comment-button-"+id).hide();
 			}
 		});	
 }
@@ -836,9 +837,10 @@ function showComment(id, parent_id) {
 	$.getJSON('/admin/show-comment?id='+id+'&parent_id='+parent_id)
 		.done(function(data) {
 			if (data=="OK") {
+				$("#comment-"+id).removeClass('hidden-comment');
 				$("#comment-"+id).find("#text_hidden").hide();
-				$("#comment-"+id).find(".show_comment_button").hide();
-				$("#comment-"+id).find(".hide_comment_button").show();
+				$("#show-comment-button-"+id).hide();
+				$("#hide-comment-button-"+id).show();
 			}
 		});	
 }
