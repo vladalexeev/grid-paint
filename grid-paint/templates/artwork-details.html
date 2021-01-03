@@ -146,73 +146,83 @@
 	<div class="image-details-comments">
 		{% for comment in comments %}
 		  <a name="comment-{{ comment.key }}"></a>
-		  <div class="comment" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
-		  	<div class="comment-header">
-		  		<div class="user-avatar-in-comment" style="background-image:url({{comment.author.avatar_url}})" ></div>
-		  		<b>
-		  			<span id="commenter-name">
-                    {% if comment.author.self_block %}
-                        {{ comment.author.nickname }}
-                    {% else %}
-                        {% if comment.author.profile_id %}
-                            <a href="/profiles/{{ comment.author.profile_id}}">{{ comment.author.nickname }}</a>
-                        {% else %}
-                            {{ comment.author.nickname }}
-                        {% endif %}
-                    {% endif %}
-		  			</span>
-		  		</b> - {{ comment.date|date:"d M Y H:i" }}
-		  		<div class="pull-right">
-		  			{% if not user_info.read_only %}
-			  			<span class="reply_comment_button btn btn-small btn-default" title="Reply" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-			  					{% if comment.hidden %}style="display:none;"{% endif%} >
-			  				<i class="glyphicon glyphicon-share-alt"></i> Reply
-			  			</span>
-		  			{% endif %}
-		  			{% if not comment.hidden and user_info.user and not user_info.read_only %}
-		  				<span class="complain_comment_button btn btn-small btn-default" title="Complain" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-		  					{% if comment.hidden %}style="display:none;"{% endif%} >
-		  					<i class="glyphicon glyphicon-exclamation-sign"></i>
-		  				</span>
-		  			{% endif %}
-		  		  			
-			  		{% if user_info.superadmin %}
-			  			<span class="hide_comment_button btn btn-small btn-default" title="Hide comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-			  					{% if comment.hidden %}style="display:none;"{% endif%} >
-			  				<i class="glyphicon glyphicon-eye-close"></i>
-			  			</span>
-			  			<span class="show_comment_button btn btn-small btn-default" title="Show comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-			  					{% if not comment.hidden %}style="display:none"{% endif %} >
-			  				<i class="glyphicon glyphicon-eye-open"></i>
-			  			</span>
-			  			<span class="delete_comment_button btn btn-small btn-default" title="Delete comment" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
-			  				<i class="glyphicon glyphicon-trash"></i>
-			  			</span>
-			  		{% endif %}
-		  		</div>
-		  	</div>
-		  	{% if user_info.superadmin %}
-                {% if comment.hidden %}
-		  		<div class="comment-text"  id="text_hidden" style="color:red;">Hidden by administrator</div>
-                {% endif %}
-			  	{% for t in comment.text %}
-			  	  <div class="comment-text">{{t}}</div>
-			  	{% endfor %}		  	
-		  	{% else %}
-                {% if comment.author.self_block %}
-                    <div class="comment-text" style="color: gray;">[Comment not available]</div>
-                {% endif %}
-			  	{% if comment.hidden %}
-			  		<div class="comment-text" style="color:red;">Hidden by administrator</div>
-			  	{% endif %}
-			  	{% if not comment.hidden %}
-				  	{% for t in comment.text %}
-				  	  <div class="comment-text">{{t}}</div>
-				  	{% endfor %}
-			  	{% endif %}
-		  	{% endif %}
-		  	
-		  </div>
+		  <div class="comment-wrapper">
+			<div class="comment" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
+				<div class="comment-header">
+					<div class="user-avatar-in-comment" style="background-image:url({{comment.author.avatar_url}})" ></div>
+					<b>
+						<span id="commenter-name">
+						{% if comment.author.self_block %}
+							{{ comment.author.nickname }}
+						{% else %}
+							{% if comment.author.profile_id %}
+								<a href="/profiles/{{ comment.author.profile_id}}">{{ comment.author.nickname }}</a>
+							{% else %}
+								{{ comment.author.nickname }}
+							{% endif %}
+						{% endif %}
+						</span>
+					</b> - {{ comment.date|date:"d M Y H:i" }}
+
+				</div>
+				{% if user_info.superadmin %}
+					{% if comment.hidden %}
+					<div class="comment-text"  id="text_hidden" style="color:red;">Hidden by administrator</div>
+					{% endif %}
+					{% for t in comment.text %}
+					<div class="comment-text">{{t}}</div>
+					{% endfor %}		  	
+				{% else %}
+					{% if comment.author.self_block %}
+						<div class="comment-text" style="color: gray;">[Comment not available]</div>
+					{% endif %}
+					{% if comment.hidden %}
+						<div class="comment-text" style="color:red;">Hidden by administrator</div>
+					{% endif %}
+					{% if not comment.hidden %}
+						{% for t in comment.text %}
+						<div class="comment-text">{{t}}</div>
+						{% endfor %}
+					{% endif %}
+				{% endif %}				
+			</div>
+
+			<div class="comment-actions-panel">
+				{% if not user_info.read_only %}
+					<span class="reply_comment_button btn btn-xs btn-default" title="Reply" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+							{% if comment.hidden %}style="display:none;"{% endif%} >
+						<i class="glyphicon glyphicon-share-alt"></i> Reply
+					</span>
+			  {% endif %}
+			  <div class="btn-group">
+				  <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<i class="glyphicon glyphicon-option-vertical"></i>
+				  </button>
+				  <ul class="dropdown-menu">
+					  {% if not comment.hidden and user_info.user and not user_info.read_only %}
+					  <li class="complain_comment_button" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+						  {% if comment.hidden %}style="display:none;"{% endif%} >
+						  <a href="javascript:void()"><i class="glyphicon glyphicon-exclamation-sign"></i> Complain</a>
+					  </li>
+					  {% endif %}
+					  {% if user_info.superadmin %}
+					  <li class="hide_comment_button"  comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+						  {% if comment.hidden %}style="display:none;"{% endif%} >
+						  <a href="javascript:void()"><i class="glyphicon glyphicon-eye-close"></i> Hide comment</a>
+					  </li>
+					  <li class="show_comment_button" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+						  {% if not comment.hidden %}style="display:none"{% endif %} >
+						  <a href="javascript:void()"><i class="glyphicon glyphicon-eye-open"></i> Show comment</a>
+					  </li>
+					  <li class="delete_comment_button" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
+						  <a href="javascript:void()"><i class="glyphicon glyphicon-trash"></i> Delete comment</a>
+					  </li>
+					  {% endif %}
+				  </ul>
+			  </div>  		  		  			
+			</div>
+
+		</div>	
 		{% endfor %}
 	</div>
 	
@@ -402,7 +412,7 @@ $(function() {
 		comment_id = $(this).attr("comment_id");
 		artwork_id = $(this).attr("parent_id");
 		$.getJSON("/complain-comment?comment_id="+comment_id+"&artwork_id="+artwork_id);
-		$('#comment-'+comment_id).slideUp();
+		$('#comment-'+comment_id).css('opacity', 0.5)
 	});	
 });
 

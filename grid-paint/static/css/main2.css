@@ -387,23 +387,29 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	margin: 10px 0 10px 0;
 }
 
+.image-details-comments .comment-wrapper {
+	position: relative;
+}
+
+.image-details-comments .comment-wrapper .comment-actions-panel {
+	position: absolute; 
+	top: 0; 
+	right: 0; 
+	padding: 4px;
+}
+
 .image-details-comments .comment {
 	background-color: #f4f4f4;
 	border-radius: 5px;
 	border: solid 1px #a0a0a0;
 	margin-bottom: 10px;
+	position: relative;
 }
 
 .image-details-comments .comment .comment-header {
 	background-color: #e8e8e8;
-	border-bottom: solid 1px #b0b0b0;
-	padding: 2px 10px 2px 10px;
+	padding: 2px 10px 2px 50px;
 	font-size: 9pt;
-	overflow: hidden;
-}
-
-.image-details-comments .comment .comment-text {
-	padding: 2px 10px 2px 10px;
 }
 
 .image-details-comments .comment .comment-header h2 {
@@ -414,9 +420,15 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	min-height: 18pt;
 }
 
+.image-details-comments .user-avatar-in-comment {
+	position: absolute;
+	left: 10px;
+	top: 4px;
+	float: unset;
+}
 
 .image-details-comments .comment .comment-text {
-	padding: 4px 10px 4px 10px;
+	padding: 4px 10px 4px 50px;
 	border: none;
 	background: none;
 	font-size: 12pt;
