@@ -197,7 +197,7 @@ function commentToHtml(c) {
 					'</div>'+
 				'</div>';
 				
-	result+='<div class="comment-text" id="text_hidden" style="color:red;'+(c['hidden'] ? '' : 'display:none;')+'">Hidden by administrator</div>';
+	result+='<div class="comment-text" id="text_hidden" style="color:red;'+(c['hidden'] ? '' : 'display:none;')+'">Hidden</div>';
 
     if (c['author']['self_block']) {
         result += '<div class="comment-text" style="color: gray;">[Comment not available]</div>'
