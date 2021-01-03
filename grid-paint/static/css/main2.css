@@ -334,12 +334,12 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 }
 
 .image-details-header {
-	border: 1px solid #c0c0c0;
 	border-radius: 5px;
 	margin: 10px 0 10px 0;
 	padding:0;
 	background-color: #f0f0f0;
 	overflow: hidden;
+	box-shadow: 1px 1px 2px #c0c0c0;
 }
 
 .image-details-header-avatar {
@@ -401,9 +401,10 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 .image-details-comments .comment {
 	background-color: #f4f4f4;
 	border-radius: 5px;
-	border: solid 1px #a0a0a0;
 	margin-bottom: 10px;
 	position: relative;
+	box-shadow: 1px 1px 2px #c0c0c0;
+	overflow: hidden;
 }
 
 .image-details-comments .comment.hidden-comment {
@@ -429,6 +430,14 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	left: 10px;
 	top: 4px;
 	float: unset;
+}
+
+.image-details-comments .user-avatar-in-comment.bordered {
+	width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    border: 4px solid #f4f4f4;
+    left: 6px;	
 }
 
 .image-details-comments .comment .comment-text {
@@ -736,7 +745,7 @@ background: linear-gradient(to bottom, rgba(172, 174, 251, 0.25) 0%,rgba(0,0,0,0
 .thumbnail-wrapper .thumbnail {
 	cursor: pointer;
 	cursor: pointer;
-    box-shadow: 0 0 6px #c0c0c0;
+    box-shadow: 1px 1px 4px #c0c0c0;
     border: transparent;
 }
 

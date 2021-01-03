@@ -149,7 +149,7 @@
 		  <div class="comment-wrapper">
 			<div class="comment {% if comment.hidden %}hidden-comment{% endif %}" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
 				<div class="comment-header">
-					<div class="user-avatar-in-comment" style="background-image:url({{comment.author.avatar_url}})" ></div>
+					<div class="user-avatar-in-comment bordered" style="background-image:url({{comment.author.avatar_url}})" ></div>
 					<b>
 						<span id="commenter-name">
 						{% if comment.author.self_block %}
