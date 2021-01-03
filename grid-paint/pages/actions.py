@@ -548,52 +548,59 @@ class ActionDeleteComment(BasicRequestHandler):
         else:
             self.response.set_status(404)
             return
-        
+
+
 class ActionHideComment(BasicRequestHandler):
     def get(self):
-        if not self.user_info.superadmin:
-            self.response.set_status(403)
-            return
-        
         comment_id = self.request.get('id')
         parent_id = self.request.get('parent_id')
         
         artwork = dao.get_artwork(parent_id)
         if not artwork:
             self.response.set_status(404)
+            return
+
+        if not self.user_info.superadmin and artwork.author_email != self.user_info.user_email:
+            self.response.set_status(403)
             return
         
         comment=db.Comment.get_by_id(long(comment_id), artwork.key())
         if comment:
             comment.hidden = True
+            comment.hidden_by = self.user_info.profile_id
             comment.put()
             cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
             self.response.write(json.dumps('OK'))
         else:
             self.response.write(json.dumps('404'))
-            
+
+
 class ActionShowComment(BasicRequestHandler):
     def get(self):
-        if not self.user_info.superadmin:
-            self.response.set_status(403)
-            return
-        
         comment_id = self.request.get('id')
         parent_id = self.request.get('parent_id')
         
         artwork = dao.get_artwork(parent_id)
         if not artwork:
             self.response.set_status(404)
+            return
+
+        if not self.user_info.superadmin and artwork.author_email != self.user_info.user_email:
+            self.response.set_status(403)
             return
         
         comment=db.Comment.get_by_id(long(comment_id), artwork.key())
         if comment:
             if hasattr(comment, 'hidden'):
                 del comment.hidden
-                comment.put()
+            if hasattr(comment, 'hidden_by'):
+                del comment.hidden_by
+            comment.put()
 
             cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
-            self.response.write(json.dumps('OK'))
+            self.response.write(json.dumps({
+                'text': comment.text
+            }))
         else:
             self.response.write(json.dumps('404'))
 
@@ -617,7 +624,8 @@ class PNGImageRequest(BasicRequestHandler):
         
         self.response.headers['Content-Type']='image/png'     
         self.response.out.write(file_content)        
-        
+
+
 class SVGImageRequest(BasicRequestHandler):
     def get(self, *ar):
         artwork_id=ar[0]
