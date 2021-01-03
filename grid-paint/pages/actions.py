@@ -393,7 +393,7 @@ class JSONActionSaveImageTags(BasicRequestHandler):
         tags_to_delete = set(artwork_url_tags) - set(request_url_tags)
 
         url_tags = []
-        for tag_title in request_tags:
+        for tag_title in request_url_tags:
             url_name = tags.tag_url_name(tag_title)
             if url_name in tags_to_add:
                 db_tag_url_name = tags.tag_added(tag_title, author_profile.key().id(), artwork)
@@ -859,8 +859,8 @@ class JSONActionAdminSetArtworkProperties(BasicRequestHandler):
         artwork_block_reason = self.request.get('admin_artwork_block_reason')
         
         artwork = db.Artwork.get_by_id(artwork_id)
-        artwork.name = artwork_name
-        artwork.description = artwork_description
+        artwork.name = hide_bad_language(artwork_name)
+        artwork.description = hide_bad_language(artwork_description)
         if artwork_editor_choice:
             if not artwork.editor_choice:
                 notification = db.Notification()
