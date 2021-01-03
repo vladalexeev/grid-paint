@@ -416,6 +416,7 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	background-color: #e8e8e8;
 	padding: 2px 10px 2px 50px;
 	font-size: 9pt;
+	overflow: hidden;
 }
 
 .image-details-comments .comment .comment-header h2 {
