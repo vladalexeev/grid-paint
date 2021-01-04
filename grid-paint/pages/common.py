@@ -72,7 +72,10 @@ BANNED_USER_AGENTS = [
     'dotbot',
     'petalbot',
     'mj12bot',
-    'ccbot'
+    'ccbot',
+    'seekport',
+    'comscore',
+    'proximic'
 ]
 
 
