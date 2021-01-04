@@ -1879,3 +1879,22 @@ class JSONDismissCollaborator(BasicRequestHandler):
         self.response.out.write(json.dumps({
             'result': 'ok',
         }))
+
+
+class AdminUpdateUserNickname(BasicRequestHandler):
+    def get(self):
+        if not self.user_info.superadmin:
+            self.response.set_status(403)
+            return
+
+        profile_id = int(self.request.get('profile_id'))
+        user_profile = dao.get_user_profile_by_id(profile_id)
+        new_nickname = hide_bad_language(user_profile.nickname)
+        if new_nickname != user_profile.nickname:
+            user_with_this_nickname = dao.get_user_profile_by_nickname(new_nickname)
+            if user_with_this_nickname is not None:
+                timestamp = int((datetime.datetime.now() - datetime.datetime(1970, 1, 1)).total_seconds())
+                new_nickname = new_nickname + str(timestamp)
+            user_profile.nickname = new_nickname
+            dao.set_user_profile(user_profile)
+        self.redirect('/profiles/{}'.format(profile_id))
