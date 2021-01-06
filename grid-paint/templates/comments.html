@@ -67,27 +67,7 @@ function loadComments(limit, offset) {
 			html+=commentToHtml(data[i]);
 		}
 		$(".image-details-comments").html(html);
-		
-		{% if user_info.superadmin %}
-		$(".delete_comment_button").click(function(data) {
-			comment_id = $(this).attr("comment_id");
-			parent_id = $(this).attr("parent_id");
-			deleteComment(comment_id, parent_id);
-		});
-		
-		$(".hide_comment_button").click(function(data) {
-			comment_id = $(this).attr("comment_id");
-			parent_id = $(this).attr("parent_id");
-			hideComment(comment_id, parent_id);
-		});
-		
-		$(".show_comment_button").click(function(data) {
-			comment_id = $(this).attr("comment_id");
-			parent_id = $(this).attr("parent_id");
-			showComment(comment_id, parent_id);
-		});		
-		{% endif %}
-		
+				
 		if (offset>0 || data.length>maxCount) {
 			$("#nav_buttons").show();
 			if (offset>0) {
@@ -161,32 +141,18 @@ function commentToHtml(c) {
         artworkImageWidth = 100;
         artworkImageHeight = 75;
     }
+	var targetUrl = '/images/details/'+c['artwork_key']+'#comment-'+c['key'];
 	result=
 		'<div class="rich-comment" id="comment-'+c['key']+'">'+
 			'<div class="rich-comment-image">'+
-				'<a href="/images/details/'+c['artwork_key']+'">'+
+				'<a href="'+targetUrl+'">'+
                     '<img src="'+artworkImageUrl+'" width="'+artworkImageWidth+'" height="'+artworkImageHeight+'" border="0"/>' +
 				'</a>'+
 			'</div>'+
 			'<div class="comment">'+
 				'<div class="comment-header">'+
-			  		{% if user_info.superadmin %}
-			  			'<div class="pull-right">'+
-			  			'<span class="hide_comment_button btn btn-small btn-default" title="Hide comment" comment_id="'+c['key']+'" parent_id="'+c['artwork_key']+'" '+
-			  					(c['hidden'] ? 'style="display:none"': '')+'>'+
-			  				'<i class="glyphicon glyphicon-eye-close"></i>'+
-			  			'</span>'+
-			  			'<span class="show_comment_button btn btn-small btn-default" title="Show comment" comment_id="'+c['key']+'" parent_id="'+c['artwork_key']+'" '+
-			  					(c['hidden'] ? '': 'style="display:none"')+'>'+
-			  				'<i class="glyphicon glyphicon-eye-open"></i>'+
-			  			'</span>'+
-			  			'<span class="delete_comment_button btn btn-small btn-default" title="Delete comment" comment_id="'+c['key']+'" parent_id="'+c['artwork_key']+'">'+
-			  				'<i class="glyphicon glyphicon-trash"></i>'+
-			  			'</span>'+
-			  			'</div>'+
-			  		{% endif %}				
 			  		'<div class="user-avatar-in-comment" style="background-image:url(' + c['author']['avatar_url'] + ')"></div>' +
-					'<h2><a href="/images/details/'+c['artwork_key']+'">'+c['artwork_name']+'</a></h2>'+
+					'<h2><a href="'+targetUrl+'">'+c['artwork_name']+'</a></h2>'+
 					'<div>'+
 						formatDate(new Date(Date.parse(c['date'])))+
 						' <b>'+
@@ -203,17 +169,11 @@ function commentToHtml(c) {
         result += '<div class="comment-text" style="color: gray;">[Comment not available]</div>'
     }
 
-	{% if user_info.superadmin %}
-	for (var i=0; i<c['text'].length; i++) {
-		result+='<div class="comment-text">'+escapeDiamond(c['text'][i])+'</div>';
-	}
-	{% else %}
 	if (!c['hidden']) {
 		for (var i=0; i<c['text'].length; i++) {
 			result+='<div class="comment-text">'+escapeDiamond(c['text'][i])+'</div>';
 		}
 	}
-	{% endif %}
 	
 	result+='</div></div>';
 	return result;
@@ -250,40 +210,6 @@ $(function() {
 	setCurrentOffset(0);
 });
 
-{% if user_info.superadmin %}
-function deleteComment(id, parent_id) {
-	$.getJSON('/admin/delete-comment?id='+id+'&parent_id='+parent_id)
-		.done(function(data) {
-			if (data=="OK") {
-				$("#comment-"+id).remove();
-				showCurrentOffset();
-			}
-		});
-}
-
-function hideComment(id, parent_id) {
-	$.getJSON('/admin/hide-comment?id='+id+'&parent_id='+parent_id)
-		.done(function(data) {
-			if (data=="OK") {
-				$("#comment-"+id).find("#text_hidden").show();
-				$("#comment-"+id).find(".show_comment_button").show();
-				$("#comment-"+id).find(".hide_comment_button").hide();
-			}
-		});	
-}
-
-function showComment(id, parent_id) {
-	$.getJSON('/admin/show-comment?id='+id+'&parent_id='+parent_id)
-		.done(function(data) {
-			if (data=="OK") {
-				$("#comment-"+id).find("#text_hidden").hide();
-				$("#comment-"+id).find(".show_comment_button").hide();
-				$("#comment-"+id).find(".hide_comment_button").show();
-			}
-		});	
-}
-
-{% endif %}
 </script>
 
   
