@@ -169,7 +169,7 @@ link at the top.
 	{% for c in comments %}
 	<div class="rich-comment">
 		<div class="rich-comment-image">
-			<a href="/images/details/{{ c.artwork_key }}">
+			<a href="/images/details/{{ c.artwork_key }}#comment-{{ c.key }}">
                 {% if c.artwork_author_self_block %}
                     <img src="/img/self-block-thumb.svg" width="100" height="75" border="0"/>
                 {% else %}
@@ -188,7 +188,7 @@ link at the top.
 		<div class="comment">
 			<div class="comment-header">
 				<div class="user-avatar-in-comment" style="background-image:url({{ c.author.avatar_url }})" ></div>
-				<h2><a href="/images/details/{{ c.artwork_key }}">{{ c.artwork_name }}</a></h2>
+				<h2><a href="/images/details/{{ c.artwork_key }}#comment-{{ c.key }}">{{ c.artwork_name }}</a></h2>
 				<div>{{ c.date|date:"d M Y H:i" }} <b>{{c.author.nickname}}</b></div>
 			</div>
             {% if c.author.self_block %}
