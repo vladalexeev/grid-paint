@@ -70,6 +70,7 @@ application = webapp.WSGIApplication([
     ('/help/collaborators', pages.pages.PageHelpCollaborators),
     ('/toggle-favorite', pages.actions.ActionToggleFavorite),
     ('/json/comments', pages.actions.JSONComments),
+    ('/json/get-comment-content',  pages.actions.JSONGetCommentContent),
     ('/json/delete-notifications', pages.actions.JSONDeleteNotifications),
     ('/json/get-user-id-by-nickname', pages.actions.JSONGetUserIdByNickname),
     ('/json/save-image', pages.actions.JSONActionSaveImage),

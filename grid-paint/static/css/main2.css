@@ -460,6 +460,16 @@ a.dropdown-toggle.header-avatar-dropdown-toggle {
 	overflow: hidden;
 }
 
+.image-details-comments .comment .comment-meta#text_hidden,
+.image-details-comments .comment .comment-meta#text_hidden a:hover,
+.image-details-comments .comment .comment-meta#text_hidden a:link,
+.image-details-comments .comment .comment-meta#text_hidden a:visited,
+.image-details-comments .comment .comment-meta#text_hidden a:active {
+	color: red;
+}
+
+
+
 .image-details-comment-add {
 	margin: 10px 0 10px 0;
 }

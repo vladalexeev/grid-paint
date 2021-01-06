@@ -599,7 +599,7 @@ class ActionShowComment(BasicRequestHandler):
 
             cache.delete(cache.MC_MAIN_PAGE_RECENT_COMMENTS)
             self.response.write(json.dumps({
-                'text': comment.text
+                'text': comment.text.split('\n')
             }))
         else:
             self.response.write(json.dumps('404'))
@@ -1900,3 +1900,41 @@ class AdminUpdateUserNickname(BasicRequestHandler):
             user_profile.nickname = new_nickname
             dao.set_user_profile(user_profile)
         self.redirect('/profiles/{}'.format(profile_id))
+
+
+class JSONGetCommentContent(BasicRequestHandler):
+    """
+    Returns full comment with text event it was hidden
+    """
+    def post(self):
+        if not self.user_info.user:
+            self.response.set_status(403)
+            return
+
+        comment_id = int(self.request.get('comment_id'))
+        artwork_id = int(self.request.get('artwork_id'))
+        artwork = dao.get_artwork(artwork_id)
+
+        logging.error('get comment by id %s', comment_id)
+        comment = db.Comment.get_by_id(comment_id, artwork.key())
+        if comment is None:
+            self.response.set_status(404)
+            return
+
+        comment_author = dao.get_user_profile(comment.author_email)
+        if comment_author is None:
+            self.response.set_status(404)
+            return
+
+        comment_text = comment.text.split('\n')
+        if hasattr(comment_author, 'self_block'):
+            comment_text = ['[Comment not available]']
+
+        if hasattr(comment, 'hidden') and not self.user_info.superadmin:
+            settings = common.get_settings()
+            if getattr(comment, 'hidden_by', settings.admin_user_id) == settings.admin_user_id:
+                comment_text = []
+
+        self.response.out.write(json.dumps({
+            'text': comment_text
+        }))

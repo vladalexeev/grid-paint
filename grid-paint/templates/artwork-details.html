@@ -165,26 +165,28 @@
 					</b> - {{ comment.date|date:"d M Y H:i" }}
 
 				</div>
-				{% if user_info.superadmin %}
-					{% if comment.hidden %}
-					<div class="comment-meta" id="text_hidden" style="color:red;">Hidden</div>
+				{% if comment.hidden %}
+					{% if comment.hidden_by == settings.admin_user_id or not comment.hidden_by %}
+						<div class="comment-meta" id="text_hidden">
+							{% if user_info.superadmin %}
+								<a href="javascript:showCommentContent({{ comment.key }})">Hidden by administrator</i></a>
+							{% else %}
+								Hidden by administrator
+							{% endif %}
+						</div>
+					{% else %}
+						<div class="comment-meta" id="text_hidden">
+							<a href="javascript:showCommentContent({{ comment.key }})">Hidden</a>
+						</div>
 					{% endif %}
 					{% for t in comment.text %}
 					<div class="comment-text">{{t}}</div>
-					{% endfor %}		  	
+					{% endfor %}	
 				{% else %}
-					{% if comment.author.self_block %}
-						<div class="comment-meta" style="color: gray;">[Comment not available]</div>
-					{% endif %}
-					{% if comment.hidden %}
-						<div class="comment-meta" id="text_hidden" style="color:red;">Hidden</div>
-					{% endif %}
-					{% if not comment.hidden %}
-						{% for t in comment.text %}
-						<div class="comment-text">{{t}}</div>
-						{% endfor %}
-					{% endif %}
-				{% endif %}				
+					{% for t in comment.text %}
+					<div class="comment-text">{{t}}</div>
+					{% endfor %}
+				{% endif %}
 			</div>
 
 			<div class="comment-actions-panel">
@@ -199,9 +201,8 @@
 						<i class="glyphicon glyphicon-option-vertical"></i>
 					</button>
 					<ul class="dropdown-menu">
-						{% if not comment.hidden and user_info.user and not user_info.read_only %}
-						<li class="complain_comment_button" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-							{% if comment.hidden %}style="display:none;"{% endif%} >
+						{% if user_info.profile_id and not user_info.read_only %}
+						<li class="complain_comment_button {% if comment.hidden %}disabled{% endif%}" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
 							<a href="javascript:void()"><i class="glyphicon glyphicon-exclamation-sign"></i> Complain</a>
 						</li>
 						{% endif %}
@@ -665,7 +666,22 @@ $(function() {
 			$('#dismissed-'+collaborator_id).css('display', '');
 		});
 	});
-})
+});
+
+function showCommentContent(comment_id) {
+	$.post('/json/get-comment-content', 
+		{
+			'comment_id': comment_id,
+			'artwork_id': artworkId
+		}, null, 'json')
+		.done(function(data) {
+			$("#comment-"+comment_id+" .comment-text").remove();
+			for (let i = 0; i < data.text.length; i++) {
+				$("#comment-"+comment_id).append(`<div class="comment-text">${data.text[i]}</div>`);
+			}
+		})
+}
+
 </script>
 
 {% if user_info.superadmin or user_is_author %}
@@ -692,10 +708,11 @@ function showComment(id, parent_id) {
 			$("#hide-comment-button-"+id).show();
 			$("#reply-comment-button-"+id).show();
 			$("#comment-"+id+" .comment-text").remove();
-			$("#comment-"+id).append(`<div class="comment-text">${data.text}</div>`);
+			for (let i = 0; i < data.text.length; i++) {
+				$("#comment-"+id).append(`<div class="comment-text">${data.text[i]}</div>`);
+			}
 		});	
 }
-
 
 $(function() {	
 	$(".hide_comment_button").click(function(data) {

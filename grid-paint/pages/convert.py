@@ -202,6 +202,7 @@ def convert_artwork_for_page(artwork, thumbnail_width, thumbnail_height):
     
     return result
 
+
 def convert_comment_for_page(comment):
     result = {
               'key': comment.key().id(),
@@ -213,11 +214,16 @@ def convert_comment_for_page(comment):
               }
     if hasattr(comment, 'hidden'):
         result['hidden'] = True
+        result['text'] = []
+
+    if hasattr(comment, 'hidden_by'):
+        result['hidden_by'] = comment.hidden_by
 
     if 'self_block' in result['author']:
-        result['text'] = []
+        result['text'] = ['[Comment not available]']
         
     return result
+
 
 def convert_comment_for_page_rich(comment):
     result = convert_comment_for_page(comment)
