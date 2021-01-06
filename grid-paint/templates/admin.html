@@ -22,6 +22,10 @@
     		<input type="text" name="admin_email" class="form-control" value="{{ settings.admin_email }}">
 		</div>
 		<div class="form-group">
+			<label for="admin_user_id">Admin email</label>
+    		<input type="text" name="admin_user_id" class="form-control" value="{{ settings.admin_user_id }}">
+		</div>
+		<div class="form-group">
 			<label for="exchange_url">Exchange URL</label>
     		<input type="text" name="exchange_url" class="form-control" value="{{ settings.exchange_url }}">
 		</div>
@@ -29,7 +33,7 @@
 			<label for="exchange_salt">Exchange salt</label>
     		<input type="text" name="exchange_salt" class="form-control" value="{{ settings.exchange_salt }}">
 		</div>
-		<button type="submit" class="btn">Save settings</button>
+		<button type="submit" class="btn btn-primary">Save settings</button>
 	</form>
 	</div>
 	

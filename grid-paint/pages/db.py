@@ -82,6 +82,7 @@ class Settings(db.Model):
     show_ads = db.BooleanProperty()
     show_analytics = db.BooleanProperty()
     admin_email = db.StringProperty()
+    admin_user_id = db.IntegerProperty()
     exchange_url = db.StringProperty()
     exchange_salt = db.StringProperty()
 

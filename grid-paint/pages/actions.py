@@ -710,19 +710,21 @@ class ActionSaveSettings(BasicRequestHandler):
             self.response.set_status(403)
             return            
         
-        settings=common.get_settings()
+        settings = common.get_settings()
         
         if self.request.get('show_ads'):
-            settings.show_ads=True
+            settings.show_ads = True
         else:
-            settings.show_ads=False
+            settings.show_ads = False
             
         if self.request.get('show_analytics'):
-            settings.show_analytics=True
+            settings.show_analytics = True
         else:
-            settings.show_analytics=False
+            settings.show_analytics = False
             
-        settings.admin_email= self.request.get('admin_email')
+        settings.admin_email = self.request.get('admin_email')
+        settings.admin_user_id = int(self.request.get('admin_user_id'))
+
         settings.exchange_url = self.request.get('exchange_url')
         settings.exchange_salt = self.request.get('exchange_salt')
             
