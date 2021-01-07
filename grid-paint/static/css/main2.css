@@ -1150,6 +1150,92 @@ Group image status popup
 
 
 /*
+Group image chat
+*/
+
+.group-image-chat-wrapper {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	min-width: 300px;
+}
+
+.group-image-chat-show-button {
+	position: absolute;
+	border-radius: 12px;
+    background-color: white;
+	box-shadow: 0 0 6px #c0c0c0;
+	width: 24px;
+	height: 24px;
+	text-align: center;
+	line-height: 26px;
+	cursor: pointer;
+}
+
+.group-image-chat-enter {
+	min-height: 24px;
+    border-radius: 12px;
+    background-color: white;
+	box-shadow: 0 0 6px #c0c0c0;
+	padding: 6px;
+	margin-left: 30px;
+}
+
+.group-image-chat-enter .input-group {
+	width: 288px;
+}
+
+.group-image-chat-messages {
+	min-height: 200px;
+	border-radius: 12px;
+    background-color: white;
+	box-shadow: 0 0 6px #c0c0c0;
+	padding: 6px;
+	margin-bottom: 10px;
+	position: relative;
+	margin-left: 30px;
+}
+
+.group-image-chat-messages-container {
+	overflow: auto;
+    position: absolute;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+}
+
+.group-image-chat-message {
+	position: relative;
+	margin-bottom: 5px;
+}
+
+.group-image-chat-message .chat-message-avatar {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	border-radius: 10px;
+	background-size: cover;
+}
+
+.group-image-chat-message .chat-message-content {
+	margin-left: 25px;
+	margin-right: 5px;
+	background-color: #e6f1fb;
+	border-radius: 5px;
+	padding: 4px;
+}
+
+.group-image-chat-message .chat-message-author {
+	font-weight: bold;
+	font-size: 10px;
+	overflow: hidden;
+}
+
+.group-image-chat-message .chat-message-text {
+	font-weight: normal;
+	overflow: hidden;
+}
+
+/*
 Collaborator pointer
 */
 

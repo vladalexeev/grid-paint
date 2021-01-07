@@ -1869,13 +1869,15 @@ $(function() {
 	        console.log('socket.io <- login');
 	        socket.emit('login', {'token': exchangeToken})
             $('#socketio-online').show();
-            $('#call-collaborators').show();
+			$('#call-collaborators').show();
+			$('#group-image-chat-wrapper').show();
             $('#socketio-offline').hide();
 	    });
 	    socket.on('disconnect', (data) => {
 	        console.log('socket.io => disconnect');
             $('#socketio-online').hide();
-            $('#call-collaborators').hide();
+			$('#call-collaborators').hide();
+			$('#group-image-chat-wrapper').hide();
             $('#socketio-offline').show();
 	    })
 	    socket.on('login_ok', (data) => {
