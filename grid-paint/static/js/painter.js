@@ -1963,7 +1963,9 @@ $(function() {
             $('#socketio-online').hide();
 			$('#call-collaborators').hide();
 			$('#group-image-chat-wrapper').hide();
-            $('#socketio-offline').show();
+			$('#socketio-offline').show();
+			collaboratorsOnline = [];
+			updateCollaboratorsPanel();
 	    })
 	    socket.on('login_ok', (data) => {
 	        console.log('socket.io => login_ok');
