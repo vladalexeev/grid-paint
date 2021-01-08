@@ -1186,7 +1186,7 @@ Group image chat
 }
 
 .group-image-chat-messages {
-	min-height: 200px;
+	height: 200px;
 	border-radius: 12px;
     background-color: white;
 	box-shadow: 0 0 6px #c0c0c0;
@@ -1217,9 +1217,6 @@ Group image chat
 }
 
 .group-image-chat-message .chat-message-content {
-	margin-left: 25px;
-	margin-right: 5px;
-	background-color: #e6f1fb;
 	border-radius: 5px;
 	padding: 4px;
 }
@@ -1234,6 +1231,51 @@ Group image chat
 	font-weight: normal;
 	overflow: hidden;
 }
+
+
+
+
+.group-image-chat-message.other-user .chat-message-avatar {
+	top: 0;
+	left: 0;
+}
+
+.group-image-chat-message.other-user .chat-message-content {
+	margin-left: 25px;
+	margin-right: 50px;
+	background-color: #e6f1fb;
+}
+
+.group-image-chat-message.other-user .chat-message-author {
+	text-align: left;
+}
+
+.group-image-chat-message.other-user .chat-message-text {
+	text-align: left;
+}
+
+
+
+
+.group-image-chat-message.current-user .chat-message-avatar {
+	top: 0;
+	right: 5px;
+}
+
+.group-image-chat-message.current-user .chat-message-content {
+	margin-left: 55px;
+	margin-right: 30px;
+	background-color: #fff6e4;
+}
+
+.group-image-chat-message.current-user .chat-message-author {
+	text-align: right;
+}
+
+.group-image-chat-message.current-user .chat-message-text {
+	text-align: right;
+}
+
 
 /*
 Collaborator pointer

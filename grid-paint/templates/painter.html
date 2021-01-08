@@ -125,10 +125,14 @@
 <div class="group-image-users-online" style="display: none;">
 </div>
 <div class="group-image-chat-wrapper" id="group-image-chat-wrapper" style="display: none;">
-	<div class="group-image-chat-show-button"><i class="glyphicon glyphicon-chevron-down"></i></div>
-	<div class="group-image-chat-messages">
+	<div class="group-image-chat-show-button" style="display: none;"><i class="glyphicon glyphicon-chevron-down"></i></div>
+	<div class="group-image-chat-messages" style="display: none;">
 		<div class="group-image-chat-messages-container">
-			<div class="group-image-chat-message">
+			<div class="group-image-chat-messages-list">
+				
+			</div>
+<!--			
+			<div class="group-image-chat-message current-user">
 				<div class="chat-message-avatar" style="background-image: url(/images/avatar/5629499534213120.jpg)"></div>
 				<div class="chat-message-content">
 					<div class="chat-message-author">Pixel expert</div>
@@ -137,7 +141,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="group-image-chat-message">
+			<div class="group-image-chat-message current-user">
 				<div class="chat-message-content">
 					<div class="chat-message-text">
 						Second message
@@ -145,17 +149,33 @@
 				</div>
 			</div>
 
+			
+			<div class="group-image-chat-message other-user">
+				<div class="chat-message-avatar" style="background-image: url(/images/avatar/5629499534213120.jpg)"></div>
+				<div class="chat-message-content">
+					<div class="chat-message-author">Pixel expert</div>
+					<div class="chat-message-text">
+						First message
+					</div>
+				</div>
+			</div>
+			<div class="group-image-chat-message other-user">
+				<div class="chat-message-content">
+					<div class="chat-message-text">
+						Second message
+					</div>
+				</div>
+			</div>
+-->
 		</div>
 	</div>
 	<div class="group-image-chat-enter">
-		<form>
 			<div class="input-group">
 				<input type="text" class="form-control" id="group-image-chat-input" placeholder="Type message"/>
 				<span class="input-group-btn">
-					<button type="button" class="btn btn-success"><i class="glyphicon glyphicon-send"></i></button>
+					<button type="button" id="btn-send-message-to-chat" class="btn btn-success"><i class="glyphicon glyphicon-send"></i></button>
 				</span>
 			</div>
-		</form>
 	</div>
 </div>
 

@@ -1634,6 +1634,83 @@ function updateCollaboratorsPanel() {
     $('.group-image-users-online').html(html);
 }
 
+function sendMessageToChat() {
+	if (!socket) {
+		return;
+	}
+
+	let text = $('#group-image-chat-input').val().trim();
+	$('#group-image-chat-input').val('');
+	if (text=='') {
+		return;
+	}
+
+	console.log('socket.io <- add_chat_message')
+	socket.emit('add_chat_message', {text: text})
+}
+
+
+var lastChatMessageUserId = null;
+var chatWindowVisible = false;
+
+function showChatMessage(chat_message) {
+	let tokenPayload = JSON.parse(atob(exchangeToken.split('.')[1]));
+	let currentUser = tokenPayload.user;
+	let messageClass = 'other-user'
+	if (chat_message.user.user_id == currentUser.user_id) {
+		messageClass = 'current-user'
+	}
+
+	let messageHtml = null;
+	if (lastChatMessageUserId == chat_message.user.user_id) {
+		messageHtml = `
+			<div class="group-image-chat-message ${messageClass}">
+				<div class="chat-message-content">
+					<div class="chat-message-text">
+						${chat_message.text}
+					</div>
+				</div>
+			</div>`;
+	} else {
+		messageHtml = `
+			<div class="group-image-chat-message ${messageClass}">
+				<div class="chat-message-avatar" style="background-image: url(${chat_message.user.avatar_url})"></div>
+				<div class="chat-message-content">
+					<div class="chat-message-author">${chat_message.user.nickname}</div>
+					<div class="chat-message-text">
+						${chat_message.text}
+					</div>
+				</div>
+			</div>`;
+	}
+	$('.group-image-chat-messages-list').append(messageHtml);
+	$('.group-image-chat-messages-container').animate({scrollTop: $('.group-image-chat-messages-list').height()}, 300);
+	showChatWindow();
+
+	lastChatMessageUserId = chat_message.user.user_id;
+}
+
+function showChatWindow() {
+	$('.group-image-chat-show-button').html('<i class="glyphicon glyphicon-chevron-down"></i>').show();
+	$('.group-image-chat-messages').slideDown();
+	chatWindowVisible = true;
+}
+
+function hideChatWindow() {
+	$('.group-image-chat-show-button').html('<i class="glyphicon glyphicon-chevron-up"></i>')
+	$('.group-image-chat-messages').slideUp();
+	chatWindowVisible = false;
+}
+
+function toggleChatWindow() {
+	if (chatWindowVisible) {
+		hideChatWindow();
+	} else {
+		showChatWindow();
+	}
+}
+
+
 var initComplete = false;
 function initialPaintArtwork() {
     initComplete = true;
@@ -1858,7 +1935,15 @@ $(function() {
 	initCopyPastePanel();
 
 	if (exchangeToken) {
-	    $('.group-image-online').show();
+		$('.group-image-online').show();
+		
+		$('#btn-send-message-to-chat').click(sendMessageToChat);
+		$('#group-image-chat-input').on('keypress',function(e) {
+			if(e.which == 13) {
+				sendMessageToChat();
+			}
+		});
+		$('.group-image-chat-show-button').click(toggleChatWindow);
 
 	    showCircleLoader();
 	    timeoutTaskId = setTimeout(initialPaintArtwork, 5000)
@@ -1972,6 +2057,11 @@ $(function() {
 			if (changes.workspace) {
 				applyWorkspaceSize(changes.workspace.width, changes.workspace.height, changes.workspace.cellSize);
 			}
+		});
+		socket.on('chat_message', data => {
+			console.log('socket.io => chat_message');
+			console.log(data);
+			showChatMessage(data);
 		});
 	} else {
 	    initialPaintArtwork()
