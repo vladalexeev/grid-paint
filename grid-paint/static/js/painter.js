@@ -511,8 +511,10 @@ function prepareArtworkToSave() {
 			}
 		}
 
-		rowElement.cells=cellArray;
-		a.layers[0].rows.push(rowElement);
+		if (cellArray.length > 0) {
+			rowElement.cells=cellArray;
+			a.layers[0].rows.push(rowElement);
+		}
 	}
 
     return a;
