@@ -1649,6 +1649,10 @@ function sendMessageToChat() {
 	socket.emit('add_chat_message', {text: text})
 }
 
+function safe_tags(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') ;
+}
+
 
 var lastChatMessageUserId = null;
 var chatWindowVisible = false;
@@ -1676,9 +1680,9 @@ function showChatMessage(chat_message) {
 			<div class="group-image-chat-message ${messageClass}">
 				<div class="chat-message-avatar" style="background-image: url(${chat_message.user.avatar_url})"></div>
 				<div class="chat-message-content">
-					<div class="chat-message-author">${chat_message.user.nickname}</div>
+					<div class="chat-message-author">${safe_tags(chat_message.user.nickname)}</div>
 					<div class="chat-message-text">
-						${chat_message.text}
+						${safe_tags(chat_message.text)}
 					</div>
 				</div>
 			</div>`;
