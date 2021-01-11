@@ -104,9 +104,10 @@ class JSONActionSaveImage(BasicRequestHandler):
 
         pixel_count = 0
         min_pixel_count = 10
+        background_color = json_obj['backgroundColor']
         for layer in json_obj['layers']:
             for row in layer['rows']:
-                pixel_count += len(row['cells'])
+                pixel_count += len([r for r in row['cells'] if r[2] != background_color])
 
         if pixel_count < min_pixel_count:
             self.response.out.write(json.dumps({
