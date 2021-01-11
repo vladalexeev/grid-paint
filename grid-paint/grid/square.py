@@ -39,33 +39,36 @@ class ShapeFlat(BasicShapeFlat):
 
 class ShapeFlat1(BasicShapeFlat):
     def get_facet(self):
-        return self.grid.cell_size/6
+        return self.grid.cell_size/12
 
 
 class ShapeFlat2(BasicShapeFlat):
     def get_facet(self):
-        return self.grid.cell_size/4
+        return self.grid.cell_size/8
 
 
 class ShapeFlat3(BasicShapeFlat):
     def get_facet(self):
-        return self.grid.cell_size/3
+        return self.grid.cell_size/6
 
 
 class BasicShapeCircle(BasicShape):
     def __init__(self, grid):
         BasicShape.__init__(self,grid)
-        self.facet=self.get_facet();
+        self.facet = self.get_facet()
         
     def get_facet(self):
         raise NotImplementedError("Should implement this method")
     
     def paint(self, image, col, row, color, dx, dy):
-        x=col*self.grid.cell_size+dx
-        y=row*self.grid.cell_size+dy
+        x = col * self.grid.cell_size + dx
+        y = row * self.grid.cell_size + dy
         facet = self.facet
-        image.ellipse([(x+facet,y+facet),
-                       (x+self.grid.cell_size-facet, y+self.grid.cell_size-facet)],
+        import logging
+        logging.error('circle %s %s', facet,
+                      [(x+facet,y+facet), (x+self.grid.cell_size-facet, y+self.grid.cell_size-facet)])
+        image.ellipse([(x + facet, y + facet),
+                       (x + self.grid.cell_size - facet, y + self.grid.cell_size - facet)],
                       fill=color)
 
 
@@ -76,17 +79,17 @@ class ShapeCircle(BasicShapeCircle):
 
 class ShapeCircle1(BasicShapeCircle):
     def get_facet(self):
-        return self.grid.cell_size/6
+        return float(self.grid.cell_size)/12
 
 
 class ShapeCircle2(BasicShapeCircle):
     def get_facet(self):
-        return self.grid.cell_size/4
+        return float(self.grid.cell_size)/8
 
 
 class ShapeCircle3(BasicShapeCircle):
     def get_facet(self):
-        return self.grid.cell_size/3
+        return float(self.grid.cell_size)/6
         
         
 class ShapeDiamond(BasicShape):
