@@ -203,7 +203,16 @@ class PagePainter(BasicPageRequestHandler):
         elif self.request.get('copy_id'):
             artwork_id = self.request.get('copy_id')
             artwork = dao.get_artwork(artwork_id)
-            
+
+            user_is_author = artwork.author_email == self.user_info.user_email
+            collaborator = db.ArtworkCollaborator.all().filter('artwork =', artwork).filter('user_id =', self.user_info.profile_id).get()
+            user_is_collaborator = collaborator is not None
+
+            if not self.user_info.superadmin and not user_is_author and not user_is_collaborator:
+                # should be the author, collaborator or superadmin
+                self.response.set_status(403)
+                return
+
             if hasattr(artwork, 'json'):
                 if artwork.json_compressed:
                     artwork_json = zlib.decompress(artwork.json.encode('ISO-8859-1'))

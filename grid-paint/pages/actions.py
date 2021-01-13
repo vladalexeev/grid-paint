@@ -81,7 +81,7 @@ class JSONActionSaveImage(BasicRequestHandler):
             user_is_collaborator = collaborator is not None
 
             if not self.user_info.superadmin and not user_is_author and not user_is_collaborator:
-                # should be the same user or superadmin
+                # should be the author, collaborator or superadmin
                 self.response.set_status(403)
                 return
         else:
