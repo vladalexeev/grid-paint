@@ -336,8 +336,7 @@ function acceptNotification(notificationId) {
         'json'
     ).done(function(data) {
         hideCircleLoader();
-        $('.notification-container').remove();
-        loadNotifications(pageSize, 0);
+		$('#notification-' + notificationId + ' .comment-text').html(`<div class="text-success">Accepted</div>`);
     })
 }
 
@@ -352,8 +351,7 @@ function rejectNotification(notificationId) {
         'json'
     ).done(function(data) {
         hideCircleLoader();
-        $('.notification-container').remove();
-        loadNotifications(pageSize, 0);
+        $('#notification-' + notificationId + ' .comment-text').html(`<div class="text-danger">Rejected</div>`);
     })
 }
 
