@@ -583,7 +583,7 @@ $(function() {
 											</a>
 										</td>
 										<td style="width: 50px; text-align: right;">
-											<span id="invited-${item.profile_id}" style="display: none;">invited</span>
+											<span id="invite-result-${item.profile_id}" style="display: none; white-space: nowrap;"></span>
 											<span id="invite-request-${item.profile_id}" style="display: none;"><i class="icon icon-circle-blank" /></span>
 											<button type="button" class="btn btn-primary btn-xs btn-invite-collaborator-item" id="btn-invite-${item.profile_id}" btn-data="${item.profile_id}">Invite</button>
 										</td>
@@ -607,7 +607,12 @@ $(function() {
 								'json'
 							).done(function(data) {
 								$('#invite-request-'+collaborator_id).css('display', 'none');
-								$('#invited-'+collaborator_id).css('display', '');
+								$('#invite-result-'+collaborator_id).css('display', '');
+								if (data.result == 'ok') {
+									$('#invite-result-'+collaborator_id).text('invited');
+								} else {
+									$('#invite-result-'+collaborator_id).text('not invited');
+								}
 							}).fail(function() {
 							});
 						});

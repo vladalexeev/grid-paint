@@ -1712,6 +1712,16 @@ class JSONInviteCollaborator(BasicRequestHandler):
         artwork_id = int(self.request.get('artwork_id'))
         collaborator_id = int(self.request.get('collaborator_id'))
 
+        # check if collaborator denied invitation from this user
+        collaborator_relation = db.UserRelationSettings.all().\
+            filter('profile_id =', collaborator_id).\
+            filter('related_profile_id =', self.user_info.profile_id).get()
+        if collaborator_relation and collaborator_relation.block_collaboration_invitations:
+            self.response.out.write(json.dumps({
+                'result': 'not_invited',
+            }))
+            return
+
         artwork = dao.get_artwork(artwork_id)
         if artwork is None:
             self.response.set_status(400)
@@ -1805,6 +1815,23 @@ class JSONRejectNotification(BasicRequestHandler):
 
         notification.status = 'rejected'
         dao.add_notification(notification)
+
+        block = self.request.get('block')
+        if block == 'block':
+            sender_profile = dao.get_user_profile(notification.sender_email)
+            if sender_profile is not None:
+                sender_profile_id = sender_profile.key().id()
+                relation = db.UserRelationSettings.all().\
+                    filter('profile_id =', self.user_info.profile_id).\
+                    filter('related_profile_id =', sender_profile_id).get()
+                if relation is None:
+                    relation = db.UserRelationSettings()
+                    relation.profile_id = self.user_info.profile_id
+                    relation.related_profile_id = sender_profile_id
+
+                relation.block_collaboration_invitations = True
+                relation.last_date = datetime.datetime.now()
+                relation.put()
 
         self.response.out.write(json.dumps({
             'result': 'ok',

@@ -76,6 +76,13 @@ class UserProfile(db.Expando):
     artworks_count = db.IntegerProperty(default=0)
     favorite_count = db.IntegerProperty(default=0)
     avatar_file = db.StringProperty()
+
+
+class UserRelationSettings(db.Expando):
+    profile_id = db.IntegerProperty()
+    related_profile_id = db.IntegerProperty()
+    block_collaboration_invitations = db.BooleanProperty()
+    last_date = db.DateTimeProperty(auto_now_add=True)
     
     
 class Settings(db.Model):

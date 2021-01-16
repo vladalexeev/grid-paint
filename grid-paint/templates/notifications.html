@@ -53,6 +53,25 @@
 </div>
 
 
+<div id="modal-confirm-reject-and-block-user" class="modal fade">
+	<div class="modal-dialog">
+	  <div class="modal-content">
+		<div class="modal-header">
+		  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+		  <h4 class="modal-title">Confirmation</h4>
+		</div>
+		<div class="modal-body">
+		  <p>Do really want to reject invitation and block further invitations from this user?</p>
+		</div>
+		<div class="modal-footer">
+		  <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+		  <a href="#" id="button-confirm-reject-and-block-user" class="btn btn-danger">Reject and block</a>
+		</div>
+	  </div>
+	</div>
+  </div>
+  
+
 <script>
 var pageSize=10;
 var loading=false;
@@ -146,9 +165,18 @@ function constructNotificationComponent(n) {
 			} else if (n.status == 'rejected') {
 			    content = `<div class="comment-text"><div class="text-danger">Rejected</div></div>`
 			} else {
-                content = `<div class="comment-text">
+				content = `<div class="comment-action-buttons">
                     <button class="btn btn-sm btn-success" onclick="acceptNotification(${n.id})">Accept</button>
-                    <button class="btn btn-sm btn-danger" onclick="rejectNotification(${n.id})">Reject</button>
+					<div class="btn-group">
+                    	<button class="btn btn-sm btn-danger" onclick="rejectNotification(${n.id})">Reject</button>
+						<button type="button" class="btn btn-sm btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="caret"></span>
+							<span class="sr-only">Toggle Dropdown</span>
+		  				</button>
+		  				<ul class="dropdown-menu">
+							<li><a href="javascript:rejectNotificationAndBlockUser(${n.id});">Reject and block user</li>
+						</ul>
+					</div>
                 </div>`;
 			}
 		} else {
@@ -336,7 +364,7 @@ function acceptNotification(notificationId) {
         'json'
     ).done(function(data) {
         hideCircleLoader();
-		$('#notification-' + notificationId + ' .comment-text').html(`<div class="text-success">Accepted</div>`);
+		$('#notification-' + notificationId + ' .comment-action-buttons').html(`<div class="text-success">Accepted</div>`);
     })
 }
 
@@ -351,7 +379,30 @@ function rejectNotification(notificationId) {
         'json'
     ).done(function(data) {
         hideCircleLoader();
-        $('#notification-' + notificationId + ' .comment-text').html(`<div class="text-danger">Rejected</div>`);
+        $('#notification-' + notificationId + ' .comment-action-buttons').html(`<div class="text-danger">Rejected</div>`);
+    });
+}
+
+var nofiticationId_RegectAndBlock = null;
+
+function rejectNotificationAndBlockUser(notificationId) {
+	nofiticationId_RegectAndBlock = notificationId;
+	$('#modal-confirm-reject-and-block-user').modal('show');
+}
+
+function confirmedRejectNotificationAndBlockUser(notificationId) {
+	showCircleLoader();
+    $.post(
+        '/json/reject-notification',
+        {
+			'notification_id': notificationId,
+			'block': 'block'
+        },
+        null,
+        'json'
+    ).done(function(data) {
+        hideCircleLoader();
+        $('#notification-' + notificationId + ' .comment-action-buttons').html(`<div class="text-danger">Rejected and blocked</div>`);
     })
 }
 
@@ -362,6 +413,11 @@ $(function() {
 	
 	$("#button_confirm_delete").click(function() {
 		onDeleteAllVisibleNotifications();
+	});
+
+	$('#button-confirm-reject-and-block-user').click(function(){
+		$('#modal-confirm-reject-and-block-user').modal('hide');
+		confirmedRejectNotificationAndBlockUser(nofiticationId_RegectAndBlock);
 	});
 
 	loadNotifications(pageSize, 0);
