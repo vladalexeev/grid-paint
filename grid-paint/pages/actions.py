@@ -4,7 +4,7 @@ Created on 23.07.2013
 
 @author: Vlad
 '''
-
+import os
 import db
 import json
 import datetime
@@ -29,11 +29,13 @@ import cache
 import dao
 import convert
 import cs
+import const
 
 import zlib
 
 from cloudstorage.errors import NotFoundError
 from google.appengine.api import taskqueue
+from google.appengine.ext.webapp import template
 
 import logging
 import antispam
@@ -481,10 +483,10 @@ class ActionSaveComment(BasicRequestHandler):
         comment_text = self.request.get('comment_text').strip()
         ref_comment_id = self.request.get('ref_comment_id')
         
-        if not antispam.check_comment(user_profile.email, artwork_id, comment_text):
+        if not self.user_info.superadmin and not antispam.check_comment(user_profile.email, artwork_id, comment_text):
             self.redirect('/images/details/'+artwork_id)
             return
-        
+
         if not comment_text or len(comment_text)==0 or len(comment_text)>1000:
             self.redirect('/images/details/'+artwork_id)
             return
@@ -1965,4 +1967,35 @@ class JSONGetCommentContent(BasicRequestHandler):
 
         self.response.out.write(json.dumps({
             'text': comment_text
+        }))
+
+
+class JSONArtworkDetailsComments(BasicRequestHandler):
+    def get(self):
+        artwork_id = int(self.request.get('artwork_id'))
+        offset = int(self.request.get('offset'))
+
+        artwork = dao.get_artwork(artwork_id)
+
+        db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('-date').fetch(const.MAX_COMMENT_PACK + 1, offset)
+        all_db_comments = [convert.convert_comment_for_page(c) for c in db_comments]
+        comments = all_db_comments[:const.MAX_COMMENT_PACK]
+        has_more_comments = len(all_db_comments) > const.MAX_COMMENT_PACK
+
+        html = ''
+
+        template_path = os.path.join(os.path.dirname(__file__), "../templates/artwork-details-comment.html")
+
+        for comment in comments:
+            html += template.render(
+                template_path,
+                {
+                    'user_info': self.user_info,
+                    'comment': comment
+                }
+            )
+        self.response.out.write(json.dumps({
+            'html': html,
+            'has_more_comments': has_more_comments,
+            'offset': offset + const.MAX_COMMENT_PACK
         }))
