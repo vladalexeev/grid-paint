@@ -68,6 +68,12 @@ class JSONActionSaveImage(BasicRequestHandler):
         artwork_name = self.request.get('artwork_name')
         artwork_description = self.request.get('artwork_description')
 
+        if len(artwork_name) > const.MAX_ARTWORK_NAME_LENGTH:
+            artwork_name = artwork_name[:const.MAX_ARTWORK_NAME_LENGTH]
+
+        if len(artwork_description) > const.MAX_ARTWORK_DESCRIPTION_LENGTH:
+            artwork_description = artwork_description[:const.MAX_ARTWORK_DESCRIPTION_LENGTH]
+
         collaborator = None
 
         if artwork_id:
@@ -481,6 +487,9 @@ class ActionSaveComment(BasicRequestHandler):
         
         artwork_id = self.request.get('artwork_id')
         comment_text = self.request.get('comment_text').strip()
+        if len(comment_text) > const.MAX_COMMENT_LENGTH:
+            comment_text = comment_text[:const.MAX_COMMENT_LENGTH]
+
         ref_comment_id = self.request.get('ref_comment_id')
         
         if not self.user_info.superadmin and not antispam.check_comment(user_profile.email, artwork_id, comment_text):
@@ -755,6 +764,8 @@ class JSONSaveProfile(BasicRequestHandler):
         if not nickname:
             self.response.set_status(400)
             return
+        if len(nickname) > const.MAX_NICKNAME_LENGTH:
+            nickname = nickname[:const.MAX_NICKNAME_LENGTH]
         
         nickname = hide_bad_language(nickname)
 
