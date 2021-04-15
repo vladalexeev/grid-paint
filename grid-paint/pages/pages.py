@@ -13,6 +13,7 @@ import cache
 import dao
 import convert
 import cs
+import const
 
 import zlib
 
@@ -476,8 +477,10 @@ class PageImage(BasicPageRequestHandler):
         favorite_count = dao.get_artwork_favorite_count(artwork)
         favorite = dao.is_artwork_favorite_by_user(artwork, self.user_info.user_email)
         
-        db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('date')
-        comments = [convert.convert_comment_for_page(c) for c in db_comments]
+        db_comments = db.Comment.all().filter('artwork_ref =', artwork).order('-date').fetch(const.MAX_COMMENT_PACK + 1)
+        all_db_comments = [convert.convert_comment_for_page(c) for c in db_comments]
+        comments = all_db_comments[:const.MAX_COMMENT_PACK]
+        has_more_comments = len(all_db_comments) > const.MAX_COMMENT_PACK
         
         converted_artwork = convert.convert_artwork_for_page(artwork, 600, 400)
         author_user_id = converted_artwork.get('author', {}).get('profile_id')
@@ -525,7 +528,9 @@ class PageImage(BasicPageRequestHandler):
                 'can_edit_artwork': can_edit_artwork,
                 'user_is_author': user_is_author,
                 'user_is_collaborator': user_is_collaborator,
+                'comments_offset': len(comments),
                 'comments': comments,
+                'has_more_comments': has_more_comments,
                 'favorite_count': favorite_count,
                 'favorite': favorite,
                 'following': following,

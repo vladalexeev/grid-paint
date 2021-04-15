@@ -141,95 +141,6 @@
 		<div style="clear: both"></div>		
 	</div>
 	
-	<div class="delimiter"></div>
-	
-	<div class="image-details-comments">
-		{% for comment in comments %}
-		  <a name="comment-{{ comment.key }}"></a>
-		  <div class="comment-wrapper">
-			<div class="comment {% if comment.hidden %}hidden-comment{% endif %}" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
-				<div class="comment-header">
-					<div class="user-avatar-in-comment bordered" style="background-image:url({{comment.author.avatar_url}})" ></div>
-					<b>
-						<span id="commenter-name">
-						{% if comment.author.self_block %}
-							{{ comment.author.nickname }}
-						{% else %}
-							{% if comment.author.profile_id %}
-								<a href="/profiles/{{ comment.author.profile_id}}">{{ comment.author.nickname }}</a>
-							{% else %}
-								{{ comment.author.nickname }}
-							{% endif %}
-						{% endif %}
-						</span>
-					</b> - {{ comment.date|date:"d M Y H:i" }}
-
-				</div>
-				{% if comment.hidden %}
-					{% if comment.hidden_by == settings.admin_user_id or not comment.hidden_by %}
-						<div class="comment-meta" id="text_hidden">
-							{% if user_info.superadmin %}
-								<a href="javascript:showCommentContent({{ comment.key }})">Hidden by administrator</i></a>
-							{% else %}
-								Hidden by administrator
-							{% endif %}
-						</div>
-					{% else %}
-						<div class="comment-meta" id="text_hidden">
-							<a href="javascript:showCommentContent({{ comment.key }})">Hidden</a>
-						</div>
-					{% endif %}
-					{% for t in comment.text %}
-					<div class="comment-text">{{t}}</div>
-					{% endfor %}	
-				{% else %}
-					{% for t in comment.text %}
-					<div class="comment-text">{{t}}</div>
-					{% endfor %}
-				{% endif %}
-			</div>
-
-			<div class="comment-actions-panel">
-				{% if not user_info.read_only %}
-					<span class="reply_comment_button btn btn-xs btn-default" id="reply-comment-button-{{ comment.key }}" title="Reply" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-							{% if comment.hidden %}style="display:none;"{% endif%} >
-						<i class="glyphicon glyphicon-share-alt"></i> Reply
-					</span>
-				{% endif %}
-				<div class="btn-group" {% if not user_info.profile_id %}style="display: none;"{% endif %}>
-					<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="glyphicon glyphicon-option-vertical"></i>
-					</button>
-					<ul class="dropdown-menu">
-						{% if user_info.profile_id and not user_info.read_only %}
-						<li class="complain_comment_button {% if comment.hidden %}disabled{% endif%}" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
-							<a href="javascript:void()"><i class="glyphicon glyphicon-exclamation-sign"></i> Complain</a>
-						</li>
-						{% endif %}
-						{% if user_info.superadmin or user_is_author %}
-						<li class="hide_comment_button" id="hide-comment-button-{{ comment.key }}" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-							{% if comment.hidden %}style="display:none;"{% endif%} >
-							<a href="javascript:void(0)"><i class="glyphicon glyphicon-eye-close"></i> Hide comment</a>
-						</li>
-						<li class="show_comment_button" id="show-comment-button-{{ comment.key }}" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
-							{% if not comment.hidden %}style="display:none"{% endif %} >
-							<a href="javascript:void(0)"><i class="glyphicon glyphicon-eye-open"></i> Show comment</a>
-						</li>
-						{% endif %}
-						{% if user_info.superadmin %}
-						<li class="delete_comment_button" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}">
-							<a href="javascript:void(0)"><i class="glyphicon glyphicon-trash"></i> Delete comment</a>
-						</li>
-						{% endif %}
-					</ul>
-				</div>  		  		  			
-			</div>
-
-		</div>	
-		{% endfor %}
-	</div>
-	
-	
 	{% if not user_info.read_only %}
 	<div class="image-details-comment-add">
 		<form name="f" role="form" method="POST" action="/save-comment" onsubmit="return onCommentSubmit();">
@@ -243,7 +154,7 @@
 				  <button type="button" class="btn btn-default" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">&#x1f642;</button>
 				  <ul class="dropdown-menu smiles-dropdown" aria-labelledby="dropdownMenu2">
   				  </ul>
-				  <button type="submit" class="btn btn-primary pull-right">Add a comment</button>
+				  <button type="submit" class="btn btn-primary pull-right">Add comment</button>
 				{% else %}
 				  <a href="{{ user_info.login_url }}">Login into Google account to leave a comment</a>
 				{% endif %}
@@ -251,6 +162,24 @@
 		</form>
 	</div>
 	{% endif %}
+
+	
+	<div class="image-details-comments">
+		{% for comment in comments %}
+		  {% include "artwork-details-comment.html" %}
+		{% endfor %}
+	</div>
+
+	{% if has_more_comments %}
+	<div>
+		<div id="load-previous-comments" class="spinner-wrapper" style="display:none;"><div class="spinner"></div></div>
+	</div>
+	<div>
+		<a href="javascript:onLoadPreviousComments()" id="btn-load-previous-comments">Load previous comments</a>
+	</div>
+	{% endif %}
+	
+	
 </div>
 </div>
 
@@ -353,6 +282,7 @@ var authorId ='{{ artwork.author.profile_id }}';
 favorite={% if favorite %}true{% else %}false{% endif %};
 favorite_count={{ favorite_count }};
 authorsArtwork={% if artwork.author.email == user_info.user.email %}true{% else %}false{% endif %};
+var commentsOffset = {{ comments_offset }};
 
 $(function() {
 	$(".btn-delete-image").click(
@@ -399,25 +329,38 @@ $(function() {
 						$('.image-details-favorite-hint').text('Add image to favorites');
 					}
 				});
-		});
-		
-	$(".reply_comment_button").click(function(data) {
-		comment_id = $(this).attr("comment_id");
-		$("input[name=ref_comment_id]").val(comment_id);
-		
-		var commenter_name = $("#comment-"+comment_id).find("#commenter-name").text().trim();
-		$("textarea[name=comment_text]").text("Reply to "+commenter_name+":\n");
-		
-		$("textarea[name=comment_text]").focus();
-	});
-	
-	$(".complain_comment_button").click(function(data) {
-		comment_id = $(this).attr("comment_id");
-		artwork_id = $(this).attr("parent_id");
-		$.getJSON("/complain-comment?comment_id="+comment_id+"&artwork_id="+artwork_id);
-		$('#comment-'+comment_id).addClass('hidden-comment');
-	});	
+		});		
 });
+
+function onLoadPreviousComments() {
+	$('#load-previous-comments').show();
+	$('#btn-load-previous-comments').hide();
+
+	$.getJSON('/json/artwork-previous-comments?artwork_id=' + artworkId + '&offset=' + commentsOffset)
+			.done(function(data) {
+				$('.image-details-comments').append(data.html);
+				commentsOffset = data.offset;
+				$('#load-previous-comments').hide();
+				if (data.has_more_comments) {
+					$('#btn-load-previous-comments').show();
+				}
+			});			
+
+}
+
+function onComplainComment(comment_id) {
+	$.getJSON("/complain-comment?comment_id="+comment_id+"&artwork_id="+artworkId);
+		$('#comment-'+comment_id).addClass('hidden-comment');
+}
+
+function onReplyComment(comment_id) {
+	$("input[name=ref_comment_id]").val(comment_id);
+	
+	var commenter_name = $("#comment-"+comment_id).find("#commenter-name").text().trim();
+	$("textarea[name=comment_text]").text("Reply to "+commenter_name+":\n");
+	
+	$("textarea[name=comment_text]").focus();
+}
 
 function showErrorDialog(message) {
 	$("#modal-error .modal-body").html("<p>"+message+"</p>");
@@ -719,19 +662,13 @@ function showComment(id, parent_id) {
 		});	
 }
 
-$(function() {	
-	$(".hide_comment_button").click(function(data) {
-		comment_id = $(this).attr("comment_id");
-		parent_id = $(this).attr("parent_id");
-		hideComment(comment_id, parent_id);
-	});
-	
-	$(".show_comment_button").click(function(data) {
-		comment_id = $(this).attr("comment_id");
-		parent_id = $(this).attr("parent_id");
-		showComment(comment_id, parent_id);
-	});
-});
+function onHideComment(comment_id) {
+	hideComment(comment_id, artworkId);
+}
+
+function onShowComment(comment_id) {
+	showComment(comment_id, artworkId);
+}
 
 </script>
 {% endif %}
@@ -855,12 +792,6 @@ $(function() {
 			});
 		});
 		
-	$(".delete_comment_button").click(function(data) {
-		comment_id = $(this).attr("comment_id");
-		parent_id = $(this).attr("parent_id");
-		deleteComment(comment_id, parent_id);
-	});
-		
 	$("#update-start-count").click(function() {
 		$.getJSON('/admin/updateArtworkFavorites?artwork_id='+artworkId,
 			function(data) {
@@ -877,6 +808,10 @@ function deleteComment(id, parent_id) {
 				$("#comment-"+id).remove();
 			}
 		});
+}
+
+function onDeleteComment(comment_id) {
+	deleteComment(comment_id, artworkId);
 }
 
 </script>

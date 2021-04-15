@@ -1,0 +1,81 @@
+<a name="comment-{{ comment.key }}"></a>
+<div class="comment-wrapper">
+  <div class="comment {% if comment.hidden %}hidden-comment{% endif %}" id="comment-{{ comment.key }}" comment_id="{{ comment.key }}">
+      <div class="comment-header">
+          <div class="user-avatar-in-comment bordered" style="background-image:url({{comment.author.avatar_url}})" ></div>
+          <b>
+              <span id="commenter-name">
+              {% if comment.author.self_block %}
+                  {{ comment.author.nickname }}
+              {% else %}
+                  {% if comment.author.profile_id %}
+                      <a href="/profiles/{{ comment.author.profile_id}}">{{ comment.author.nickname }}</a>
+                  {% else %}
+                      {{ comment.author.nickname }}
+                  {% endif %}
+              {% endif %}
+              </span>
+          </b> - {{ comment.date|date:"d M Y H:i" }}
+
+      </div>
+      {% if comment.hidden %}
+          {% if comment.hidden_by == settings.admin_user_id or not comment.hidden_by %}
+              <div class="comment-meta" id="text_hidden">
+                  {% if user_info.superadmin %}
+                      <a href="javascript:showCommentContent({{ comment.key }})">Hidden by administrator</i></a>
+                  {% else %}
+                      Hidden by administrator
+                  {% endif %}
+              </div>
+          {% else %}
+              <div class="comment-meta" id="text_hidden">
+                  <a href="javascript:showCommentContent({{ comment.key }})">Hidden</a>
+              </div>
+          {% endif %}
+          {% for t in comment.text %}
+          <div class="comment-text">{{t}}</div>
+          {% endfor %}	
+      {% else %}
+          {% for t in comment.text %}
+          <div class="comment-text">{{t}}</div>
+          {% endfor %}
+      {% endif %}
+  </div>
+
+  <div class="comment-actions-panel">
+      {% if not user_info.read_only %}
+          <span class="reply_comment_button btn btn-xs btn-default" id="reply-comment-button-{{ comment.key }}" title="Reply" comment_id="{{ comment.key }}" parent_id="{{ comment.artwork_key }}"
+                  {% if comment.hidden %}style="display:none;"{% endif%} onclick="onReplyComment('{{ comment.key }}')">
+              <i class="glyphicon glyphicon-share-alt"></i> Reply
+          </span>
+      {% endif %}
+      <div class="btn-group" {% if not user_info.profile_id %}style="display: none;"{% endif %}>
+          <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="glyphicon glyphicon-option-vertical"></i>
+          </button>
+          <ul class="dropdown-menu">
+              {% if user_info.profile_id and not user_info.read_only %}
+              <li class="complain_comment_button {% if comment.hidden %}disabled{% endif%}" comment_id="{{ comment.key }}">
+                  <a href="javascript:onComplainComment('{{ comment.key }}')"><i class="glyphicon glyphicon-exclamation-sign"></i> Complain</a>
+              </li>
+              {% endif %}
+              {% if user_info.superadmin or user_is_author %}
+              <li class="hide_comment_button" id="hide-comment-button-{{ comment.key }}" comment_id="{{ comment.key }}"
+                  {% if comment.hidden %}style="display:none;"{% endif%} >
+                  <a href="javascript:onHideComment('{{ comment.key }}')"><i class="glyphicon glyphicon-eye-close"></i> Hide comment</a>
+              </li>
+              <li class="show_comment_button" id="show-comment-button-{{ comment.key }}" comment_id="{{ comment.key }}"
+                  {% if not comment.hidden %}style="display:none"{% endif %} >
+                  <a href="javascript:onShowComment('{{ comment.key }}')"><i class="glyphicon glyphicon-eye-open"></i> Show comment</a>
+              </li>
+              {% endif %}
+              {% if user_info.superadmin %}
+              <li class="delete_comment_button" comment_id="{{ comment.key }}">
+                  <a href="javascript:onDeleteComment('{{ comment.key }}')"><i class="glyphicon glyphicon-trash"></i> Delete comment</a>
+              </li>
+              {% endif %}
+          </ul>
+      </div>  		  		  			
+  </div>
+
+</div>	

@@ -29,6 +29,8 @@ bad_words = [
     build_bad_phrase('м ао н д'),
     build_bad_phrase('с у ч а р'),
     build_bad_phrase('д ао л б ао её б'),
+    build_bad_phrase('* ui c k'),
+    build_bad_phrase('* u c k e r'),
 ]
 bad_words_re = re.compile('|'.join(bad_words), re.IGNORECASE | re.UNICODE)
 
