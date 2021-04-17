@@ -34,7 +34,11 @@
             {% endif %}
         {% endif %}
 		<div class="thumb-details">
+			{% if a.copyright_block  or a.block %}
+			<div class="thumb-title" style="color: gray;">Blocked image</div>
+			{% else %}
 			<div class="thumb-title">{{ a.name }}</div>
+			{% endif %}
 			<div class="thumb-author">{{ a.author.nickname }}</div>
 			<div class="thumb-date">{{ a.date|date:"d M Y H:i" }}</div>
 		</div>

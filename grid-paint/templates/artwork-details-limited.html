@@ -1,0 +1,370 @@
+{% extends "base-adv.html" %}
+
+{% block title %}{{ artwork.name }} - {{ block.super }}{% endblock %}
+{% block description %}
+<meta name="description" content="Artwork &quot;{{ artwork.name }}&quot; by {{ artwork.author.nickname }} at Grid Paint.">
+{% endblock %}
+
+{% block include_css %}
+{{ block.super }}
+{% endblock %}
+
+{% block content %}  
+
+<div class="single-container">
+<div class="container">
+	<div class="image-details-favorite-wrapper">
+		<div class="image-details-favorite-count">{{ favorite_count }}</div>
+		{% if user_info.user %}
+		<div class="image-details-favorite {% if favorite %}star-favorite{% else %}star-not-favorite{% endif %}" id="favorite-star"></div>
+		{% else %}
+		<div class="image-details-favorite star-favorite"></div>
+		{% endif %}
+	</div>
+		{% if artwork.copyright_block %}
+		<div style="font-size:2em; color:red; text-align: center">
+			This image is blocked due to copyright infringement.
+		</div>
+		{% endif %}
+		{% if artwork.block %}
+		<div style="font-size:2em; color:red; text-align: center;">
+			This image is blocked due to {{ artwork.block_reason }}.
+		</div>
+		{% endif %}
+		<div style="font-size:1.5em; color:red; text-align: center;">
+			Nobody except you can see this image.
+		</div>
+
+	<div class="image-details-image">
+			<img class="main-image" src="{{ artwork.full_image_file_name }}" width="{{ artwork.thumbnail_width }}" height="{{ artwork.thumbnail_height }}">
+			{% if artwork.pixel_image_file_name %}
+				<div class="pixel-image" style="width: calc({{ artwork.pixel_image_width }}px + 20px); height: calc({{ artwork.pixel_image_height }}px + 20px)">
+					<img src="{{ artwork.pixel_image_file_name }}" width="{{ artwork.pixel_image_width }}" height="{{ artwork.pixel_image_height }}">
+				</div>
+			{% endif %}
+	</div>
+	{% if not user_info.read_only and can_edit_artwork %}
+	<div class="image-details-actions">
+		<div class="btn-group">
+		  <a href="/painter?id={{ artwork.key.id }}" class="btn btn-sm btn-success"><i class="icon icon-pencil icon-white"></i> Edit image</a>
+		  <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			<span class="caret"></span>
+			<span class="sr-only">Toggle Dropdown</span>
+		  </button>
+		  <ul class="dropdown-menu">
+			{% if user_info.superadmin or user_is_author %}
+			<li><a href="#" image-key="{{ artwork.key.id }}" class="btn-delete-image"><i class="icon icon-remove"></i> Delete image</a></li>
+			{% endif %}
+		  </ul>
+		</div>
+
+	</div>
+	{% endif %}
+	{% if user_info.superadmin %}
+	<div class="image-details-actions">
+		<a href="#" id="admin-artwork-properties" class="btn btn-sm btn-default" title="Artwork properties">Properties</a>
+		<a href="#" id="update-start-count" class="btn btn-sm btn-default" title="Update stars count"><i class="icon-star"></i> <i class="icon-refresh"></i></a>
+	</div>
+	{% endif %}
+
+	<div class="image-details-header">
+		<div class="image-details-header-avatar" style="background-image:url({{artwork.author.avatar_url}})"></div>
+		<h3 id="artwork-name">
+			{% if artwork.editor_choice %}
+				<img src="/img/editor_choice.png" title="Editor's choice" />
+			{% endif %}
+			<img src="/img/grid-icons/{{ artwork.grid }}.png" /> {{ artwork.name }}
+		</h3>
+		<div class="details">
+			<small>{{ artwork.date|date:"d M Y H:i" }}</small> by 
+			<span class="artist">
+				{% if artwork.author %}
+				<a href="/profiles/{{ artwork.author.profile_id }}">{{ artwork.author.nickname }}</a>
+				{% else %}
+				{{ artwork.author.nickname }}
+				{% endif %}
+			</span>
+		</div>
+
+		{% if collaborators %}
+		<div class="details">
+			in collaboration with
+			{% for c in collaborators %}
+				<a href="/profiles/{{ c.profile_id }}">{{ c.nickname }}</a>{% if not forloop.last %},{% endif %}
+			{% endfor %}
+		</div>
+		{% endif %}
+
+		<div class="details-delimiter"></div>
+		{% for d in artwork.description_list %}
+		  <div class="description-text">{{ d }}</div>
+		{% endfor%}
+		{% if artwork.tags %}
+		<div class="description-text">
+			{% for tag in artwork.tags %}
+			  <a href="/gallery?q={{ tag.url_name }}">#{{ tag.title }}</a>
+			{% endfor %}
+		</div>
+		{% endif %}		
+		
+		<div style="clear: both"></div>		
+	</div>
+
+	<div>
+		Comments not available for blocked image.
+	</div>
+	
+</div>
+</div>
+
+
+<div id="modal-confirm-delete" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Confirmation</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+        <a href="#" id="btn-confirm-delete" class="btn btn-danger">Delete</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal-error" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Error</h4>
+      </div>
+      <div class="modal-body">
+        <p>One fine body</p>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+var artworkId='{{ artwork.key.id }}';
+var authorId ='{{ artwork.author.profile_id }}';
+favorite={% if favorite %}true{% else %}false{% endif %};
+favorite_count={{ favorite_count }};
+authorsArtwork={% if artwork.author.email == user_info.user.email %}true{% else %}false{% endif %};
+var commentsOffset = {{ comments_offset }};
+
+$(function() {
+	$(".btn-delete-image").click(
+		function() {
+			var imageName=$("#artwork-name").text();
+			$("#modal-confirm-delete .modal-body").html(
+				"<p>Are you sure to delete image <i>'"+imageName+"'</i></p>");
+			$("#btn-confirm-delete").attr("href","/delete-image?id="+$(this).attr("image-key"));
+			$("#modal-confirm-delete").modal('show');
+		}
+	);
+});
+
+function onLoadPreviousComments() {
+	$('#load-previous-comments').show();
+	$('#btn-load-previous-comments').hide();
+
+	$.getJSON('/json/artwork-previous-comments?artwork_id=' + artworkId + '&offset=' + commentsOffset)
+			.done(function(data) {
+				$('.image-details-comments').append(data.html);
+				commentsOffset = data.offset;
+				$('#load-previous-comments').hide();
+				if (data.has_more_comments) {
+					$('#btn-load-previous-comments').show();
+				}
+			});			
+
+}
+
+function showErrorDialog(message) {
+	$("#modal-error .modal-body").html("<p>"+message+"</p>");
+	$("#modal-error .modal-title").html("Error");
+	$("#modal-error").modal();
+}
+
+function showWarningDialog(message) {
+	$("#modal-error .modal-body").html("<p>"+message+"</p>");
+	$("#modal-error .modal-title").html("Warning");
+	$("#modal-error").modal();
+}
+
+</script>
+
+
+<script>
+function showCircleLoader() {
+	$('body').append(
+		'<div id="spinner-fullscreen" class="spinner-fillscreen-wrapper"><div class="spinner wide"></div></div>'
+	)
+}
+
+function hideCircleLoader() {
+	$('#spinner-fullscreen').remove();
+}
+
+</script>
+
+
+
+{% if user_info.superadmin %}
+<link href="/bootstrap-tagsinput/bootstrap-tagsinput.css" rel="stylesheet">
+<script src="/bootstrap-tagsinput/bootstrap-tagsinput.js"></script>
+
+
+<div id="properties-modal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Artwork properties</h4>
+      </div>
+      <div class="modal-body">
+        <form name="adminForm" method="POST" action="/admin/saveArtworkProperties" role="form">
+        	<input type="hidden" name="admin_artwork_id" value="{{ artwork.key.id }}" />
+        	<div class="form-group">
+    			<label>Artwork title</label>
+    			<input type="text" name="admin_artwork_name" id="admin_artwork_name" value="{{ artwork.name }}" class="form-control"/>
+    		</div>
+    		<div class="form-group">
+    			<label>Artwork description</label>
+    			<textarea name="admin_artwork_description" id="admin_artwork_description" class="form-control" style="height:150px;">{{ artwork.description|default_if_none:"" }}</textarea>
+    		</div>
+    		<div class="form-group">
+    			<label>Tags</label>
+    			<div>
+    				<input type="text" value="{{ artwork.tags_merged }}" name="admin_artwork_tags" id="admin_artwork_tags" autocomplete="off"/>
+    			</div>
+    		</div>
+    		<div class="checkbox">
+    			<label>
+    				<input name="admin_artwork_editor_choice" type="checkbox" {% if artwork.editor_choice %}checked{% endif %}/> Editor's choice
+    			</label>
+    		</div>
+    		<div class="checkbox">
+    			<label>
+    				<input name="admin_artwork_copyright_block" type="checkbox" {% if artwork.copyright_block %}checked{% endif %}/> Copyright block
+    			</label>
+    		</div>
+    		<div class="checkbox">
+    			<label>
+    				<input name="admin_artwork_block" type="checkbox" {% if artwork.block %}checked{% endif %}/> Block image
+    			</label>
+    		</div>
+    		<div class="form-group">
+    			<label>Block reason</label>
+    			<div>
+    				<input type="text" value="{{ artwork.block_reason }}" name="admin_artwork_block_reason" id="admin_artwork_block_reason"/>
+    			</div>
+    		</div>    		
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    	<button id="btn-admin-artwork-properties-save" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$(function() {
+	var tags=$("#admin_artwork_tags");
+	tags.tagsinput();
+	tags.tagsinput('input').typeahead({
+		name: "dataset",
+		remote: "/tag-typeahead?query=%QUERY"
+    }).bind('typeahead:selected', $.proxy(function (obj, datum) {
+      tags.tagsinput('add', datum.value);
+      tags.tagsinput('input').typeahead('setQuery', '');
+    }, $('input')));
+	
+	
+	$("#admin-artwork-properties").click(
+		function() {
+			$("#properties-modal").modal();
+		});
+		
+	$("#btn-admin-artwork-properties-save").click(
+		function() {
+			//$("form[name=adminForm]")[0].submit();
+
+			showCircleLoader();
+			$.ajax({
+				type: 'post',
+				url: '/json/admin/save-image-properties',
+				data: $("form[name=adminForm]").serialize(),
+				dataType: "json",
+				success: function(data) {
+					if (data.result) {
+						$.ajax({
+							type: 'post',
+							url: '/json/save-image-tags',
+							data: {
+								artwork_id: artworkId,
+								artwork_tags: $('input[name=admin_artwork_tags]').val()
+							},
+							dataType: 'json',
+							success: function(data) {
+								document.location = '/images/details/' + artworkId;
+							},
+							error: function() {
+								hideCircleLoader();
+								showWarningMessage("Something went wrong. Try again.");
+							}
+						})
+					} else {
+						hideCircleLoader();
+					}
+				},
+				error: function() {
+					hideCircleLoader();
+					showWarningMessage("Something went wrong. Try again.")
+				}
+			});
+		});
+		
+	$("#update-start-count").click(function() {
+		$.getJSON('/admin/updateArtworkFavorites?artwork_id='+artworkId,
+			function(data) {
+				favorite_count=data.count;
+				$('.image-details-favorite-count').text(favorite_count);
+			});
+	});
+});
+
+function deleteComment(id, parent_id) {
+	$.getJSON('/admin/delete-comment?id='+id+'&parent_id='+parent_id)
+		.done(function(data) {
+			if (data=="OK") {
+				$("#comment-"+id).remove();
+			}
+		});
+}
+
+function onDeleteComment(comment_id) {
+	deleteComment(comment_id, artworkId);
+}
+
+</script>
+
+
+{% endif %}
+
+
+
+{% endblock content %}

@@ -510,8 +510,13 @@ class PageImage(BasicPageRequestHandler):
             user_is_collaborator = self.user_info.profile_id in [c['profile_id'] for c in collaborators]
 
         can_edit_artwork = self.user_info.superadmin or user_is_author or user_is_collaborator
-        if 'block' in converted_artwork or 'copyright_block' in converted_artwork and not can_edit_artwork:
-            self.write_template('templates/artwork-details-blocked.html', {})
+        if ('block' in converted_artwork or 'copyright_block' in converted_artwork) and not can_edit_artwork:
+            self.write_template(
+                'templates/artwork-details-blocked.html',
+                {
+                    'artwork': converted_artwork
+                }
+            )
             return
             
         if self.user_info.user:
@@ -521,7 +526,12 @@ class PageImage(BasicPageRequestHandler):
 
         settings = get_settings()
 
-        self.write_template('templates/artwork-details.html', 
+        template_name = 'templates/artwork-details.html'
+        if 'block' in converted_artwork or 'copyright_block' in converted_artwork:
+            template_name = 'templates/artwork-details-limited.html'
+
+        self.write_template(
+            template_name,
             {
                 'artwork': converted_artwork,
                 'collaborators': collaborators,
