@@ -46,7 +46,8 @@ default_bad_words = [
     'sonofabitch', 'sx', 'teets', 'teez', 'testical', 'testicle', 'tit', 'tits', 'titt', 'turd',
     'va1jina', 'vag1na', 'vagiina', 'vagina', 'vaj1na', 'vajina', 'vullva', 'vulva', 'w00se', 'w0p',
     'wank', 'wh00r', 'wh0re', 'whoar', 'whore', 'xrated',
-    'a s s h o l e', 'a s s', 'f u c k', 'd i c k', 's u c k']
+    'a s s h o l e', 'a s s', 'f u c k', 'd i c k', 's u c k',
+    'f\*ck', 'f\*\*k', 'f\*cking', 'f\**king', 'f\*king', 'b\*tch', 'b\*\*ch', '\*ss', '@ss']
 
 
 class ProfanityFilter:
