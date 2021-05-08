@@ -387,6 +387,13 @@ function UndoStep() {
 			removedCells: removedCells
 		};
 	};
+
+	this.setWorkspaceChange=function(oldWorkspace, newWorkspace) {
+		this.workspaceChange={
+			oldWorkspace: oldWorkspace,
+			newWorkspace: newWorkspace
+		}
+	}
 }
 
 function GridSelection() {

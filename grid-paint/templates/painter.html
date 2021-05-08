@@ -184,25 +184,49 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title">Workspace size</h4>
+				<h4 class="modal-title">Workspace properties</h4>
             </div>
 			<div class="modal-body">
 				<form role="form">
-					<label>Size</label>
-					<div>
-						<input type="number" class="form-control" id="workspace-width" name="workspace-width" style="width: 100px; display: inline-block;">
-						×
-						<input type="number" class="form-control" id="workspace-height" name="workspace-height" style="width: 100px; display: inline-block;">
+					<div class="row" style="margin-bottom: 15px;">
+						<div class="col-xs-3">
+							<div>Width (px)</div>
+							<div>
+								<input type="number" class="form-control" id="workspace-width" name="workspace-width">
+							</div>		
+						</div>
+						<div class="col-xs-3">
+							<div>Height (px)</div>
+							<div>
+								<input type="number" class="form-control" id="workspace-height" name="workspace-height">
+							</div>		
+						</div>
+						<div class="col-xs-6">
+							<div>Background color</div>
+							<div>
+								<input type="text" class="form-control minicolors-input" value="#ffffff" id="workspace-background-color" name="workspace-background-color">
+							</div>		
+						</div>
 					</div>
-					<div style="height: 20px"></div>
-					<label>Cell size</label>
-					<div>
-						<input type="number" class="form-control" id="workspace-cell-size" name="workspace-cell-size" style="width: 100px; display: inline-block;"> px
-					</div>
-					<div style="height: 20px"></div>
-					<label>Grid thickness</label>
-					<div>
-						<input type="number" class="form-control" id="workspace-grid-thickness" name="workspace-grid-thickness" style="width: 100px; display: inline-block;"> px
+					<div class="row">
+						<div class="col-xs-3">
+							<div>Cell size (px)</div>
+							<div>
+								<input type="number" class="form-control" id="workspace-cell-size" name="workspace-cell-size">
+							</div>		
+						</div>
+						<div class=col-xs-3>
+							<div>Grid thickness (px)</div>
+							<div>
+								<input type="number" class="form-control" id="workspace-grid-thickness" name="workspace-grid-thickness">
+							</div>		
+						</div>
+						<div class=col-xs-6>
+							<div>Grid color</div>
+							<div>
+								<input type="text" class="form-control minicolors-input" value="#d0d0d0" id="workspace-grid-color" name="workspace-grid-color">
+							</div>		
+						</div>
 					</div>
 				</form>
 			</div>
