@@ -734,12 +734,15 @@ function GridSquare_ToolEllipse() {
 
 function GridSquare() {
 	this.cellSize=24;
+	this.gridThickness=1;
+	this.gridColor=gridLineColor;
 	this.name="square";
 	
 	this._createGridLine=function(paper, pathArray) {
 		var path=paper.path(pathArray);
         path.attr({
-            "stroke":gridLineColor,
+            "stroke":this.gridColor,
+			"stroke-width": this.gridThickness
         })
 	}
 	

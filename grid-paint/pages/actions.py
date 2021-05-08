@@ -151,7 +151,15 @@ class JSONActionSaveImage(BasicRequestHandler):
             grid.paint_layer_2(image_draw, layer, dx, dy)
 
         if artwork.grid == 'square' and json_obj['gridVisible']:
-            grid.paintGrid(image_draw, '#000000', -dx, -dy, image_width, image_height, dx, dy)
+            if 'gridThickness' in layer:
+                thickness = int(layer['gridThickness'])
+            else:
+                thickness = 1
+            if 'gridColor' in layer:
+                grid_color = layer['gridColor']
+            else:
+                grid_color = '#d0d0d0'
+            grid.paintGrid(image_draw, grid_color, -dx, -dy, image_width, image_height, dx, dy, thickness)
         
         memory_file = StringIO.StringIO()
         image.save(memory_file, 'png')

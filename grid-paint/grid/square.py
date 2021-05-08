@@ -273,15 +273,15 @@ class GridSquare(base.GridBase):
             "frame10u": ShapeFramed10Light(self),
         }
         
-    def paintGrid(self, image, color, left, top, width, height, dx=0, dy=0):
+    def paintGrid(self, image, color, left, top, width, height, dx=0, dy=0, thickness=1):
         startx = int(math.floor(left / self.cell_size)) * self.cell_size
         starty = int(math.floor(top / self.cell_size)) * self.cell_size
         
         for x in xrange(startx, left+width, self.cell_size):
-            image.line([(x+dx, top+dy), (x+dx, top+height+dy)], fill=color, width=1)
+            image.line([(x+dx, top+dy), (x+dx, top+height+dy)], fill=color, width=thickness)
             
         for y in xrange(starty, top+height, self.cell_size):
-            image.line([(left+dx, y+dy), (left+width+dx, y+dy)], fill=color, width=1)
+            image.line([(left+dx, y+dy), (left+width+dx, y+dy)], fill=color, width=thickness)
             
     def paintPoint(self, image, col, row, color, dx, dy):
         image.point((col+dx, row+dy), color)

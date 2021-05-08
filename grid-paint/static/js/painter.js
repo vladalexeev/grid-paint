@@ -478,6 +478,8 @@ function prepareArtworkToSave() {
 		layers:[{
 			grid:grid.name,
 			cellSize:grid.cellSize,
+			gridThickness: grid.gridThickness,
+			gridColor: grid.gridColor,
 			rows:[]
 		}],
 		recentColors: recentColors
@@ -1149,13 +1151,14 @@ function initShiftPanel() {
 		});
 }
 
-function applyWorkspaceSize(newWidth, newHeight, newCellSize) {
+function applyWorkspaceSize(newWidth, newHeight, newCellSize, gridThickness) {
 	$("#canvas")
 		.css("width",newWidth)
 		.css("height",newHeight);
 	grid.workspaceWidth=newWidth;
 	grid.workspaceHeight=newHeight;
 	grid.cellSize=newCellSize;
+	grid.gridThickness=gridThickness;
 	
 	paper.remove();
 	paper=new Raphael("canvas",newWidth,newHeight);
@@ -1198,6 +1201,7 @@ function initSizePanel() {
 			var newWidth=parseInt($("#workspace-width").val(),10);
 			var newHeight=parseInt($("#workspace-height").val(),10);
 			var newCellSize=parseInt($("#workspace-cell-size").val(),10);
+			var newGridThickness=parseInt($("#workspace-grid-thickness").val(),10);
 			
 			if (newWidth<200 || newWidth>4000) {
 				alert("Artwork width should by between 200 and 4000 pixels.");
@@ -1214,7 +1218,12 @@ function initSizePanel() {
 				return;
 			}
 
-			applyWorkspaceSize(newWidth, newHeight, newCellSize);
+			if (newGridThickness<1 || newGridThickness>4) {
+				alert("Grid thickness should be between 1 and 4 pixels");
+				return;
+			}
+
+			applyWorkspaceSize(newWidth, newHeight, newCellSize, newGridThickness);
 
 			$("#workspace-size-modal").modal("hide");
 
@@ -1223,7 +1232,8 @@ function initSizePanel() {
 					workspace: {
 						width: newWidth,
 						height: newHeight,
-						cellSize: newCellSize
+						cellSize: newCellSize,
+						gridThickness: newGridThickness
 					}
 				}
 		
@@ -1783,7 +1793,9 @@ $(function() {
 	grid=gridFactory[artwork.layers[0].grid]();
 	grid.cellSize=artwork.layers[0].cellSize;
 	grid.workspaceWidth=artwork.canvasSize.width;
-	grid.workspaceHeight=artwork.canvasSize.height;	
+	grid.workspaceHeight=artwork.canvasSize.height;
+	grid.gridThickness=artwork.layers[0].gridThickness ? artwork.layers[0].gridThickness : 1;
+	grid.gridColor=artwork.layers[0].gridColor ? artwork.layers[0].gridColor : "#d0d0d0";
 	grid.paintGrid(paper);
 	
 	selection.grid=grid;
@@ -1796,6 +1808,11 @@ $(function() {
 	$("#workspace-width").val(artwork.canvasSize.width);
 	$("#workspace-height").val(artwork.canvasSize.height);
 	$("#workspace-cell-size").val(artwork.layers[0].cellSize);
+	if (artwork.layers[0].gridThickness) {
+		$("#workspace-grid-thickness").val(artwork.layers[0].gridThickness);
+	} else {
+		$("#workspace-grid-thickness").val("1");
+	}
 	
 	$('#modal_artwork_grid_visible')[0].checked = artwork['gridVisible'];
 	$('#modal_artwork_pixel_art')[0].checked = artwork['additionalPixelImage'];
@@ -2063,7 +2080,7 @@ $(function() {
 				}
 			}
 			if (changes.workspace) {
-				applyWorkspaceSize(changes.workspace.width, changes.workspace.height, changes.workspace.cellSize);
+				applyWorkspaceSize(changes.workspace.width, changes.workspace.height, changes.workspace.cellSize, changes.workspace.gridThickness);
 			}
 		});
 		socket.on('chat_message', data => {
