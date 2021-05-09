@@ -2161,7 +2161,7 @@ $(function() {
 					changes.workspace.cellSize, 
 					changes.workspace.gridThickness,
 					changes.workspace.gridColor,
-					changed.workspace.backgroundColor
+					changes.workspace.backgroundColor
 				);
 			}
 		});
