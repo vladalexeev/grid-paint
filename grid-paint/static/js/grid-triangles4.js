@@ -73,12 +73,15 @@ function GridTriangles4_ShapeSelected(parent) {
 
 function GridTriangles4() {
 	this.cellSize=24;
+	this.gridThickness=1;
+	this.gridColor=gridLineColor;
 	this.name="triangles4";
 	
 	this._createGridLine=function(paper, pathArray) {
 		var path=paper.path(pathArray);
         path.attr({
-            "stroke":gridLineColor,
+			"stroke":this.gridColor,
+			"stroke-width": this.gridThickness
         })
 	}
 	

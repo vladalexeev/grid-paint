@@ -303,12 +303,15 @@ function GridHex_ShapeFramedDark(parent) {
 
 function GridHex() {
 	this.cellSize=24;
+	this.gridThickness=1;
+	this.gridColor=gridLineColor;
 	this.name="hex";
 	
 	this._createGridLine=function(paper, pathArray, stroke_dash_array) {
 		var path=paper.path(pathArray);
         path.attr({
-            "stroke":"#d0d0d0",
+            "stroke":this.gridColor,
+			"stroke-width": this.gridThickness
         })
         path.node.setAttribute("stroke-dasharray",stroke_dash_array);
 	}

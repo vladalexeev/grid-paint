@@ -169,12 +169,15 @@ function GridIsoTriangle_ShapeFramedDark(parent) {
 
 function GridIsoTriangle() {
 	this.cellSize=24;
+	this.gridThickness=1;
+	this.gridColor=gridLineColor;
 	this.name="iso-triangle";
 	
 	this._createGridLine=function(paper, pathArray) {
 		var path=paper.path(pathArray);
         path.attr({
-            "stroke":"#d0d0d0",
+            "stroke":this.gridColor,
+			"stroke-width": this.gridThickness
         })
 	}
 		
