@@ -139,3 +139,36 @@ class UpdateUser(db.Expando):
     profile_id = db.IntegerProperty()
     update_date = db.DateTimeProperty()
     action = db.StringProperty()
+
+
+class TodayFavoriteCounter(db.Expando):
+    """
+    Favorite counter for the current day
+    """
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    count = db.IntegerProperty()
+
+
+class DailyFavoritesCounters(db.Expando):
+    """
+    History of artworks' favorites by days
+    """
+    date = db.DateProperty(auto_now=True)
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    count = db.IntegerProperty()
+
+
+class LastWeekFavoriteCounters(db.Expando):
+    """
+    Most popular artworks for last week
+    """
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    count = db.IntegerProperty()
+
+
+class LastMonthFavoriteCounters(db.Expando):
+    """
+    Most popular artworks for last month
+    """
+    artwork = db.ReferenceProperty(reference_class=Artwork)
+    count = db.IntegerProperty()

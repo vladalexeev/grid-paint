@@ -100,5 +100,8 @@ application = webapp.WSGIApplication([
     ('/cron/clean-news', pages.cron.CronCleanOldNews),
     ('/cron/update-artworks', pages.cron.CronUpdateArtworks),
     ('/cron/update-tags', pages.cron.CronUpdateGlobalTags),
+    ('/cron/update-daily-counters', pages.cron.CronUpdateDailyCounters),
+    ('/cron/calculate-last-week-top', pages.cron.CronCalculateLastWeekTop),
+    ('/cron/calculate-last-month-top', pages.cron.CronCalculateLastMonthTop),
     ('/tasks/add-artwork-to-news', pages.tasks.TaskAddArtworkToNews),
 ], debug=True)

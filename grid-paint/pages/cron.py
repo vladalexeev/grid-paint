@@ -212,3 +212,114 @@ class CronUpdateGlobalTags(BasicRequestHandler):
         task_status.put()
 
 
+class CronUpdateDailyCounters(BasicRequestHandler):
+    """
+    Move today's counters to daily counters and delete delete old counters
+    """
+    def get(self):
+        today_counters = db.TodayFavoriteCounter.all().order('-count').fetch(100)
+
+        # Copy top 100 counters to DailyFavoriteCounters
+        for c in today_counters:
+            daily_counter = db.DailyFavoritesCounters()
+            daily_counter.artwork = c.artwork
+            daily_counter.count = c.count
+            daily_counter.save()
+
+        # Clean TodayFavoriteCounter
+        while True:
+            deleted = False
+            today_counters = db.TodayFavoriteCounter.all().order('-count').fetch(1000)
+            for c in today_counters:
+                c.delete()
+                deleted = True
+            if not deleted:
+                break
+
+        # Delete old daily counters
+        old_counter_threshold = datetime.datetime.now() - datetime.timedelta(days=30)
+        old_daily_counters = db.DailyFavoritesCounters.all().filter('date <', old_counter_threshold)
+        for c in old_daily_counters:
+            c.delete()
+
+
+class CronCalculateLastWeekTop(BasicRequestHandler):
+    """
+    Calculate most popular artworks for week
+    """
+    def get(self):
+        threshold = datetime.datetime.now() - datetime.timedelta(days=7)
+        artwork_id__count = {}
+        artwork_id__artwork = {}
+        offset = 0
+        limit = 1000
+        while True:
+            daily_counters = db.DailyFavoritesCounters.all().filter('date >', threshold).order('-date').fetch(limit, offset)
+            empty = True
+            for c in daily_counters:
+                empty = False
+                artwork_id = c.artwork.key().id()
+                if artwork_id in artwork_id__count:
+                    artwork_id__count[artwork_id] = artwork_id__count[artwork_id] + c.count
+                else:
+                    artwork_id__count[artwork_id] = c.count
+                    artwork_id__artwork[artwork_id] = c.artwork
+            if empty:
+                break
+            offset += limit
+
+        old_counters = db.LastWeekFavoriteCounters().all()
+        for c in old_counters:
+            c.delete()
+
+        all_items = artwork_id__count.items()
+        all_items.sort(reverse=True, key=lambda item: item[1])
+        for artwork_id, count in all_items[:100]:
+            counter = db.LastWeekFavoriteCounters()
+            counter.artwork = artwork_id__artwork[artwork_id]
+            counter.count = count
+            counter.put()
+
+
+class CronCalculateLastMonthTop(BasicRequestHandler):
+    """
+    Calculate most popular artworks for month
+    """
+    def get(self):
+        threshold = datetime.datetime.now() - datetime.timedelta(days=30)
+        artwork_id__count = {}
+        artwork_id__artwork = {}
+        offset = 0
+        limit = 1000
+        while True:
+            daily_counters = db.DailyFavoritesCounters.all().filter('date >', threshold).order('-date').fetch(limit, offset)
+            empty = True
+            for c in daily_counters:
+                empty = False
+                artwork_id = c.artwork.key().id()
+                if artwork_id in artwork_id__count:
+                    artwork_id__count[artwork_id] = artwork_id__count[artwork_id] + c.count
+                else:
+                    artwork_id__count[artwork_id] = c.count
+                    artwork_id__artwork[artwork_id] = c.artwork
+            if empty:
+                break
+            offset += limit
+
+        old_counters = db.LastMonthFavoriteCounters().all()
+        for c in old_counters:
+            c.delete()
+
+        all_items = artwork_id__count.items()
+        all_items.sort(reverse=True, key=lambda item: item[1])
+        for artwork_id, count in all_items[:100]:
+            counter = db.LastMonthFavoriteCounters()
+            counter.artwork = artwork_id__artwork[artwork_id]
+            counter.count = count
+            counter.put()
+
+
+
+
+
+
