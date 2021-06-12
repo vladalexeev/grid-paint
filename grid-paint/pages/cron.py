@@ -280,6 +280,8 @@ class CronCalculateLastWeekTop(BasicRequestHandler):
             counter.count = count
             counter.put()
 
+        cache.delete(cache.MC_MAIN_PAGE_LAST_WEEK_FAVORITES)
+
 
 class CronCalculateLastMonthTop(BasicRequestHandler):
     """

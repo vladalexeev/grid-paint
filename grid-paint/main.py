@@ -64,6 +64,7 @@ application = webapp.WSGIApplication([
     ('/profiles/(.*)/images', pages.pages.PageUserImages),
     ('/profiles/(.*)/group-images', pages.pages.PageUserGroupImages),
     ('/top-favorites', pages.pages.PageTopFavorites),
+    ('/last-week-favorites', pages.pages.PageLastWeekFavorites),
     ('/profiles/(.*)', pages.pages.PageProfile),
     ('/editor-choice', pages.pages.PageEditorChoice),
     ('/favorites', pages.pages.PageRecentFavorites),

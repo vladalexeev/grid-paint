@@ -85,12 +85,20 @@ class PageIndex(BasicPageRequestHandler):
             r_artists = db.UserProfile.all().order('-favorite_count').fetch(5)
             top_rated_artists = [convert.convert_user_profile(a) for a in r_artists]
             cache.add(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS, top_rated_artists)
+
+        last_week_favorites = cache.get(cache.MC_MAIN_PAGE_LAST_WEEK_FAVORITES)
+        if not last_week_favorites:
+            last_week_favorites = db.LastWeekFavoriteCounters.all().order('-count')
+            last_week_favorites = last_week_favorites.fetch(3,0)
+            last_week_favorites = [convert.convert_artwork_for_page(a,200,150) for a in last_week_favorites]
+            cache.add(cache.MC_MAIN_PAGE_LAST_WEEK_FAVORITES, top_favorites)
         
         self.write_template('templates/index.html', 
             {
                 'artworks': recent_artworks,
                 'editor_choice': editor_choice,
                 'top_favorites': top_favorites,
+                'last_week_favorites': last_week_favorites,
                 'recent_favorites': recent_favorites,
                 'comments': recent_comments,
                 'productive_artists': productive_artists,
@@ -774,7 +782,32 @@ class PageTopFavorites(BasicPageRequestHandler):
                                      additional_values_func)
                 
         self.write_template('templates/top-favorites.html', model)
-        
+
+
+class PageLastWeekFavorites(BasicPageRequestHandler):
+    def get(self):
+        def artworks_query_func():
+            all_artworks = db.LastWeekFavoriteCounters.all()
+            return all_artworks.order('-count')
+
+        def href_create_func(offset):
+            return '/last-week-favorites?offset=' + str(offset)
+
+        def memcache_cursor_key_func(offset):
+            return cache.MC_ARTWORK_LIST + 'last_week_favorites_' + str(offset)
+
+        def additional_values_func(obj, values):
+            values['favorites_count'] = obj.count
+
+        model = create_gallery_model(self.request.get('offset'),
+                                     artworks_query_func,
+                                     href_create_func,
+                                     memcache_cursor_key_func,
+                                     additional_values_func)
+
+        self.write_template('templates/last-week-favorites.html', model)
+
+
 class PageRecentFavorites(BasicPageRequestHandler):
     def get(self):
         def artworks_query_func():

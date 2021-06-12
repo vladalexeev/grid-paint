@@ -55,7 +55,7 @@ class UserTag(db.Model):
 class Comment(db.Expando):
     artwork_ref = db.ReferenceProperty(reference_class=Artwork)
     author_email = db.StringProperty()
-    text = db.TextProperty()
+    text = db.TextProperty(indexed=False)
     date = db.DateTimeProperty(auto_now_add=True)
 
 
