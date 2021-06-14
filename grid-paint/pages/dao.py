@@ -209,8 +209,6 @@ def unfavorite_artwork(artwork, user_email):
         else:
             today_fav_count.delete()
 
-    today_fav_count.put()
-
     return result
 
 

@@ -1,6 +1,8 @@
 import datetime
 import json
 
+from google.appengine.ext.db import ReferencePropertyResolveError
+
 from bad_language import hide_bad_language
 from pages import cache
 from common import BasicRequestHandler
@@ -221,25 +223,33 @@ class CronUpdateDailyCounters(BasicRequestHandler):
 
         # Copy top 100 counters to DailyFavoriteCounters
         for c in today_counters:
-            daily_counter = db.DailyFavoritesCounters()
-            daily_counter.artwork = c.artwork
-            daily_counter.count = c.count
-            daily_counter.save()
+            try:
+                daily_counter = db.DailyFavoritesCounters()
+                daily_counter.artwork = c.artwork
+                daily_counter.count = c.count
+                daily_counter.save()
+            except ReferencePropertyResolveError:
+                pass
+
 
         # Clean TodayFavoriteCounter
         while True:
-            deleted = False
-            today_counters = db.TodayFavoriteCounter.all().order('-count').fetch(1000)
+            today_counters = db.TodayFavoriteCounter.all().order('-count').fetch(100)
+            today_counters_list = []
             for c in today_counters:
+                today_counters_list.append(c)
+            for c in today_counters_list:
                 c.delete()
-                deleted = True
-            if not deleted:
+            if len(today_counters_list) == 0:
                 break
 
         # Delete old daily counters
         old_counter_threshold = datetime.datetime.now() - datetime.timedelta(days=30)
         old_daily_counters = db.DailyFavoritesCounters.all().filter('date <', old_counter_threshold)
+        old_daily_counters_list = []
         for c in old_daily_counters:
+            old_daily_counters_list.append(c)
+        for c in old_daily_counters_list:
             c.delete()
 
 
@@ -269,7 +279,10 @@ class CronCalculateLastWeekTop(BasicRequestHandler):
             offset += limit
 
         old_counters = db.LastWeekFavoriteCounters().all()
+        old_counters_list = []
         for c in old_counters:
+            old_counters_list.append(c)
+        for c in old_counters_list:
             c.delete()
 
         all_items = artwork_id__count.items()
@@ -309,7 +322,10 @@ class CronCalculateLastMonthTop(BasicRequestHandler):
             offset += limit
 
         old_counters = db.LastMonthFavoriteCounters().all()
+        old_counters_list = []
         for c in old_counters:
+            old_counters_list.append(c)
+        for c in old_counters_list:
             c.delete()
 
         all_items = artwork_id__count.items()
