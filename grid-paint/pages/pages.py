@@ -91,7 +91,7 @@ class PageIndex(BasicPageRequestHandler):
             last_week_favorites = db.LastWeekFavoriteCounters.all().order('-count')
             last_week_favorites = last_week_favorites.fetch(3,0)
             last_week_favorites = [convert.convert_artwork_for_page(a,200,150) for a in last_week_favorites]
-            cache.add(cache.MC_MAIN_PAGE_LAST_WEEK_FAVORITES, top_favorites)
+            cache.add(cache.MC_MAIN_PAGE_LAST_WEEK_FAVORITES, last_week_favorites)
         
         self.write_template('templates/index.html', 
             {
