@@ -268,12 +268,15 @@ class CronCalculateLastWeekTop(BasicRequestHandler):
             empty = True
             for c in daily_counters:
                 empty = False
-                artwork_id = c.artwork.key().id()
-                if artwork_id in artwork_id__count:
-                    artwork_id__count[artwork_id] = artwork_id__count[artwork_id] + c.count
-                else:
-                    artwork_id__count[artwork_id] = c.count
-                    artwork_id__artwork[artwork_id] = c.artwork
+                try:
+                    artwork_id = c.artwork.key().id()
+                    if artwork_id in artwork_id__count:
+                        artwork_id__count[artwork_id] = artwork_id__count[artwork_id] + c.count
+                    else:
+                        artwork_id__count[artwork_id] = c.count
+                        artwork_id__artwork[artwork_id] = c.artwork
+                except ReferencePropertyResolveError:
+                    pass
             if empty:
                 break
             offset += limit
@@ -311,12 +314,15 @@ class CronCalculateLastMonthTop(BasicRequestHandler):
             empty = True
             for c in daily_counters:
                 empty = False
-                artwork_id = c.artwork.key().id()
-                if artwork_id in artwork_id__count:
-                    artwork_id__count[artwork_id] = artwork_id__count[artwork_id] + c.count
-                else:
-                    artwork_id__count[artwork_id] = c.count
-                    artwork_id__artwork[artwork_id] = c.artwork
+                try:
+                    artwork_id = c.artwork.key().id()
+                    if artwork_id in artwork_id__count:
+                        artwork_id__count[artwork_id] = artwork_id__count[artwork_id] + c.count
+                    else:
+                        artwork_id__count[artwork_id] = c.count
+                        artwork_id__artwork[artwork_id] = c.artwork
+                except ReferencePropertyResolveError:
+                    pass
             if empty:
                 break
             offset += limit
