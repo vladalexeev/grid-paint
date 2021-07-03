@@ -21,6 +21,7 @@ MC_MAIN_PAGE_RECENT_FAVORITES = 'main_page_recent_favorites'
 MC_MAIN_PAGE_PRODUCTIVE_ARTISTS = 'main_page_productive_artists'
 MC_MAIN_PAGE_TOP_RATED_ARTISTS = 'main_page_top_rated_artists'
 MC_MAIN_PAGE_LAST_WEEK_FAVORITES = 'main_page_last_week_favorites'
+MC_MAIN_PAGE_LAST_MONTH_FAVORITES = 'main_page_last_month_favorites'
 
 MC_USER_NOTIFICATION_PREFIX = 'user_notification_count_'
 MC_USER_PROFILE = 'user_profile_'

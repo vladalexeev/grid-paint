@@ -140,6 +140,25 @@ link at the top.
 
 
 <div class="container text-center index-page-section" id="top_favorites">
+	<h3><img src="/img/stars/star4.png" style="vertical-align:top; margin-top:-4px;"/> Best for the last month</h3>
+
+	<div class="row">
+	{% for a in last_month_favorites %}
+		{% include "thumbnail.html" %}
+	{% endfor %}
+
+		<div class="thumbnail-wrapper">
+		  <a href="/last-month-favorites">
+		  <div class="thumbnail index-page-thumb-button">
+			  <div class="thumb-image"></div>
+		  </div>
+		  </a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container text-center index-page-section" id="top_favorites">
 	<h3><img src="/img/stars/star4.png" style="vertical-align:top; margin-top:-4px;"/> Best for all the time</h3>
 		
 	<div class="row">

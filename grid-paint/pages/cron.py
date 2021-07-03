@@ -342,6 +342,8 @@ class CronCalculateLastMonthTop(BasicRequestHandler):
             counter.count = count
             counter.put()
 
+        cache.delete(cache.MC_MAIN_PAGE_LAST_MONTH_FAVORITES)
+
 
 
 
