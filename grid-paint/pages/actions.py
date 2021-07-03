@@ -1169,6 +1169,7 @@ class ActionAdminFlushMemcacheForIndexPage(BasicRequestHandler):
         cache.delete(cache.MC_MAIN_PAGE_RECENT_FAVORITES)
         cache.delete(cache.MC_MAIN_PAGE_PRODUCTIVE_ARTISTS)
         cache.delete(cache.MC_MAIN_PAGE_TOP_RATED_ARTISTS)
+        cache.delete(cache.MC_MAIN_PAGE_LAST_WEEK_FAVORITES)
         
         self.redirect('/')
 

@@ -7,6 +7,18 @@ cron:
   url: /cron/clean-news
   schedule: every 1 hours
 
+- description: "Update daily counters"
+  url: /cron/update-daily-counters
+  schedule: every day 01:00
+
+- description: "Update last week top"
+  url: /cron/calculate-last-week-top
+  schedule: every monday 02:00
+
+- description: "Update last month top"
+  url: /cron/calculate-last-month-top
+  schedule: 1 of month 03:00
+
 #- description: "Update artworks"
 #  url: /cron/update-artworks
 #  schedule: every 10 minutes

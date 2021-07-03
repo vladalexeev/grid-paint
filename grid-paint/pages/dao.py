@@ -129,11 +129,13 @@ def favorite_artwork(artwork, user_email):
     cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user_email)
     cache.delete(cache.MC_FAVORITE_COUNT+str(artwork.key().id()))
 
+    # Save favorite star
     fav = db.Favorite()
     fav.artwork = artwork
     fav.user_email = user_email
     fav.save()
-    
+
+    # increase artworks favorites counter
     fav_count = db.FavoriteCounter.all().filter('artwork =', artwork).get()
     if fav_count:
         fav_count.count = fav_count.count+1
@@ -143,7 +145,8 @@ def favorite_artwork(artwork, user_email):
         fav_count.count = 1
         
     fav_count.save()
-    
+
+    # increase author favorites counter
     user_profile = db.UserProfile.all().filter('email =', artwork.author_email).get()
     if hasattr(user_profile, 'favorite_count'):
         if user_profile.favorite_count is None:
@@ -154,19 +157,33 @@ def favorite_artwork(artwork, user_email):
     else:
         user_profile.favorite_count = 1
         user_profile.put()
+
+    # increase today artwork counter
+    today_fav_count = db.TodayFavoriteCounter.all().filter('artwork =', artwork).get()
+    if today_fav_count:
+        today_fav_count.count = today_fav_count.count + 1
+    else:
+        today_fav_count = db.TodayFavoriteCounter()
+        today_fav_count.artwork = artwork
+        today_fav_count.count = 1
+
+    today_fav_count.put()
     
     return fav_count.count
+
 
 def unfavorite_artwork(artwork, user_email):
     cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user_email)
     cache.delete(cache.MC_FAVORITE_COUNT+str(artwork.key().id()))
 
+    # delete favorite star
     fav = db.Favorite.all().filter('artwork =', artwork).filter('user_email =', user_email).get()
     if fav:
         fav.delete()
         
     cache.delete(cache.MC_FAVORITE_BY_USER+str(artwork.key().id())+'_'+user_email)
-        
+
+    # descrease artwork stars count
     fav_count = db.FavoriteCounter.all().filter('artwork =', artwork).get()
     result = 0
     if fav_count:
@@ -176,12 +193,22 @@ def unfavorite_artwork(artwork, user_email):
             result = fav_count.count
         else:
             fav_count.delete()
-            
+
+    # descrease author stars count
     user_profile = db.UserProfile.all().filter('email =', artwork.author_email).get()
     if hasattr(user_profile, 'favorite_count'):
         user_profile.favorite_count = user_profile.favorite_count - 1
         user_profile.put()
-    
+
+    # descrease today stars count
+    today_fav_count = db.TodayFavoriteCounter.all().filter('artwork =', artwork).get()
+    if today_fav_count:
+        if today_fav_count.count > 1:
+            today_fav_count.count = today_fav_count.count - 1
+            today_fav_count.put()
+        else:
+            today_fav_count.delete()
+
     return result
 
 

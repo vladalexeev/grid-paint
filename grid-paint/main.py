@@ -64,6 +64,8 @@ application = webapp.WSGIApplication([
     ('/profiles/(.*)/images', pages.pages.PageUserImages),
     ('/profiles/(.*)/group-images', pages.pages.PageUserGroupImages),
     ('/top-favorites', pages.pages.PageTopFavorites),
+    ('/last-week-favorites', pages.pages.PageLastWeekFavorites),
+    ('/last-month-favorites', pages.pages.PageLastMonthFavorites),
     ('/profiles/(.*)', pages.pages.PageProfile),
     ('/editor-choice', pages.pages.PageEditorChoice),
     ('/favorites', pages.pages.PageRecentFavorites),
@@ -100,5 +102,8 @@ application = webapp.WSGIApplication([
     ('/cron/clean-news', pages.cron.CronCleanOldNews),
     ('/cron/update-artworks', pages.cron.CronUpdateArtworks),
     ('/cron/update-tags', pages.cron.CronUpdateGlobalTags),
+    ('/cron/update-daily-counters', pages.cron.CronUpdateDailyCounters),
+    ('/cron/calculate-last-week-top', pages.cron.CronCalculateLastWeekTop),
+    ('/cron/calculate-last-month-top', pages.cron.CronCalculateLastMonthTop),
     ('/tasks/add-artwork-to-news', pages.tasks.TaskAddArtworkToNews),
 ], debug=True)
