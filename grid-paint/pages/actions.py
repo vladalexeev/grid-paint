@@ -18,6 +18,7 @@ from grid.square import GridSquare
 from grid.triangle import GridTriangle
 from grid.iso_triangle import GridIsoTriangle
 from grid.hex import GridHex
+from grid.iso_hex import GridIsoHex
 from grid.triangles4 import GridTriangles4
 from grid.diamond import GridDiamond
 
@@ -48,6 +49,7 @@ grids = {
     'triangle': GridTriangle,
     'iso-triangle': GridIsoTriangle,
     'hex': GridHex,
+    'iso-hex': GridIsoHex,
     'triangles4': GridTriangles4,
     'diamond': GridDiamond,
 }
