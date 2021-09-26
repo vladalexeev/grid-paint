@@ -345,7 +345,7 @@ function GridIsoHex() {
 		for (y=dy+sideLength-hexBehind*slantedLinesStep; y<paper.height; y+=slantedLinesStep) {
 		    this._createGridLine(
 		    	paper,
-		    	["M",0, y,"L",paperWidth, y+paperHeight*tan30],
+		    	["M",0, y,"L",paperWidth, y+paperWidth*tan30],
 		    	stroke_dash_array);
 		}
 
