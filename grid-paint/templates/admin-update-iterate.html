@@ -8,6 +8,23 @@
 	<div class="offset2 span8">
 		<p>Iterate artworks</p>
 		<table border="0">
+          <tr>
+            <td>Kind</td>
+            <td colspan="3">
+                <select name="kind">
+                    <option value="Artwork">Artwork</option>
+                    <option value="ArtworkCollaborator">ArtworkCollaborator</option>
+                    <option value="Tag">Tag</option>
+                    <option value="UserTag">UserTag</option>
+                    <option value="Comment">Comment</option>
+                    <option value="UserProfile">UserProfile</option>
+                    <option value="UserRelationSettings">UserRelationSettings</option>
+                    <option value="Favorite">Favorite</option>
+                    <option value="FavoriteCounter">FavoriteCounter</option>
+                    <option value="Follow">Follow</option>
+                </select>
+            </td>
+          </tr>
 		  <tr>
 		    <td>From</td>
 		    <td><input name="year1" type="text" value="2013"/></td>
@@ -28,7 +45,7 @@
 		  </tr>
 		  <tr>
 		    <td>Add</td>
-		    <td><input name="add" type="text" value="15"/></td>
+		    <td><input name="add" type="text" value="10"/></td>
 		    <td></td>
 		    <td><button type="button" id="update_button">Update</button></td>
 		  </tr>
@@ -96,7 +113,8 @@ $(function() {
 	
 	$("#update_button").click(function() {
 		var url='/admin/update-iterate-do?'+
-				'year1='+$("input[name=year1]").val()+
+				'kind='+$("select[name=kind]").val()+
+				'&year1='+$("input[name=year1]").val()+
 				'&month1='+$("input[name=month1]").val()+
 				'&day1='+$("input[name=day1]").val()+
 				'&year2='+$("input[name=year2]").val()+

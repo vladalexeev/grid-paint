@@ -810,7 +810,9 @@ class ActionUpdateIterate(BasicRequestHandler):
         if not self.user_info.superadmin:
             self.response.set_status(403)
             return
-        
+
+        kind = self.request.get('kind')
+
         year1 = int(self.request.get('year1'))
         month1 = int(self.request.get('month1'))
         day1 = int(self.request.get('day1'))
@@ -824,28 +826,145 @@ class ActionUpdateIterate(BasicRequestHandler):
         date1 = datetime.datetime(year=year1, month=month1, day=day1)
         
         date2 = datetime.datetime(year=year2, month=month2, day=day2)
-        
-        all_items = db.Artwork.all().filter('date >=', date1).filter('date <=', date2).fetch(limit,offset)
+
+        if kind == 'Artwork':
+            all_items = db.Artwork.all().filter('date >=', date1).filter('date <=', date2).fetch(limit,offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'name': item.name,
+                    'description': item.description,
+                    'author_email': item.author_email,
+                    'tags': list(item.tags),
+                    'date': item.date.isoformat(),
+                    'json_file_name': item.json_file_name,
+                    'grid': item.grid,
+                    'full_image_file_name': item.full_image_file_name,
+                    'full_image_width':  item.full_image_width,
+                    'full_image_height': item.full_image_height,
+                    'small_image_file_name': item.small_image_file_name,
+                    'small_image_width': item.small_image_width,
+                    'small_image_height': item.small_image_height,
+                    'editor_choice': item.editor_choice,
+                    'editor_choice_date': item.editor_choice_date.isoformat() if item.editor_choice_date else None
+                }
+        elif kind == 'ArtworkCollaborator':
+            all_items = db.ArtworkCollaborator.all().filter('join_date >=', date1).filter('join_date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'artwork': item.artwork.key().id() if item.artwork else None,
+                    'user_id': item.user_id,
+                    'join_date': item.join_date.isoformat(),
+                    'last_date': item.last_date.isoformat()
+                }
+        elif kind == 'Tag':
+            all_items = db.Tag.all().filter('date >=', date1).filter('date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'url_name': item.url_name,
+                    'title': item.title,
+                    'title_lower': item.title_lower,
+                    'date': item.date.isoformat(),
+                    'count': item.count,
+                    'last_date': item.last_date.isoformat(),
+                    'cover': item.cover.key().id() if item.cover else None
+                }
+        elif kind == 'UserTag':
+            all_items = db.UserTag.all().filter('date >=', date1).filter('date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'user_id': item.user_id,
+                    'url_name': item.url_name,
+                    'title': item.title,
+                    'title_lower': item.title_lower,
+                    'date': item.date.isoformat(),
+                    'count': item.count,
+                    'last_date': item.last_date.isoformat(),
+                    'cover': item.cover.key().id() if item.cover else None
+                }
+        elif kind == 'Comment':
+            all_items = db.Comment.all().filter('date >=', date1).filter('date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'artwork_ref': item.artwork_ref.key().id() if item.artwork_ref else None,
+                    'author_email': item.author_email,
+                    'text': item.text,
+                    'date': item.date.isoformat()
+                }
+        elif kind == 'UserProfile':
+            all_items = db.UserProfile.all().filter('join_date >=', date1).filter('join_date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'email': item.email,
+                    'nickname': item.nickname,
+                    'join_date': item.join_date.isoformat(),
+                    'artworks_count': item.artworks_count,
+                    'favorite_count': item.favorite_count,
+                    'avatar_file': item.avatar_file
+                }
+        elif kind == 'UserRelationSettings':
+            all_items = db.Artwork.all().filter('last_date >=', date1).filter('last_date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'profile_id': item.profile_id,
+                    'related_profile_id': item.related_profile_id,
+                    'block_collaboration_invitations': item.block_collaboration_invitations,
+                    'last_date': item.last_date.isoformat()
+                }
+        elif kind == 'Favorite':
+            all_items = db.Favorite.all().filter('date >=', date1).filter('date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'user_email': item.user_email,
+                    'artwork': item.artwork.key().id() if item.artwork else None,
+                    'date': item.date.isoformat()
+                }
+        elif kind == 'FavoriteCounter':
+            all_items = db.FavoriteCounter.all().filter('date >=', date1).filter('date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'artwork': item.artwork.key().id() if item.artwork else None,
+                    'count': item.count,
+                    'date': item.date.isoformat()
+                }
+        elif kind == 'Follow':
+            all_items = db.Follow.all().filter('since_date >=', date1).filter('since_date <=', date2).fetch(limit, offset)
+            def convert(item):
+                return {
+                    'id': item.key().id(),
+                    'leader_email': item.leader_email,
+                    'follower_email': item.follower_email,
+                    'since_date': item.since_date.isoformat()
+                }
+        else:
+            raise Exception('Unknown kind {}'.format(kind))
+
         total_count = 0
         updated_count = 0
         skipped_count = 0
         error_count = 0
-        
+
+        result_list = []
+
         for a in all_items:
             try:
                 total_count = total_count+1
-                
-                if hasattr(a,'author'):
-                    del a.author
-                    
-                    a.put()
-                    updated_count = updated_count +1
-                else:
-                    skipped_count = skipped_count + 1
-#                     
+                result_list.append(convert(a))
+                updated_count = updated_count +1
             except:
                 logging.exception('Iterate error')
                 error_count = error_count + 1
+
+        file_name = '/my-export/{}/{}/{}-{}-{}.json'.format(kind, year1, year1, month1, day1)
+        cs.create_file(file_name, 'application/octet-stream', json.dumps(result_list))
                 
         result = {
                   'total_count': total_count,
