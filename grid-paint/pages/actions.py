@@ -749,6 +749,13 @@ class ActionSaveSettings(BasicRequestHandler):
 
         settings.exchange_url = self.request.get('exchange_url')
         settings.exchange_salt = self.request.get('exchange_salt')
+
+        if self.request.get('index_page_customize'):
+            settings.index_page_customize = True
+        else:
+            settings.index_page_customize = False
+        settings.index_page_text_style = self.request.get('index_page_text_style')
+        settings.index_page_text = self.request.get('index_page_text')
             
         common.save_settings(settings)
         cache.add(cache.MC_SETTINGS, settings)

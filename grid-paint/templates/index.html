@@ -5,25 +5,37 @@
 <div class="single-container">
 
 <div class="container">
-<div id="index-logo-image">
-	<img src="/img/logo2-shadow.svg" width="160" height="160" />
-</div>
-<p>
-<b>Grid Paint</b> is an online drawing tool using various types of grids 
-(squared, triangular, hexagonal).
-Drawing by grids is like pixel art, but here you are not limited of using only square pixels.
-Moreover, you can set different shapes for pixels to make them look like diamond or jewel,
-which allow you to create peculiar images.
-</p>
+    <div id="index-logo-image">
+        <img src="/img/logo2-shadow.svg" width="160" height="160" />
+    </div>
 
-<p>
-Share your image with friends on Facebook or download them in PNG or SVG format.
-</p>
+    {% if settings.index_page_customize %}
+        <div class="index-page-text {{ settings.index_page_text_style }}">
+            {% autoescape off %}
+                {{ settings.index_page_text }}
+            {% endautoescape %}
+        </div>
+    {% else %}
+        <div class="index-page-text">
+        <p>
+        <b>Grid Paint</b> is an online drawing tool using various types of grids
+        (squared, triangular, hexagonal).
+        Drawing by grids is like pixel art, but here you are not limited of using only square pixels.
+        Moreover, you can set different shapes for pixels to make them look like diamond or jewel,
+        which allow you to create peculiar images.
+        </p>
 
-<p>
-Login into your Google account and <a href="new-image">begin to paint</a> by clicking &quot;New image&quot;
-link at the top.
-</p>
+        <p>
+        Share your image with friends on Facebook or download them in PNG or SVG format.
+        </p>
+
+        <p>
+        Login into your Google account and <a href="new-image">begin to paint</a> by clicking &quot;New image&quot;
+        link at the top.
+        </p>
+        </div>
+    {% endif %}
+
 </div>
 
 <div class="container" style="padding: 0;">

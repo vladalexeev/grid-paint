@@ -22,7 +22,7 @@
     		<input type="text" name="admin_email" class="form-control" value="{{ settings.admin_email }}">
 		</div>
 		<div class="form-group">
-			<label for="admin_user_id">Admin email</label>
+			<label for="admin_user_id">Admin ID</label>
     		<input type="text" name="admin_user_id" class="form-control" value="{{ settings.admin_user_id }}">
 		</div>
 		<div class="form-group">
@@ -33,6 +33,20 @@
 			<label for="exchange_salt">Exchange salt</label>
     		<input type="text" name="exchange_salt" class="form-control" value="{{ settings.exchange_salt }}">
 		</div>
+		<div class="checkbox">
+  			<label class="checkbox">
+    			<input type="checkbox" name="index_page_customize" {% if settings.index_page_customize %}checked{% endif %}> Show custom text on index page
+  			</label>
+		</div>
+        <div class="form-group">
+			<label for="index_page_text_style">Index page text style</label>
+    		<input type="text" name="index_page_text_style" class="form-control" value="{{ settings.index_page_text_style }}">
+		</div>
+        <div class="form-group">
+			<label for="index_page_text">Index page text</label>
+            <textarea name="index_page_text" class="form-control">{{ settings.index_page_text }}</textarea>
+		</div>
+
 		<button type="submit" class="btn btn-primary">Save settings</button>
 	</form>
 	</div>
